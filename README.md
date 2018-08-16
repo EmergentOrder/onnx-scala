@@ -1,6 +1,6 @@
 # ONNX-Scala
 
-This project currently provides a complete, versioned, numerically generic, type-safe / typeful API to ONNX, derived from the Protobuf definitions and the operator schemas (defined in C++) via the JavaCPP Preset for ONNX.
+This project currently provides a complete, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++) via the JavaCPP Preset for ONNX.
 
 ONNX-Scala will also be home to A) a program generator, capable of translating .onnx files into Scala programs written in terms of this API and B) at least one, eventually many backend implementations of ONNX accessible from the JVM.
 

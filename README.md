@@ -16,10 +16,22 @@ Currently at ONNX 1.2.2.
 You'll need sbt.
 
 ```
-sbt compile
+sbt compile package publishLocal
 ```
 
-Then, build away with the traits provided. Backend implementation (and other) PRs welcome!
+Then you can add this to your project's build.sbt 
+
+```scala
+libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala" % "1.2.2-0.1.0-SNAPSHOT"
+```
+
+or 
+
+```scala
+libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala-freestyle" % "1.2.2-0.1.0-SNAPSHOT"
+``` 
+
+and build away with the traits provided. Backend implementation (and other) PRs welcome!
 
 ### Built With
 

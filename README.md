@@ -8,6 +8,8 @@ All together, these should enable model inspection and modification, extra compi
 
 Balancing the interests of minimal imposition of dependencies with stack-safe, purely functional programming, ONNX-Scala comes in two flavors: Vanilla and Freestyle-infused.
 
+ONNX-Scala is cross-built against Scala.js / JavaScript .
+
 Currently at ONNX 1.2.2.
 
 

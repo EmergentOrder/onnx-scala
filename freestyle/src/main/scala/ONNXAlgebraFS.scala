@@ -6,929 +6,1037 @@ import spire.math.UByte
 import spire.math.UShort
 import spire.math.UInt
 import spire.math.ULong
+import spire.math.Complex
 import spire.math.Numeric
 import scala.reflect.ClassTag
 
 package onnx {
-
 @free trait DataSourceFS extends DataSource {
   def inputData[VV:Numeric:ClassTag]: FS[Tensor[VV]]
   def getParams[VV:Numeric:ClassTag](name: String): FS[Tensor[VV]]
   def getAttributes[VV:Numeric:ClassTag](name: String): FS[Tensor[VV]]
 }
-@free trait IdentityFS extends Operator with Identity {
+@free trait TanhFS extends Operator with Tanh {
 
-  def Identity1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String)
-    : FS[(T[VV])]
+  def Tanh1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
 
-}
-@free trait ExpFS extends Operator with Exp {
 
-  def Exp1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Exp6[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String)
-    : FS[(T[VV])]
-
-}
-@free trait ClipFS extends Operator with Clip {
-
-  def Clip1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,consumed_inputs : Option[(Seq[String])] = None,max : Option[(Int)] = None,min : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-
-  def Clip6[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,max : Option[(Int)] = None,min : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait TanFS extends Operator with Tan {
-
-  def Tan7[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String)
-    : FS[(T[VV])]
-
-}
-@free trait GlobalAveragePoolFS extends Operator with GlobalAveragePool {
-
-  def GlobalAveragePool1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String)
-    : FS[(T[VV])]
-
-}
-@free trait TransposeFS extends Operator with Transpose {
-
-  def Transpose1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,perm : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-}
-@free trait AsinFS extends Operator with Asin {
-
-  def Asin7[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String)
-    : FS[(T[VV])]
-
-}
-@free trait HardSigmoidFS extends Operator with HardSigmoid {
-
-  def HardSigmoid1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def HardSigmoid6[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait ReduceMaxFS extends Operator with ReduceMax {
-
-  def ReduceMax1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait ArgMinFS extends Operator with ArgMin {
-
-  def ArgMin1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,axis : Option[(String)] = None,keepdims : Option[(String)] = None)
-    : FS[(Tensor[Long])]
-
-}
-@free trait LpNormalizationFS extends Operator with LpNormalization {
-
-  def LpNormalization1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,axis : Option[(String)] = None,p : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait EluFS extends Operator with Elu {
-
-  def Elu1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,alpha : Option[(Int)] = None,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Elu6[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,alpha : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait CeilFS extends Operator with Ceil {
-
-  def Ceil1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Ceil6[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String)
-    : FS[(T[VV])]
-
-}
-@free trait ReduceL1FS extends Operator with ReduceL1 {
-
-  def ReduceL11[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait UnsqueezeFS extends Operator with Unsqueeze {
-
-  def Unsqueeze1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,axes : (Seq[String]))
-    : FS[(T[VV])]
-
-}
-@free trait GlobalMaxPoolFS extends Operator with GlobalMaxPool {
-
-  def GlobalMaxPool1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String)
-    : FS[(T[VV])]
-
-}
-@free trait SoftmaxFS extends Operator with Softmax {
-
-  def Softmax1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,axis : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait ScaleFS extends Operator with Scale {
-
-  def Scale1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,scaleAttr : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait CropFS extends Operator with Crop {
-
-  def Crop1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,border : Option[(Seq[String])] = None,scaleAttr : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-}
-@free trait MeanFS extends Operator with Mean {
-
-  def Mean1[VV : Numeric:ClassTag](name: String)
-    : FS[(T[VV])]
-
-
-  def Mean6[VV : Numeric:ClassTag](name: String)
-    : FS[(T[VV])]
-
-}
-@free trait ReduceLogSumExpFS extends Operator with ReduceLogSumExp {
-
-  def ReduceLogSumExp1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait PadFS extends Operator with Pad {
-
-  def Pad1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,mode : Option[(Tensor[VV])] = None,paddings : (Seq[String]),value : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-
-  def Pad2[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,mode : Option[(Tensor[VV])] = None,pads : (Seq[String]),value : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait LoopIndexTensorFS extends Operator with LoopIndexTensor {
-
-  def LoopIndexTensor1[VV : Numeric:ClassTag](name: String,T: T[VV], Tname: String, loop_idx: T[VV], loop_idxname: String,axis : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait RandomUniformLikeFS extends Operator with RandomUniformLike {
-
-  def RandomUniformLike1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,dtype : Option[(String)] = None,high : Option[(Int)] = None,low : Option[(Int)] = None,seed : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait PReluFS extends Operator with PRelu {
-
-  def PRelu1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, slope: T[VV], slopename: String,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def PRelu6[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, slope: T[VV], slopename: String)
-    : FS[(T[VV])]
-
-
-  def PRelu7[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, slope: T[VV], slopename: String)
-    : FS[(T[VV])]
-
-}
-@free trait IfFS extends Operator with If {
-
-  def If1[VV : Numeric:ClassTag](name: String,cond: T[VV], condname: String,else_branch : (Seq[Float]),then_branch : (Seq[Float]))
-    : FS[(T[VV])]
-
-}
-@free trait ReduceMinFS extends Operator with ReduceMin {
-
-  def ReduceMin1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait SoftsignFS extends Operator with Softsign {
-
-  def Softsign1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String)
-    : FS[(T[VV])]
-
-}
-@free trait ConstantFillFS extends Operator with ConstantFill {
-
-  def ConstantFill1[VV : Numeric:ClassTag](name: String,input: Option[T[VV]] = None,dtype : Option[(String)] = None,extra_shape : Option[(Seq[String])] = None,input_as_shape : Option[(String)] = None,shape : Option[(Seq[String])] = None,value : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait LogSoftmaxFS extends Operator with LogSoftmax {
-
-  def LogSoftmax1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,axis : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait LpPoolFS extends Operator with LpPool {
-
-  def LpPool1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,auto_pad : Option[(Tensor[VV])] = None,kernel_shape : Option[(Seq[String])] = None,p : Option[(Int)] = None,pads : Option[(Seq[String])] = None,strides : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def LpPool2[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,auto_pad : Option[(Tensor[VV])] = None,kernel_shape : (Seq[String]),p : Option[(String)] = None,pads : Option[(Seq[String])] = None,strides : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-}
-@free trait SinFS extends Operator with Sin {
-
-  def Sin7[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String)
-    : FS[(T[VV])]
-
-}
-@free trait ReluFS extends Operator with Relu {
-
-  def Relu1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Relu6[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String)
-    : FS[(T[VV])]
-
-}
-@free trait SeluFS extends Operator with Selu {
-
-  def Selu1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,alpha : Option[(Int)] = None,consumed_inputs : Option[(Seq[String])] = None,gamma : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-
-  def Selu6[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,alpha : Option[(Int)] = None,gamma : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait NotFS extends Operator with Not {
-
-  def Not1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String)
-    : FS[(T[VV])]
-
-}
-@free trait AndFS extends Operator with And {
-
-  def And1[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
-    : FS[(T[VV])]
-
-
-  def And7[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String)
-    : FS[(T[VV])]
-
-}
-@free trait SizeFS extends Operator with Size {
-
-  def Size1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String)
-    : FS[(T[VV])]
-
-}
-@free trait FlattenFS extends Operator with Flatten {
-
-  def Flatten1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,axis : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait EqualFS extends Operator with Equal {
-
-  def Equal1[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
-    : FS[(T[VV])]
-
-
-  def Equal7[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String)
-    : FS[(T[VV])]
-
-}
-@free trait DropoutFS extends Operator with Dropout {
-
-  def Dropout1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,consumed_inputs : Option[(Seq[String])] = None,is_test : Option[(String)] = None,ratio : Option[(Int)] = None)
-    : FS[(T[VV], T[VV])]
-
-
-  def Dropout6[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,is_test : Option[(String)] = None,ratio : Option[(Int)] = None)
-    : FS[(T[VV], T[VV])]
-
-
-  def Dropout7[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,ratio : Option[(Int)] = None)
-    : FS[(T[VV], T[VV])]
-
-}
-@free trait RandomNormalLikeFS extends Operator with RandomNormalLike {
-
-  def RandomNormalLike1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,dtype : Option[(String)] = None,mean : Option[(Int)] = None,scaleAttr : Option[(Int)] = None,seed : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait ScaledTanhFS extends Operator with ScaledTanh {
-
-  def ScaledTanh1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait ParametricSoftplusFS extends Operator with ParametricSoftplus {
-
-  def ParametricSoftplus1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait MaxFS extends Operator with Max {
-
-  def Max1[VV : Numeric:ClassTag](name: String)
-    : FS[(T[VV])]
-
-
-  def Max6[VV : Numeric:ClassTag](name: String)
-    : FS[(T[VV])]
-
-}
-@free trait SliceFS extends Operator with Slice {
-
-  def Slice1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,axes : Option[(Seq[String])] = None,ends : (Seq[String]),starts : (Seq[String]))
-    : FS[(T[VV])]
-
-}
-@free trait MinFS extends Operator with Min {
-
-  def Min1[VV : Numeric:ClassTag](name: String)
-    : FS[(T[VV])]
-
-
-  def Min6[VV : Numeric:ClassTag](name: String)
-    : FS[(T[VV])]
-
-}
-@free trait GRUUnitFS extends Operator with GRUUnit {
-
-  def GRUUnit1[VV : Numeric:ClassTag](name: String,hidden_prev: T[VV], hidden_prevname: String, gates: T[VV], gatesname: String, seq_lengths: T[VV], seq_lengthsname: String, t: T[VV], tname: String,drop_states : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait SqrtFS extends Operator with Sqrt {
-
-  def Sqrt1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Sqrt6[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String)
-    : FS[(T[VV])]
-
-}
-@free trait MatMulFS extends Operator with MatMul {
-
-  def MatMul1[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String)
-    : FS[(T[VV])]
-
-}
-@free trait OrFS extends Operator with Or {
-
-  def Or1[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
-    : FS[(T[VV])]
-
-
-  def Or7[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String)
-    : FS[(T[VV])]
-
-}
-@free trait ThresholdedReluFS extends Operator with ThresholdedRelu {
-
-  def ThresholdedRelu1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,alpha : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait AtanFS extends Operator with Atan {
-
-  def Atan7[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String)
-    : FS[(T[VV])]
-
-}
-@free trait NegFS extends Operator with Neg {
-
-  def Neg1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Neg6[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String)
-    : FS[(T[VV])]
-
-}
-@free trait LRNFS extends Operator with LRN {
-
-  def LRN1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None,bias : Option[(Int)] = None,size : (String))
-    : FS[(T[VV])]
-
-}
-@free trait GRUFS extends Operator with GRU {
-
-  def GRU1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, W: T[VV], Wname: String, R: T[VV], Rname: String,B: Option[T[VV]] = None, sequence_lens: Option[T[VV]] = None, initial_h: Option[T[VV]] = None,activation_alpha : Option[(Seq[Int])] = None,activation_beta : Option[(Seq[Int])] = None,activations : Option[(Seq[Tensor[VV]])] = None,clip : Option[(Int)] = None,direction : Option[(Tensor[VV])] = None,hidden_size : Option[(String)] = None,output_sequence : Option[(String)] = None)
-    : FS[(T[VV], T[VV])]
-
-
-  def GRU3[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, W: T[VV], Wname: String, R: T[VV], Rname: String,B: Option[T[VV]] = None, sequence_lens: Option[T[VV]] = None, initial_h: Option[T[VV]] = None,activation_alpha : Option[(Seq[Int])] = None,activation_beta : Option[(Seq[Int])] = None,activations : Option[(Seq[Tensor[VV]])] = None,clip : Option[(Int)] = None,direction : Option[(Tensor[VV])] = None,hidden_size : Option[(String)] = None,linear_before_reset : Option[(String)] = None,output_sequence : Option[(String)] = None)
-    : FS[(T[VV], T[VV])]
-
-
-  def GRU7[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, W: T[VV], Wname: String, R: T[VV], Rname: String,B: Option[T[VV]] = None, sequence_lens: Option[T[VV]] = None, initial_h: Option[T[VV]] = None,activation_alpha : Option[(Seq[Int])] = None,activation_beta : Option[(Seq[Int])] = None,activations : Option[(Seq[Tensor[VV]])] = None,clip : Option[(Int)] = None,direction : Option[(Tensor[VV])] = None,hidden_size : Option[(String)] = None,linear_before_reset : Option[(String)] = None)
-    : FS[(T[VV], T[VV])]
-
-}
-@free trait LeakyReluFS extends Operator with LeakyRelu {
-
-  def LeakyRelu1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,alpha : Option[(Int)] = None,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def LeakyRelu6[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,alpha : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait MaxRoiPoolFS extends Operator with MaxRoiPool {
-
-  def MaxRoiPool1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, rois: T[VV], roisname: String,pooled_shape : (Seq[String]),spatial_scaleAttr : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait HardmaxFS extends Operator with Hardmax {
-
-  def Hardmax1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,axis : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait ArgMaxFS extends Operator with ArgMax {
-
-  def ArgMax1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,axis : Option[(String)] = None,keepdims : Option[(String)] = None)
-    : FS[(Tensor[Long])]
-
-}
-@free trait RandomUniformFS extends Operator with RandomUniform {
-
-  def RandomUniform1[VV : Numeric:ClassTag](name: String)
-    : FS[(T[VV])]
-
-}
-@free trait ReduceL2FS extends Operator with ReduceL2 {
-
-  def ReduceL21[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait SigmoidFS extends Operator with Sigmoid {
-
-  def Sigmoid1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Sigmoid6[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String)
-    : FS[(T[VV])]
-
-}
-@free trait SoftplusFS extends Operator with Softplus {
-
-  def Softplus1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String)
-    : FS[(T[VV])]
-
-}
-@free trait SqueezeFS extends Operator with Squeeze {
-
-  def Squeeze1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,axes : (Seq[String]))
-    : FS[(T[VV])]
-
-}
-@free trait SubFS extends Operator with Sub {
-
-  def Sub1[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Sub6[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
-    : FS[(T[VV])]
-
-
-  def Sub7[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String)
-    : FS[(T[VV])]
-
-}
-@free trait SpaceToDepthFS extends Operator with SpaceToDepth {
-
-  def SpaceToDepth1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,blocksize : (String))
-    : FS[(T[VV])]
-
-}
-@free trait ConvTransposeFS extends Operator with ConvTranspose {
-
-  def ConvTranspose1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, W: T[VV], Wname: String,B: Option[T[VV]] = None,auto_pad : Option[(Tensor[VV])] = None,dilations : Option[(Seq[String])] = None,group : Option[(String)] = None,kernel_shape : Option[(Seq[String])] = None,output_padding : Option[(Seq[String])] = None,output_shape : Option[(Seq[String])] = None,pads : Option[(Seq[String])] = None,strides : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-}
-@free trait AddFS extends Operator with Add {
-
-  def Add1[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Add6[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
-    : FS[(T[VV])]
-
-
-  def Add7[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String)
-    : FS[(T[VV])]
+  def Tanh6(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
 
 }
 @free trait TileFS extends Operator with Tile {
 
-  def Tile1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String, tiles: T[VV], tilesname: String, axis: T[VV], axisname: String)
-    : FS[(T[VV])]
+  def Tile1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String, tiles: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], tilesname: String, axis: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], axisname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
 
 
-  def Tile6[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String, repeats: T[VV], repeatsname: String)
-    : FS[(T[VV])]
-
-}
-@free trait TanhFS extends Operator with Tanh {
-
-  def Tanh1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Tanh6[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String)
-    : FS[(T[VV])]
+  def Tile6(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String, repeats: Tensor[Long], repeatsname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
 
 }
-@free trait GatherFS extends Operator with Gather {
+@free trait SpaceToDepthFS extends Operator with SpaceToDepth {
 
-  def Gather1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String, indices: T[VV], indicesname: String,axis : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait AveragePoolFS extends Operator with AveragePool {
-
-  def AveragePool1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,auto_pad : Option[(Tensor[VV])] = None,kernel_shape : (Seq[String]),pads : Option[(Seq[String])] = None,strides : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def AveragePool7[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,auto_pad : Option[(Tensor[VV])] = None,count_include_pad : Option[(String)] = None,kernel_shape : (Seq[String]),pads : Option[(Seq[String])] = None,strides : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-}
-@free trait ReciprocalFS extends Operator with Reciprocal {
-
-  def Reciprocal1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Reciprocal6[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String)
-    : FS[(T[VV])]
-
-}
-@free trait AcosFS extends Operator with Acos {
-
-  def Acos7[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String)
-    : FS[(T[VV])]
-
-}
-@free trait CosFS extends Operator with Cos {
-
-  def Cos7[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String)
-    : FS[(T[VV])]
-
-}
-@free trait InstanceNormalizationFS extends Operator with InstanceNormalization {
-
-  def InstanceNormalization1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String, scale: T[VV], scalename: String, B: T[VV], Bname: String,consumed_inputs : Option[(Seq[String])] = None,epsilon : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-
-  def InstanceNormalization6[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String, scale: T[VV], scalename: String, B: T[VV], Bname: String,epsilon : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait ReduceSumFS extends Operator with ReduceSum {
-
-  def ReduceSum1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait CastFS extends Operator with Cast {
-
-  def Cast1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,to : (Tensor[VV]))
-    : FS[(T[VV])]
-
-
-  def Cast6[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,to : (String))
-    : FS[(T[VV])]
-
-}
-@free trait DepthToSpaceFS extends Operator with DepthToSpace {
-
-  def DepthToSpace1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,blocksize : (String))
-    : FS[(T[VV])]
-
-}
-@free trait ReduceLogSumFS extends Operator with ReduceLogSum {
-
-  def ReduceLogSum1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait AbsFS extends Operator with Abs {
-
-  def Abs1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Abs6[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String)
-    : FS[(T[VV])]
-
-}
-@free trait ConcatFS extends Operator with Concat {
-
-  def Concat1[VV : Numeric:ClassTag](name: String)
-    : FS[(T[VV])]
-
-
-  def Concat4[VV : Numeric:ClassTag](name: String)
-    : FS[(T[VV])]
-
-}
-@free trait ReshapeFS extends Operator with Reshape {
-
-  def Reshape1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,consumed_inputs : Option[(Seq[String])] = None,shape : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Reshape5[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String, shape: Tensor[Long], shapename: String)
-    : FS[(T[VV])]
-
-}
-@free trait ReduceSumSquareFS extends Operator with ReduceSumSquare {
-
-  def ReduceSumSquare1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait DivFS extends Operator with Div {
-
-  def Div1[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Div6[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
-    : FS[(T[VV])]
-
-
-  def Div7[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String)
-    : FS[(T[VV])]
-
-}
-@free trait GreaterFS extends Operator with Greater {
-
-  def Greater1[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
-    : FS[(T[VV])]
-
-
-  def Greater7[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String)
-    : FS[(T[VV])]
-
-}
-@free trait UpsampleFS extends Operator with Upsample {
-
-  def Upsample1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,height_scaleAttr : (Int),mode : Option[(Tensor[VV])] = None,width_scaleAttr : (Int))
-    : FS[(T[VV])]
-
-
-  def Upsample7[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,mode : Option[(Tensor[VV])] = None,scaleAttrs : (Seq[Int]))
-    : FS[(T[VV])]
-
-}
-@free trait ReduceMeanFS extends Operator with ReduceMean {
-
-  def ReduceMean1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait PowFS extends Operator with Pow {
-
-  def Pow1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, Y: T[VV], Yname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
-    : FS[(T[VV])]
-
-
-  def Pow7[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, Y: T[VV], Yname: String)
-    : FS[(T[VV])]
-
-}
-@free trait BatchNormalizationFS extends Operator with BatchNormalization {
-
-  def BatchNormalization1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, scale: T[VV], scalename: String, B: T[VV], Bname: String, mean: T[VV], meanname: String, someVar: T[VV], varname: String,consumed_inputs : (Seq[String]),epsilon : Option[(Int)] = None,is_test : Option[(String)] = None,momentum : Option[(Int)] = None,spatial : Option[(String)] = None)
-    : FS[(T[VV], T[VV], T[VV], T[VV], T[VV])]
-
-
-  def BatchNormalization6[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, scale: T[VV], scalename: String, B: T[VV], Bname: String, mean: T[VV], meanname: String, someVar: T[VV], varname: String,epsilon : Option[(Int)] = None,is_test : Option[(String)] = None,momentum : Option[(Int)] = None,spatial : Option[(String)] = None)
-    : FS[(T[VV], T[VV], T[VV], T[VV], T[VV])]
-
-
-  def BatchNormalization7[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, scale: T[VV], scalename: String, B: T[VV], Bname: String, mean: T[VV], meanname: String, someVar: T[VV], varname: String,epsilon : Option[(Int)] = None,momentum : Option[(Int)] = None,spatial : Option[(String)] = None)
-    : FS[(T[VV], T[VV], T[VV], T[VV], T[VV])]
-
-}
-@free trait FloorFS extends Operator with Floor {
-
-  def Floor1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Floor6[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String)
-    : FS[(T[VV])]
-
-}
-@free trait ConstantFS extends Operator with Constant {
-
-  def Constant1[VV : Numeric:ClassTag](name: String)
-    : FS[(T[VV])]
-
-}
-@free trait MeanVarianceNormalizationFS extends Operator with MeanVarianceNormalization {
-
-  def MeanVarianceNormalization1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,across_channels : Option[(String)] = None,normalize_variance : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait LSTMFS extends Operator with LSTM {
-
-  def LSTM1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, W: T[VV], Wname: String, R: T[VV], Rname: String,B: Option[T[VV]] = None, sequence_lens: Option[T[VV]] = None, initial_h: Option[T[VV]] = None, initial_c: Option[T[VV]] = None, P: Option[T[VV]] = None,activation_alpha : Option[(Seq[Int])] = None,activation_beta : Option[(Seq[Int])] = None,activations : Option[(Seq[Tensor[VV]])] = None,clip : Option[(Int)] = None,direction : Option[(Tensor[VV])] = None,hidden_size : Option[(String)] = None,input_forget : Option[(String)] = None,output_sequence : Option[(String)] = None)
-    : FS[(T[VV], T[VV], T[VV])]
-
-
-  def LSTM7[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, W: T[VV], Wname: String, R: T[VV], Rname: String,B: Option[T[VV]] = None, sequence_lens: Option[T[VV]] = None, initial_h: Option[T[VV]] = None, initial_c: Option[T[VV]] = None, P: Option[T[VV]] = None,activation_alpha : Option[(Seq[Int])] = None,activation_beta : Option[(Seq[Int])] = None,activations : Option[(Seq[Tensor[VV]])] = None,clip : Option[(Int)] = None,direction : Option[(Tensor[VV])] = None,hidden_size : Option[(String)] = None,input_forget : Option[(String)] = None)
-    : FS[(T[VV], T[VV], T[VV])]
-
-}
-@free trait LogFS extends Operator with Log {
-
-  def Log1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Log6[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String)
-    : FS[(T[VV])]
-
-}
-@free trait GivenTensorFillFS extends Operator with GivenTensorFill {
-
-  def GivenTensorFill1[VV : Numeric:ClassTag](name: String,shapeInput: Option[T[VV]] = None,extra_shape : Option[(Seq[String])] = None,input_as_shape : Option[(String)] = None,shape : Option[(Seq[String])] = None,values : Option[(Seq[Int])] = None)
-    : FS[(T[VV])]
-
-}
-@free trait ReduceProdFS extends Operator with ReduceProd {
-
-  def ReduceProd1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait MaxPoolFS extends Operator with MaxPool {
-
-  def MaxPool1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,auto_pad : Option[(Tensor[VV])] = None,kernel_shape : (Seq[String]),pads : Option[(Seq[String])] = None,strides : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-}
-@free trait ShapeFS extends Operator with Shape {
-
-  def Shape1[VV : Numeric:ClassTag](name: String,data: T[VV], dataname: String)
-    : FS[(T[VV])]
-
-}
-@free trait MulFS extends Operator with Mul {
-
-  def Mul1[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None,consumed_inputs : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Mul6[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
-    : FS[(T[VV])]
-
-
-  def Mul7[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String)
-    : FS[(T[VV])]
-
-}
-@free trait AffineFS extends Operator with Affine {
-
-  def Affine1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None)
-    : FS[(T[VV])]
-
-}
-@free trait GemmFS extends Operator with Gemm {
-
-  def Gemm1[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String, C: T[VV], Cname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None,broadcast : Option[(String)] = None,transA : Option[(String)] = None,transB : Option[(String)] = None)
-    : FS[(T[VV])]
-
-
-  def Gemm6[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String, C: T[VV], Cname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None,broadcast : Option[(String)] = None,transA : Option[(String)] = None,transB : Option[(String)] = None)
-    : FS[(T[VV])]
-
-
-  def Gemm7[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String, C: T[VV], Cname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None,transA : Option[(String)] = None,transB : Option[(String)] = None)
-    : FS[(T[VV])]
+  def SpaceToDepth1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,blocksize : (String))
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
 
 }
 @free trait ImageScalerFS extends Operator with ImageScaler {
 
-  def ImageScaler1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,bias : Option[(Seq[Int])] = None,scaleAttr : Option[(Int)] = None)
-    : FS[(T[VV])]
+  def ImageScaler1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,bias : Option[(Seq[Int])] = None,scaleAttr : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
 
 }
-@free trait ConvFS extends Operator with Conv {
+@free trait TanFS extends Operator with Tan {
 
-  def Conv1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, W: T[VV], Wname: String,B: Option[T[VV]] = None,auto_pad : Option[(Tensor[VV])] = None,dilations : Option[(Seq[String])] = None,group : Option[(String)] = None,kernel_shape : Option[(Seq[String])] = None,pads : Option[(Seq[String])] = None,strides : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-}
-@free trait RandomNormalFS extends Operator with RandomNormal {
-
-  def RandomNormal1[VV : Numeric:ClassTag](name: String)
-    : FS[(T[VV])]
+  def Tan7(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
 
 }
-@free trait LoopFS extends Operator with Loop {
+@free trait ThresholdedReluFS extends Operator with ThresholdedRelu {
 
-  def Loop1[VV : Numeric:ClassTag](name: String,M: T[VV], Mname: String, cond: T[VV], condname: String,body : (Seq[Float]))
-    : FS[(T[VV])]
+  def ThresholdedRelu1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,alpha : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
 
 }
-@free trait MultinomialFS extends Operator with Multinomial {
+@free trait SqrtFS extends Operator with Sqrt {
 
-  def Multinomial7[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,dtype : Option[(String)] = None,sample_size : Option[(String)] = None,seed : Option[(Int)] = None)
-    : FS[(T[VV])]
+  def Sqrt1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Sqrt6(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ReshapeFS extends Operator with Reshape {
+
+  def Reshape1(name: String,data: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,consumed_inputs : Option[(Seq[String])] = None,shape : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Reshape5(name: String,data: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String, shape: Tensor[Long], shapename: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait LogSoftmaxFS extends Operator with LogSoftmax {
+
+  def LogSoftmax1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,axis : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait CropFS extends Operator with Crop {
+
+  def Crop1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,border : Option[(Seq[String])] = None,scaleAttr : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait SoftplusFS extends Operator with Softplus {
+
+  def Softplus1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait SoftsignFS extends Operator with Softsign {
+
+  def Softsign1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait CeilFS extends Operator with Ceil {
+
+  def Ceil1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Ceil6(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ZipMapFS extends Operator with ZipMap {
+
+  def ZipMap1(name: String,X: Tensor[Float], Xname: String,classlabels_int64s : Option[(Seq[String])] = None,classlabels_strings : Option[(Seq[Tensor[_]])] = None)
+    : FS[(Seq[Map[String, Float]] |: Seq[Map[Long, Float]])]
+
+}
+@free trait ImputerFS extends Operator with Imputer {
+
+  def Imputer1(name: String,X: Tensor[Float] |: Tensor[Double] |: Tensor[Long] |: Tensor[Int], Xname: String,imputed_value_floats : Option[(Seq[Int])] = None,imputed_value_int64s : Option[(Seq[String])] = None,replaced_value_float : Option[(Int)] = None,replaced_value_int64 : Option[(String)] = None)
+    : FS[(Tensor[Float] |: Tensor[Double] |: Tensor[Long] |: Tensor[Int])]
+
+}
+@free trait ReduceSumFS extends Operator with ReduceSum {
+
+  def ReduceSum1(name: String,data: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
+    : FS[(Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait AveragePoolFS extends Operator with AveragePool {
+
+  def AveragePool1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,auto_pad : Option[(Tensor[_])] = None,kernel_shape : (Seq[String]),pads : Option[(Seq[String])] = None,strides : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def AveragePool7(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,auto_pad : Option[(Tensor[_])] = None,count_include_pad : Option[(String)] = None,kernel_shape : (Seq[String]),pads : Option[(Seq[String])] = None,strides : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
 
 }
 @free trait RNNFS extends Operator with RNN {
 
-  def RNN1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, W: T[VV], Wname: String, R: T[VV], Rname: String,B: Option[T[VV]] = None, sequence_lens: Option[T[VV]] = None, initial_h: Option[T[VV]] = None,activation_alpha : Option[(Seq[Int])] = None,activation_beta : Option[(Seq[Int])] = None,activations : Option[(Seq[Tensor[VV]])] = None,clip : Option[(Int)] = None,direction : Option[(Tensor[VV])] = None,hidden_size : Option[(String)] = None,output_sequence : Option[(String)] = None)
-    : FS[(T[VV], T[VV])]
+  def RNN1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, W: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Wname: String, R: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Rname: String,B: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None, sequence_lens: Option[Tensor[Int]] = None, initial_h: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None,activation_alpha : Option[(Seq[Int])] = None,activation_beta : Option[(Seq[Int])] = None,activations : Option[(Seq[Tensor[_]])] = None,clip : Option[(Int)] = None,direction : Option[(Tensor[_])] = None,hidden_size : Option[(String)] = None,output_sequence : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
 
 
-  def RNN7[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String, W: T[VV], Wname: String, R: T[VV], Rname: String,B: Option[T[VV]] = None, sequence_lens: Option[T[VV]] = None, initial_h: Option[T[VV]] = None,activation_alpha : Option[(Seq[Int])] = None,activation_beta : Option[(Seq[Int])] = None,activations : Option[(Seq[Tensor[VV]])] = None,clip : Option[(Int)] = None,direction : Option[(Tensor[VV])] = None,hidden_size : Option[(String)] = None)
-    : FS[(T[VV], T[VV])]
-
-}
-@free trait SumFS extends Operator with Sum {
-
-  def Sum1[VV : Numeric:ClassTag](name: String)
-    : FS[(T[VV])]
-
-
-  def Sum6[VV : Numeric:ClassTag](name: String)
-    : FS[(T[VV])]
+  def RNN7(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, W: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Wname: String, R: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Rname: String,B: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None, sequence_lens: Option[Tensor[Int]] = None, initial_h: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None,activation_alpha : Option[(Seq[Int])] = None,activation_beta : Option[(Seq[Int])] = None,activations : Option[(Seq[Tensor[_]])] = None,clip : Option[(Int)] = None,direction : Option[(Tensor[_])] = None,hidden_size : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
 
 }
-@free trait SplitFS extends Operator with Split {
+@free trait HardmaxFS extends Operator with Hardmax {
 
-  def Split1[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,split: Option[T[VV]] = None,axis : Option[(String)] = None,splitAttr : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
-
-
-  def Split2[VV : Numeric:ClassTag](name: String,input: T[VV], inputname: String,axis : Option[(String)] = None,splitAttr : Option[(Seq[String])] = None)
-    : FS[(T[VV])]
+  def Hardmax1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,axis : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
 
 }
-@free trait LessFS extends Operator with Less {
+@free trait SqueezeFS extends Operator with Squeeze {
 
-  def Less1[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
-    : FS[(T[VV])]
-
-
-  def Less7[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String)
-    : FS[(T[VV])]
+  def Squeeze1(name: String,data: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean], dataname: String,axes : (Seq[String]))
+    : FS[(Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean])]
 
 }
-@free trait GlobalLpPoolFS extends Operator with GlobalLpPool {
+@free trait CastMapFS extends Operator with CastMap {
 
-  def GlobalLpPool1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,p : Option[(Int)] = None)
-    : FS[(T[VV])]
+  def CastMap1(name: String,X: Map[Long, String] |: Map[Long, Float], Xname: String,cast_to : Option[(Tensor[_])] = None,map_form : Option[(Tensor[_])] = None,max_map : Option[(String)] = None)
+    : FS[(Tensor[String] |: Tensor[Float] |: Tensor[Long])]
+
+}
+@free trait ClipFS extends Operator with Clip {
+
+  def Clip1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,consumed_inputs : Option[(Seq[String])] = None,max : Option[(Int)] = None,min : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
 
 
-  def GlobalLpPool2[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,p : Option[(String)] = None)
-    : FS[(T[VV])]
+  def Clip6(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,max : Option[(Int)] = None,min : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait LpNormalizationFS extends Operator with LpNormalization {
+
+  def LpNormalization1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,axis : Option[(String)] = None,p : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait CosFS extends Operator with Cos {
+
+  def Cos7(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ArrayFeatureExtractorFS extends Operator with ArrayFeatureExtractor {
+
+  def ArrayFeatureExtractor1(name: String,X: Tensor[Float] |: Tensor[Double] |: Tensor[Long] |: Tensor[Int] |: Tensor[String], Xname: String, Y: Tensor[Long], Yname: String)
+    : FS[(Tensor[Float] |: Tensor[Double] |: Tensor[Long] |: Tensor[Int] |: Tensor[String])]
+
+}
+@free trait ParametricSoftplusFS extends Operator with ParametricSoftplus {
+
+  def ParametricSoftplus1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait SizeFS extends Operator with Size {
+
+  def Size1(name: String,data: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[UByte] |: Tensor[UShort] |: Tensor[Boolean], dataname: String)
+    : FS[(Tensor[Long])]
+
+}
+@free trait AndFS extends Operator with And {
+
+  def And1(name: String,A: Tensor[Boolean], Aname: String, B: Tensor[Boolean], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
+    : FS[(Tensor[Boolean])]
+
+
+  def And7(name: String,A: Tensor[Boolean], Aname: String, B: Tensor[Boolean], Bname: String)
+    : FS[(Tensor[Boolean])]
+
+}
+@free trait GemmFS extends Operator with Gemm {
+
+  def Gemm1(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String, C: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Cname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None,broadcast : Option[(String)] = None,transA : Option[(String)] = None,transB : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Gemm6(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String, C: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Cname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None,broadcast : Option[(String)] = None,transA : Option[(String)] = None,transB : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Gemm7(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String, C: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Cname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None,transA : Option[(String)] = None,transB : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait GRUUnitFS extends Operator with GRUUnit {
+
+  def GRUUnit1(name: String,hidden_prev: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], hidden_prevname: String, gates: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], gatesname: String, seq_lengths: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], seq_lengthsname: String, t: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], tname: String,drop_states : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ReduceSumSquareFS extends Operator with ReduceSumSquare {
+
+  def ReduceSumSquare1(name: String,data: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
+    : FS[(Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait RandomUniformLikeFS extends Operator with RandomUniformLike {
+
+  def RandomUniformLike1(name: String,input: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean], inputname: String,dtype : Option[(String)] = None,high : Option[(Int)] = None,low : Option[(Int)] = None,seed : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait MultinomialFS extends Operator with Multinomial {
+
+  def Multinomial7(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,dtype : Option[(String)] = None,sample_size : Option[(String)] = None,seed : Option[(Int)] = None)
+    : FS[(Tensor[Int] |: Tensor[Long])]
+
+}
+@free trait GlobalAveragePoolFS extends Operator with GlobalAveragePool {
+
+  def GlobalAveragePool1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait AffineFS extends Operator with Affine {
+
+  def Affine1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait NegFS extends Operator with Neg {
+
+  def Neg1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[Float] |: Tensor[Int] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Double], Xname: String,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[Float] |: Tensor[Int] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Double])]
+
+
+  def Neg6(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[Float] |: Tensor[Int] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Double], Xname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[Float] |: Tensor[Int] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Double])]
+
+}
+@free trait FeatureVectorizerFS extends Operator with FeatureVectorizer {
+
+  def FeatureVectorizer1(name: String)
+    : FS[(Tensor[Float])]
 
 }
 @free trait TopKFS extends Operator with TopK {
 
-  def TopK1[VV : Numeric:ClassTag](name: String,X: T[VV], Xname: String,axis : Option[(String)] = None,k : (String))
-    : FS[(T[VV], T[VV])]
+  def TopK1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,axis : Option[(String)] = None,k : (String))
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Long])]
+
+}
+@free trait OrFS extends Operator with Or {
+
+  def Or1(name: String,A: Tensor[Boolean], Aname: String, B: Tensor[Boolean], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
+    : FS[(Tensor[Boolean])]
+
+
+  def Or7(name: String,A: Tensor[Boolean], Aname: String, B: Tensor[Boolean], Bname: String)
+    : FS[(Tensor[Boolean])]
+
+}
+@free trait GatherFS extends Operator with Gather {
+
+  def Gather1(name: String,data: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean], dataname: String, indices: Tensor[Int] |: Tensor[Long], indicesname: String,axis : Option[(String)] = None)
+    : FS[(Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean])]
+
+}
+@free trait BatchNormalizationFS extends Operator with BatchNormalization {
+
+  def BatchNormalization1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, scale: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], scalename: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String, mean: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], meanname: String, someVar: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], varname: String,consumed_inputs : (Seq[String]),epsilon : Option[(Int)] = None,is_test : Option[(String)] = None,momentum : Option[(Int)] = None,spatial : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def BatchNormalization6(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, scale: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], scalename: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String, mean: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], meanname: String, someVar: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], varname: String,epsilon : Option[(Int)] = None,is_test : Option[(String)] = None,momentum : Option[(Int)] = None,spatial : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def BatchNormalization7(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, scale: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], scalename: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String, mean: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], meanname: String, someVar: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], varname: String,epsilon : Option[(Int)] = None,momentum : Option[(Int)] = None,spatial : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait TransposeFS extends Operator with Transpose {
+
+  def Transpose1(name: String,data: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,perm : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait GlobalLpPoolFS extends Operator with GlobalLpPool {
+
+  def GlobalLpPool1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,p : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def GlobalLpPool2(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,p : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait IfFS extends Operator with If {
+
+  def If1(name: String,cond: Tensor[Boolean], condname: String,else_branch : (Seq[Float]),then_branch : (Seq[Float]))
+    : FS[(Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean])]
+
+}
+@free trait SoftmaxFS extends Operator with Softmax {
+
+  def Softmax1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,axis : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait SinFS extends Operator with Sin {
+
+  def Sin7(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait TreeEnsembleRegressorFS extends Operator with TreeEnsembleRegressor {
+
+  def TreeEnsembleRegressor1(name: String,X: Tensor[Float] |: Tensor[Double] |: Tensor[Long] |: Tensor[Int], Xname: String,aggregate_function : Option[(Tensor[_])] = None,base_values : Option[(Seq[Int])] = None,n_targets : Option[(String)] = None,nodes_falsenodeids : Option[(Seq[String])] = None,nodes_featureids : Option[(Seq[String])] = None,nodes_hitrates : Option[(Seq[Int])] = None,nodes_missing_value_tracks_true : Option[(Seq[String])] = None,nodes_modes : Option[(Seq[Tensor[_]])] = None,nodes_nodeids : Option[(Seq[String])] = None,nodes_treeids : Option[(Seq[String])] = None,nodes_truenodeids : Option[(Seq[String])] = None,nodes_values : Option[(Seq[Int])] = None,post_transform : Option[(Tensor[_])] = None,target_ids : Option[(Seq[String])] = None,target_nodeids : Option[(Seq[String])] = None,target_treeids : Option[(Seq[String])] = None,target_weights : Option[(Seq[Int])] = None)
+    : FS[(Tensor[Float])]
+
+}
+@free trait ConvFS extends Operator with Conv {
+
+  def Conv1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, W: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Wname: String,B: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None,auto_pad : Option[(Tensor[_])] = None,dilations : Option[(Seq[String])] = None,group : Option[(String)] = None,kernel_shape : Option[(Seq[String])] = None,pads : Option[(Seq[String])] = None,strides : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait SVMClassifierFS extends Operator with SVMClassifier {
+
+  def SVMClassifier1(name: String,X: Tensor[Float] |: Tensor[Double] |: Tensor[Long] |: Tensor[Int], Xname: String,classlabels_ints : Option[(Seq[String])] = None,classlabels_strings : Option[(Seq[Tensor[_]])] = None,coefficients : Option[(Seq[Int])] = None,kernel_params : Option[(Seq[Int])] = None,kernel_type : Option[(Tensor[_])] = None,post_transform : Option[(Tensor[_])] = None,prob_a : Option[(Seq[Int])] = None,prob_b : Option[(Seq[Int])] = None,rho : Option[(Seq[Int])] = None,support_vectors : Option[(Seq[Int])] = None,vectors_per_class : Option[(Seq[String])] = None)
+    : FS[(Tensor[String] |: Tensor[Long], Tensor[Float])]
+
+}
+@free trait AbsFS extends Operator with Abs {
+
+  def Abs1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Abs6(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait MaxPoolFS extends Operator with MaxPool {
+
+  def MaxPool1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,auto_pad : Option[(Tensor[_])] = None,kernel_shape : (Seq[String]),pads : Option[(Seq[String])] = None,strides : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait SumFS extends Operator with Sum {
+
+  def Sum1(name: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Sum6(name: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait DropoutFS extends Operator with Dropout {
+
+  def Dropout1(name: String,data: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,consumed_inputs : Option[(Seq[String])] = None,is_test : Option[(String)] = None,ratio : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Dropout6(name: String,data: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,is_test : Option[(String)] = None,ratio : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Dropout7(name: String,data: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,ratio : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait LabelEncoderFS extends Operator with LabelEncoder {
+
+  def LabelEncoder1(name: String,X: Tensor[String] |: Tensor[Long], Xname: String,classes_strings : Option[(Seq[Tensor[_]])] = None,default_int64 : Option[(String)] = None,default_string : Option[(Tensor[_])] = None)
+    : FS[(Tensor[String] |: Tensor[Long])]
+
+}
+@free trait CastFS extends Operator with Cast {
+
+  def Cast1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Boolean], inputname: String,to : (Tensor[_]))
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Boolean])]
+
+
+  def Cast6(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Boolean], inputname: String,to : (String))
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Boolean])]
+
+}
+@free trait ReduceMaxFS extends Operator with ReduceMax {
+
+  def ReduceMax1(name: String,data: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
+    : FS[(Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait LeakyReluFS extends Operator with LeakyRelu {
+
+  def LeakyRelu1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,alpha : Option[(Int)] = None,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def LeakyRelu6(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,alpha : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ReduceMeanFS extends Operator with ReduceMean {
+
+  def ReduceMean1(name: String,data: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
+    : FS[(Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait NormalizerFS extends Operator with Normalizer {
+
+  def Normalizer1(name: String,X: Tensor[Float] |: Tensor[Double] |: Tensor[Long] |: Tensor[Int], Xname: String,norm : Option[(Tensor[_])] = None)
+    : FS[(Tensor[Float])]
+
+}
+@free trait ScalerFS extends Operator with Scaler {
+
+  def Scaler1(name: String,X: Tensor[Float] |: Tensor[Double] |: Tensor[Long] |: Tensor[Int], Xname: String,offset : Option[(Seq[Int])] = None,scaleAttr : Option[(Seq[Int])] = None)
+    : FS[(Tensor[Float])]
+
+}
+@free trait IdentityFS extends Operator with Identity {
+
+  def Identity1(name: String,input: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean], inputname: String)
+    : FS[(Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean])]
+
+}
+@free trait ReduceLogSumExpFS extends Operator with ReduceLogSumExp {
+
+  def ReduceLogSumExp1(name: String,data: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
+    : FS[(Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ExpFS extends Operator with Exp {
+
+  def Exp1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Exp6(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ReciprocalFS extends Operator with Reciprocal {
+
+  def Reciprocal1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Reciprocal6(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait InstanceNormalizationFS extends Operator with InstanceNormalization {
+
+  def InstanceNormalization1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String, scale: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], scalename: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String,consumed_inputs : Option[(Seq[String])] = None,epsilon : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def InstanceNormalization6(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String, scale: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], scalename: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String,epsilon : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait DivFS extends Operator with Div {
+
+  def Div1(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Div6(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Div7(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait EqualFS extends Operator with Equal {
+
+  def Equal1(name: String,A: Tensor[Boolean] |: Tensor[Int] |: Tensor[Long], Aname: String, B: Tensor[Boolean] |: Tensor[Int] |: Tensor[Long], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
+    : FS[(Tensor[Boolean])]
+
+
+  def Equal7(name: String,A: Tensor[Boolean] |: Tensor[Int] |: Tensor[Long], Aname: String, B: Tensor[Boolean] |: Tensor[Int] |: Tensor[Long], Bname: String)
+    : FS[(Tensor[Boolean])]
+
+}
+@free trait ConstantFS extends Operator with Constant {
+
+  def Constant1(name: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait BinarizerFS extends Operator with Binarizer {
+
+  def Binarizer1(name: String,X: Tensor[Float] |: Tensor[Double] |: Tensor[Long] |: Tensor[Int], Xname: String,threshold : Option[(Int)] = None)
+    : FS[(Tensor[Float] |: Tensor[Double] |: Tensor[Long] |: Tensor[Int])]
+
+}
+@free trait ReduceMinFS extends Operator with ReduceMin {
+
+  def ReduceMin1(name: String,data: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
+    : FS[(Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ArgMaxFS extends Operator with ArgMax {
+
+  def ArgMax1(name: String,data: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,axis : Option[(String)] = None,keepdims : Option[(String)] = None)
+    : FS[(Tensor[Long])]
+
+}
+@free trait LRNFS extends Operator with LRN {
+
+  def LRN1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None,bias : Option[(Int)] = None,size : (String))
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait GreaterFS extends Operator with Greater {
+
+  def Greater1(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
+    : FS[(Tensor[Boolean])]
+
+
+  def Greater7(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String)
+    : FS[(Tensor[Boolean])]
+
+}
+@free trait UnsqueezeFS extends Operator with Unsqueeze {
+
+  def Unsqueeze1(name: String,data: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean], dataname: String,axes : (Seq[String]))
+    : FS[(Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean])]
+
+}
+@free trait CategoryMapperFS extends Operator with CategoryMapper {
+
+  def CategoryMapper1(name: String,X: Tensor[String] |: Tensor[Long], Xname: String,cats_int64s : Option[(Seq[String])] = None,cats_strings : Option[(Seq[Tensor[_]])] = None,default_int64 : Option[(String)] = None,default_string : Option[(Tensor[_])] = None)
+    : FS[(Tensor[String] |: Tensor[Long])]
+
+}
+@free trait TreeEnsembleClassifierFS extends Operator with TreeEnsembleClassifier {
+
+  def TreeEnsembleClassifier1(name: String,X: Tensor[Float] |: Tensor[Double] |: Tensor[Long] |: Tensor[Int], Xname: String,base_values : Option[(Seq[Int])] = None,class_ids : Option[(Seq[String])] = None,class_nodeids : Option[(Seq[String])] = None,class_treeids : Option[(Seq[String])] = None,class_weights : Option[(Seq[Int])] = None,classlabels_int64s : Option[(Seq[String])] = None,classlabels_strings : Option[(Seq[Tensor[_]])] = None,nodes_falsenodeids : Option[(Seq[String])] = None,nodes_featureids : Option[(Seq[String])] = None,nodes_hitrates : Option[(Seq[Int])] = None,nodes_missing_value_tracks_true : Option[(Seq[String])] = None,nodes_modes : Option[(Seq[Tensor[_]])] = None,nodes_nodeids : Option[(Seq[String])] = None,nodes_treeids : Option[(Seq[String])] = None,nodes_truenodeids : Option[(Seq[String])] = None,nodes_values : Option[(Seq[Int])] = None,post_transform : Option[(Tensor[_])] = None)
+    : FS[(Tensor[String] |: Tensor[Long], Tensor[Float])]
+
+}
+@free trait RandomNormalLikeFS extends Operator with RandomNormalLike {
+
+  def RandomNormalLike1(name: String,input: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean], inputname: String,dtype : Option[(String)] = None,mean : Option[(Int)] = None,scaleAttr : Option[(Int)] = None,seed : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait SigmoidFS extends Operator with Sigmoid {
+
+  def Sigmoid1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Sigmoid6(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait LSTMFS extends Operator with LSTM {
+
+  def LSTM1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, W: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Wname: String, R: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Rname: String,B: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None, sequence_lens: Option[Tensor[Int]] = None, initial_h: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None, initial_c: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None, P: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None,activation_alpha : Option[(Seq[Int])] = None,activation_beta : Option[(Seq[Int])] = None,activations : Option[(Seq[Tensor[_]])] = None,clip : Option[(Int)] = None,direction : Option[(Tensor[_])] = None,hidden_size : Option[(String)] = None,input_forget : Option[(String)] = None,output_sequence : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def LSTM7(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, W: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Wname: String, R: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Rname: String,B: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None, sequence_lens: Option[Tensor[Int]] = None, initial_h: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None, initial_c: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None, P: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None,activation_alpha : Option[(Seq[Int])] = None,activation_beta : Option[(Seq[Int])] = None,activations : Option[(Seq[Tensor[_]])] = None,clip : Option[(Int)] = None,direction : Option[(Tensor[_])] = None,hidden_size : Option[(String)] = None,input_forget : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait MeanFS extends Operator with Mean {
+
+  def Mean1(name: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Mean6(name: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ScaledTanhFS extends Operator with ScaledTanh {
+
+  def ScaledTanh1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ReduceL1FS extends Operator with ReduceL1 {
+
+  def ReduceL11(name: String,data: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
+    : FS[(Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait AtanFS extends Operator with Atan {
+
+  def Atan7(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait LinearRegressorFS extends Operator with LinearRegressor {
+
+  def LinearRegressor1(name: String,X: Tensor[Float] |: Tensor[Double] |: Tensor[Long] |: Tensor[Int], Xname: String,coefficients : Option[(Seq[Int])] = None,intercepts : Option[(Seq[Int])] = None,post_transform : Option[(Tensor[_])] = None,targets : Option[(String)] = None)
+    : FS[(Tensor[Float])]
+
+}
+@free trait NotFS extends Operator with Not {
+
+  def Not1(name: String,X: Tensor[Boolean], Xname: String)
+    : FS[(Tensor[Boolean])]
+
+}
+@free trait LogFS extends Operator with Log {
+
+  def Log1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Log6(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ReluFS extends Operator with Relu {
+
+  def Relu1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Relu6(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait LoopIndexTensorFS extends Operator with LoopIndexTensor {
+
+  def LoopIndexTensor1(name: String,T: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean], Tname: String, loop_idx: Int, loop_idxname: String,axis : Option[(String)] = None)
+    : FS[(Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean])]
+
+}
+@free trait ReduceProdFS extends Operator with ReduceProd {
+
+  def ReduceProd1(name: String,data: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
+    : FS[(Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait GRUFS extends Operator with GRU {
+
+  def GRU1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, W: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Wname: String, R: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Rname: String,B: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None, sequence_lens: Option[Tensor[Int]] = None, initial_h: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None,activation_alpha : Option[(Seq[Int])] = None,activation_beta : Option[(Seq[Int])] = None,activations : Option[(Seq[Tensor[_]])] = None,clip : Option[(Int)] = None,direction : Option[(Tensor[_])] = None,hidden_size : Option[(String)] = None,output_sequence : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def GRU3(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, W: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Wname: String, R: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Rname: String,B: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None, sequence_lens: Option[Tensor[Int]] = None, initial_h: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None,activation_alpha : Option[(Seq[Int])] = None,activation_beta : Option[(Seq[Int])] = None,activations : Option[(Seq[Tensor[_]])] = None,clip : Option[(Int)] = None,direction : Option[(Tensor[_])] = None,hidden_size : Option[(String)] = None,linear_before_reset : Option[(String)] = None,output_sequence : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def GRU7(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, W: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Wname: String, R: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Rname: String,B: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None, sequence_lens: Option[Tensor[Int]] = None, initial_h: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None,activation_alpha : Option[(Seq[Int])] = None,activation_beta : Option[(Seq[Int])] = None,activations : Option[(Seq[Tensor[_]])] = None,clip : Option[(Int)] = None,direction : Option[(Tensor[_])] = None,hidden_size : Option[(String)] = None,linear_before_reset : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait LessFS extends Operator with Less {
+
+  def Less1(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
+    : FS[(Tensor[Boolean])]
+
+
+  def Less7(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String)
+    : FS[(Tensor[Boolean])]
+
+}
+@free trait MeanVarianceNormalizationFS extends Operator with MeanVarianceNormalization {
+
+  def MeanVarianceNormalization1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,across_channels : Option[(String)] = None,normalize_variance : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ConstantFillFS extends Operator with ConstantFill {
+
+  def ConstantFill1(name: String,input: Option[Tensor[Float] |: Tensor[Int] |: Tensor[Long] |: Tensor[Boolean]] = None,dtype : Option[(String)] = None,extra_shape : Option[(Seq[String])] = None,input_as_shape : Option[(String)] = None,shape : Option[(Seq[String])] = None,value : Option[(Int)] = None)
+    : FS[(Tensor[Float] |: Tensor[Int] |: Tensor[Long] |: Tensor[Boolean])]
+
+}
+@free trait SubFS extends Operator with Sub {
+
+  def Sub1(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Sub6(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Sub7(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ScaleFS extends Operator with Scale {
+
+  def Scale1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,scaleAttr : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait AddFS extends Operator with Add {
+
+  def Add1(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Add6(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Add7(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait RandomNormalFS extends Operator with RandomNormal {
+
+  def RandomNormal1(name: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait PadFS extends Operator with Pad {
+
+  def Pad1(name: String,data: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,mode : Option[(Tensor[_])] = None,paddings : (Seq[String]),value : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Pad2(name: String,data: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,mode : Option[(Tensor[_])] = None,pads : (Seq[String]),value : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ReduceL2FS extends Operator with ReduceL2 {
+
+  def ReduceL21(name: String,data: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
+    : FS[(Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait MinFS extends Operator with Min {
+
+  def Min1(name: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Min6(name: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait FloorFS extends Operator with Floor {
+
+  def Floor1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Floor6(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ShapeFS extends Operator with Shape {
+
+  def Shape1(name: String,data: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[UByte] |: Tensor[UShort] |: Tensor[Boolean], dataname: String)
+    : FS[(Tensor[Long])]
+
+}
+@free trait SliceFS extends Operator with Slice {
+
+  def Slice1(name: String,data: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,axes : Option[(Seq[String])] = None,ends : (Seq[String]),starts : (Seq[String]))
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait DepthToSpaceFS extends Operator with DepthToSpace {
+
+  def DepthToSpace1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,blocksize : (String))
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait PowFS extends Operator with Pow {
+
+  def Pow1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, Y: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Yname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Pow7(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, Y: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Yname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait DictVectorizerFS extends Operator with DictVectorizer {
+
+  def DictVectorizer1(name: String,X: Map[String, Long] |: Map[Long, String] |: Map[Long, Float] |: Map[Long, Double] |: Map[String, Float] |: Map[String, Double], Xname: String,int64_vocabulary : Option[(Seq[String])] = None,string_vocabulary : Option[(Seq[Tensor[_]])] = None)
+    : FS[(Tensor[Long] |: Tensor[Float] |: Tensor[Double] |: Tensor[String])]
+
+}
+@free trait ReduceLogSumFS extends Operator with ReduceLogSum {
+
+  def ReduceLogSum1(name: String,data: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,axes : Option[(Seq[String])] = None,keepdims : Option[(String)] = None)
+    : FS[(Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
 
 }
 @free trait XorFS extends Operator with Xor {
 
-  def Xor1[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
-    : FS[(T[VV])]
+  def Xor1(name: String,A: Tensor[Boolean], Aname: String, B: Tensor[Boolean], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
+    : FS[(Tensor[Boolean])]
 
 
-  def Xor7[VV : Numeric:ClassTag](name: String,A: T[VV], Aname: String, B: T[VV], Bname: String)
-    : FS[(T[VV])]
+  def Xor7(name: String,A: Tensor[Boolean], Aname: String, B: Tensor[Boolean], Bname: String)
+    : FS[(Tensor[Boolean])]
+
+}
+@free trait UpsampleFS extends Operator with Upsample {
+
+  def Upsample1(name: String,X: Tensor[Boolean] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean], Xname: String,height_scaleAttr : (Int),mode : Option[(Tensor[_])] = None,width_scaleAttr : (Int))
+    : FS[(Tensor[Boolean] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean])]
+
+
+  def Upsample7(name: String,X: Tensor[Boolean] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean], Xname: String,mode : Option[(Tensor[_])] = None,scaleAttrs : (Seq[Int]))
+    : FS[(Tensor[Boolean] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean])]
+
+}
+@free trait OneHotEncoderFS extends Operator with OneHotEncoder {
+
+  def OneHotEncoder1(name: String,X: Tensor[String] |: Tensor[Long] |: Tensor[Int] |: Tensor[Float] |: Tensor[Double], Xname: String,cats_int64s : Option[(Seq[String])] = None,cats_strings : Option[(Seq[Tensor[_]])] = None,zeros : Option[(String)] = None)
+    : FS[(Tensor[Float])]
+
+}
+@free trait GivenTensorFillFS extends Operator with GivenTensorFill {
+
+  def GivenTensorFill1(name: String,shapeInput: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None,extra_shape : Option[(Seq[String])] = None,input_as_shape : Option[(String)] = None,shape : Option[(Seq[String])] = None,values : Option[(Seq[Int])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait MatMulFS extends Operator with MatMul {
+
+  def MatMul1(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait MulFS extends Operator with Mul {
+
+  def Mul1(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Mul6(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String,axis : Option[(String)] = None,broadcast : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Mul7(name: String,A: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Aname: String, B: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Bname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ArgMinFS extends Operator with ArgMin {
+
+  def ArgMin1(name: String,data: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], dataname: String,axis : Option[(String)] = None,keepdims : Option[(String)] = None)
+    : FS[(Tensor[Long])]
+
+}
+@free trait SVMRegressorFS extends Operator with SVMRegressor {
+
+  def SVMRegressor1(name: String,X: Tensor[Float] |: Tensor[Double] |: Tensor[Long] |: Tensor[Int], Xname: String,coefficients : Option[(Seq[Int])] = None,kernel_params : Option[(Seq[Int])] = None,kernel_type : Option[(Tensor[_])] = None,n_supports : Option[(String)] = None,one_class : Option[(String)] = None,post_transform : Option[(Tensor[_])] = None,rho : Option[(Seq[Int])] = None,support_vectors : Option[(Seq[Int])] = None)
+    : FS[(Tensor[Float])]
+
+}
+@free trait MaxRoiPoolFS extends Operator with MaxRoiPool {
+
+  def MaxRoiPool1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, rois: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], roisname: String,pooled_shape : (Seq[String]),spatial_scaleAttr : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait ConvTransposeFS extends Operator with ConvTranspose {
+
+  def ConvTranspose1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, W: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Wname: String,B: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None,auto_pad : Option[(Tensor[_])] = None,dilations : Option[(Seq[String])] = None,group : Option[(String)] = None,kernel_shape : Option[(Seq[String])] = None,output_padding : Option[(Seq[String])] = None,output_shape : Option[(Seq[String])] = None,pads : Option[(Seq[String])] = None,strides : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait RandomUniformFS extends Operator with RandomUniform {
+
+  def RandomUniform1(name: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait LoopFS extends Operator with Loop {
+
+  def Loop1(name: String,M: Long, Mname: String, cond: Boolean, condname: String,body : (Seq[Float]))
+    : FS[(Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean])]
+
+}
+@free trait ConcatFS extends Operator with Concat {
+
+  def Concat1(name: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean])]
+
+
+  def Concat4(name: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[UByte] |: Tensor[UShort] |: Tensor[UInt] |: Tensor[ULong] |: Tensor[Byte] |: Tensor[Short] |: Tensor[Int] |: Tensor[Long] |: Tensor[Float16] |: Tensor[Float] |: Tensor[Double] |: Tensor[String] |: Tensor[Boolean])]
+
+}
+@free trait PReluFS extends Operator with PRelu {
+
+  def PRelu1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, slope: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], slopename: String,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def PRelu6(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, slope: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], slopename: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def PRelu7(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String, slope: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], slopename: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait LpPoolFS extends Operator with LpPool {
+
+  def LpPool1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,auto_pad : Option[(Tensor[_])] = None,kernel_shape : Option[(Seq[String])] = None,p : Option[(Int)] = None,pads : Option[(Seq[String])] = None,strides : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def LpPool2(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,auto_pad : Option[(Tensor[_])] = None,kernel_shape : (Seq[String]),p : Option[(String)] = None,pads : Option[(Seq[String])] = None,strides : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait AsinFS extends Operator with Asin {
+
+  def Asin7(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait AcosFS extends Operator with Acos {
+
+  def Acos7(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait SplitFS extends Operator with Split {
+
+  def Split1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,split: Option[Tensor[Float16] |: Tensor[Float] |: Tensor[Double]] = None,axis : Option[(String)] = None,splitAttr : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Split2(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,axis : Option[(String)] = None,splitAttr : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait MaxFS extends Operator with Max {
+
+  def Max1(name: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Max6(name: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait FlattenFS extends Operator with Flatten {
+
+  def Flatten1(name: String,input: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], inputname: String,axis : Option[(String)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait LinearClassifierFS extends Operator with LinearClassifier {
+
+  def LinearClassifier1(name: String,X: Tensor[Float] |: Tensor[Double] |: Tensor[Long] |: Tensor[Int], Xname: String,classlabels_ints : Option[(Seq[String])] = None,classlabels_strings : Option[(Seq[Tensor[_]])] = None,coefficients : (Seq[Int]),intercepts : Option[(Seq[Int])] = None,multi_class : Option[(String)] = None,post_transform : Option[(Tensor[_])] = None)
+    : FS[(Tensor[String] |: Tensor[Long], Tensor[Float])]
+
+}
+@free trait GlobalMaxPoolFS extends Operator with GlobalMaxPool {
+
+  def GlobalMaxPool1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait SeluFS extends Operator with Selu {
+
+  def Selu1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,alpha : Option[(Int)] = None,consumed_inputs : Option[(Seq[String])] = None,gamma : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Selu6(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,alpha : Option[(Int)] = None,gamma : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait EluFS extends Operator with Elu {
+
+  def Elu1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,alpha : Option[(Int)] = None,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def Elu6(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,alpha : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+}
+@free trait HardSigmoidFS extends Operator with HardSigmoid {
+
+  def HardSigmoid1(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None,consumed_inputs : Option[(Seq[String])] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
+
+
+  def HardSigmoid6(name: String,X: Tensor[Float16] |: Tensor[Float] |: Tensor[Double], Xname: String,alpha : Option[(Int)] = None,beta : Option[(Int)] = None)
+    : FS[(Tensor[Float16] |: Tensor[Float] |: Tensor[Double])]
 
 }}

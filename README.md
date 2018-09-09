@@ -10,7 +10,7 @@ Balancing the interests of minimal imposition of dependencies with stack-safe, p
 
 ONNX-Scala is cross-built against Scala JVM (for both Scala 2.12 and 2.13.0-M4) and Scala.js / JavaScript (for Scala 2.12).
 
-To take advantage of union types to express type constraints, a Dotty (Scala 3) build is available. The Dotty build does not support cats-free or JS variants.
+To take advantage of union types to express type constraints, a Dotty (Scala 3) build is available. The Dotty build does not support Scala.js.
 
 Freestyle has been replaced with cats-free due to A) not supporting rewriting of unboxed union types workaround for Scala 2.x and B) its dependency on the EOLed scalameta paradise compiler plugin.
 

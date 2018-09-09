@@ -68,8 +68,22 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform)
     name := "onnx-scala-free", 
     scalaVersion := scala212Version,
     publishArtifact in (Compile, packageDoc) := false,
-    addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full),
+//    addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full),
     libraryDependencies ++= Seq(
 //      "io.frees" %% "frees-core" % "0.8.2"
   )
+)
+
+lazy val freeDotty = (crossProject(JVMPlatform)
+    .crossType(CrossType.Pure) in file("freeDotty")).dependsOn(coreDotty)
+  .enablePlugins(dotty.tools.sbtplugin.DottyPlugin)
+  .settings( commonSettings,
+    name := "onnx-scala-free",
+    scalaVersion := dottyVersion,
+    publishArtifact in (Compile, packageDoc) := false,
+//    addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full),
+    libraryDependencies ++= Seq(
+//      "io.frees" %% "frees-core" % "0.8.2"
+  )
+
 )

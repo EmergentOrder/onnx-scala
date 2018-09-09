@@ -17,9 +17,9 @@ type | [+A1, +A2] = Either[A1, A2]
   type Tensor[U, J <: XInt] = Tuple2[Vector[U], Seq[J]]
   trait Operator
 trait DataSource {
-  def inputData[T <: Float16 | Float | Double :Numeric:ClassTag:Field, J <: XInt]: Tensor[T, J]
-  def getParams[T <: Float16 | Float | Double :Numeric:ClassTag:Field, J <: XInt](name: String): Tensor[T, J]
-  def getAttributes[T <: Float16 | Float | Double :Numeric:ClassTag:Field, J <: XInt](name: String): Tensor[T, J]
+  def inputData[T <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | Complex[Float] | Complex[Double]:Numeric:ClassTag:Field, J <: XInt]: Tensor[T, J]
+  def getParams[T <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | Complex[Float] | Complex[Double]:Numeric:ClassTag:Field, J <: XInt](name: String): Tensor[T, J]
+  def getAttributes[T <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | Complex[Float] | Complex[Double]:Numeric:ClassTag:Field, J <: XInt](name: String): Tensor[T, J]
 }
 trait LpPool extends Operator {
 

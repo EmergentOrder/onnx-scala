@@ -16,9 +16,9 @@ import singleton.ops._
 
 package onnx {
 @free trait DataSourceFS extends DataSource {
-  def inputData[T <: Float16 |: Float |: Double :Numeric:ClassTag:Field, J <: XInt]: FS[Tensor[T, J]]
-  def getParams[T <: Float16 |: Float |: Double :Numeric:ClassTag:Field, J <: XInt](name: String): FS[Tensor[T, J]]
-  def getAttributes[T <: Float16 |: Float |: Double :Numeric:ClassTag:Field, J <: XInt](name: String): FS[Tensor[T, J]]
+  def inputData[T <: Float16 |: Float |: Double |: Byte |: Short |: Int |: Long |: UByte |: UShort |: Complex[Float] |: Complex[Double]:Numeric:ClassTag:Field, J <: XInt]: FS[Tensor[T, J]]
+  def getParams[T <: Float16 |: Float |: Double |: Byte |: Short |: Int |: Long |: UByte |: UShort |: Complex[Float] |: Complex[Double]:Numeric:ClassTag:Field, J <: XInt](name: String): FS[Tensor[T, J]]
+  def getAttributes[T <: Float16 |: Float |: Double |: Byte |: Short |: Int |: Long |: UByte |: UShort |: Complex[Float] |: Complex[Double]:Numeric:ClassTag:Field, J <: XInt](name: String): FS[Tensor[T, J]]
 }
 @free trait ParametricSoftplusFS extends Operator with ParametricSoftplus {
 

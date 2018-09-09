@@ -1,5 +1,9 @@
 package org.emergentorder
 
+import cats.free.Free
+import cats.free.FreeApplicative
+import cats.effect.IO
+import scala.language.higherKinds
 import scala.{specialized => sp}
 import spire.math.UByte
 import spire.math.UShort
@@ -13,8 +17,11 @@ import scala.reflect.ClassTag
 import singleton.ops._
 
 package object onnx {
-type |: [+A1, +A2] = Either[A1, A2]
+type |:[+A1, +A2] = Either[A1, A2]
   type Tensor[U, J <: XInt] = Tuple2[Vector[U], Seq[J]]
+type F[B] = IO[B]
+type Par[F[_], A] = FreeApplicative[F, A]
+final type FS[A] = Par[F, A]
   trait Operator
 trait DataSource {
   def inputData[T <: Float16 |: Float |: Double |: Byte |: Short |: Int |: Long |: UByte |: UShort |: Complex[Float] |: Complex[Double]:Numeric:ClassTag:Field, J <: XInt]: Tensor[T, J]

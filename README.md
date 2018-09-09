@@ -6,13 +6,13 @@ ONNX-Scala will also be home to A) a program generator, capable of translating .
 
 All together, these should enable model inspection and modification, extra compile-time assurances, mixing/matching of backend operator implementations and integration into JVM-based production systems, for a start.
 
-Balancing the interests of minimal imposition of dependencies with stack-safe, purely functional programming, ONNX-Scala comes in two flavors: Vanilla and Freestyle-infused.
+Balancing the interests of minimal imposition of dependencies with stack-safe, purely functional programming, ONNX-Scala comes in two flavors: Vanilla and cats-free-infused.
 
 ONNX-Scala is cross-built against Scala JVM (for both Scala 2.12 and 2.13.0-M4) and Scala.js / JavaScript (for Scala 2.12).
 
-To take advantage of union types to express type constraints, a Dotty (Scala 3) build is available. The Dotty build does not support Freestyle or JS variants.
+To take advantage of union types to express type constraints, a Dotty (Scala 3) build is available. The Dotty build does not support cats-free or JS variants.
 
-Freestyle is likely to be replaced here soon with cats-free due to A) not supporting rewriting of unboxed union types workaround for Scala 2.x and B) its dependency on the EOLed scalameta paradise compiler plugin.
+Freestyle has been replaced with cats-free due to A) not supporting rewriting of unboxed union types workaround for Scala 2.x and B) its dependency on the EOLed scalameta paradise compiler plugin.
 
 Currently at ONNX 1.2.2.
 
@@ -34,7 +34,7 @@ libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala" % "1.2.2-0.1.0-S
 or 
 
 ```scala
-libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala-freestyle" % "1.2.2-0.1.0-SNAPSHOT"
+libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala-free" % "1.2.2-0.1.0-SNAPSHOT"
 ``` 
 
 or

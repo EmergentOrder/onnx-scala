@@ -29,14 +29,21 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .settings(commonSettings,
     name := "onnx-scala",
     scalaVersion := scala212Version,
-    libraryDependencies ++= Seq("eu.timepit" %%% "singleton-ops" % "0.3.0")
+    libraryDependencies ++= Seq("eu.timepit" %%% "singleton-ops" % "0.3.0",
+    )
     )
     .jvmSettings(
       crossScalaVersions := Seq(scala212Version, scala213Version),
-      libraryDependencies ++= Seq("org.typelevel" % "spire_2.12" % "0.16.0")
+      libraryDependencies ++= Seq("org.typelevel" % "spire_2.12" % "0.16.0",
+        "org.typelevel" % "cats-free_2.12" % "1.3.1",
+        "org.typelevel" % "cats-effect_2.12" % "1.0.0"
+      )
     )
     .jsSettings(
-      libraryDependencies ++= Seq("org.typelevel" %%% "spire" % "0.16.0")
+      libraryDependencies ++= Seq("org.typelevel" %%% "spire" % "0.16.0",
+        "org.typelevel" %%% "cats-free" % "1.3.1",
+        "org.typelevel" %%% "cats-effect" % "1.0.0"
+      )
     )
 
 lazy val coreDotty = (crossProject(JVMPlatform)
@@ -48,19 +55,21 @@ lazy val coreDotty = (crossProject(JVMPlatform)
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2") else Nil },
     libraryDependencies ++= Seq(
       ("org.typelevel" %% "spire" % "0.16.0").withDottyCompat(dottyVersion),
-      ("eu.timepit" %% "singleton-ops" % "0.3.0").withDottyCompat(dottyVersion)
+      ("eu.timepit" %% "singleton-ops" % "0.3.0").withDottyCompat(dottyVersion),
+      ("org.typelevel" %% "cats-free" % "1.3.1").withDottyCompat(dottyVersion),
+      ("org.typelevel" %% "cats-effect" % "1.0.0").withDottyCompat(dottyVersion)
     )
 )
 
-lazy val freestyle = (crossProject(JSPlatform, JVMPlatform)
-    .crossType(CrossType.Pure) in file("freestyle")).dependsOn(core)
+lazy val free = (crossProject(JSPlatform, JVMPlatform)
+    .crossType(CrossType.Pure) in file("free")).dependsOn(core)
   .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
   .settings( commonSettings,
-    name := "onnx-scala-freestyle", 
+    name := "onnx-scala-free", 
     scalaVersion := scala212Version,
     publishArtifact in (Compile, packageDoc) := false,
     addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full),
     libraryDependencies ++= Seq(
-      "io.frees" %% "frees-core" % "0.8.2"
+//      "io.frees" %% "frees-core" % "0.8.2"
   )
 )

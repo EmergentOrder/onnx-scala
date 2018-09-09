@@ -28,7 +28,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .settings(commonSettings,
     name := "onnx-scala",
     scalaVersion := scala212Version,
-    libraryDependencies += "org.typelevel" %%% "spire" % "0.16.0"
+    libraryDependencies ++= Seq("org.typelevel" %%% "spire" % "0.16.0",  "eu.timepit" %%% "singleton-ops" % "0.3.0")
     )
 
 lazy val coreDotty = (crossProject(JVMPlatform)
@@ -40,6 +40,8 @@ lazy val coreDotty = (crossProject(JVMPlatform)
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2") else Nil },
     libraryDependencies ++= Seq(
       ("org.typelevel" %% "spire" % "0.16.0").withDottyCompat(dottyVersion),
+      ("eu.timepit" %% "singleton-ops" % "0.3.0").withDottyCompat(dottyVersion)
+
     )
 )
 

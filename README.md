@@ -8,7 +8,7 @@ All together, these should enable model inspection and modification, extra compi
 
 Balancing the interests of minimal imposition of dependencies with stack-safe, purely functional programming, ONNX-Scala comes in two flavors: Vanilla and Freestyle-infused.
 
-ONNX-Scala is cross-built against Scala.js / JavaScript.
+ONNX-Scala is cross-built against Scala JVM (for both Scala 2.12 and 2.13.0-M4) and Scala.js / JavaScript (for Scala 2.12).
 
 To take advantage of union types to express type constraints, a Dotty (Scala 3) build is available. The Dotty build does not support Freestyle or JS variants.
 
@@ -22,7 +22,7 @@ Currently at ONNX 1.2.2.
 You'll need sbt.
 
 ```
-sbt compile package publishLocal
+sbt +publishLocal
 ```
 
 Then you can add this to your project's build.sbt 

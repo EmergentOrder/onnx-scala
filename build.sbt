@@ -43,7 +43,7 @@ lazy val coreDotty = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure)).in(file("coreDotty")).dependsOn(common)
   .enablePlugins(dotty.tools.sbtplugin.DottyPlugin)
   .settings( commonSettings,
-    name := "onnx-scala-dotty",
+    name := "onnx-scala",
     scalaVersion := dottyVersion,
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2") else Nil },
     libraryDependencies ++= Seq(

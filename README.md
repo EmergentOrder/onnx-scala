@@ -37,13 +37,6 @@ or
 libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala-free" % "1.2.2-0.1.0-SNAPSHOT"
 ``` 
 
-or
-
-
-```scala
-libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala-dotty" % "1.2.2-0.1.0-SNAPSHOT"
-```
-
 and build away with the traits provided. Backend implementation (and other) PRs welcome!
 
 ### Built With

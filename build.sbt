@@ -1,5 +1,6 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 val dottyVersion = "0.9.0-RC1"
+val scala211Version = "2.11.12"
 val scala212Version = "2.12.6"
 val scala213Version = "2.13.0-M4"
 
@@ -13,7 +14,7 @@ lazy val commonSettings = Seq(
 //  wartremoverExcluded += baseDirectory.value / "core" / "src" / "main" / "scala" / "Float16.scala"
 )
 
-lazy val common = (crossProject(JSPlatform, JVMPlatform)
+lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     .crossType(CrossType.Pure) in file("common"))
   .settings( commonSettings,
     name := "onnx-scala-common"
@@ -21,28 +22,39 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform)
   .jvmSettings(
     crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version)
   )
+  .nativeSettings(
+    scalaVersion := scala211Version
+  )
 
 lazy val commonJS     = common.js.disablePlugins(dotty.tools.sbtplugin.DottyPlugin).disablePlugins(dotty.tools.sbtplugin.DottyIDEPlugin)
 
-lazy val core = (crossProject(JSPlatform, JVMPlatform)
+lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     .crossType(CrossType.Pure) in file("core")).dependsOn(common)
   .settings(commonSettings,
     name := "onnx-scala",
     scalaVersion := scala212Version,
-    libraryDependencies ++= Seq("eu.timepit" %%% "singleton-ops" % "0.3.0",
-    )
     )
     .jvmSettings(
       crossScalaVersions := Seq(scala212Version, scala213Version),
       libraryDependencies ++= Seq("org.typelevel" % "spire_2.12" % "0.16.0",
         "org.typelevel" % "cats-free_2.12" % "1.3.1",
-        "org.typelevel" % "cats-effect_2.12" % "1.0.0"
+        "org.typelevel" % "cats-effect_2.12" % "1.0.0",
+        "eu.timepit" %% "singleton-ops" % "0.3.0"
       )
     )
     .jsSettings(
       libraryDependencies ++= Seq("org.typelevel" %%% "spire" % "0.16.0",
         "org.typelevel" %%% "cats-free" % "1.3.1",
-        "org.typelevel" %%% "cats-effect" % "1.0.0"
+        "org.typelevel" %%% "cats-effect" % "1.0.0",
+        "eu.timepit" %%% "singleton-ops" % "0.3.0"
+      )
+    )
+    .nativeSettings(
+      scalaVersion := scala211Version,
+      libraryDependencies ++= Seq("org.typelevel" %% "spire" % "0.16.0",
+        "org.typelevel" %% "cats-free" % "1.3.1",
+        "org.typelevel" %% "cats-effect" % "1.0.0",
+        "eu.timepit" %% "singleton-ops" % "0.3.0"
       )
     )
 
@@ -61,7 +73,7 @@ lazy val coreDotty = (crossProject(JVMPlatform)
     )
 )
 
-lazy val free = (crossProject(JSPlatform, JVMPlatform)
+lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     .crossType(CrossType.Pure) in file("free")).dependsOn(core)
   .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
   .settings( commonSettings,
@@ -71,8 +83,11 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform)
 //    addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full),
     libraryDependencies ++= Seq(
 //      "io.frees" %% "frees-core" % "0.8.2"
+    )
   )
-)
+  .nativeSettings(
+    scalaVersion := scala211Version
+  )
 
 lazy val freeDotty = (crossProject(JVMPlatform)
     .crossType(CrossType.Pure) in file("freeDotty")).dependsOn(coreDotty)

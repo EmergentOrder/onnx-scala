@@ -8,7 +8,7 @@ All together, these should enable model inspection and modification, extra compi
 
 Balancing the interests of minimal imposition of dependencies with stack-safe, purely functional programming, ONNX-Scala comes in two flavors: Vanilla and cats-free-infused.
 
-ONNX-Scala is cross-built against Scala JVM (for both Scala 2.12 and 2.13.0-M4) and Scala.js / JavaScript (for Scala 2.12).
+ONNX-Scala is cross-built against Scala JVM (for both Scala 2.12 and 2.13.0-M4) , Scala.js / JavaScript (for Scala 2.12) and Scala Native (for Scala 2.11).
 
 To take advantage of union types to express type constraints, a Dotty (Scala 3) build is available. The Dotty build does not support Scala.js.
 

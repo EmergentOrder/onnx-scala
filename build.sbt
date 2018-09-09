@@ -1,6 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 val dottyVersion = "0.9.0-RC1"
 val scala212Version = "2.12.6"
+val scala213Version = "2.13.0-M4"
 
 lazy val commonSettings = Seq(
 
@@ -18,7 +19,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform)
     name := "onnx-scala-common"
   )
   .jvmSettings(
-    crossScalaVersions := Seq(dottyVersion, scala212Version)
+    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version)
   )
 
 lazy val commonJS     = common.js.disablePlugins(dotty.tools.sbtplugin.DottyPlugin).disablePlugins(dotty.tools.sbtplugin.DottyIDEPlugin)
@@ -28,7 +29,14 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .settings(commonSettings,
     name := "onnx-scala",
     scalaVersion := scala212Version,
-    libraryDependencies ++= Seq("org.typelevel" %%% "spire" % "0.16.0",  "eu.timepit" %%% "singleton-ops" % "0.3.0")
+    libraryDependencies ++= Seq("eu.timepit" %%% "singleton-ops" % "0.3.0")
+    )
+    .jvmSettings(
+      crossScalaVersions := Seq(scala212Version, scala213Version),
+      libraryDependencies ++= Seq("org.typelevel" % "spire_2.12" % "0.16.0")
+    )
+    .jsSettings(
+      libraryDependencies ++= Seq("org.typelevel" %%% "spire" % "0.16.0")
     )
 
 lazy val coreDotty = (crossProject(JVMPlatform)
@@ -41,7 +49,6 @@ lazy val coreDotty = (crossProject(JVMPlatform)
     libraryDependencies ++= Seq(
       ("org.typelevel" %% "spire" % "0.16.0").withDottyCompat(dottyVersion),
       ("eu.timepit" %% "singleton-ops" % "0.3.0").withDottyCompat(dottyVersion)
-
     )
 )
 

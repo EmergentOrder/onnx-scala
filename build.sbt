@@ -20,7 +20,10 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     name := "onnx-scala-common"
   )
   .jvmSettings(
-    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version)
+    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version)
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(scala212Version, scala211Version)
   )
   .nativeSettings(
     scalaVersion := scala211Version
@@ -35,7 +38,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     scalaVersion := scala212Version,
     )
     .jvmSettings(
-      crossScalaVersions := Seq(scala212Version, scala213Version),
+      crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version),
       libraryDependencies ++= Seq("org.typelevel" % "spire_2.12" % "0.16.0",
         "org.typelevel" % "cats-free_2.12" % "1.3.1",
         "org.typelevel" % "cats-effect_2.12" % "1.0.0",
@@ -43,6 +46,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
       )
     )
     .jsSettings(
+      crossScalaVersions := Seq(scala212Version, scala211Version),
       libraryDependencies ++= Seq("org.typelevel" %%% "spire" % "0.16.0",
         "org.typelevel" %%% "cats-free" % "1.3.1",
         "org.typelevel" %%% "cats-effect" % "1.0.0",
@@ -84,6 +88,12 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     libraryDependencies ++= Seq(
 //      "io.frees" %% "frees-core" % "0.8.2"
     )
+  )
+  .jvmSettings(
+    crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(scala212Version, scala211Version)
   )
   .nativeSettings(
     scalaVersion := scala211Version

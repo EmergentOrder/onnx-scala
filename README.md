@@ -41,8 +41,12 @@ and build away with the traits provided. Backend implementation (and other) PRs 
 
 ### Built With
 
-Spire - Typelevel project enabling generic numeric programming (For support for unsigned ints, complex numbers, the Numeric type class and type specialization to avoid boxing overhead) <br/>
-Dotty - A next-generation compiler that will become Scala 3 (For native union types, used here to express ONNX type constraints) <br/>
-Singleton-ops - Operations for primitive and String singleton types (For compile-time dimension checking) <br/>
-Cats-effect - standard IO type together with Sync, Async and Effect type classes (Or your effect type here) <br/>
-Cats-free - Free structures such as the free monad, and supporting type classes (for the free variant)
+* Spire - Typelevel project enabling generic numeric programming (For support for unsigned ints, complex numbers, the Numeric type class and type specialization to avoid boxing overhead)
+
+* Dotty - A next-generation compiler that will become Scala 3 (For native union types, used here to express ONNX type constraints)
+
+* Singleton-ops - Operations for primitive and String singleton types (For compile-time dimension checking)
+
+* Cats-effect - standard IO type together with Sync, Async and Effect type classes (Or your effect type here)
+
+* Cats-free - Free structures such as the free monad, and supporting type classes (for the free variant)

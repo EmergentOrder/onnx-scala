@@ -19,9 +19,6 @@ import singleton.ops._
 package object onnx {
 type |:[+A1, +A2] = Either[A1, A2]
   type Tensor[U, J <: XInt] = Tuple2[Seq[U], Seq[J]]
-type F[B] = IO[B]
-type Par[F[_], A] = FreeApplicative[F, A]
-final type FS[A] = Par[F, A]
   trait Operator
 trait Graph
 trait DataSource {

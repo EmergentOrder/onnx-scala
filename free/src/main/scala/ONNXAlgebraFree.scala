@@ -14,9 +14,13 @@ import spire.math.Numeric
 import spire.implicits._
 import spire.algebra.Field
 import scala.reflect.ClassTag
+import onnx._
 import singleton.ops._
 
-package onnx {
+package object onnxFree {
+type F[B] = IO[B]
+final type FS[A] = FreeS[F, A]
+type FreeS[F[_], A] = Free[FreeApplicative[F, ?], A]
 
     import UnionType._
      trait DataSourceFree extends DataSource {

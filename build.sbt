@@ -35,7 +35,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     .crossType(CrossType.Pure) in file("core")).dependsOn(common)
   .settings(commonSettings,
     name := "onnx-scala",
-    scalaVersion := scala212Version,
+    scalaVersion := scala212Version
     )
     .jvmSettings(
       crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version),
@@ -84,6 +84,8 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     name := "onnx-scala-free", 
     scalaVersion := scala212Version,
     publishArtifact in (Compile, packageDoc) := false,
+    addCompilerPlugin("org.spire-math" % "kind-projector" % "0.9.7" cross CrossVersion.binary),
+ 
 //    addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full),
     libraryDependencies ++= Seq(
 //      "io.frees" %% "frees-core" % "0.8.2"

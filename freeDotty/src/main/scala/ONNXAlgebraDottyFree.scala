@@ -14,9 +14,13 @@ import spire.math.Numeric
 import spire.implicits._
 import spire.algebra.Field
 import scala.reflect.ClassTag
+import onnx._
 import singleton.ops._
 
-package onnx {
+package object onnxFree {
+type F[B] = IO[B]
+final type FS[A] = FreeS[F, A]
+type FreeS[F[_], A] = Free[[B] => FreeApplicative[F, B], A]
  trait DataSourceFree extends DataSource {
   def inputDataFree[T <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | UInt | ULong | Complex[Float] | Complex[Double]:Numeric:ClassTag:Field, J <: XInt]: FS[Tensor[T, J]]
   def getParamsFree[T <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | UInt | ULong | Complex[Float] | Complex[Double]:Numeric:ClassTag:Field, J <: XInt](name: String): FS[Tensor[T, J]]

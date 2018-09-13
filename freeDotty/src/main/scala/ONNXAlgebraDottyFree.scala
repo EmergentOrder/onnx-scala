@@ -38,6 +38,18 @@ trait InstanceNormalizationFree extends Operator with InstanceNormalization {
     : FS[(Tensor[T, J])]
 
 }
+trait RandomNormalLikeFree extends Operator with RandomNormalLike {
+
+  def RandomNormalLike1Free[T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field,T2 <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T1, J], inputname: String,dtype : Option[(Int)] = None,mean : Option[(Float)] = None,scaleAttr : Option[(Float)] = None,seed : Option[(Float)] = None)
+    : FS[(Tensor[T2, J])]
+
+}
+trait NormalizerFree extends Operator with Normalizer {
+
+  def Normalizer1Free[T <: Float | Double | Long | Int : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,norm : Option[(String)] = None)
+    : FS[(Tensor[Float, J])]
+
+}
 trait LRNFree extends Operator with LRN {
 
   def LRN1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,bias : Option[(Float)] = None,size : (Int))
@@ -48,6 +60,12 @@ trait ReduceL1Free extends Operator with ReduceL1 {
 
   def ReduceL11Free[T <: UInt | ULong | Int | Long | Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None,keepdims : Option[(Int)] = None)
     : FS[(Tensor[T, J])]
+
+}
+trait SizeFree extends Operator with Size {
+
+  def Size1Free[T <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | Boolean : Numeric:ClassTag:Field,T1 <: Long : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String)
+    : FS[(Tensor[T1, J])]
 
 }
 trait ConstantFillFree extends Operator with ConstantFill {
@@ -75,12 +93,6 @@ trait LpPoolFree extends Operator with LpPool {
 trait ReduceSumSquareFree extends Operator with ReduceSumSquare {
 
   def ReduceSumSquare1Free[T <: UInt | ULong | Int | Long | Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None,keepdims : Option[(Int)] = None)
-    : FS[(Tensor[T, J])]
-
-}
-trait UnsqueezeFree extends Operator with Unsqueeze {
-
-  def Unsqueeze1Free[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : (Seq[Int]))
     : FS[(Tensor[T, J])]
 
 }
@@ -114,14 +126,16 @@ trait AtanFree extends Operator with Atan {
     : FS[(Tensor[T, J])]
 
 }
-trait ConcatFree extends Operator with Concat {
+trait CategoryMapperFree extends Operator with CategoryMapper {
 
-  def Concat1Free[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : FS[(Tensor[T, J])]
+  def CategoryMapper1Free[T1 <: String | Long : Numeric:ClassTag:Field,T2 <: String | Long : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T1, J], Xname: String,cats_int64s : Option[(Seq[Int])] = None,cats_strings : Option[(Seq[String])] = None,default_int64 : Option[(Int)] = None,default_string : Option[(String)] = None)
+    : FS[(Tensor[T2, J])]
 
+}
+trait OneHotEncoderFree extends Operator with OneHotEncoder {
 
-  def Concat4Free[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : FS[(Tensor[T, J])]
+  def OneHotEncoder1Free[T <: String | Long | Int | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,cats_int64s : Option[(Seq[Int])] = None,cats_strings : Option[(Seq[String])] = None,zeros : Option[(Int)] = None)
+    : FS[(Tensor[Float, J])]
 
 }
 trait LogFree extends Operator with Log {
@@ -182,6 +196,12 @@ trait ConvFree extends Operator with Conv {
     : FS[(Tensor[T, J])]
 
 }
+trait LoopFree extends Operator with Loop {
+
+  def Loop1Free[I <: Long : Numeric:ClassTag:Field,B <: Boolean : Numeric:ClassTag:Field,V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,M: I, Mname: String, cond: B, condname: String,body : (Graph))
+    : FS[(Tensor[V, J])]
+
+}
 trait AveragePoolFree extends Operator with AveragePool {
 
   def AveragePool1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,auto_pad : Option[(String)] = None,kernel_shape : (Seq[Int]),pads : Option[(Seq[Int])] = None,strides : Option[(Seq[Int])] = None)
@@ -192,22 +212,10 @@ trait AveragePoolFree extends Operator with AveragePool {
     : FS[(Tensor[T, J])]
 
 }
-trait ExpandFree extends Operator with Expand {
+trait LabelEncoderFree extends Operator with LabelEncoder {
 
-  def Expand8Free[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String, shape: Tensor[Long, J], shapename: String)
-    : FS[(Tensor[T, J])]
-
-}
-trait GatherFree extends Operator with Gather {
-
-  def Gather1Free[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field,Tind <: Int | Long : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String, indices: Tensor[Tind, J], indicesname: String,axis : Option[(Int)] = None)
-    : FS[(Tensor[T, J])]
-
-}
-trait SpaceToDepthFree extends Operator with SpaceToDepth {
-
-  def SpaceToDepth1Free[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,blocksize : (Int))
-    : FS[(Tensor[T, J])]
+  def LabelEncoder1Free[T1 <: String | Long : Numeric:ClassTag:Field,T2 <: String | Long : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T1, J], Xname: String,classes_strings : Option[(Seq[String])] = None,default_int64 : Option[(Int)] = None,default_string : Option[(String)] = None)
+    : FS[(Tensor[T2, J])]
 
 }
 trait RNNFree extends Operator with RNN {
@@ -220,16 +228,14 @@ trait RNNFree extends Operator with RNN {
     : FS[(Tensor[T, J], Tensor[T, J])]
 
 }
-trait SliceFree extends Operator with Slice {
+trait MaxFree extends Operator with Max {
 
-  def Slice1Free[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None,ends : (Seq[Int]),starts : (Seq[Int]))
+  def Max1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
     : FS[(Tensor[T, J])]
 
-}
-trait IfFree extends Operator with If {
 
-  def If1Free[B <: Boolean : Numeric:ClassTag:Field,V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,cond: Tensor[B, J], condname: String,else_branch : (Graph),then_branch : (Graph))
-    : FS[(Tensor[V, J])]
+  def Max6Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : FS[(Tensor[T, J])]
 
 }
 trait SoftplusFree extends Operator with Softplus {
@@ -242,6 +248,12 @@ trait SoftmaxFree extends Operator with Softmax {
 
   def Softmax1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,axis : Option[(Int)] = None)
     : FS[(Tensor[T, J])]
+
+}
+trait DictVectorizerFree extends Operator with DictVectorizer {
+
+  def DictVectorizer1Free[T1 <: Map[String, Long] | Map[Long, String] | Map[Long, Float] | Map[Long, Double] | Map[String, Float] | Map[String, Double] : Numeric:ClassTag:Field,T2 <: Long | Float | Double | String : Numeric:ClassTag:Field, J <: XInt](name: String,X: T1, Xname: String,int64_vocabulary : Option[(Seq[Int])] = None,string_vocabulary : Option[(Seq[String])] = None)
+    : FS[(Tensor[T2, J])]
 
 }
 trait SinFree extends Operator with Sin {
@@ -260,6 +272,16 @@ trait PadFree extends Operator with Pad {
     : FS[(Tensor[T, J])]
 
 }
+trait MinFree extends Operator with Min {
+
+  def Min1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : FS[(Tensor[T, J])]
+
+
+  def Min6Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : FS[(Tensor[T, J])]
+
+}
 trait ClipFree extends Operator with Clip {
 
   def Clip1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,consumed_inputs : Option[(Seq[Int])] = None,max : Option[(Float)] = None,min : Option[(Float)] = None)
@@ -268,6 +290,12 @@ trait ClipFree extends Operator with Clip {
 
   def Clip6Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,max : Option[(Float)] = None,min : Option[(Float)] = None)
     : FS[(Tensor[T, J])]
+
+}
+trait CastMapFree extends Operator with CastMap {
+
+  def CastMap1Free[T1 <: Map[Long, String] | Map[Long, Float] : Numeric:ClassTag:Field,T2 <: String | Float | Long : Numeric:ClassTag:Field, J <: XInt](name: String,X: T1, Xname: String,cast_to : Option[(String)] = None,map_form : Option[(String)] = None,max_map : Option[(Int)] = None)
+    : FS[(Tensor[T2, J])]
 
 }
 trait GivenTensorFillFree extends Operator with GivenTensorFill {
@@ -304,20 +332,16 @@ trait BatchNormalizationFree extends Operator with BatchNormalization {
     : FS[(Tensor[T, J], Tensor[T, J], Tensor[T, J], Tensor[T, J], Tensor[T, J])]
 
 }
-trait DepthToSpaceFree extends Operator with DepthToSpace {
+trait UnsqueezeFree extends Operator with Unsqueeze {
 
-  def DepthToSpace1Free[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,blocksize : (Int))
+  def Unsqueeze1Free[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : (Seq[Int]))
     : FS[(Tensor[T, J])]
 
 }
-trait MaxPoolFree extends Operator with MaxPool {
+trait LinearRegressorFree extends Operator with LinearRegressor {
 
-  def MaxPool1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,auto_pad : Option[(String)] = None,kernel_shape : (Seq[Int]),pads : Option[(Seq[Int])] = None,strides : Option[(Seq[Int])] = None)
-    : FS[(Tensor[T, J])]
-
-
-  def MaxPool8Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field,I <: Long : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,auto_pad : Option[(String)] = None,kernel_shape : (Seq[Int]),pads : Option[(Seq[Int])] = None,storage_order : Option[(Int)] = None,strides : Option[(Seq[Int])] = None)
-    : FS[(Tensor[T, J], Tensor[I, J])]
+  def LinearRegressor1Free[T <: Float | Double | Long | Int : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,coefficients : Option[(Seq[Float])] = None,intercepts : Option[(Seq[Float])] = None,post_transform : Option[(String)] = None,targets : Option[(Int)] = None)
+    : FS[(Tensor[Float, J])]
 
 }
 trait HardmaxFree extends Operator with Hardmax {
@@ -339,16 +363,6 @@ trait TanhFree extends Operator with Tanh {
 trait MaxRoiPoolFree extends Operator with MaxRoiPool {
 
   def MaxRoiPool1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String, rois: Tensor[T, J], roisname: String,pooled_shape : (Seq[Int]),spatial_scaleAttr : Option[(Float)] = None)
-    : FS[(Tensor[T, J])]
-
-}
-trait TileFree extends Operator with Tile {
-
-  def Tile1Free[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String, tiles: Tensor[T, J], tilesname: String, axis: Tensor[T, J], axisname: String)
-    : FS[(Tensor[T, J])]
-
-
-  def Tile6Free[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field,T1 <: Long : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String, repeats: Tensor[T1, J], repeatsname: String)
     : FS[(Tensor[T, J])]
 
 }
@@ -374,9 +388,15 @@ trait ReduceL2Free extends Operator with ReduceL2 {
     : FS[(Tensor[T, J])]
 
 }
-trait IdentityFree extends Operator with Identity {
+trait TreeEnsembleClassifierFree extends Operator with TreeEnsembleClassifier {
 
-  def Identity1Free[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String)
+  def TreeEnsembleClassifier1Free[T1 <: Float | Double | Long | Int : Numeric:ClassTag:Field,T2 <: String | Long : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T1, J], Xname: String,base_values : Option[(Seq[Float])] = None,class_ids : Option[(Seq[Int])] = None,class_nodeids : Option[(Seq[Int])] = None,class_treeids : Option[(Seq[Int])] = None,class_weights : Option[(Seq[Float])] = None,classlabels_int64s : Option[(Seq[Int])] = None,classlabels_strings : Option[(Seq[String])] = None,nodes_falsenodeids : Option[(Seq[Int])] = None,nodes_featureids : Option[(Seq[Int])] = None,nodes_hitrates : Option[(Seq[Float])] = None,nodes_missing_value_tracks_true : Option[(Seq[Int])] = None,nodes_modes : Option[(Seq[String])] = None,nodes_nodeids : Option[(Seq[Int])] = None,nodes_treeids : Option[(Seq[Int])] = None,nodes_truenodeids : Option[(Seq[Int])] = None,nodes_values : Option[(Seq[Float])] = None,post_transform : Option[(String)] = None)
+    : FS[(Tensor[T2, J], Tensor[Float, J])]
+
+}
+trait MaxPoolFree extends Operator with MaxPool {
+
+  def MaxPool1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,auto_pad : Option[(String)] = None,kernel_shape : (Seq[Int]),pads : Option[(Seq[Int])] = None,strides : Option[(Seq[Int])] = None)
     : FS[(Tensor[T, J])]
 
 }
@@ -418,6 +438,28 @@ trait ConvTransposeFree extends Operator with ConvTranspose {
     : FS[(Tensor[T, J])]
 
 }
+trait ConcatFree extends Operator with Concat {
+
+  def Concat1Free[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : FS[(Tensor[T, J])]
+
+
+  def Concat4Free[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : FS[(Tensor[T, J])]
+
+}
+trait GatherFree extends Operator with Gather {
+
+  def Gather1Free[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field,Tind <: Int | Long : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String, indices: Tensor[Tind, J], indicesname: String,axis : Option[(Int)] = None)
+    : FS[(Tensor[T, J])]
+
+}
+trait ImputerFree extends Operator with Imputer {
+
+  def Imputer1Free[T <: Float | Double | Long | Int : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,imputed_value_floats : Option[(Seq[Float])] = None,imputed_value_int64s : Option[(Seq[Int])] = None,replaced_value_float : Option[(Float)] = None,replaced_value_int64 : Option[(Int)] = None)
+    : FS[(Tensor[T, J])]
+
+}
 trait MulFree extends Operator with Mul {
 
   def Mul1Free[T <: Float16 | Float | Double | UInt | ULong | Int | Long | Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,A: Tensor[T, J], Aname: String, B: Tensor[T, J], Bname: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,consumed_inputs : Option[(Seq[Int])] = None)
@@ -456,15 +498,43 @@ trait ReduceProdFree extends Operator with ReduceProd {
     : FS[(Tensor[T, J])]
 
 }
+trait LinearClassifierFree extends Operator with LinearClassifier {
+
+  def LinearClassifier1Free[T1 <: Float | Double | Long | Int : Numeric:ClassTag:Field,T2 <: String | Long : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T1, J], Xname: String,classlabels_ints : Option[(Seq[Int])] = None,classlabels_strings : Option[(Seq[String])] = None,coefficients : (Seq[Float]),intercepts : Option[(Seq[Float])] = None,multi_class : Option[(Int)] = None,post_transform : Option[(String)] = None)
+    : FS[(Tensor[T2, J], Tensor[Float, J])]
+
+}
 trait AsinFree extends Operator with Asin {
 
   def Asin7Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String)
     : FS[(Tensor[T, J])]
 
 }
+trait ScalerFree extends Operator with Scaler {
+
+  def Scaler1Free[T <: Float | Double | Long | Int : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,offset : Option[(Seq[Float])] = None,scaleAttr : Option[(Seq[Float])] = None)
+    : FS[(Tensor[Float, J])]
+
+}
 trait ScaledTanhFree extends Operator with ScaledTanh {
 
   def ScaledTanh1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None)
+    : FS[(Tensor[T, J])]
+
+}
+trait BinarizerFree extends Operator with Binarizer {
+
+  def Binarizer1Free[T <: Float | Double | Long | Int : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,threshold : Option[(Float)] = None)
+    : FS[(Tensor[T, J])]
+
+}
+trait TileFree extends Operator with Tile {
+
+  def Tile1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String, tiles: Tensor[T, J], tilesname: String, axis: Tensor[T, J], axisname: String)
+    : FS[(Tensor[T, J])]
+
+
+  def Tile6Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field,T1 <: Long : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String, repeats: Tensor[T1, J], repeatsname: String)
     : FS[(Tensor[T, J])]
 
 }
@@ -490,6 +560,12 @@ trait FlattenFree extends Operator with Flatten {
     : FS[(Tensor[T, J])]
 
 }
+trait SVMClassifierFree extends Operator with SVMClassifier {
+
+  def SVMClassifier1Free[T1 <: Float | Double | Long | Int : Numeric:ClassTag:Field,T2 <: String | Long : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T1, J], Xname: String,classlabels_ints : Option[(Seq[Int])] = None,classlabels_strings : Option[(Seq[String])] = None,coefficients : Option[(Seq[Float])] = None,kernel_params : Option[(Seq[Float])] = None,kernel_type : Option[(String)] = None,post_transform : Option[(String)] = None,prob_a : Option[(Seq[Float])] = None,prob_b : Option[(Seq[Float])] = None,rho : Option[(Seq[Float])] = None,support_vectors : Option[(Seq[Float])] = None,vectors_per_class : Option[(Seq[Int])] = None)
+    : FS[(Tensor[T2, J], Tensor[Float, J])]
+
+}
 trait AndFree extends Operator with And {
 
   def And1Free[T <: Boolean : Numeric:ClassTag:Field,T1 <: Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,A: Tensor[T, J], Aname: String, B: Tensor[T, J], Bname: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None)
@@ -497,12 +573,6 @@ trait AndFree extends Operator with And {
 
 
   def And7Free[T <: Boolean : Numeric:ClassTag:Field,T1 <: Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,A: Tensor[T, J], Aname: String, B: Tensor[T, J], Bname: String)
-    : FS[(Tensor[T1, J])]
-
-}
-trait ShapeFree extends Operator with Shape {
-
-  def Shape1Free[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field,T1 <: Long : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String)
     : FS[(Tensor[T1, J])]
 
 }
@@ -516,13 +586,9 @@ trait SeluFree extends Operator with Selu {
     : FS[(Tensor[T, J])]
 
 }
-trait ReshapeFree extends Operator with Reshape {
+trait IdentityFree extends Operator with Identity {
 
-  def Reshape1Free[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,consumed_inputs : Option[(Seq[Int])] = None,shape : Option[(Seq[Int])] = None)
-    : FS[(Tensor[T, J])]
-
-
-  def Reshape5Free[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String, shape: Tensor[Long, J], shapename: String)
+  def Identity1Free[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String)
     : FS[(Tensor[T, J])]
 
 }
@@ -536,33 +602,27 @@ trait OrFree extends Operator with Or {
     : FS[(Tensor[T1, J])]
 
 }
-trait MeanFree extends Operator with Mean {
+trait DepthToSpaceFree extends Operator with DepthToSpace {
 
-  def Mean1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : FS[(Tensor[T, J])]
-
-
-  def Mean6Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : FS[(Tensor[T, J])]
-
-
-  def Mean8Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : FS[(Tensor[T, J])]
-
-}
-trait UpsampleFree extends Operator with Upsample {
-
-  def Upsample1Free[T <: Boolean | Int | Long | Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,height_scaleAttr : (Float),mode : Option[(String)] = None,width_scaleAttr : (Float))
-    : FS[(Tensor[T, J])]
-
-
-  def Upsample7Free[T <: Boolean | Int | Long | Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,mode : Option[(String)] = None,scaleAttrs : (Seq[Float]))
+  def DepthToSpace1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,blocksize : (Int))
     : FS[(Tensor[T, J])]
 
 }
 trait ImageScalerFree extends Operator with ImageScaler {
 
   def ImageScaler1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,bias : Option[(Seq[Float])] = None,scaleAttr : Option[(Float)] = None)
+    : FS[(Tensor[T, J])]
+
+}
+trait ZipMapFree extends Operator with ZipMap {
+
+  def ZipMap1Free[T <: Seq[Map[String, Float]] | Seq[Map[Long, Float]] : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[Float, J], Xname: String,classlabels_int64s : Option[(Seq[Int])] = None,classlabels_strings : Option[(Seq[String])] = None)
+    : FS[(T)]
+
+}
+trait LoopIndexTensorFree extends Operator with LoopIndexTensor {
+
+  def LoopIndexTensor1Free[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field,I <: Int : Numeric:ClassTag:Field, J <: XInt](name: String,T: Tensor[T, J], Tname: String, loop_idx: I, loop_idxname: String,axis : Option[(Int)] = None)
     : FS[(Tensor[T, J])]
 
 }
@@ -576,16 +636,6 @@ trait GlobalLpPoolFree extends Operator with GlobalLpPool {
     : FS[(Tensor[T, J])]
 
 }
-trait SplitFree extends Operator with Split {
-
-  def Split1Free[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,split: Option[Tensor[T, J]] = None,axis : Option[(Int)] = None,splitAttr : Option[(Seq[Int])] = None)
-    : FS[(Tensor[T, J])]
-
-
-  def Split2Free[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,axis : Option[(Int)] = None,splitAttr : Option[(Seq[Int])] = None)
-    : FS[(Tensor[T, J])]
-
-}
 trait CeilFree extends Operator with Ceil {
 
   def Ceil1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,consumed_inputs : Option[(Seq[Int])] = None)
@@ -593,6 +643,12 @@ trait CeilFree extends Operator with Ceil {
 
 
   def Ceil6Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String)
+    : FS[(Tensor[T, J])]
+
+}
+trait TransposeFree extends Operator with Transpose {
+
+  def Transpose1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,perm : Option[(Seq[Int])] = None)
     : FS[(Tensor[T, J])]
 
 }
@@ -612,10 +668,26 @@ trait SigmoidFree extends Operator with Sigmoid {
     : FS[(Tensor[T, J])]
 
 }
+trait UpsampleFree extends Operator with Upsample {
+
+  def Upsample1Free[T <: Boolean | Int | Long | Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,height_scaleAttr : (Float),mode : Option[(String)] = None,width_scaleAttr : (Float))
+    : FS[(Tensor[T, J])]
+
+
+  def Upsample7Free[T <: Boolean | Int | Long | Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,mode : Option[(String)] = None,scaleAttrs : (Seq[Float]))
+    : FS[(Tensor[T, J])]
+
+}
 trait TanFree extends Operator with Tan {
 
   def Tan7Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String)
     : FS[(Tensor[T, J])]
+
+}
+trait SVMRegressorFree extends Operator with SVMRegressor {
+
+  def SVMRegressor1Free[T <: Float | Double | Long | Int : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,coefficients : Option[(Seq[Float])] = None,kernel_params : Option[(Seq[Float])] = None,kernel_type : Option[(String)] = None,n_supports : Option[(Int)] = None,one_class : Option[(Int)] = None,post_transform : Option[(String)] = None,rho : Option[(Seq[Float])] = None,support_vectors : Option[(Seq[Float])] = None)
+    : FS[(Tensor[Float, J])]
 
 }
 trait LeakyReluFree extends Operator with LeakyRelu {
@@ -625,6 +697,12 @@ trait LeakyReluFree extends Operator with LeakyRelu {
 
 
   def LeakyRelu6Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,alpha : Option[(Float)] = None)
+    : FS[(Tensor[T, J])]
+
+}
+trait SqueezeFree extends Operator with Squeeze {
+
+  def Squeeze1Free[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : (Seq[Int]))
     : FS[(Tensor[T, J])]
 
 }
@@ -644,12 +722,6 @@ trait ExpFree extends Operator with Exp {
     : FS[(Tensor[T, J])]
 
 }
-trait SqueezeFree extends Operator with Squeeze {
-
-  def Squeeze1Free[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None)
-    : FS[(Tensor[T, J])]
-
-}
 trait PReluFree extends Operator with PRelu {
 
   def PRelu1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String, slope: Tensor[T, J], slopename: String,consumed_inputs : Option[(Seq[Int])] = None)
@@ -661,6 +733,16 @@ trait PReluFree extends Operator with PRelu {
 
 
   def PRelu7Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String, slope: Tensor[T, J], slopename: String)
+    : FS[(Tensor[T, J])]
+
+}
+trait ReshapeFree extends Operator with Reshape {
+
+  def Reshape1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,consumed_inputs : Option[(Seq[Int])] = None,shape : Option[(Seq[Int])] = None)
+    : FS[(Tensor[T, J])]
+
+
+  def Reshape5Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String, shape: Tensor[Long, J], shapename: String)
     : FS[(Tensor[T, J])]
 
 }
@@ -702,6 +784,12 @@ trait PowFree extends Operator with Pow {
 
   def Pow7Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String, Y: Tensor[T, J], Yname: String)
     : FS[(Tensor[T, J])]
+
+}
+trait ShapeFree extends Operator with Shape {
+
+  def Shape1Free[T <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | Boolean : Numeric:ClassTag:Field,T1 <: Long : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String)
+    : FS[(Tensor[T1, J])]
 
 }
 trait DivFree extends Operator with Div {
@@ -754,20 +842,6 @@ trait AcosFree extends Operator with Acos {
     : FS[(Tensor[T, J])]
 
 }
-trait SumFree extends Operator with Sum {
-
-  def Sum1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : FS[(Tensor[T, J])]
-
-
-  def Sum6Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : FS[(Tensor[T, J])]
-
-
-  def Sum8Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : FS[(Tensor[T, J])]
-
-}
 trait SqrtFree extends Operator with Sqrt {
 
   def Sqrt1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,consumed_inputs : Option[(Seq[Int])] = None)
@@ -784,10 +858,20 @@ trait CropFree extends Operator with Crop {
     : FS[(Tensor[T, J])]
 
 }
-trait RandomUniformLikeFree extends Operator with RandomUniformLike {
+trait SplitFree extends Operator with Split {
 
-  def RandomUniformLike1Free[T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field,T2 <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T1, J], inputname: String,dtype : Option[(Int)] = None,high : Option[(Float)] = None,low : Option[(Float)] = None,seed : Option[(Float)] = None)
-    : FS[(Tensor[T2, J])]
+  def Split1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,split: Option[Tensor[T, J]] = None,axis : Option[(Int)] = None,splitAttr : Option[(Seq[Int])] = None)
+    : FS[(Tensor[T, J])]
+
+
+  def Split2Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,axis : Option[(Int)] = None,splitAttr : Option[(Seq[Int])] = None)
+    : FS[(Tensor[T, J])]
+
+}
+trait SpaceToDepthFree extends Operator with SpaceToDepth {
+
+  def SpaceToDepth1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,blocksize : (Int))
+    : FS[(Tensor[T, J])]
 
 }
 trait ReciprocalFree extends Operator with Reciprocal {
@@ -797,26 +881,6 @@ trait ReciprocalFree extends Operator with Reciprocal {
 
 
   def Reciprocal6Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String)
-    : FS[(Tensor[T, J])]
-
-}
-trait SizeFree extends Operator with Size {
-
-  def Size1Free[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field,T1 <: Long : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String)
-    : FS[(Tensor[T1, J])]
-
-}
-trait MaxFree extends Operator with Max {
-
-  def Max1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : FS[(Tensor[T, J])]
-
-
-  def Max6Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : FS[(Tensor[T, J])]
-
-
-  def Max8Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
     : FS[(Tensor[T, J])]
 
 }
@@ -840,35 +904,25 @@ trait AddFree extends Operator with Add {
     : FS[(Tensor[T, J])]
 
 }
+trait SumFree extends Operator with Sum {
+
+  def Sum1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : FS[(Tensor[T, J])]
+
+
+  def Sum6Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : FS[(Tensor[T, J])]
+
+}
 trait NotFree extends Operator with Not {
 
   def Not1Free[T <: Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String)
     : FS[(Tensor[T, J])]
 
 }
-trait RandomNormalLikeFree extends Operator with RandomNormalLike {
-
-  def RandomNormalLike1Free[T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field,T2 <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T1, J], inputname: String,dtype : Option[(Int)] = None,mean : Option[(Float)] = None,scaleAttr : Option[(Float)] = None,seed : Option[(Float)] = None)
-    : FS[(Tensor[T2, J])]
-
-}
 trait MatMulFree extends Operator with MatMul {
 
   def MatMul1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,A: Tensor[T, J], Aname: String, B: Tensor[T, J], Bname: String)
-    : FS[(Tensor[T, J])]
-
-}
-trait MinFree extends Operator with Min {
-
-  def Min1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : FS[(Tensor[T, J])]
-
-
-  def Min6Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : FS[(Tensor[T, J])]
-
-
-  def Min8Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
     : FS[(Tensor[T, J])]
 
 }
@@ -884,22 +938,16 @@ trait ScaleFree extends Operator with Scale {
     : FS[(Tensor[T, J])]
 
 }
-trait LoopFree extends Operator with Loop {
-
-  def Loop1Free[I <: Long : Numeric:ClassTag:Field,B <: Boolean : Numeric:ClassTag:Field,V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,M: I, Mname: String, cond: B, condname: String,body : (Graph))
-    : FS[(Tensor[V, J])]
-
-}
 trait SoftsignFree extends Operator with Softsign {
 
   def Softsign1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String)
     : FS[(Tensor[T, J])]
 
 }
-trait TransposeFree extends Operator with Transpose {
+trait FeatureVectorizerFree extends Operator with FeatureVectorizer {
 
-  def Transpose1Free[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,perm : Option[(Seq[Int])] = None)
-    : FS[(Tensor[T, J])]
+  def FeatureVectorizer1Free[J <:XInt](name: String)
+    : FS[(Tensor[Float, J])]
 
 }
 trait GreaterFree extends Operator with Greater {
@@ -918,9 +966,15 @@ trait ParametricSoftplusFree extends Operator with ParametricSoftplus {
     : FS[(Tensor[T, J])]
 
 }
-trait ScanFree extends Operator with Scan {
+trait SliceFree extends Operator with Slice {
 
-  def Scan8Free[I <: Long : Numeric:ClassTag:Field,V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,sequence_lens: Option[Tensor[I, J]] = None,body : (Graph),directions : Option[(Seq[Int])] = None,num_scan_inputs : (Int))
+  def Slice1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None,ends : (Seq[Int]),starts : (Seq[Int]))
+    : FS[(Tensor[T, J])]
+
+}
+trait IfFree extends Operator with If {
+
+  def If1Free[B <: Boolean : Numeric:ClassTag:Field,V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,cond: Tensor[B, J], condname: String,else_branch : (Graph),then_branch : (Graph))
     : FS[(Tensor[V, J])]
 
 }
@@ -937,6 +991,28 @@ trait AbsFree extends Operator with Abs {
 trait GlobalAveragePoolFree extends Operator with GlobalAveragePool {
 
   def GlobalAveragePool1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String)
+    : FS[(Tensor[T, J])]
+
+}
+trait MeanFree extends Operator with Mean {
+
+  def Mean1Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : FS[(Tensor[T, J])]
+
+
+  def Mean6Free[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : FS[(Tensor[T, J])]
+
+}
+trait TreeEnsembleRegressorFree extends Operator with TreeEnsembleRegressor {
+
+  def TreeEnsembleRegressor1Free[T <: Float | Double | Long | Int : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,aggregate_function : Option[(String)] = None,base_values : Option[(Seq[Float])] = None,n_targets : Option[(Int)] = None,nodes_falsenodeids : Option[(Seq[Int])] = None,nodes_featureids : Option[(Seq[Int])] = None,nodes_hitrates : Option[(Seq[Float])] = None,nodes_missing_value_tracks_true : Option[(Seq[Int])] = None,nodes_modes : Option[(Seq[String])] = None,nodes_nodeids : Option[(Seq[Int])] = None,nodes_treeids : Option[(Seq[Int])] = None,nodes_truenodeids : Option[(Seq[Int])] = None,nodes_values : Option[(Seq[Float])] = None,post_transform : Option[(String)] = None,target_ids : Option[(Seq[Int])] = None,target_nodeids : Option[(Seq[Int])] = None,target_treeids : Option[(Seq[Int])] = None,target_weights : Option[(Seq[Float])] = None)
+    : FS[(Tensor[Float, J])]
+
+}
+trait ArrayFeatureExtractorFree extends Operator with ArrayFeatureExtractor {
+
+  def ArrayFeatureExtractor1Free[T <: Float | Double | Long | Int | String : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String, Y: Tensor[Long, J], Yname: String)
     : FS[(Tensor[T, J])]
 
 }
@@ -962,5 +1038,11 @@ trait ReduceMinFree extends Operator with ReduceMin {
 
   def ReduceMin1Free[T <: UInt | ULong | Int | Long | Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None,keepdims : Option[(Int)] = None)
     : FS[(Tensor[T, J])]
+
+}
+trait RandomUniformLikeFree extends Operator with RandomUniformLike {
+
+  def RandomUniformLike1Free[T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field,T2 <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T1, J], inputname: String,dtype : Option[(Int)] = None,high : Option[(Float)] = None,low : Option[(Float)] = None,seed : Option[(Float)] = None)
+    : FS[(Tensor[T2, J])]
 
 }}

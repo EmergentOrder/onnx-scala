@@ -18,7 +18,7 @@ import singleton.ops._
 
 package object onnx {
 type |:[+A1, +A2] = Either[A1, A2]
-  type Tensor[U, J <: XInt] = Tuple2[Vector[U], Seq[J]]
+  type Tensor[U, J <: XInt] = Tuple2[Seq[U], Seq[J]]
 type F[B] = IO[B]
 type Par[F[_], A] = FreeApplicative[F, A]
 final type FS[A] = Par[F, A]
@@ -29,14 +29,16 @@ trait DataSource {
   def getParams[T <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | UInt | ULong | Complex[Float] | Complex[Double]:Numeric:ClassTag:Field, J <: XInt](name: String): Tensor[T, J]
   def getAttributes[T <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | UInt | ULong | Complex[Float] | Complex[Double]:Numeric:ClassTag:Field, J <: XInt](name: String): Tensor[T, J]
 }
-trait Split extends Operator {
+trait ArrayFeatureExtractor extends Operator {
 
-  def Split1[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,split: Option[Tensor[T, J]] = None,axis : Option[(Int)] = None,splitAttr : Option[(Seq[Int])] = None)
+  def ArrayFeatureExtractor1[T <: Float | Double | Long | Int | String : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String, Y: Tensor[Long, J], Yname: String)
     : (Tensor[T, J])
 
+}
+trait TreeEnsembleRegressor extends Operator {
 
-  def Split2[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,axis : Option[(Int)] = None,splitAttr : Option[(Seq[Int])] = None)
-    : (Tensor[T, J])
+  def TreeEnsembleRegressor1[T <: Float | Double | Long | Int : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,aggregate_function : Option[(String)] = None,base_values : Option[(Seq[Float])] = None,n_targets : Option[(Int)] = None,nodes_falsenodeids : Option[(Seq[Int])] = None,nodes_featureids : Option[(Seq[Int])] = None,nodes_hitrates : Option[(Seq[Float])] = None,nodes_missing_value_tracks_true : Option[(Seq[Int])] = None,nodes_modes : Option[(Seq[String])] = None,nodes_nodeids : Option[(Seq[Int])] = None,nodes_treeids : Option[(Seq[Int])] = None,nodes_truenodeids : Option[(Seq[Int])] = None,nodes_values : Option[(Seq[Float])] = None,post_transform : Option[(String)] = None,target_ids : Option[(Seq[Int])] = None,target_nodeids : Option[(Seq[Int])] = None,target_treeids : Option[(Seq[Int])] = None,target_weights : Option[(Seq[Float])] = None)
+    : (Tensor[Float, J])
 
 }
 trait Tan extends Operator {
@@ -45,14 +47,20 @@ trait Tan extends Operator {
     : (Tensor[T, J])
 
 }
-trait MaxPool extends Operator {
+trait Max extends Operator {
 
-  def MaxPool1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,auto_pad : Option[(String)] = None,kernel_shape : (Seq[Int]),pads : Option[(Seq[Int])] = None,strides : Option[(Seq[Int])] = None)
+  def Max1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
     : (Tensor[T, J])
 
 
-  def MaxPool8[T <: Float16 | Float | Double : Numeric:ClassTag:Field,I <: Long : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,auto_pad : Option[(String)] = None,kernel_shape : (Seq[Int]),pads : Option[(Seq[Int])] = None,storage_order : Option[(Int)] = None,strides : Option[(Seq[Int])] = None)
-    : (Tensor[T, J], Tensor[I, J])
+  def Max6[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : (Tensor[T, J])
+
+}
+trait TreeEnsembleClassifier extends Operator {
+
+  def TreeEnsembleClassifier1[T1 <: Float | Double | Long | Int : Numeric:ClassTag:Field,T2 <: String | Long : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T1, J], Xname: String,base_values : Option[(Seq[Float])] = None,class_ids : Option[(Seq[Int])] = None,class_nodeids : Option[(Seq[Int])] = None,class_treeids : Option[(Seq[Int])] = None,class_weights : Option[(Seq[Float])] = None,classlabels_int64s : Option[(Seq[Int])] = None,classlabels_strings : Option[(Seq[String])] = None,nodes_falsenodeids : Option[(Seq[Int])] = None,nodes_featureids : Option[(Seq[Int])] = None,nodes_hitrates : Option[(Seq[Float])] = None,nodes_missing_value_tracks_true : Option[(Seq[Int])] = None,nodes_modes : Option[(Seq[String])] = None,nodes_nodeids : Option[(Seq[Int])] = None,nodes_treeids : Option[(Seq[Int])] = None,nodes_truenodeids : Option[(Seq[Int])] = None,nodes_values : Option[(Seq[Float])] = None,post_transform : Option[(String)] = None)
+    : (Tensor[T2, J], Tensor[Float, J])
 
 }
 trait ReduceLogSumExp extends Operator {
@@ -87,31 +95,27 @@ trait Dropout extends Operator {
     : (Tensor[T, J], Tensor[T, J])
 
 }
-trait Size extends Operator {
-
-  def Size1[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field,T1 <: Long : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String)
-    : (Tensor[T1, J])
-
-}
 trait ReduceProd extends Operator {
 
   def ReduceProd1[T <: UInt | ULong | Int | Long | Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None,keepdims : Option[(Int)] = None)
     : (Tensor[T, J])
 
 }
+trait Loop extends Operator {
+
+  def Loop1[I <: Long : Numeric:ClassTag:Field,B <: Boolean : Numeric:ClassTag:Field,V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,M: I, Mname: String, cond: B, condname: String,body : (Graph))
+    : (Tensor[V, J])
+
+}
+trait SVMClassifier extends Operator {
+
+  def SVMClassifier1[T1 <: Float | Double | Long | Int : Numeric:ClassTag:Field,T2 <: String | Long : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T1, J], Xname: String,classlabels_ints : Option[(Seq[Int])] = None,classlabels_strings : Option[(Seq[String])] = None,coefficients : Option[(Seq[Float])] = None,kernel_params : Option[(Seq[Float])] = None,kernel_type : Option[(String)] = None,post_transform : Option[(String)] = None,prob_a : Option[(Seq[Float])] = None,prob_b : Option[(Seq[Float])] = None,rho : Option[(Seq[Float])] = None,support_vectors : Option[(Seq[Float])] = None,vectors_per_class : Option[(Seq[Int])] = None)
+    : (Tensor[T2, J], Tensor[Float, J])
+
+}
 trait LogSoftmax extends Operator {
 
   def LogSoftmax1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,axis : Option[(Int)] = None)
-    : (Tensor[T, J])
-
-}
-trait Concat extends Operator {
-
-  def Concat1[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-
-  def Concat4[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String)
     : (Tensor[T, J])
 
 }
@@ -125,17 +129,9 @@ trait Sqrt extends Operator {
     : (Tensor[T, J])
 
 }
-trait Mean extends Operator {
+trait Gather extends Operator {
 
-  def Mean1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-
-  def Mean6[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-
-  def Mean8[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
+  def Gather1[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field,Tind <: Int | Long : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String, indices: Tensor[Tind, J], indicesname: String,axis : Option[(Int)] = None)
     : (Tensor[T, J])
 
 }
@@ -143,6 +139,12 @@ trait ParametricSoftplus extends Operator {
 
   def ParametricSoftplus1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None)
     : (Tensor[T, J])
+
+}
+trait RandomUniformLike extends Operator {
+
+  def RandomUniformLike1[T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field,T2 <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T1, J], inputname: String,dtype : Option[(Int)] = None,high : Option[(Float)] = None,low : Option[(Float)] = None,seed : Option[(Float)] = None)
+    : (Tensor[T2, J])
 
 }
 trait Sub extends Operator {
@@ -159,10 +161,16 @@ trait Sub extends Operator {
     : (Tensor[T, J])
 
 }
-trait Transpose extends Operator {
+trait Slice extends Operator {
 
-  def Transpose1[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,perm : Option[(Seq[Int])] = None)
+  def Slice1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None,ends : (Seq[Int]),starts : (Seq[Int]))
     : (Tensor[T, J])
+
+}
+trait Scaler extends Operator {
+
+  def Scaler1[T <: Float | Double | Long | Int : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,offset : Option[(Seq[Float])] = None,scaleAttr : Option[(Seq[Float])] = None)
+    : (Tensor[Float, J])
 
 }
 trait LeakyRelu extends Operator {
@@ -181,6 +189,12 @@ trait ImageScaler extends Operator {
     : (Tensor[T, J])
 
 }
+trait CategoryMapper extends Operator {
+
+  def CategoryMapper1[T1 <: String | Long : Numeric:ClassTag:Field,T2 <: String | Long : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T1, J], Xname: String,cats_int64s : Option[(Seq[Int])] = None,cats_strings : Option[(Seq[String])] = None,default_int64 : Option[(Int)] = None,default_string : Option[(String)] = None)
+    : (Tensor[T2, J])
+
+}
 trait And extends Operator {
 
   def And1[T <: Boolean : Numeric:ClassTag:Field,T1 <: Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,A: Tensor[T, J], Aname: String, B: Tensor[T, J], Bname: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None)
@@ -191,9 +205,45 @@ trait And extends Operator {
     : (Tensor[T1, J])
 
 }
-trait DepthToSpace extends Operator {
+trait Mean extends Operator {
 
-  def DepthToSpace1[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,blocksize : (Int))
+  def Mean1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : (Tensor[T, J])
+
+
+  def Mean6[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : (Tensor[T, J])
+
+}
+trait Imputer extends Operator {
+
+  def Imputer1[T <: Float | Double | Long | Int : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,imputed_value_floats : Option[(Seq[Float])] = None,imputed_value_int64s : Option[(Seq[Int])] = None,replaced_value_float : Option[(Float)] = None,replaced_value_int64 : Option[(Int)] = None)
+    : (Tensor[T, J])
+
+}
+trait Upsample extends Operator {
+
+  def Upsample1[T <: Boolean | Int | Long | Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,height_scaleAttr : (Float),mode : Option[(String)] = None,width_scaleAttr : (Float))
+    : (Tensor[T, J])
+
+
+  def Upsample7[T <: Boolean | Int | Long | Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,mode : Option[(String)] = None,scaleAttrs : (Seq[Float]))
+    : (Tensor[T, J])
+
+}
+trait Size extends Operator {
+
+  def Size1[T <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | Boolean : Numeric:ClassTag:Field,T1 <: Long : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String)
+    : (Tensor[T1, J])
+
+}
+trait Sum extends Operator {
+
+  def Sum1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : (Tensor[T, J])
+
+
+  def Sum6[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
     : (Tensor[T, J])
 
 }
@@ -227,6 +277,12 @@ trait Ceil extends Operator {
     : (Tensor[T, J])
 
 }
+trait DepthToSpace extends Operator {
+
+  def DepthToSpace1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,blocksize : (Int))
+    : (Tensor[T, J])
+
+}
 trait HardSigmoid extends Operator {
 
   def HardSigmoid1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,consumed_inputs : Option[(Seq[Int])] = None)
@@ -234,12 +290,6 @@ trait HardSigmoid extends Operator {
 
 
   def HardSigmoid6[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None)
-    : (Tensor[T, J])
-
-}
-trait Squeeze extends Operator {
-
-  def Squeeze1[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None)
     : (Tensor[T, J])
 
 }
@@ -255,6 +305,12 @@ trait RandomUniform extends Operator {
     : (Tensor[T, J])
 
 }
+trait FeatureVectorizer extends Operator {
+
+  def FeatureVectorizer1[J <:XInt](name: String)
+    : (Tensor[Float, J])
+
+}
 trait Cast extends Operator {
 
   def Cast1[T1 <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | UInt | ULong | Boolean : Numeric:ClassTag:Field,T2 <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | UInt | ULong | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T1, J], inputname: String,to : (String))
@@ -263,16 +319,6 @@ trait Cast extends Operator {
 
   def Cast6[T1 <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | UInt | ULong | Boolean : Numeric:ClassTag:Field,T2 <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | UInt | ULong | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T1, J], inputname: String,to : (Int))
     : (Tensor[T2, J])
-
-}
-trait Upsample extends Operator {
-
-  def Upsample1[T <: Boolean | Int | Long | Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,height_scaleAttr : (Float),mode : Option[(String)] = None,width_scaleAttr : (Float))
-    : (Tensor[T, J])
-
-
-  def Upsample7[T <: Boolean | Int | Long | Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,mode : Option[(String)] = None,scaleAttrs : (Seq[Float]))
-    : (Tensor[T, J])
 
 }
 trait MeanVarianceNormalization extends Operator {
@@ -303,16 +349,6 @@ trait ConvTranspose extends Operator {
     : (Tensor[T, J])
 
 }
-trait Reshape extends Operator {
-
-  def Reshape1[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,consumed_inputs : Option[(Seq[Int])] = None,shape : Option[(Seq[Int])] = None)
-    : (Tensor[T, J])
-
-
-  def Reshape5[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String, shape: Tensor[Long, J], shapename: String)
-    : (Tensor[T, J])
-
-}
 trait BatchNormalization extends Operator {
 
   def BatchNormalization1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String, scale: Tensor[T, J], scalename: String, B: Tensor[T, J], Bname: String, mean: Tensor[T, J], meanname: String, someVar: Tensor[T, J], varname: String,consumed_inputs : (Seq[Int]),epsilon : Option[(Float)] = None,is_test : Option[(Int)] = None,momentum : Option[(Float)] = None,spatial : Option[(Int)] = None)
@@ -327,18 +363,6 @@ trait BatchNormalization extends Operator {
     : (Tensor[T, J], Tensor[T, J], Tensor[T, J], Tensor[T, J], Tensor[T, J])
 
 }
-trait Shape extends Operator {
-
-  def Shape1[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field,T1 <: Long : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String)
-    : (Tensor[T1, J])
-
-}
-trait Scan extends Operator {
-
-  def Scan8[I <: Long : Numeric:ClassTag:Field,V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,sequence_lens: Option[Tensor[I, J]] = None,body : (Graph),directions : Option[(Seq[Int])] = None,num_scan_inputs : (Int))
-    : (Tensor[V, J])
-
-}
 trait Or extends Operator {
 
   def Or1[T <: Boolean : Numeric:ClassTag:Field,T1 <: Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,A: Tensor[T, J], Aname: String, B: Tensor[T, J], Bname: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None)
@@ -347,6 +371,16 @@ trait Or extends Operator {
 
   def Or7[T <: Boolean : Numeric:ClassTag:Field,T1 <: Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,A: Tensor[T, J], Aname: String, B: Tensor[T, J], Bname: String)
     : (Tensor[T1, J])
+
+}
+trait Split extends Operator {
+
+  def Split1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,split: Option[Tensor[T, J]] = None,axis : Option[(Int)] = None,splitAttr : Option[(Seq[Int])] = None)
+    : (Tensor[T, J])
+
+
+  def Split2[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,axis : Option[(Int)] = None,splitAttr : Option[(Seq[Int])] = None)
+    : (Tensor[T, J])
 
 }
 trait Pow extends Operator {
@@ -373,23 +407,9 @@ trait Gemm extends Operator {
     : (Tensor[T, J])
 
 }
-trait Min extends Operator {
+trait LoopIndexTensor extends Operator {
 
-  def Min1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-
-  def Min6[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-
-  def Min8[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-}
-trait Expand extends Operator {
-
-  def Expand8[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String, shape: Tensor[Long, J], shapename: String)
+  def LoopIndexTensor1[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field,I <: Int : Numeric:ClassTag:Field, J <: XInt](name: String,T: Tensor[T, J], Tname: String, loop_idx: I, loop_idxname: String,axis : Option[(Int)] = None)
     : (Tensor[T, J])
 
 }
@@ -421,15 +441,9 @@ trait Softplus extends Operator {
     : (Tensor[T, J])
 
 }
-trait RandomNormalLike extends Operator {
+trait Unsqueeze extends Operator {
 
-  def RandomNormalLike1[T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field,T2 <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T1, J], inputname: String,dtype : Option[(Int)] = None,mean : Option[(Float)] = None,scaleAttr : Option[(Float)] = None,seed : Option[(Float)] = None)
-    : (Tensor[T2, J])
-
-}
-trait Gather extends Operator {
-
-  def Gather1[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field,Tind <: Int | Long : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String, indices: Tensor[Tind, J], indicesname: String,axis : Option[(Int)] = None)
+  def Unsqueeze1[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : (Seq[Int]))
     : (Tensor[T, J])
 
 }
@@ -463,12 +477,6 @@ trait LSTM extends Operator {
 
   def LSTM7[T <: Float16 | Float | Double : Numeric:ClassTag:Field,T1 <: Int : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String, W: Tensor[T, J], Wname: String, R: Tensor[T, J], Rname: String,B: Option[Tensor[T, J]] = None, sequence_lens: Option[Tensor[T1, J]] = None, initial_h: Option[Tensor[T, J]] = None, initial_c: Option[Tensor[T, J]] = None, P: Option[Tensor[T, J]] = None,activation_alpha : Option[(Seq[Float])] = None,activation_beta : Option[(Seq[Float])] = None,activations : Option[(Seq[String])] = None,clip : Option[(Float)] = None,direction : Option[(String)] = None,hidden_size : Option[(Int)] = None,input_forget : Option[(Int)] = None)
     : (Tensor[T, J], Tensor[T, J], Tensor[T, J])
-
-}
-trait Slice extends Operator {
-
-  def Slice1[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None,ends : (Seq[Int]),starts : (Seq[Int]))
-    : (Tensor[T, J])
 
 }
 trait Mul extends Operator {
@@ -507,15 +515,15 @@ trait ReduceMin extends Operator {
     : (Tensor[T, J])
 
 }
+trait OneHotEncoder extends Operator {
+
+  def OneHotEncoder1[T <: String | Long | Int | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,cats_int64s : Option[(Seq[Int])] = None,cats_strings : Option[(Seq[String])] = None,zeros : Option[(Int)] = None)
+    : (Tensor[Float, J])
+
+}
 trait ScaledTanh extends Operator {
 
   def ScaledTanh1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None)
-    : (Tensor[T, J])
-
-}
-trait Identity extends Operator {
-
-  def Identity1[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String)
     : (Tensor[T, J])
 
 }
@@ -526,6 +534,12 @@ trait Neg extends Operator {
 
 
   def Neg6[T <: Float16 | Float | Double | Float | Int | Byte | Short | Long | Float16 | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String)
+    : (Tensor[T, J])
+
+}
+trait MaxPool extends Operator {
+
+  def MaxPool1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,auto_pad : Option[(String)] = None,kernel_shape : (Seq[Int]),pads : Option[(Seq[Int])] = None,strides : Option[(Seq[Int])] = None)
     : (Tensor[T, J])
 
 }
@@ -571,9 +585,13 @@ trait MatMul extends Operator {
     : (Tensor[T, J])
 
 }
-trait Unsqueeze extends Operator {
+trait Min extends Operator {
 
-  def Unsqueeze1[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : (Seq[Int]))
+  def Min1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : (Tensor[T, J])
+
+
+  def Min6[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
     : (Tensor[T, J])
 
 }
@@ -589,12 +607,6 @@ trait GRU extends Operator {
 
   def GRU7[T <: Float16 | Float | Double : Numeric:ClassTag:Field,T1 <: Int : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String, W: Tensor[T, J], Wname: String, R: Tensor[T, J], Rname: String,B: Option[Tensor[T, J]] = None, sequence_lens: Option[Tensor[T1, J]] = None, initial_h: Option[Tensor[T, J]] = None,activation_alpha : Option[(Seq[Float])] = None,activation_beta : Option[(Seq[Float])] = None,activations : Option[(Seq[String])] = None,clip : Option[(Float)] = None,direction : Option[(String)] = None,hidden_size : Option[(Int)] = None,linear_before_reset : Option[(Int)] = None)
     : (Tensor[T, J], Tensor[T, J])
-
-}
-trait RandomUniformLike extends Operator {
-
-  def RandomUniformLike1[T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field,T2 <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T1, J], inputname: String,dtype : Option[(Int)] = None,high : Option[(Float)] = None,low : Option[(Float)] = None,seed : Option[(Float)] = None)
-    : (Tensor[T2, J])
 
 }
 trait RandomNormal extends Operator {
@@ -615,9 +627,15 @@ trait Hardmax extends Operator {
     : (Tensor[T, J])
 
 }
-trait Loop extends Operator {
+trait Binarizer extends Operator {
 
-  def Loop1[I <: Long : Numeric:ClassTag:Field,B <: Boolean : Numeric:ClassTag:Field,V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,M: I, Mname: String, cond: B, condname: String,body : (Graph))
+  def Binarizer1[T <: Float | Double | Long | Int : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,threshold : Option[(Float)] = None)
+    : (Tensor[T, J])
+
+}
+trait If extends Operator {
+
+  def If1[B <: Boolean : Numeric:ClassTag:Field,V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,cond: Tensor[B, J], condname: String,else_branch : (Graph),then_branch : (Graph))
     : (Tensor[V, J])
 
 }
@@ -627,15 +645,49 @@ trait ReduceSumSquare extends Operator {
     : (Tensor[T, J])
 
 }
+trait SVMRegressor extends Operator {
+
+  def SVMRegressor1[T <: Float | Double | Long | Int : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,coefficients : Option[(Seq[Float])] = None,kernel_params : Option[(Seq[Float])] = None,kernel_type : Option[(String)] = None,n_supports : Option[(Int)] = None,one_class : Option[(Int)] = None,post_transform : Option[(String)] = None,rho : Option[(Seq[Float])] = None,support_vectors : Option[(Seq[Float])] = None)
+    : (Tensor[Float, J])
+
+}
+trait DictVectorizer extends Operator {
+
+  def DictVectorizer1[T1 <: Map[String, Long] | Map[Long, String] | Map[Long, Float] | Map[Long, Double] | Map[String, Float] | Map[String, Double] : Numeric:ClassTag:Field,T2 <: Long | Float | Double | String : Numeric:ClassTag:Field, J <: XInt](name: String,X: T1, Xname: String,int64_vocabulary : Option[(Seq[Int])] = None,string_vocabulary : Option[(Seq[String])] = None)
+    : (Tensor[T2, J])
+
+}
 trait Flatten extends Operator {
 
   def Flatten1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,axis : Option[(Int)] = None)
     : (Tensor[T, J])
 
 }
+trait Identity extends Operator {
+
+  def Identity1[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String)
+    : (Tensor[T, J])
+
+}
 trait Affine extends Operator {
 
   def Affine1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None)
+    : (Tensor[T, J])
+
+}
+trait Concat extends Operator {
+
+  def Concat1[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : (Tensor[T, J])
+
+
+  def Concat4[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : (Tensor[T, J])
+
+}
+trait Squeeze extends Operator {
+
+  def Squeeze1[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : (Seq[Int]))
     : (Tensor[T, J])
 
 }
@@ -649,24 +701,16 @@ trait Xor extends Operator {
     : (Tensor[T1, J])
 
 }
-trait Sum extends Operator {
+trait Transpose extends Operator {
 
-  def Sum1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-
-  def Sum6[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-
-  def Sum8[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
+  def Transpose1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,perm : Option[(Seq[Int])] = None)
     : (Tensor[T, J])
 
 }
-trait SpaceToDepth extends Operator {
+trait ZipMap extends Operator {
 
-  def SpaceToDepth1[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,blocksize : (Int))
-    : (Tensor[T, J])
+  def ZipMap1[T <: Seq[Map[String, Float]] | Seq[Map[Long, Float]] : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[Float, J], Xname: String,classlabels_int64s : Option[(Seq[Int])] = None,classlabels_strings : Option[(Seq[String])] = None)
+    : (T)
 
 }
 trait RNN extends Operator {
@@ -695,6 +739,12 @@ trait Constant extends Operator {
     : (Tensor[T, J])
 
 }
+trait SpaceToDepth extends Operator {
+
+  def SpaceToDepth1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,blocksize : (Int))
+    : (Tensor[T, J])
+
+}
 trait Softmax extends Operator {
 
   def Softmax1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,axis : Option[(Int)] = None)
@@ -708,16 +758,6 @@ trait Selu extends Operator {
 
 
   def Selu6[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,alpha : Option[(Float)] = None,gamma : Option[(Float)] = None)
-    : (Tensor[T, J])
-
-}
-trait Tile extends Operator {
-
-  def Tile1[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String, tiles: Tensor[T, J], tilesname: String, axis: Tensor[T, J], axisname: String)
-    : (Tensor[T, J])
-
-
-  def Tile6[T <: Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field,T1 <: Long : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String, repeats: Tensor[T1, J], repeatsname: String)
     : (Tensor[T, J])
 
 }
@@ -755,12 +795,6 @@ trait Floor extends Operator {
     : (Tensor[T, J])
 
 }
-trait If extends Operator {
-
-  def If1[B <: Boolean : Numeric:ClassTag:Field,V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag:Field, J <: XInt](name: String,cond: Tensor[B, J], condname: String,else_branch : (Graph),then_branch : (Graph))
-    : (Tensor[V, J])
-
-}
 trait GlobalAveragePool extends Operator {
 
   def GlobalAveragePool1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String)
@@ -791,6 +825,16 @@ trait Pad extends Operator {
     : (Tensor[T, J])
 
 }
+trait Reshape extends Operator {
+
+  def Reshape1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,consumed_inputs : Option[(Seq[Int])] = None,shape : Option[(Seq[Int])] = None)
+    : (Tensor[T, J])
+
+
+  def Reshape5[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String, shape: Tensor[Long, J], shapename: String)
+    : (Tensor[T, J])
+
+}
 trait Scale extends Operator {
 
   def Scale1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,scaleAttr : Option[(Float)] = None)
@@ -803,18 +847,22 @@ trait LpNormalization extends Operator {
     : (Tensor[T, J])
 
 }
-trait Max extends Operator {
+trait LinearClassifier extends Operator {
 
-  def Max1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
+  def LinearClassifier1[T1 <: Float | Double | Long | Int : Numeric:ClassTag:Field,T2 <: String | Long : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T1, J], Xname: String,classlabels_ints : Option[(Seq[Int])] = None,classlabels_strings : Option[(Seq[String])] = None,coefficients : (Seq[Float]),intercepts : Option[(Seq[Float])] = None,multi_class : Option[(Int)] = None,post_transform : Option[(String)] = None)
+    : (Tensor[T2, J], Tensor[Float, J])
 
+}
+trait Shape extends Operator {
 
-  def Max6[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
+  def Shape1[T <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | Boolean : Numeric:ClassTag:Field,T1 <: Long : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String)
+    : (Tensor[T1, J])
 
+}
+trait Normalizer extends Operator {
 
-  def Max8[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
+  def Normalizer1[T <: Float | Double | Long | Int : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,norm : Option[(String)] = None)
+    : (Tensor[Float, J])
 
 }
 trait GivenTensorFill extends Operator {
@@ -859,6 +907,12 @@ trait ArgMin extends Operator {
     : (Tensor[Long, J])
 
 }
+trait LinearRegressor extends Operator {
+
+  def LinearRegressor1[T <: Float | Double | Long | Int : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,coefficients : Option[(Seq[Float])] = None,intercepts : Option[(Seq[Float])] = None,post_transform : Option[(String)] = None,targets : Option[(Int)] = None)
+    : (Tensor[Float, J])
+
+}
 trait ConstantFill extends Operator {
 
   def ConstantFill1[T1 <: Float | Int | Long | Boolean : Numeric:ClassTag:Field,T2 <: Float | Int | Long | Boolean : Numeric:ClassTag:Field, J <: XInt](name: String,input: Option[Tensor[T1, J]] = None,dtype : Option[(Int)] = None,extra_shape : Option[(Seq[Int])] = None,input_as_shape : Option[(Int)] = None,shape : Option[(Seq[Int])] = None,value : Option[(Float)] = None)
@@ -879,6 +933,12 @@ trait Asin extends Operator {
 
   def Asin7[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String)
     : (Tensor[T, J])
+
+}
+trait RandomNormalLike extends Operator {
+
+  def RandomNormalLike1[T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean : Numeric:ClassTag:Field,T2 <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T1, J], inputname: String,dtype : Option[(Int)] = None,mean : Option[(Float)] = None,scaleAttr : Option[(Float)] = None,seed : Option[(Float)] = None)
+    : (Tensor[T2, J])
 
 }
 trait Less extends Operator {
@@ -913,6 +973,12 @@ trait Relu extends Operator {
     : (Tensor[T, J])
 
 }
+trait CastMap extends Operator {
+
+  def CastMap1[T1 <: Map[Long, String] | Map[Long, Float] : Numeric:ClassTag:Field,T2 <: String | Float | Long : Numeric:ClassTag:Field, J <: XInt](name: String,X: T1, Xname: String,cast_to : Option[(String)] = None,map_form : Option[(String)] = None,max_map : Option[(Int)] = None)
+    : (Tensor[T2, J])
+
+}
 trait ArgMax extends Operator {
 
   def ArgMax1[T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axis : Option[(Int)] = None,keepdims : Option[(Int)] = None)
@@ -925,10 +991,26 @@ trait GRUUnit extends Operator {
     : (Tensor[T, J])
 
 }
+trait Tile extends Operator {
+
+  def Tile1[T <: Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String, tiles: Tensor[T, J], tilesname: String, axis: Tensor[T, J], axisname: String)
+    : (Tensor[T, J])
+
+
+  def Tile6[T <: Float16 | Float | Double : Numeric:ClassTag:Field,T1 <: Long : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String, repeats: Tensor[T1, J], repeatsname: String)
+    : (Tensor[T, J])
+
+}
 trait ReduceL1 extends Operator {
 
   def ReduceL11[T <: UInt | ULong | Int | Long | Float16 | Float | Double : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None,keepdims : Option[(Int)] = None)
     : (Tensor[T, J])
+
+}
+trait LabelEncoder extends Operator {
+
+  def LabelEncoder1[T1 <: String | Long : Numeric:ClassTag:Field,T2 <: String | Long : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T1, J], Xname: String,classes_strings : Option[(Seq[String])] = None,default_int64 : Option[(Int)] = None,default_string : Option[(String)] = None)
+    : (Tensor[T2, J])
 
 }
 trait Div extends Operator {

@@ -18,7 +18,7 @@ import singleton.ops._
 
 package object onnx {
 type |:[+A1, +A2] = Either[A1, A2]
-  type Tensor[U, J <: XInt] = Tuple2[Vector[U], Seq[J]]
+  type Tensor[U, J <: XInt] = Tuple2[Seq[U], Seq[J]]
 type F[B] = IO[B]
 type Par[F[_], A] = FreeApplicative[F, A]
 final type FS[A] = Par[F, A]
@@ -58,6 +58,12 @@ object UnionType {
   def getParams[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check:Numeric:ClassTag:Field, J <: XInt](name: String): Tensor[T, J]
   def getAttributes[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check:Numeric:ClassTag:Field, J <: XInt](name: String): Tensor[T, J]
 }
+trait DepthToSpace extends Operator {
+
+  def DepthToSpace1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,blocksize : (Int))
+    : (Tensor[T, J])
+
+}
 trait Equal extends Operator {
 
   def Equal1[T : (UNil TypeOr Boolean TypeOr Int TypeOr Long)#check : Numeric:ClassTag:Field,T1 : (UNil TypeOr Boolean)#check : Numeric:ClassTag:Field, J <: XInt](name: String,A: Tensor[T, J], Aname: String, B: Tensor[T, J], Bname: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None)
@@ -74,6 +80,12 @@ trait ReduceL1 extends Operator {
     : (Tensor[T, J])
 
 }
+trait DictVectorizer extends Operator {
+
+  def DictVectorizer1[T1 : (UNil TypeOr Map[String, Long] TypeOr Map[Long, String] TypeOr Map[Long, Float] TypeOr Map[Long, Double] TypeOr Map[String, Float] TypeOr Map[String, Double])#check : Numeric:ClassTag:Field,T2 : (UNil TypeOr Long TypeOr Float TypeOr Double TypeOr String)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: T1, Xname: String,int64_vocabulary : Option[(Seq[Int])] = None,string_vocabulary : Option[(Seq[String])] = None)
+    : (Tensor[T2, J])
+
+}
 trait BatchNormalization extends Operator {
 
   def BatchNormalization1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String, scale: Tensor[T, J], scalename: String, B: Tensor[T, J], Bname: String, mean: Tensor[T, J], meanname: String, someVar: Tensor[T, J], varname: String,consumed_inputs : (Seq[Int]),epsilon : Option[(Float)] = None,is_test : Option[(Int)] = None,momentum : Option[(Float)] = None,spatial : Option[(Int)] = None)
@@ -86,12 +98,6 @@ trait BatchNormalization extends Operator {
 
   def BatchNormalization7[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String, scale: Tensor[T, J], scalename: String, B: Tensor[T, J], Bname: String, mean: Tensor[T, J], meanname: String, someVar: Tensor[T, J], varname: String,epsilon : Option[(Float)] = None,momentum : Option[(Float)] = None,spatial : Option[(Int)] = None)
     : (Tensor[T, J], Tensor[T, J], Tensor[T, J], Tensor[T, J], Tensor[T, J])
-
-}
-trait Scan extends Operator {
-
-  def Scan8[I : (UNil TypeOr Long)#check : Numeric:ClassTag:Field,V : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,sequence_lens: Option[Tensor[I, J]] = None,body : (Graph),directions : Option[(Seq[Int])] = None,num_scan_inputs : (Int))
-    : (Tensor[V, J])
 
 }
 trait AveragePool extends Operator {
@@ -130,18 +136,10 @@ trait Log extends Operator {
     : (Tensor[T, J])
 
 }
-trait Mean extends Operator {
+trait Size extends Operator {
 
-  def Mean1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-
-  def Mean6[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-
-  def Mean8[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
+  def Size1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr Boolean)#check : Numeric:ClassTag:Field,T1 : (UNil TypeOr Long)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String)
+    : (Tensor[T1, J])
 
 }
 trait TopK extends Operator {
@@ -160,30 +158,6 @@ trait RNN extends Operator {
     : (Tensor[T, J], Tensor[T, J])
 
 }
-trait Split extends Operator {
-
-  def Split1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,split: Option[Tensor[T, J]] = None,axis : Option[(Int)] = None,splitAttr : Option[(Seq[Int])] = None)
-    : (Tensor[T, J])
-
-
-  def Split2[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,axis : Option[(Int)] = None,splitAttr : Option[(Seq[Int])] = None)
-    : (Tensor[T, J])
-
-}
-trait Min extends Operator {
-
-  def Min1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-
-  def Min6[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-
-  def Min8[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-}
 trait Elu extends Operator {
 
   def Elu1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,alpha : Option[(Float)] = None,consumed_inputs : Option[(Seq[Int])] = None)
@@ -194,9 +168,25 @@ trait Elu extends Operator {
     : (Tensor[T, J])
 
 }
+trait Tile extends Operator {
+
+  def Tile1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String, tiles: Tensor[T, J], tilesname: String, axis: Tensor[T, J], axisname: String)
+    : (Tensor[T, J])
+
+
+  def Tile6[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field,T1 : (UNil TypeOr Long)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String, repeats: Tensor[T1, J], repeatsname: String)
+    : (Tensor[T, J])
+
+}
 trait Hardmax extends Operator {
 
   def Hardmax1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,axis : Option[(Int)] = None)
+    : (Tensor[T, J])
+
+}
+trait Squeeze extends Operator {
+
+  def Squeeze1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : (Seq[Int]))
     : (Tensor[T, J])
 
 }
@@ -212,26 +202,34 @@ trait ReduceProd extends Operator {
     : (Tensor[T, J])
 
 }
+trait SVMRegressor extends Operator {
+
+  def SVMRegressor1[T : (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,coefficients : Option[(Seq[Float])] = None,kernel_params : Option[(Seq[Float])] = None,kernel_type : Option[(String)] = None,n_supports : Option[(Int)] = None,one_class : Option[(Int)] = None,post_transform : Option[(String)] = None,rho : Option[(Seq[Float])] = None,support_vectors : Option[(Seq[Float])] = None)
+    : (Tensor[Float, J])
+
+}
 trait ArgMax extends Operator {
 
   def ArgMax1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axis : Option[(Int)] = None,keepdims : Option[(Int)] = None)
     : (Tensor[Long, J])
 
 }
-trait RandomUniformLike extends Operator {
+trait CategoryMapper extends Operator {
 
-  def RandomUniformLike1[T1 : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field,T2 : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T1, J], inputname: String,dtype : Option[(Int)] = None,high : Option[(Float)] = None,low : Option[(Float)] = None,seed : Option[(Float)] = None)
+  def CategoryMapper1[T1 : (UNil TypeOr String TypeOr Long)#check : Numeric:ClassTag:Field,T2 : (UNil TypeOr String TypeOr Long)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T1, J], Xname: String,cats_int64s : Option[(Seq[Int])] = None,cats_strings : Option[(Seq[String])] = None,default_int64 : Option[(Int)] = None,default_string : Option[(String)] = None)
     : (Tensor[T2, J])
 
 }
-trait Upsample extends Operator {
+trait ZipMap extends Operator {
 
-  def Upsample1[T : (UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,height_scaleAttr : (Float),mode : Option[(String)] = None,width_scaleAttr : (Float))
-    : (Tensor[T, J])
+  def ZipMap1[T : (UNil TypeOr Seq[Map[String, Float]] TypeOr Seq[Map[Long, Float]])#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[Float, J], Xname: String,classlabels_int64s : Option[(Seq[Int])] = None,classlabels_strings : Option[(Seq[String])] = None)
+    : (T)
 
+}
+trait TreeEnsembleClassifier extends Operator {
 
-  def Upsample7[T : (UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,mode : Option[(String)] = None,scaleAttrs : (Seq[Float]))
-    : (Tensor[T, J])
+  def TreeEnsembleClassifier1[T1 : (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check : Numeric:ClassTag:Field,T2 : (UNil TypeOr String TypeOr Long)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T1, J], Xname: String,base_values : Option[(Seq[Float])] = None,class_ids : Option[(Seq[Int])] = None,class_nodeids : Option[(Seq[Int])] = None,class_treeids : Option[(Seq[Int])] = None,class_weights : Option[(Seq[Float])] = None,classlabels_int64s : Option[(Seq[Int])] = None,classlabels_strings : Option[(Seq[String])] = None,nodes_falsenodeids : Option[(Seq[Int])] = None,nodes_featureids : Option[(Seq[Int])] = None,nodes_hitrates : Option[(Seq[Float])] = None,nodes_missing_value_tracks_true : Option[(Seq[Int])] = None,nodes_modes : Option[(Seq[String])] = None,nodes_nodeids : Option[(Seq[Int])] = None,nodes_treeids : Option[(Seq[Int])] = None,nodes_truenodeids : Option[(Seq[Int])] = None,nodes_values : Option[(Seq[Float])] = None,post_transform : Option[(String)] = None)
+    : (Tensor[T2, J], Tensor[Float, J])
 
 }
 trait Less extends Operator {
@@ -250,16 +248,22 @@ trait Flatten extends Operator {
     : (Tensor[T, J])
 
 }
-trait DepthToSpace extends Operator {
+trait Transpose extends Operator {
 
-  def DepthToSpace1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,blocksize : (Int))
+  def Transpose1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,perm : Option[(Seq[Int])] = None)
     : (Tensor[T, J])
 
 }
-trait Gather extends Operator {
+trait LabelEncoder extends Operator {
 
-  def Gather1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field,Tind : (UNil TypeOr Int TypeOr Long)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String, indices: Tensor[Tind, J], indicesname: String,axis : Option[(Int)] = None)
-    : (Tensor[T, J])
+  def LabelEncoder1[T1 : (UNil TypeOr String TypeOr Long)#check : Numeric:ClassTag:Field,T2 : (UNil TypeOr String TypeOr Long)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T1, J], Xname: String,classes_strings : Option[(Seq[String])] = None,default_int64 : Option[(Int)] = None,default_string : Option[(String)] = None)
+    : (Tensor[T2, J])
+
+}
+trait Loop extends Operator {
+
+  def Loop1[I : (UNil TypeOr Long)#check : Numeric:ClassTag:Field,B : (UNil TypeOr Boolean)#check : Numeric:ClassTag:Field,V : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean)#check : Numeric:ClassTag:Field, J <: XInt](name: String,M: I, Mname: String, cond: B, condname: String,body : (Graph))
+    : (Tensor[V, J])
 
 }
 trait MatMul extends Operator {
@@ -268,18 +272,10 @@ trait MatMul extends Operator {
     : (Tensor[T, J])
 
 }
-trait Max extends Operator {
+trait LinearRegressor extends Operator {
 
-  def Max1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-
-  def Max6[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-
-  def Max8[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
+  def LinearRegressor1[T : (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,coefficients : Option[(Seq[Float])] = None,intercepts : Option[(Seq[Float])] = None,post_transform : Option[(String)] = None,targets : Option[(Int)] = None)
+    : (Tensor[Float, J])
 
 }
 trait Affine extends Operator {
@@ -288,15 +284,33 @@ trait Affine extends Operator {
     : (Tensor[T, J])
 
 }
-trait Transpose extends Operator {
+trait FeatureVectorizer extends Operator {
 
-  def Transpose1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,perm : Option[(Seq[Int])] = None)
+  def FeatureVectorizer1[J <:XInt](name: String)
+    : (Tensor[Float, J])
+
+}
+trait Slice extends Operator {
+
+  def Slice1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None,ends : (Seq[Int]),starts : (Seq[Int]))
     : (Tensor[T, J])
+
+}
+trait TreeEnsembleRegressor extends Operator {
+
+  def TreeEnsembleRegressor1[T : (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,aggregate_function : Option[(String)] = None,base_values : Option[(Seq[Float])] = None,n_targets : Option[(Int)] = None,nodes_falsenodeids : Option[(Seq[Int])] = None,nodes_featureids : Option[(Seq[Int])] = None,nodes_hitrates : Option[(Seq[Float])] = None,nodes_missing_value_tracks_true : Option[(Seq[Int])] = None,nodes_modes : Option[(Seq[String])] = None,nodes_nodeids : Option[(Seq[Int])] = None,nodes_treeids : Option[(Seq[Int])] = None,nodes_truenodeids : Option[(Seq[Int])] = None,nodes_values : Option[(Seq[Float])] = None,post_transform : Option[(String)] = None,target_ids : Option[(Seq[Int])] = None,target_nodeids : Option[(Seq[Int])] = None,target_treeids : Option[(Seq[Int])] = None,target_weights : Option[(Seq[Float])] = None)
+    : (Tensor[Float, J])
 
 }
 trait Multinomial extends Operator {
 
   def Multinomial7[T1 : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field,T2 : (UNil TypeOr Int TypeOr Long)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T1, J], inputname: String,dtype : Option[(Int)] = None,sample_size : Option[(Int)] = None,seed : Option[(Float)] = None)
+    : (Tensor[T2, J])
+
+}
+trait CastMap extends Operator {
+
+  def CastMap1[T1 : (UNil TypeOr Map[Long, String] TypeOr Map[Long, Float])#check : Numeric:ClassTag:Field,T2 : (UNil TypeOr String TypeOr Float TypeOr Long)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: T1, Xname: String,cast_to : Option[(String)] = None,map_form : Option[(String)] = None,max_map : Option[(Int)] = None)
     : (Tensor[T2, J])
 
 }
@@ -308,6 +322,18 @@ trait Selu extends Operator {
 
   def Selu6[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,alpha : Option[(Float)] = None,gamma : Option[(Float)] = None)
     : (Tensor[T, J])
+
+}
+trait If extends Operator {
+
+  def If1[B : (UNil TypeOr Boolean)#check : Numeric:ClassTag:Field,V : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean)#check : Numeric:ClassTag:Field, J <: XInt](name: String,cond: Tensor[B, J], condname: String,else_branch : (Graph),then_branch : (Graph))
+    : (Tensor[V, J])
+
+}
+trait RandomUniformLike extends Operator {
+
+  def RandomUniformLike1[T1 : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean)#check : Numeric:ClassTag:Field,T2 : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T1, J], inputname: String,dtype : Option[(Int)] = None,high : Option[(Float)] = None,low : Option[(Float)] = None,seed : Option[(Float)] = None)
+    : (Tensor[T2, J])
 
 }
 trait Abs extends Operator {
@@ -323,6 +349,16 @@ trait Abs extends Operator {
 trait ReduceMax extends Operator {
 
   def ReduceMax1[T : (UNil TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None,keepdims : Option[(Int)] = None)
+    : (Tensor[T, J])
+
+}
+trait Sum extends Operator {
+
+  def Sum1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : (Tensor[T, J])
+
+
+  def Sum6[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
     : (Tensor[T, J])
 
 }
@@ -362,10 +398,10 @@ trait Floor extends Operator {
     : (Tensor[T, J])
 
 }
-trait SpaceToDepth extends Operator {
+trait SVMClassifier extends Operator {
 
-  def SpaceToDepth1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,blocksize : (Int))
-    : (Tensor[T, J])
+  def SVMClassifier1[T1 : (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check : Numeric:ClassTag:Field,T2 : (UNil TypeOr String TypeOr Long)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T1, J], Xname: String,classlabels_ints : Option[(Seq[Int])] = None,classlabels_strings : Option[(Seq[String])] = None,coefficients : Option[(Seq[Float])] = None,kernel_params : Option[(Seq[Float])] = None,kernel_type : Option[(String)] = None,post_transform : Option[(String)] = None,prob_a : Option[(Seq[Float])] = None,prob_b : Option[(Seq[Float])] = None,rho : Option[(Seq[Float])] = None,support_vectors : Option[(Seq[Float])] = None,vectors_per_class : Option[(Seq[Int])] = None)
+    : (Tensor[T2, J], Tensor[Float, J])
 
 }
 trait HardSigmoid extends Operator {
@@ -375,6 +411,12 @@ trait HardSigmoid extends Operator {
 
 
   def HardSigmoid6[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None)
+    : (Tensor[T, J])
+
+}
+trait SpaceToDepth extends Operator {
+
+  def SpaceToDepth1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,blocksize : (Int))
     : (Tensor[T, J])
 
 }
@@ -392,6 +434,12 @@ trait LpNormalization extends Operator {
 
   def LpNormalization1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,axis : Option[(Int)] = None,p : Option[(Int)] = None)
     : (Tensor[T, J])
+
+}
+trait Normalizer extends Operator {
+
+  def Normalizer1[T : (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,norm : Option[(String)] = None)
+    : (Tensor[Float, J])
 
 }
 trait Clip extends Operator {
@@ -423,12 +471,6 @@ trait Pow extends Operator {
 
 
   def Pow7[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String, Y: Tensor[T, J], Yname: String)
-    : (Tensor[T, J])
-
-}
-trait Expand extends Operator {
-
-  def Expand8[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String, shape: Tensor[Long, J], shapename: String)
     : (Tensor[T, J])
 
 }
@@ -464,19 +506,13 @@ trait PRelu extends Operator {
     : (Tensor[T, J])
 
 }
-trait Loop extends Operator {
+trait Concat extends Operator {
 
-  def Loop1[I : (UNil TypeOr Long)#check : Numeric:ClassTag:Field,B : (UNil TypeOr Boolean)#check : Numeric:ClassTag:Field,V : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,M: I, Mname: String, cond: B, condname: String,body : (Graph))
-    : (Tensor[V, J])
-
-}
-trait Tile extends Operator {
-
-  def Tile1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String, tiles: Tensor[T, J], tilesname: String, axis: Tensor[T, J], axisname: String)
+  def Concat1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
     : (Tensor[T, J])
 
 
-  def Tile6[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field,T1 : (UNil TypeOr Long)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String, repeats: Tensor[T1, J], repeatsname: String)
+  def Concat4[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
     : (Tensor[T, J])
 
 }
@@ -496,10 +532,16 @@ trait Softplus extends Operator {
     : (Tensor[T, J])
 
 }
-trait RandomNormalLike extends Operator {
+trait Identity extends Operator {
 
-  def RandomNormalLike1[T1 : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field,T2 : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T1, J], inputname: String,dtype : Option[(Int)] = None,mean : Option[(Float)] = None,scaleAttr : Option[(Float)] = None,seed : Option[(Float)] = None)
-    : (Tensor[T2, J])
+  def Identity1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String)
+    : (Tensor[T, J])
+
+}
+trait Binarizer extends Operator {
+
+  def Binarizer1[T : (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,threshold : Option[(Float)] = None)
+    : (Tensor[T, J])
 
 }
 trait And extends Operator {
@@ -521,6 +563,12 @@ trait GlobalAveragePool extends Operator {
 trait ImageScaler extends Operator {
 
   def ImageScaler1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,bias : Option[(Seq[Float])] = None,scaleAttr : Option[(Float)] = None)
+    : (Tensor[T, J])
+
+}
+trait MaxPool extends Operator {
+
+  def MaxPool1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,auto_pad : Option[(String)] = None,kernel_shape : (Seq[Int]),pads : Option[(Seq[Int])] = None,strides : Option[(Seq[Int])] = None)
     : (Tensor[T, J])
 
 }
@@ -576,9 +624,13 @@ trait Greater extends Operator {
     : (Tensor[T1, J])
 
 }
-trait Unsqueeze extends Operator {
+trait Min extends Operator {
 
-  def Unsqueeze1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : (Seq[Int]))
+  def Min1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : (Tensor[T, J])
+
+
+  def Min6[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
     : (Tensor[T, J])
 
 }
@@ -596,6 +648,12 @@ trait LogSoftmax extends Operator {
 
   def LogSoftmax1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,axis : Option[(Int)] = None)
     : (Tensor[T, J])
+
+}
+trait RandomNormalLike extends Operator {
+
+  def RandomNormalLike1[T1 : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean)#check : Numeric:ClassTag:Field,T2 : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T1, J], inputname: String,dtype : Option[(Int)] = None,mean : Option[(Float)] = None,scaleAttr : Option[(Float)] = None,seed : Option[(Float)] = None)
+    : (Tensor[T2, J])
 
 }
 trait Div extends Operator {
@@ -620,12 +678,6 @@ trait Sigmoid extends Operator {
 
   def Sigmoid6[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String)
     : (Tensor[T, J])
-
-}
-trait Shape extends Operator {
-
-  def Shape1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field,T1 : (UNil TypeOr Long)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String)
-    : (Tensor[T1, J])
 
 }
 trait Neg extends Operator {
@@ -672,9 +724,13 @@ trait Constant extends Operator {
     : (Tensor[T, J])
 
 }
-trait Squeeze extends Operator {
+trait Max extends Operator {
 
-  def Squeeze1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None)
+  def Max1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : (Tensor[T, J])
+
+
+  def Max6[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
     : (Tensor[T, J])
 
 }
@@ -684,14 +740,14 @@ trait GlobalMaxPool extends Operator {
     : (Tensor[T, J])
 
 }
-trait MaxPool extends Operator {
+trait Split extends Operator {
 
-  def MaxPool1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,auto_pad : Option[(String)] = None,kernel_shape : (Seq[Int]),pads : Option[(Seq[Int])] = None,strides : Option[(Seq[Int])] = None)
+  def Split1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,split: Option[Tensor[T, J]] = None,axis : Option[(Int)] = None,splitAttr : Option[(Seq[Int])] = None)
     : (Tensor[T, J])
 
 
-  def MaxPool8[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field,I : (UNil TypeOr Long)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,auto_pad : Option[(String)] = None,kernel_shape : (Seq[Int]),pads : Option[(Seq[Int])] = None,storage_order : Option[(Int)] = None,strides : Option[(Seq[Int])] = None)
-    : (Tensor[T, J], Tensor[I, J])
+  def Split2[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String,axis : Option[(Int)] = None,splitAttr : Option[(Seq[Int])] = None)
+    : (Tensor[T, J])
 
 }
 trait Xor extends Operator {
@@ -714,12 +770,6 @@ trait ReduceMean extends Operator {
 
   def ReduceMean1[T : (UNil TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None,keepdims : Option[(Int)] = None)
     : (Tensor[T, J])
-
-}
-trait If extends Operator {
-
-  def If1[B : (UNil TypeOr Boolean)#check : Numeric:ClassTag:Field,V : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,cond: Tensor[B, J], condname: String,else_branch : (Graph),then_branch : (Graph))
-    : (Tensor[V, J])
 
 }
 trait GRU extends Operator {
@@ -751,6 +801,12 @@ trait MaxRoiPool extends Operator {
 trait ReduceLogSum extends Operator {
 
   def ReduceLogSum1[T : (UNil TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None,keepdims : Option[(Int)] = None)
+    : (Tensor[T, J])
+
+}
+trait LoopIndexTensor extends Operator {
+
+  def LoopIndexTensor1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean)#check : Numeric:ClassTag:Field,I : (UNil TypeOr Int)#check : Numeric:ClassTag:Field, J <: XInt](name: String,T: Tensor[T, J], Tname: String, loop_idx: I, loop_idxname: String,axis : Option[(Int)] = None)
     : (Tensor[T, J])
 
 }
@@ -820,19 +876,39 @@ trait Pad extends Operator {
     : (Tensor[T, J])
 
 }
+trait Scaler extends Operator {
+
+  def Scaler1[T : (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,offset : Option[(Seq[Float])] = None,scaleAttr : Option[(Seq[Float])] = None)
+    : (Tensor[Float, J])
+
+}
+trait Unsqueeze extends Operator {
+
+  def Unsqueeze1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : (Seq[Int]))
+    : (Tensor[T, J])
+
+}
 trait GivenTensorFill extends Operator {
 
   def GivenTensorFill1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,shapeInput: Option[Tensor[T, J]] = None,extra_shape : Option[(Seq[Int])] = None,input_as_shape : Option[(Int)] = None,shape : Option[(Seq[Int])] = None,values : Option[(Seq[Float])] = None)
     : (Tensor[T, J])
 
 }
-trait Concat extends Operator {
+trait Imputer extends Operator {
 
-  def Concat1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String)
+  def Imputer1[T : (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,imputed_value_floats : Option[(Seq[Float])] = None,imputed_value_int64s : Option[(Seq[Int])] = None,replaced_value_float : Option[(Float)] = None,replaced_value_int64 : Option[(Int)] = None)
     : (Tensor[T, J])
 
+}
+trait Gather extends Operator {
 
-  def Concat4[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String)
+  def Gather1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean)#check : Numeric:ClassTag:Field,Tind : (UNil TypeOr Int TypeOr Long)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String, indices: Tensor[Tind, J], indicesname: String,axis : Option[(Int)] = None)
+    : (Tensor[T, J])
+
+}
+trait ArrayFeatureExtractor extends Operator {
+
+  def ArrayFeatureExtractor1[T : (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int TypeOr String)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String, Y: Tensor[Long, J], Yname: String)
     : (Tensor[T, J])
 
 }
@@ -856,25 +932,19 @@ trait LRN extends Operator {
     : (Tensor[T, J])
 
 }
-trait Size extends Operator {
-
-  def Size1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field,T1 : (UNil TypeOr Long)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String)
-    : (Tensor[T1, J])
-
-}
 trait ParametricSoftplus extends Operator {
 
   def ParametricSoftplus1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None)
     : (Tensor[T, J])
 
 }
-trait Reshape extends Operator {
+trait Upsample extends Operator {
 
-  def Reshape1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,consumed_inputs : Option[(Seq[Int])] = None,shape : Option[(Seq[Int])] = None)
+  def Upsample1[T : (UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,height_scaleAttr : (Float),mode : Option[(String)] = None,width_scaleAttr : (Float))
     : (Tensor[T, J])
 
 
-  def Reshape5[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String, shape: Tensor[Long, J], shapename: String)
+  def Upsample7[T : (UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,mode : Option[(String)] = None,scaleAttrs : (Seq[Float]))
     : (Tensor[T, J])
 
 }
@@ -885,6 +955,16 @@ trait Reciprocal extends Operator {
 
 
   def Reciprocal6[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String)
+    : (Tensor[T, J])
+
+}
+trait Mean extends Operator {
+
+  def Mean1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
+    : (Tensor[T, J])
+
+
+  def Mean6[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
     : (Tensor[T, J])
 
 }
@@ -900,10 +980,26 @@ trait ReduceSum extends Operator {
     : (Tensor[T, J])
 
 }
+trait Reshape extends Operator {
+
+  def Reshape1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,consumed_inputs : Option[(Seq[Int])] = None,shape : Option[(Seq[Int])] = None)
+    : (Tensor[T, J])
+
+
+  def Reshape5[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String, shape: Tensor[Long, J], shapename: String)
+    : (Tensor[T, J])
+
+}
 trait ArgMin extends Operator {
 
   def ArgMin1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axis : Option[(Int)] = None,keepdims : Option[(Int)] = None)
     : (Tensor[Long, J])
+
+}
+trait LinearClassifier extends Operator {
+
+  def LinearClassifier1[T1 : (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check : Numeric:ClassTag:Field,T2 : (UNil TypeOr String TypeOr Long)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T1, J], Xname: String,classlabels_ints : Option[(Seq[Int])] = None,classlabels_strings : Option[(Seq[String])] = None,coefficients : (Seq[Float]),intercepts : Option[(Seq[Float])] = None,multi_class : Option[(Int)] = None,post_transform : Option[(String)] = None)
+    : (Tensor[T2, J], Tensor[Float, J])
 
 }
 trait RandomNormal extends Operator {
@@ -926,6 +1022,12 @@ trait LpPool extends Operator {
 
   def LpPool2[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,auto_pad : Option[(String)] = None,kernel_shape : (Seq[Int]),p : Option[(Int)] = None,pads : Option[(Seq[Int])] = None,strides : Option[(Seq[Int])] = None)
     : (Tensor[T, J])
+
+}
+trait Shape extends Operator {
+
+  def Shape1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr Boolean)#check : Numeric:ClassTag:Field,T1 : (UNil TypeOr Long)#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String)
+    : (Tensor[T1, J])
 
 }
 trait Gemm extends Operator {
@@ -968,35 +1070,15 @@ trait Acos extends Operator {
     : (Tensor[T, J])
 
 }
-trait Slice extends Operator {
-
-  def Slice1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,data: Tensor[T, J], dataname: String,axes : Option[(Seq[Int])] = None,ends : (Seq[Int]),starts : (Seq[Int]))
-    : (Tensor[T, J])
-
-}
-trait Identity extends Operator {
-
-  def Identity1[T : (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Tensor[T, J], inputname: String)
-    : (Tensor[T, J])
-
-}
 trait ConstantFill extends Operator {
 
   def ConstantFill1[T1 : (UNil TypeOr Float TypeOr Int TypeOr Long TypeOr Boolean)#check : Numeric:ClassTag:Field,T2 : (UNil TypeOr Float TypeOr Int TypeOr Long TypeOr Boolean)#check : Numeric:ClassTag:Field, J <: XInt](name: String,input: Option[Tensor[T1, J]] = None,dtype : Option[(Int)] = None,extra_shape : Option[(Seq[Int])] = None,input_as_shape : Option[(Int)] = None,shape : Option[(Seq[Int])] = None,value : Option[(Float)] = None)
     : (Tensor[T2, J])
 
 }
-trait Sum extends Operator {
+trait OneHotEncoder extends Operator {
 
-  def Sum1[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-
-  def Sum6[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
-
-
-  def Sum8[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String)
-    : (Tensor[T, J])
+  def OneHotEncoder1[T : (UNil TypeOr String TypeOr Long TypeOr Int TypeOr Float TypeOr Double)#check : Numeric:ClassTag:Field, J <: XInt](name: String,X: Tensor[T, J], Xname: String,cats_int64s : Option[(Seq[Int])] = None,cats_strings : Option[(Seq[String])] = None,zeros : Option[(Int)] = None)
+    : (Tensor[Float, J])
 
 }}

@@ -63,7 +63,8 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
       libraryDependencies ++= Seq("org.typelevel" %%% "spire" % "0.16.0",
         "org.typelevel" %%% "cats-free" % "1.3.1",
         "org.typelevel" %%% "cats-effect" % "1.0.0",
-        "eu.timepit" %%% "singleton-ops" % "0.3.0"
+        "eu.timepit" %%% "singleton-ops" % "0.3.0",
+        "io.frees" %%% "frees-core" % "0.8.2"
       )
     )
     .nativeSettings(
@@ -71,7 +72,8 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
       libraryDependencies ++= Seq("org.typelevel" %% "spire" % "0.16.0",
         "org.typelevel" %% "cats-free" % "1.3.1",
         "org.typelevel" %% "cats-effect" % "1.0.0",
-        "eu.timepit" %% "singleton-ops" % "0.3.0"
+        "eu.timepit" %% "singleton-ops" % "0.3.0",
+        "io.frees" %% "frees-core" % "0.8.2",
       )
     )
 

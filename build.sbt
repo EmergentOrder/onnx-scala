@@ -8,7 +8,7 @@ lazy val commonSettings = Seq(
 
   organization := "org.emergentorder.onnx",
 //  crossScalaVersions := Seq(dottyVersion, "2.10.7", "2.11.12",scala212Version, "2.13.0-M5"),
-  version      := "1.2.2-0.1.0-SNAPSHOT",
+  version      := "1.3.0-0.1.0-SNAPSHOT",
   scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
   autoCompilerPlugins := true
 //  wartremoverErrors ++= Warts.allBut(Wart.DefaultArguments, Wart.Nothing, Wart.ToString),

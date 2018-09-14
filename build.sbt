@@ -10,6 +10,7 @@ lazy val commonSettings = Seq(
 //  crossScalaVersions := Seq(dottyVersion, "2.10.7", "2.11.12",scala212Version, "2.13.0-M5"),
   version      := "1.2.2-0.1.0-SNAPSHOT",
   scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
+  autoCompilerPlugins := true
 //  wartremoverErrors ++= Warts.allBut(Wart.DefaultArguments, Wart.Nothing, Wart.ToString),
 //  wartremoverExcluded += baseDirectory.value / "core" / "src" / "main" / "scala" / "Float16.scala"
 )
@@ -97,10 +98,18 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     scalaVersion := scala212Version,
     publishArtifact in (Compile, packageDoc) := false,
     addCompilerPlugin("org.spire-math" % "kind-projector" % "0.9.7" cross CrossVersion.binary),
- 
-//    addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full),
-    libraryDependencies ++= Seq(
-    )
+    scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, n)) if n == 13 => Seq("-Ymacro-annotations"
+                                           )
+        case _ => Seq(
+                  )
+    }),
+    libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, n)) if n != 13 => Seq( compilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full)
+                                           )
+        case _ => Seq(
+                  )
+    }) 
   )
   .jvmSettings(
     crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
@@ -119,9 +128,10 @@ lazy val freeDotty = (crossProject(JVMPlatform)
     name := "onnx-scala-free",
     scalaVersion := dottyVersion,
     publishArtifact in (Compile, packageDoc) := false,
-//    addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full),
     libraryDependencies ++= Seq(
-      ("io.frees" %% "frees-core" % "0.8.2").withDottyCompat(dottyVersion)
+      ("io.frees" %% "frees-core" % "0.8.2").withDottyCompat(dottyVersion),
+      (compilerPlugin("org.scalameta" % "paradise_2.12.6" % "3.0.0-M11")
+    )
   )
 
 )

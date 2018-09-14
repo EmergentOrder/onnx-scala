@@ -50,3 +50,5 @@ and build away with the traits provided. Backend implementation (and other) PRs 
 * Cats-effect - standard IO type together with Sync, Async and Effect type classes (Or your effect type here)
 
 * Cats-free - Free structures such as the free monad, and supporting type classes (for the free variant)
+
+* Freestyle - pure functional framework for Free and Tagless Final apps & libs

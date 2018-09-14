@@ -114,7 +114,7 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     }) 
   )
   .jvmSettings(
-    crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
+    crossScalaVersions := Seq(scala212Version, scala211Version) //TODO: restore scala213Version
   )
   .jsSettings(
     crossScalaVersions := Seq(scala212Version, scala211Version)

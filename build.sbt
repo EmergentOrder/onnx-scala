@@ -39,11 +39,23 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     )
     .jvmSettings(
       crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version),
-      libraryDependencies ++= Seq("org.typelevel" % "spire_2.12" % "0.16.0",
-        "org.typelevel" % "cats-free_2.12" % "1.3.1",
-        "org.typelevel" % "cats-effect_2.12" % "1.0.0",
-        "eu.timepit" %% "singleton-ops" % "0.3.0"
-      )
+      libraryDependencies ++= Seq(
+
+      ),
+      libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_2.12" % "0.16.0",
+                                            "org.typelevel" % "cats-free_2.12" % "1.3.1",
+                                            "org.typelevel" % "cats-effect_2.12" % "1.0.0",
+                                            "io.frees" % "frees-core_2.12" % "0.8.2",
+                                            "eu.timepit" % "singleton-ops_2.12" % "0.3.0"
+                                           )
+        case _ => Seq("org.typelevel" %% "spire" % "0.16.0",
+                      "org.typelevel" %% "cats-free" % "1.3.1",
+                      "org.typelevel" %% "cats-effect" % "1.0.0",
+                      "io.frees" %% "frees-core" % "0.8.2",
+                      "eu.timepit" %% "singleton-ops" % "0.3.0"
+                  )
+      })
     )
     .jsSettings(
       crossScalaVersions := Seq(scala212Version, scala211Version),
@@ -88,7 +100,6 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
  
 //    addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full),
     libraryDependencies ++= Seq(
-//      "io.frees" %% "frees-core" % "0.8.2"
     )
   )
   .jvmSettings(
@@ -110,7 +121,7 @@ lazy val freeDotty = (crossProject(JVMPlatform)
     publishArtifact in (Compile, packageDoc) := false,
 //    addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full),
     libraryDependencies ++= Seq(
-//      "io.frees" %% "frees-core" % "0.8.2"
+      ("io.frees" %% "frees-core" % "0.8.2").withDottyCompat(dottyVersion)
   )
 
 )

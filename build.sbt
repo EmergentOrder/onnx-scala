@@ -10,13 +10,14 @@ lazy val commonSettings = Seq(
 //  crossScalaVersions := Seq(dottyVersion, "2.10.7", "2.11.12",scala212Version, "2.13.0-M5"),
   version      := "1.3.0-0.1.0-SNAPSHOT",
   scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
-  autoCompilerPlugins := true
+  autoCompilerPlugins := true,
 //  wartremoverErrors ++= Warts.allBut(Wart.DefaultArguments, Wart.Nothing, Wart.ToString),
 //  wartremoverExcluded += baseDirectory.value / "core" / "src" / "main" / "scala" / "Float16.scala"
 )
 
 lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     .crossType(CrossType.Pure) in file("common"))
+  .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
     name := "onnx-scala-common"
   )
@@ -34,9 +35,11 @@ lazy val commonJS     = common.js.disablePlugins(dotty.tools.sbtplugin.DottyPlug
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     .crossType(CrossType.Pure) in file("core")).dependsOn(common)
+  .enablePlugins(wartremover.WartRemover)
   .settings(commonSettings,
     name := "onnx-scala",
-    scalaVersion := scala212Version
+    scalaVersion := scala212Version,
+    wartremoverErrors ++= Warts.allBut(Wart.DefaultArguments, Wart.Nothing, Wart.ToString)
     )
     .jvmSettings(
       crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version),
@@ -71,6 +74,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
 lazy val coreDotty = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure)).in(file("coreDotty")).dependsOn(common)
   .enablePlugins(dotty.tools.sbtplugin.DottyPlugin)
+  .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
     name := "onnx-scala",
     scalaVersion := dottyVersion,
@@ -139,6 +143,7 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
 lazy val freeDotty = (crossProject(JVMPlatform)
     .crossType(CrossType.Pure) in file("freeDotty")).dependsOn(coreDotty)
   .enablePlugins(dotty.tools.sbtplugin.DottyPlugin)
+  .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
     name := "onnx-scala-free",
     scalaVersion := dottyVersion,

@@ -43,9 +43,13 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     )
     .jvmSettings(
       crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version),
-      libraryDependencies ++= Seq(
+      scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, n)) if n == 13 => Seq("-Xsource:2.14" //For opaque types - not merged to 2.13 yet
+                                           )
+        case _ => Seq(
+                  )
+      }),
 
-      ),
       libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_2.12" % "0.16.0",
                                             "eu.timepit" % "singleton-ops_2.12" % "0.3.0"
@@ -98,7 +102,7 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n != 13 => Seq( compilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full)
                                            )
-        case _ => Seq(
+        case _ => Seq( compilerPlugin("org.scalameta" % "paradise_2.12.6" % "3.0.0-M11")
                   )
     }),
    libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {

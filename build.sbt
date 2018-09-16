@@ -64,10 +64,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     .nativeSettings(
       scalaVersion := scala211Version,
       libraryDependencies ++= Seq("org.typelevel" %% "spire" % "0.16.0",
-        "org.typelevel" %% "cats-free" % "1.3.1",
-        "org.typelevel" %% "cats-effect" % "1.0.0",
-        "eu.timepit" %% "singleton-ops" % "0.3.0",
-        "io.frees" %% "frees-core" % "0.8.2",
+        "eu.timepit" %% "singleton-ops" % "0.3.0"
       )
     )
 
@@ -92,7 +89,6 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     name := "onnx-scala-free", 
     scalaVersion := scala212Version,
     publishArtifact in (Compile, packageDoc) := false,
-    addCompilerPlugin("org.spire-math" % "kind-projector" % "0.9.7" cross CrossVersion.binary),
     scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n == 13 => Seq("-Ymacro-annotations"
                                            )

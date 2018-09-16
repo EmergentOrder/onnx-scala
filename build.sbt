@@ -3,6 +3,7 @@ val dottyVersion = "0.9.0-RC1"
 val scala211Version = "2.11.12"
 val scala212Version = "2.12.6"
 val scala213Version = "2.13.0-M5"
+val catsVersion = "1.4.0"
 
 lazy val commonSettings = Seq(
 
@@ -107,12 +108,12 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     }),
    libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n == 13 => Seq(
-                                            "org.typelevel" % "cats-free_2.12" % "1.3.1",
+                                            "org.typelevel" % "cats-free_2.12" % catsVersion,
                                             "org.typelevel" % "cats-effect_2.12" % "1.0.0",
                                             "io.frees" % "frees-core_2.12" % "0.8.2" 
                                            )
         case _ => Seq(
-                      "org.typelevel" %% "cats-free" % "1.3.1",
+                      "org.typelevel" %% "cats-free" % catsVersion,
                       "org.typelevel" %% "cats-effect" % "1.0.0",
                       "io.frees" %% "frees-core" % "0.8.2" 
                   )
@@ -120,12 +121,12 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
 
   )
   .jvmSettings(
-    crossScalaVersions := Seq(scala212Version, scala211Version) //TODO: restore scala213Version
+    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version) //TODO: restore scala213Version
   )
   .jsSettings(
       crossScalaVersions := Seq(scala212Version, scala211Version),
       libraryDependencies ++= Seq(
-        "org.typelevel" %%% "cats-free" % "1.3.1",
+        "org.typelevel" %%% "cats-free" % catsVersion,
         "org.typelevel" %%% "cats-effect" % "1.0.0",
         "io.frees" %%% "frees-core" % "0.8.2"
       )
@@ -133,7 +134,7 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .nativeSettings(
       scalaVersion := scala211Version,
       libraryDependencies ++= Seq(
-        "org.typelevel" %% "cats-free" % "1.3.1",
+        "org.typelevel" %% "cats-free" % catsVersion,
         "org.typelevel" %% "cats-effect" % "1.0.0", 
         "io.frees" %% "frees-core" % "0.8.2",
       )
@@ -150,7 +151,7 @@ lazy val freeDotty = (crossProject(JVMPlatform)
     publishArtifact in (Compile, packageDoc) := false,
     libraryDependencies ++= Seq(
       ("io.frees" %% "frees-core" % "0.8.2").withDottyCompat(dottyVersion),
-      ("org.typelevel" %% "cats-free" % "1.3.1").withDottyCompat(dottyVersion),
+      ("org.typelevel" %% "cats-free" % catsVersion).withDottyCompat(dottyVersion),
       ("org.typelevel" %% "cats-effect" % "1.0.0").withDottyCompat(dottyVersion),
       (compilerPlugin("org.scalameta" % "paradise_2.12.6" % "3.0.0-M11")
     )

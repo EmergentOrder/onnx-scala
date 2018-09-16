@@ -103,7 +103,7 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n != 13 => Seq( compilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full)
                                            )
-        case _ => Seq( compilerPlugin("org.scalameta" % "paradise_2.12.6" % "3.0.0-M11")
+        case _ => Seq(
                   )
     }),
    libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
@@ -121,7 +121,7 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
 
   )
   .jvmSettings(
-    crossScalaVersions := Seq(scala212Version, scala211Version) //TODO: restore scala213Version
+    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version) //TODO: restore scala213Version
   )
   .jsSettings(
       crossScalaVersions := Seq(scala212Version, scala211Version),

@@ -20,7 +20,8 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     name := "onnx-scala-common"
   )
   .jvmSettings(
-    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version)
+    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version),
+    publishArtifact in (Compile, packageDoc) := false
   )
   .jsSettings(
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
@@ -77,6 +78,7 @@ lazy val coreDotty = (crossProject(JVMPlatform)
   .settings( commonSettings,
     name := "onnx-scala",
     scalaVersion := dottyVersion,
+    publishArtifact in (Compile, packageDoc) := false,
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2") else Nil },
     libraryDependencies ++= Seq(
       ("org.typelevel" %% "spire" % "0.16.0").withDottyCompat(dottyVersion),

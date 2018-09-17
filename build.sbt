@@ -1,5 +1,5 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
-val dottyVersion = "0.9.0-RC1"
+val dottyVersion = dottyLatestNightlyBuild.get //"0.9.0-RC1"
 val scala211Version = "2.11.12"
 val scala212Version = "2.12.6"
 val scala213Version = "2.13.0-M5"
@@ -8,12 +8,9 @@ val catsVersion = "1.4.0"
 lazy val commonSettings = Seq(
 
   organization := "org.emergentorder.onnx",
-//  crossScalaVersions := Seq(dottyVersion, "2.10.7", "2.11.12",scala212Version, "2.13.0-M5"),
   version      := "1.3.0-0.1.0-SNAPSHOT",
   scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
-  autoCompilerPlugins := true,
-//  wartremoverErrors ++= Warts.allBut(Wart.DefaultArguments, Wart.Nothing, Wart.ToString),
-//  wartremoverExcluded += baseDirectory.value / "core" / "src" / "main" / "scala" / "Float16.scala"
+  autoCompilerPlugins := true
 )
 
 lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
@@ -40,7 +37,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(commonSettings,
     name := "onnx-scala",
     scalaVersion := scala212Version,
-    wartremoverErrors ++= Warts.allBut(Wart.DefaultArguments, Wart.Nothing, Wart.ToString)
+    wartremoverErrors ++= Warts.allBut(Wart.DefaultArguments)
     )
     .jvmSettings(
       crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version),

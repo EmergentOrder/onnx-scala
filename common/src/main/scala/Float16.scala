@@ -19,6 +19,7 @@ package org.emergentorder.onnx
 
 import scala.math.{pow, round}
 import java.lang.{Float => JFloat}
+import scala.language.implicitConversions
 
 /**
   * Float16 represents 16-bit floating-point values.

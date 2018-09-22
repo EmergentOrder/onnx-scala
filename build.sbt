@@ -5,6 +5,7 @@ val scala212Version = "2.12.6"
 val scala213Version = "2.13.0-M5"
 //Might want to remove cats ( conflict with Freestyle's version)
 val catsVersion = "1.4.0"
+//TODO: Replace wartremover with scalafix
 
 lazy val commonSettings = Seq(
 
@@ -21,36 +22,35 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     .crossType(CrossType.Pure) in file("common"))
   .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
-    name := "onnx-scala-common",
-    libraryDependencies ++= Seq("org.bytedeco.javacpp-presets" % "onnx-platform" % "1.3.0-1.4.3-SNAPSHOT")
+    name := "onnx-scala-common"
   )
   .jvmSettings(
+    scalaVersion := dottyVersion,
     crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version),
-    libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_2.12" % "0.16.0",
-                                            "org.scalameta" % "scalameta_2.12" % "1.8.0"
-                                           )
-        case _ => Seq(("org.typelevel" %% "spire" % "0.16.0").withDottyCompat(dottyVersion),
-                      ("org.scalameta" %% "scalameta" % "1.8.0").withDottyCompat(dottyVersion)
-                  )
-      }),
     publishArtifact in (Compile, packageDoc) := false
   )
   .jsSettings(
-    crossScalaVersions := Seq(scala212Version, scala211Version),
-    libraryDependencies ++= Seq("org.typelevel" %%% "spire" % "0.16.0",
-                                "org.scalameta" %%% "scalameta" % "1.8.0"
-      )
+    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
   )
   .nativeSettings(
-    scalaVersion := scala211Version,
-    libraryDependencies ++= Seq(
-        "org.typelevel" %% "spire" % "0.16.0",
-        "org.scalameta" %% "scalameta" % "1.8.0"
-      )
+    scalaVersion := scala211Version
   )
 
-lazy val commonJS     = common.js.disablePlugins(dotty.tools.sbtplugin.DottyPlugin).disablePlugins(dotty.tools.sbtplugin.DottyIDEPlugin)
+lazy val commonJS = common.js.disablePlugins(dotty.tools.sbtplugin.DottyPlugin).disablePlugins(dotty.tools.sbtplugin.DottyIDEPlugin)
+
+lazy val programGenerator = (crossProject(JVMPlatform)
+    .crossType(CrossType.Pure) in file("programGenerator")).dependsOn(common)
+    .disablePlugins(wartremover.WartRemover)
+  .settings( commonSettings,
+    name := "onnx-scala-program-generator",
+    libraryDependencies ++= Seq("org.bytedeco.javacpp-presets" % "onnx-platform" % "1.3.0-1.4.3-SNAPSHOT"),
+    scalaVersion := dottyVersion,
+    libraryDependencies ++=  Seq(("org.typelevel" %% "spire" % "0.16.0").withDottyCompat(dottyVersion),
+                      ("org.scalameta" %% "scalameta" % "1.8.0").withDottyCompat(dottyVersion)
+                  ),
+    publishArtifact in (Compile, packageDoc) := false
+  )
+
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     .crossType(CrossType.Pure) in file("core")).dependsOn(common)
@@ -70,23 +70,24 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
       }),
 
       libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, n)) if n == 13 => Seq(
+        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_2.12" % "0.16.0",
                                             "eu.timepit" % "singleton-ops_2.12" % "0.3.0"
                                            )
-        case _ => Seq(
+        case _ => Seq("org.typelevel" %% "spire" % "0.16.0",
                       "eu.timepit" %% "singleton-ops" % "0.3.0"
                   )
       })
     )
     .jsSettings(
       crossScalaVersions := Seq(scala212Version, scala211Version),
-      libraryDependencies ++= Seq(
+      libraryDependencies ++= Seq("org.typelevel" %%% "spire" % "0.16.0",
         "eu.timepit" %%% "singleton-ops" % "0.3.0"
       )
     )
     .nativeSettings(
       scalaVersion := scala211Version,
       libraryDependencies ++= Seq(
+        "org.typelevel" %% "spire" % "0.16.0",
         "eu.timepit" %% "singleton-ops" % "0.3.0"
       )
     )

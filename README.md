@@ -13,19 +13,6 @@ C) at least one, eventually many backend implementations of ONNX accessible from
 
 All together, these should enable model inspection and modification, extra compile-time assurances, mixing/matching of backend operator implementations and integration into JVM-based production systems, for a start.
 
-Automatic differentiation to enable training is under consideration (ONNX does not provide facilities for training).
-
-Balancing the interests of minimal imposition of dependencies with stack-safe, purely functional programming, ONNX-Scala comes in two flavors: Vanilla and Freestyle-infused.
-
-ONNX-Scala is cross-built against Scala JVM (for Scala 2.11, 2.12 and 2.13.0-M5) , Scala.js / JavaScript (for Scala 2.11 and 2.12) and Scala Native (for Scala 2.11).
-
-To take advantage of union types to express type constraints, a Dotty (Scala 3) build is available. The Dotty build does not support Scala.js or Scala Native.
-
-Due to Freestyle's dependency on the EOLed scalameta paradise compiler plugin, the free variant is not available for Scala 2.13 or Dotty.
-
-Currently at ONNX 1.3.0.
-
-
 ## Getting Started
 
 You'll need sbt.
@@ -47,6 +34,21 @@ libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala-free" % "1.3.0-0.
 ``` 
 
 and build away with the traits provided. Backend implementation (and other) PRs welcome!
+
+
+### Project Details 
+
+Automatic differentiation to enable training is under consideration (ONNX does not provide facilities for training).
+
+Balancing the interests of minimal imposition of dependencies with stack-safe, purely functional programming, ONNX-Scala comes in two flavors: Vanilla and Freestyle-infused.
+
+ONNX-Scala is cross-built against Scala JVM (for Scala 2.11, 2.12 and 2.13.0-M5) , Scala.js / JavaScript (for Scala 2.11 and 2.12) and Scala Native (for Scala 2.11).
+
+To take advantage of union types to express type constraints, a Dotty (Scala 3) build is available. The Dotty build does not support Scala.js or Scala Native.
+
+Due to Freestyle's dependency on the EOLed scalameta paradise compiler plugin, the free variant is not available for Scala 2.13 or Dotty.
+
+Currently at ONNX 1.3.0.
 
 
 ### Built With

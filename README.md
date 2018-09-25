@@ -53,15 +53,23 @@ Currently at ONNX 1.3.0.
 
 ### Built With
 
+# Core
+
 * [Spire](https://github.com/non/spire) - Typelevel project enabling generic numeric programming (For support for unsigned ints, complex numbers, the Numeric type class and type specialization to avoid boxing overhead)
+
+* [Singleton-ops](https://github.com/fthomas/singleton-ops) - Operations for primitive and String singleton types (For compile-time dimension checking)
+
+# Optional - Dotty Variant
 
 * [Dotty](https://github.com/lampepfl/dotty) - A next-generation compiler that will become Scala 3 (For native union types, used here to express ONNX type constraints)
 
-* [Singleton-ops](https://github.com/fthomas/singleton-ops) - Operations for primitive and String singleton types (For compile-time dimension checking)
+# Optional - Free Variant
 
 * [Cats-effect](https://github.com/typelevel/cats-effect) - standard IO type together with Sync, Async and Effect type classes (Or your effect type here)
 
 * [Freestyle](https://github.com/frees-io/freestyle) - pure functional framework for Free and Tagless Final apps & libs (For stack safety and parallelism without sacrificing composition) 
+
+# Program Generator
 
 * [JavaCPP Preset for ONNX 1.3.0](https://github.com/bytedeco/javacpp-presets/tree/master/onnx) - The missing bridge between Java and native C++ libraries (For access to Protobuf definitions and operator schemas)
 

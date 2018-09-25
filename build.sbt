@@ -1,7 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 val dottyVersion = dottyLatestNightlyBuild.get //"0.9.0-RC1"
 val scala211Version = "2.11.12"
-val scala212Version = "2.12.6"
+val scala212Version = "2.12.7"
 val scala213Version = "2.13.0-M5"
 //Might want to remove cats ( conflict with Freestyle's version)
 val catsVersion = "1.4.0"
@@ -12,7 +12,6 @@ lazy val commonSettings = Seq(
   organization := "org.emergentorder.onnx",
   version      := "1.3.0-0.1.0-SNAPSHOT",
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
-  resolvers += "Sonatype OSS Staging" at "https://oss.sonatype.org/content/repositories/staging/",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
   scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
   autoCompilerPlugins := true

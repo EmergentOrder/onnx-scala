@@ -29,7 +29,7 @@ import org.bytedeco.javacpp.onnx._
 class ONNXHelper(modelFileName: String) {
 
   //TODO: Add the rest of the types
-  type ValidTensorProtoTypes = Array[Int | Float]
+  type ValidTensorProtoTypes = Array[Float]
 
   org.bytedeco.javacpp.Loader.load(classOf[org.bytedeco.javacpp.onnx])
 
@@ -93,12 +93,12 @@ class ONNXHelper(modelFileName: String) {
     val TensProtoFloat = TensorProto.FLOAT
 
     val array: ValidTensorProtoTypes = onnxDataType match {
-      case TensProtoInt => {
-        val arrX = dimsToArray[Int](dimsCount, dimsList)
-        bytesBuffer.asIntBuffer.get(arrX)
-        arrX.toArray
-        //arrX.map(x => x.asInstanceOf[VV])
-      }
+//      case TensProtoInt => {
+//        val arrX = dimsToArray[Int](dimsCount, dimsList)
+//        bytesBuffer.asIntBuffer.get(arrX)
+//        arrX.toArray
+//        //arrX.map(x => x.asInstanceOf[VV])
+//      }
       case TensProtoFloat => {
         val arrX = dimsToArray[Float](dimsCount, dimsList)
         bytesBuffer.asFloatBuffer.get(arrX)

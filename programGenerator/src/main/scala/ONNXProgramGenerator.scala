@@ -31,7 +31,7 @@ object ONNXProgramGenerator {
  def main(args: Array[String]) = {
 
   val FS = false
-  val useDotty = true
+  val useDotty = false
   val unionTypeOperator = (if(useDotty) " | " else " TypeOr ")
   //TODO: Get input types from first node
   val inputTypes = "T " + (if(useDotty) "<: " else ": ") + (if(useDotty) "" else "(UNil TypeOr ") +"Float16" + unionTypeOperator + "Float" + unionTypeOperator + "Double" + (if(useDotty) "" else ")#check") + ":Numeric:ClassTag:Field"

@@ -1,5 +1,6 @@
 package org.emergentorder.onnx
 
+import org.emergentorder.onnx.UnionType._
 import scala.reflect.ClassTag
 import spire.implicits._
 import spire.math.UByte
@@ -17,7 +18,7 @@ trait Super_resolution {
   val Reshape: Reshape
   val Transpose: Transpose
   val dataSource: DataSource
-  def program[T <: Float16 | Float | Double:Numeric:ClassTag:Field]: List[Tensor[T]]  = 
+  def program[T : (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check:Numeric:ClassTag:Field]: List[Tensor[T]]  = 
     for {
       node1 <- List(dataSource.inputData[T])
       node8 <- List( dataSource.getParams[T]("8"))

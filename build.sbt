@@ -38,12 +38,12 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
 lazy val commonJS = common.js.disablePlugins(dotty.tools.sbtplugin.DottyPlugin).disablePlugins(dotty.tools.sbtplugin.DottyIDEPlugin)
 
 lazy val programGenerator = (crossProject(JVMPlatform)
-    .crossType(CrossType.Pure) in file("programGenerator")).dependsOn(coreDotty)
+    .crossType(CrossType.Pure) in file("programGenerator")).dependsOn(core)
     .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
     name := "onnx-scala-program-generator",
     libraryDependencies ++= Seq("org.bytedeco.javacpp-presets" % "onnx-platform" % "1.3.0-1.4.3-SNAPSHOT"),
-    scalaVersion := dottyVersion,
+    scalaVersion := scala212Version,
     mainClass in (Compile, run) := Some("org.emergentorder.onnx.ONNXProgramGenerator"),
     libraryDependencies ++=  Seq(
                       ("org.scalameta" %% "scalameta" % "1.8.0").withDottyCompat(dottyVersion) 

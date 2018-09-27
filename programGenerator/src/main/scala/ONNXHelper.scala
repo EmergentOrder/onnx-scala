@@ -49,32 +49,23 @@ class ONNXHelper(modelFileName: String) {
     val dimsArrayInt = dimsList.map(x => x.toInt).toArray
     val arrX = dimsCount match {
       case 1 => Array.ofDim[VV](dimsArrayInt(0))
-      case 2 => Array.ofDim[VV](dimsArrayInt(0), dimsArrayInt(1)).flatten
+      case 2 => Array.ofDim[VV](dimsArrayInt(0) * dimsArrayInt(1))
       case 3 =>
         Array
-          .ofDim[VV](dimsArrayInt(0), dimsArrayInt(1), dimsArrayInt(2))
-          .flatten
-          .flatten
+          .ofDim[VV](dimsArrayInt(0) * dimsArrayInt(1) * dimsArrayInt(2))
       case 4 =>
         Array
-          .ofDim[VV](dimsArrayInt(0),
-                    dimsArrayInt(1),
-                    dimsArrayInt(2),
+          .ofDim[VV](dimsArrayInt(0) *
+                    dimsArrayInt(1) *
+                    dimsArrayInt(2) *
                     dimsArrayInt(3))
-          .flatten
-          .flatten
-          .flatten
       case 5 =>
         Array
-          .ofDim[VV](dimsArrayInt(0),
-                    dimsArrayInt(1),
-                    dimsArrayInt(2),
-                    dimsArrayInt(3),
+          .ofDim[VV](dimsArrayInt(0) *
+                    dimsArrayInt(1) *
+                    dimsArrayInt(2) *
+                    dimsArrayInt(3) *
                     dimsArrayInt(4))
-          .flatten
-          .flatten
-          .flatten
-          .flatten
     }
     arrX
   }

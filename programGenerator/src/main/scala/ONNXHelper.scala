@@ -143,7 +143,7 @@ class ONNXHelper(modelFileName: String) {
     outputArray.filter(x => nodeNames.contains("output_" + x.name.getString))
   }
 
-  def nodeNames = nodes.map(y => y._1)
+  def nodeNames = nodes.map(y => y) // y._1
 
   val inputCount = graph.input_size.toInt
   val input = (0 until inputCount).map(x => graph.input(x)).toList
@@ -152,10 +152,10 @@ class ONNXHelper(modelFileName: String) {
   def nodes = {
     val someNodes = input.map { x =>
       val name = x.name.getString
-      if (params.keys exists (_.equals(name)))
-        ("param_" + name, params.get(name).map(y => y._2))
-      else ("input_" + name, params.get(name).map(y => y._2))
-    } ++ nodeOutputs.flatten.map(y => ("output_" + y, None))
+      if (params exists (_.equals(name)))
+        ("param_" + name)//, params.get(name).map(y => y._2)) //TODO: Separate getting the param arrays
+      else ("input_" + name) //, params.get(name).map(y => y._2))
+    } ++ nodeOutputs.flatten.map(y => ("output_" + y)) //,None))
     someNodes
   }
 
@@ -166,8 +166,9 @@ class ONNXHelper(modelFileName: String) {
     initializer.map { x =>
       val dimsCount = x.dims_size
       val dimsList = (0 until dimsCount.toInt).map(y => x.dims(y)).toList
-      val arrX: ValidTensorProtoTypes = onnxTensorProtoToArray(x)
-      x.name.getString.replaceAll("/", "_") -> (arrX, dimsList)
-    }.toMap
+      //def arrX: ValidTensorProtoTypes = onnxTensorProtoToArray(x)
+      x.name.getString.replaceAll("/", "_") }
+      //-> (arrX, dimsList)
+   // }.toMap
 
 }

@@ -44,7 +44,7 @@ object ONNXProgramGenerator {
 
   def fullSource = {
     val params = onnxHelper.params
-    val nodes = onnxHelper.nodes
+//    val nodes = onnxHelper.nodes
     val nodeInputs = onnxHelper.nodeInputs
     val nodeOutputs = onnxHelper.nodeOutputs
     val outputs = onnxHelper.outputs
@@ -96,8 +96,8 @@ object ONNXProgramGenerator {
     " <- " + (if(FS) "" else "List(") + "dataSource.inputData" +(if(FS) "Free" else "") +"[T]" + (if(FS) "" else ")") + "\n" +
     params
       .map(x =>
-        "      node" + x._1 + " <- "
-          + (if(FS) "" else "List(") + " dataSource.getParams" + (if(FS) "Free" else "") + "[T](\"" + x._1 + "\")" + (if(FS) "" else ")" ) + "\n")
+        "      node" + x + " <- "
+          + (if(FS) "" else "List(") + " dataSource.getParams" + (if(FS) "Free" else "") + "[T](\"" + x + "\")" + (if(FS) "" else ")" ) + "\n")
       .mkString("") +
     (nodesInputsOpsAndOutputs zip attributes)
       .map { x =>

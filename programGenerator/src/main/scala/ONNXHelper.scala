@@ -118,10 +118,10 @@ class ONNXHelper(modelFileName: String) {
                                                             input
                                                             }.toArray.map { x =>
     x.toArray
-      .map(y => y.getString.asInstanceOf[String].replaceAll("/", "_"))
-      .filter(x =>
-        nodeNames.contains("input_" + x) || nodeNames
-          .contains("param_" + x) || nodeNames.contains("output_" + x))
+      .map(y => y.getString.asInstanceOf[String].replaceAll("-", "_").replaceAll("/", "_"))
+      //.filter(x =>
+      //  nodeNames.contains("input_" + x) || nodeNames
+       //   .contains("param_" + x) || nodeNames.contains("output_" + x))
   }
 
   def nodeOutputs = node.map{x =>
@@ -130,7 +130,7 @@ class ONNXHelper(modelFileName: String) {
 
                              output
                              }.toArray.map { x =>
-    x.toArray.map(y => y.getString.asInstanceOf[String].replaceAll("/", "_"))
+    x.toArray.map(y => y.getString.asInstanceOf[String].replaceAll("-", "_").replaceAll("/", "_"))
   }
 
   val globalOutputCount = graph.output_size.toInt
@@ -167,7 +167,7 @@ class ONNXHelper(modelFileName: String) {
       val dimsCount = x.dims_size
       val dimsList = (0 until dimsCount.toInt).map(y => x.dims(y)).toList
       //def arrX: ValidTensorProtoTypes = onnxTensorProtoToArray(x)
-      x.name.getString.replaceAll("/", "_") }
+      x.name.getString.replaceAll("-", "_").replaceAll("/", "_") }
       //-> (arrX, dimsList)
    // }.toMap
 

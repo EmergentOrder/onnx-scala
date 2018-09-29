@@ -36,9 +36,20 @@ object ONNXProgramGenerator {
   //TODO: Get input types from first node
   val inputTypes = "T " + (if(useDotty) "<: " else ": ") + (if(useDotty) "" else "(UNil TypeOr ") +"Float16" + unionTypeOperator + "Float" + unionTypeOperator + "Double" + (if(useDotty) "" else ")#check") + ":Numeric:ClassTag:Field"
 
+
+  //TODO: Fix output for the benchmark models shown here: https://github.com/onnx/backend-scoreboard
+  //TODO: run time benchmarks on the same models
   val fileName = args(0)
   val programName = fileName.stripSuffix(".onnx").capitalize + (if(FS) "Free" else "")
   val path = Paths.get("programGenerator/src/main/scala/generatedprograms/" + programName + ".scala");
+
+  //TODO: Be explicit about model version, metadata
+  //Notes, from the standard:
+  //"Each model MUST explicitly name the operator sets that it relies on for its functionality."
+  //"An implementation must support all operators in the set or reject the model" - This can happen at runtime via Freestyle implicits, possibly mixing backends
+  //"Operator sets other than the default operator set MUST specify its domain and SHOULD use reverse domain names based on the responsible organization's identity, the same convention that is used for naming Java packages." - - "Must be unique among all sets."  - Do not support custom opsets initially, backlog
+  //"Models MUST specify a domain and use reverse domain names based on the responsible organization's identity, the same convention that is traditionally used for naming Java packages." - Encode this
+  //"Note: As of the publication of this document, no ONNX implementation is known to process operator set documents." - backlog
 
   val onnxHelper = new ONNXHelper(fileName)
 

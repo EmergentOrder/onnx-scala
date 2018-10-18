@@ -1,5 +1,5 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
-val dottyVersion = dottyLatestNightlyBuild.get //"0.9.0-RC1"
+val dottyVersion = "0.10.0-RC1"
 val scala211Version = "2.11.12"
 val scala212Version = "2.12.7"
 val scala213Version = "2.13.0-M5"
@@ -8,7 +8,6 @@ val catsVersion = "1.4.0"
 //TODO: Replace wartremover with scalafix
 
 lazy val commonSettings = Seq(
-
   organization := "org.emergentorder.onnx",
   version      := "1.3.0-0.1.0-SNAPSHOT",
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
@@ -42,7 +41,7 @@ lazy val programGenerator = (crossProject(JVMPlatform)
     .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
     name := "onnx-scala-program-generator",
-    libraryDependencies ++= Seq("org.bytedeco.javacpp-presets" % "onnx-platform" % "1.3.0-1.4.3-SNAPSHOT"),
+    libraryDependencies ++= Seq("org.bytedeco.javacpp-presets" % "onnx-platform" % "1.3.0-1.4.4-SNAPSHOT"),
     scalaVersion := scala212Version,
     mainClass in (Compile, run) := Some("org.emergentorder.onnx.ONNXProgramGenerator"),
     libraryDependencies ++=  Seq(
@@ -71,24 +70,30 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
 
       libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_2.12" % "0.16.0",
-                                            "eu.timepit" % "singleton-ops_2.12" % "0.3.0"
+                                            "eu.timepit" % "singleton-ops_2.12" % "0.3.1"
                                            )
         case _ => Seq("org.typelevel" %% "spire" % "0.16.0",
-                      "eu.timepit" %% "singleton-ops" % "0.3.0"
+                      "eu.timepit" %% "singleton-ops" % "0.3.1"
                   )
       })
     )
     .jsSettings(
-      crossScalaVersions := Seq(scala212Version, scala211Version),
-      libraryDependencies ++= Seq("org.typelevel" %%% "spire" % "0.16.0",
-        "eu.timepit" %%% "singleton-ops" % "0.3.0"
-      )
+      crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version),
+      libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_sjs0.6_2.12" % "0.16.0"  excludeAll(
+    ExclusionRule(organization = "org.scala-js")),
+                                            "eu.timepit" %%% "singleton-ops" % "0.3.1"
+                                           )
+        case _ => Seq("org.typelevel" %%% "spire" % "0.16.0",
+                      "eu.timepit" %%% "singleton-ops" % "0.3.1"
+                  )
+      })
     )
     .nativeSettings(
       scalaVersion := scala211Version,
       libraryDependencies ++= Seq(
         "org.typelevel" %% "spire" % "0.16.0",
-        "eu.timepit" %% "singleton-ops" % "0.3.0"
+        "eu.timepit" %% "singleton-ops" % "0.3.1"
       )
     )
 
@@ -103,7 +108,7 @@ lazy val coreDotty = (crossProject(JVMPlatform)
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2") else Nil },
     libraryDependencies ++= Seq(
       ("org.typelevel" %% "spire" % "0.16.0").withDottyCompat(dottyVersion),
-      ("eu.timepit" %% "singleton-ops" % "0.3.0").withDottyCompat(dottyVersion)
+      ("eu.timepit" %% "singleton-ops" % "0.3.1").withDottyCompat(dottyVersion)
     )
 )
 
@@ -143,7 +148,7 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
 
   )
   .jvmSettings(
-    crossScalaVersions := Seq(scala212Version), //TODO: restore scala213Version, scala211Version
+    crossScalaVersions := Seq(scala212Version, scala211Version), 
   )
   .jsSettings(
       crossScalaVersions := Seq(scala212Version, scala211Version),
@@ -152,7 +157,8 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
         "org.typelevel" %%% "cats-effect" % "1.0.0",
         "io.frees" %%% "frees-core" % "0.8.2",
         "io.frees" %%% "iota-core" % "0.3.7"
-      )
+                  ),
+
     )
   .nativeSettings(
       scalaVersion := scala211Version,
@@ -178,8 +184,8 @@ lazy val freeDotty = (crossProject(JVMPlatform)
       ("io.frees" %% "iota-core" % "0.3.7").withDottyCompat(dottyVersion),
       ("org.typelevel" %% "cats-free" % catsVersion).withDottyCompat(dottyVersion),
       ("org.typelevel" %% "cats-effect" % "1.0.0").withDottyCompat(dottyVersion),
-      (compilerPlugin("org.scalameta" % "paradise_2.12.6" % "3.0.0-M11")
-    )
+      (compilerPlugin("org.scalameta" % "paradise_2.12.7" % "3.0.0-M11")),
+    
   )
 
 )

@@ -28,7 +28,7 @@ import spire.math.Number
 import scala.reflect.ClassTag
 
 object ONNXProgramGenerator {
- def main(args: Array[String]) = {
+ def main(args: Array[String]): Unit = {
 
   val FS = false
   val useDotty = false

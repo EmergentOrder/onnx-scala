@@ -188,7 +188,7 @@ object ONNXProgramGenerator {
         val namedNodesOrParams = opInputs.map(t => t._1 + " = " + t._2)
 
         val nodeName = x._1._2(0) 
-        //TODO: Select correct op version instead of 1
+
         "      node" + nodeName + " <- " + (if(FS) ""
           else "List(") + opName + (if(FS) "Free" else "") + "." + opName + sinceVersion + (if(FS) "Free" else "")  + "[T]" +
         "(" +

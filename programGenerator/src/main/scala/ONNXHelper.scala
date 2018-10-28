@@ -114,7 +114,7 @@ class ONNXHelper(modelFileName: String) {
   def nodeInputs = node.map{x => 
                                                               val inputCount = x.input_size.toInt
                                                               val input = (0 until inputCount).map(y => x.input(y)).toList
-
+ 
                                                             input
                                                             }.toArray.map { x =>
     x.toArray

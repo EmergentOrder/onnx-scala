@@ -30,11 +30,20 @@ import scala.reflect.ClassTag
 object ONNXProgramGenerator {
  def main(args: Array[String]): Unit = {
 
+  val schemas = org.bytedeco.javacpp.onnx.OpSchemaRegistry.get_all_schemas_with_history
+  val schemasSize = schemas.size
+  val scalaCollSchemas = (0 until schemasSize.toInt).map(x => schemas.get(x))
+  val schemaMap = scalaCollSchemas.map(
+    x =>
+      x.Name.getString ->
+       (x.inputs, x.since_version)).toMap
+
+
   val FS = false
   val useDotty = false
   val unionTypeOperator = (if(useDotty) " | " else " TypeOr ")
   //TODO: Get input types from first node
-  val inputTypes = "T " + (if(useDotty) "<: " else ": ") + (if(useDotty) "" else "(UNil TypeOr ") +"Float16" + unionTypeOperator + "Float" + unionTypeOperator + "Double" + (if(useDotty) "" else ")#check") + ":Numeric:ClassTag:Field"
+  val inputTypes = "T " + (if(useDotty) "<: " else ": ") + (if(useDotty) "" else "(UNil TypeOr ") +"Float16" + unionTypeOperator + "Float" + unionTypeOperator + "Double" + (if(useDotty) "" else ")#check") + ":Numeric:ClassTag"
 
 
   //TODO: Fix output for the benchmark models shown here: https://github.com/onnx/backend-scoreboard
@@ -108,11 +117,11 @@ object ONNXProgramGenerator {
     params
       .map(x =>
         "      node" + x + " <- "
-          + (if(FS) "" else "List(") + " dataSource.getParams" + (if(FS) "Free" else "") + "[T](\"" + x + "\")" + (if(FS) "" else ")" ) + "\n")
+          + (if(FS) "" else "List(") + " dataSource.getParams" + (if(FS) "Free" else "") + (if(x.contains("reshape")) "[Long]" else "[T]") +"(\"" + x + "\")" + (if(FS) "" else ")" ) + "\n")
       .mkString("") +
     (nodesInputsOpsAndOutputs zip attributes)
       .map { x =>
-        val nodesOrParams = x._1._1._1.map(y => "node" + y + """, """" + y + """"""")
+        val nodesOrParams = x._1._1._1.map(y => "Some(node" + y + (if(y.contains("dropout")) "._1" else "") + ")") // ,""" + y.name.getString + "name" + " = " + """ Some("""" + y + """")""")
         val nodesOrParamsRaw = x._1._1._1.map(y => "node" + y)
           val longFields = x._2
           .filter { y => y.has_i
@@ -166,13 +175,24 @@ object ONNXProgramGenerator {
           }
        
         val opName = x._1._1._2
+
+        val opInputsNames = (0 until schemaMap(opName)._1.size.toInt).map { b => 
+          schemaMap(opName)._1.get(b).GetName.getString
+        }
+
+        val sinceVersion = schemaMap(opName)._2.toString.replaceAll("8","1") //Hack for compatibility with ONNX 1.2.2 models
+
+
+        val opInputs = opInputsNames zip nodesOrParams
+
+        val namedNodesOrParams = opInputs.map(t => t._1 + " = " + t._2)
+
         val nodeName = x._1._2(0) 
         //TODO: Select correct op version instead of 1
         "      node" + nodeName + " <- " + (if(FS) ""
-          else "List(") + opName + (if(FS) "Free" else "") + "." + opName + "1" + (if(FS) "Free" else "")  + "[T]" +
+          else "List(") + opName + (if(FS) "Free" else "") + "." + opName + sinceVersion + (if(FS) "Free" else "")  + "[T]" +
         "(" +
-        """"""" + nodeName + """", """ + //assumes > 0 args
-          nodesOrParams.mkString(",") +
+        """"""" + nodeName + """" """ + //assumes > 0 args
           (if (tensorProtoFields.size > 0) "," else "") +
           tensorProtoFields.mkString(",") +
          (if (longListFields.size > 0) "," else "") +
@@ -181,6 +201,8 @@ object ONNXProgramGenerator {
           stringFields.mkString(",") +
           (if (longFields.size > 0) "," else "") +
           longFields.mkString(",") +
+          "," +
+          namedNodesOrParams.mkString(",") +
           ")" + (if(FS) ""
            // "}" 
             else ")") + "\n"

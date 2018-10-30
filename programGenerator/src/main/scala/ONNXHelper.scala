@@ -145,7 +145,7 @@ class ONNXHelper(modelFileName: String) {
 
   def outputs = {
     val outputArray = globalOutput.toArray
-    outputArray.filter(x => nodeNames.contains("output_" + x.name.getString))
+    outputArray.map(x => x.name.getString.replaceAll("-", "_").replaceAll("/", "_")).filter(x => nodeNames.contains("output_" + x))
   }
 
   def nodeNames = nodes.map(y => y) // y._1

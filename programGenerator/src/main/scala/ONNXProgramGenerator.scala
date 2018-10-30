@@ -130,11 +130,12 @@ object ONNXProgramGenerator {
     params
       .map(x =>
         "      node" + x + " <- "
-          + (if(FS) "" else "List(") + " dataSource.getParams" + (if(FS) "Free" else "") + (if(x.contains("reshape")) "[Long]" else "[T]") +"(\"" + x + "\")" + (if(FS) "" else ")" ) + "\n")
+          + (if(FS) "" else "List(") + " dataSource.getParams" + (if(FS) "Free" else "") + "[T]" +"(\"" + x + "\")" + (if(FS) "" else ")" ) + "\n")
       .mkString("") +
     (nodesInputsOpsAndOutputs zip attributes)
       .map { x =>
-        val nodesOrParams = x._1._1._1.map(y => "Some(node" + y + (if(y.contains("dropout") || y.contains("bn_1")) "._1" else "") + ")") // ,""" + y.name.getString + "name" + " = " + """ Some("""" + y + """")""")
+        //TODO: handle multiple outputs 
+        val nodesOrParams = x._1._1._1.map(y => "Some(node" + y + (if(y.contains("dropout") || y.contains("bn_1") || y.contains("pool5_7x7_s1_2")) "._1" else "") + ")") // ,""" + y.name.getString + "name" + " = " + """ Some("""" + y + """")""")
         val nodesOrParamsRaw = x._1._1._1.map(y => "node" + y)
           val longFields = x._2
           .filter { y => y.has_i
@@ -202,7 +203,9 @@ object ONNXProgramGenerator {
 
         val opInputs = (opInputsNames zip opInputsIsVariadic) zip nodesOrParams
 
-        val namedNodesOrParams = opInputs.map(t => t._1._1.replaceAll("var", "someVar") + " = " + (if(t._1._2) t._2.replaceAll("Some", "Seq(Some").replaceAll("\\)", "\\)\\)") else t._2))
+        val opInputsCleaned = opInputs.map(t => ((t._1._1, t._1._2), (if(opName.contains("Reshape") && sinceVersion.equals("5") && t._1._1.equals("shape")) t._2 + ".asInstanceOf[Option[Tensor[Long]]]" else t._2)))
+
+        val namedNodesOrParams = opInputsCleaned.map(t => t._1._1.replaceAll("var", "someVar") + " = " + (if(t._1._2) t._2.replaceAll("Some", "Seq(Some").replaceAll("\\)", "\\)\\)") else t._2))
 
         val nodeName = x._1._2(0) 
 
@@ -226,7 +229,7 @@ object ONNXProgramGenerator {
       }
       .mkString("") +
     "    } yield (" +
-    outputs.map(x => "node" + x.name.getString).mkString(",") +
+    outputs.map(x => "node" + x).mkString(",") +
     ")\n" +
     "}\n"
   }

@@ -39,10 +39,10 @@ class ONNXHelper(modelFileName: String) {
   ParseProtoFromBytes(res.asInstanceOf[MessageLite], new BytePointer(byteArray:_*), byteArray.length.toLong) 
   val graph = res.graph
 
+  def maxOpsetVersion = res.opset_import(0).version
+//  println("max opset : " + maxOpsetVersion)
 
-  //  val maxOpsetVersion = res.opsetImport
-  //println("max opset : " + maxOpsetVersion)
-  //val maxOpsetVersion = res.opset_import(0).version
+
 
   def dimsToArray[VV:spire.math.Numeric: ClassTag](dimsCount: Int,
                                dimsList: List[Long]): Array[VV] = {

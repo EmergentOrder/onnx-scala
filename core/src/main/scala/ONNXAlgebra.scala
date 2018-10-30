@@ -202,7 +202,7 @@ trait Clip extends Operator {
 }
 trait Concat extends Operator {
 
-  def Concat4[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)],inputs: Option[Tensor[T]]*)
+  def Concat4[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)],inputs: Seq[Option[Tensor[T]]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])    : (Tensor[T])
 
 }
@@ -534,7 +534,7 @@ trait LogSoftmax extends Operator {
 }
 trait Loop extends Operator {
 
-  def Loop1[@sp I : Numeric:ClassTag,@sp B : Numeric:ClassTag,@sp V : Numeric:ClassTag](name: String,body : Option[(Graph)],M: Option[I], cond: Option[B],v_initial: Option[Tensor[V]]*)
+  def Loop1[@sp I : Numeric:ClassTag,@sp B : Numeric:ClassTag,@sp V : Numeric:ClassTag](name: String,body : Option[(Graph)],M: Option[I], cond: Option[B],v_initial: Seq[Option[Tensor[V]]])
 (implicit evI:(UNil TypeOr Long)#check[I],evB:(UNil TypeOr Boolean)#check[B],evV:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[V])    : (Tensor[V])
 
 }
@@ -562,11 +562,11 @@ trait MatMul extends Operator {
 }
 trait Max extends Operator {
 
-  def Max6[@sp T : Numeric:ClassTag](name: String,data_0: Option[Tensor[T]]*)
+  def Max6[@sp T : Numeric:ClassTag](name: String,data_0: Seq[Option[Tensor[T]]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 
-  def Max8[@sp T : Numeric:ClassTag](name: String,data_0: Option[Tensor[T]]*)
+  def Max8[@sp T : Numeric:ClassTag](name: String,data_0: Seq[Option[Tensor[T]]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 }
@@ -588,11 +588,11 @@ trait MaxRoiPool extends Operator {
 }
 trait Mean extends Operator {
 
-  def Mean6[@sp T : Numeric:ClassTag](name: String,data_0: Option[Tensor[T]]*)
+  def Mean6[@sp T : Numeric:ClassTag](name: String,data_0: Seq[Option[Tensor[T]]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 
-  def Mean8[@sp T : Numeric:ClassTag](name: String,data_0: Option[Tensor[T]]*)
+  def Mean8[@sp T : Numeric:ClassTag](name: String,data_0: Seq[Option[Tensor[T]]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 }
@@ -604,11 +604,11 @@ trait MeanVarianceNormalization extends Operator {
 }
 trait Min extends Operator {
 
-  def Min6[@sp T : Numeric:ClassTag](name: String,data_0: Option[Tensor[T]]*)
+  def Min6[@sp T : Numeric:ClassTag](name: String,data_0: Seq[Option[Tensor[T]]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 
-  def Min8[@sp T : Numeric:ClassTag](name: String,data_0: Option[Tensor[T]]*)
+  def Min8[@sp T : Numeric:ClassTag](name: String,data_0: Seq[Option[Tensor[T]]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 }
@@ -974,11 +974,11 @@ trait Sub extends Operator {
 }
 trait Sum extends Operator {
 
-  def Sum6[@sp T : Numeric:ClassTag](name: String,data_0: Option[Tensor[T]]*)
+  def Sum6[@sp T : Numeric:ClassTag](name: String,data_0: Seq[Option[Tensor[T]]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 
-  def Sum8[@sp T : Numeric:ClassTag](name: String,data_0: Option[Tensor[T]]*)
+  def Sum8[@sp T : Numeric:ClassTag](name: String,data_0: Seq[Option[Tensor[T]]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 }

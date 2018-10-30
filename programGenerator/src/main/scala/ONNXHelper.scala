@@ -39,7 +39,12 @@ class ONNXHelper(modelFileName: String) {
   ParseProtoFromBytes(res.asInstanceOf[MessageLite], new BytePointer(byteArray:_*), byteArray.length.toLong) 
   val graph = res.graph
 
-  def maxOpsetVersion = res.opset_import(0).version
+  def maxOpsetVersion = try{
+    res.opset_import(0).version
+  } catch{
+      case e: Exception => { 1 }
+  }
+
 //  println("max opset : " + maxOpsetVersion)
 
 

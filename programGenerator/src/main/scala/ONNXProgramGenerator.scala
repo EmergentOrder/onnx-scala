@@ -30,10 +30,23 @@ import scala.reflect.ClassTag
 object ONNXProgramGenerator {
  def main(args: Array[String]): Unit = {
 
+  @SuppressWarnings(Array("org.wartremover.warts.Equals"))
+  implicit final class AnyOps[A](self: A) {
+    def ===(other: A): Boolean = self == other
+  }
+
+  val fileName = args(0)
+  val onnxHelper = new ONNXHelper(fileName)
+
+  val maxOpsetVersion = onnxHelper.maxOpsetVersion
+
+
   val schemas = org.bytedeco.javacpp.onnx.OpSchemaRegistry.get_all_schemas_with_history
   val schemasSize = schemas.size
+
   val scalaCollSchemas = (0 until schemasSize.toInt).map(x => schemas.get(x))
-  val schemaMap = scalaCollSchemas.map(
+  val schemaMap = scalaCollSchemas.filter(x => x.since_version <= maxOpsetVersion)
+    .map(
     x =>
       x.Name.getString ->
        (x.inputs, x.since_version)).toMap
@@ -48,7 +61,7 @@ object ONNXProgramGenerator {
 
   //TODO: Fix output for the benchmark models shown here: https://github.com/onnx/backend-scoreboard
   //TODO: run time benchmarks on the same models
-  val fileName = args(0)
+
   val programName = fileName.stripSuffix(".onnx").capitalize + (if(FS) "Free" else "")
   val path = Paths.get("programGenerator/src/main/scala/generatedprograms/" + programName + ".scala");
 
@@ -60,7 +73,7 @@ object ONNXProgramGenerator {
   //"Models MUST specify a domain and use reverse domain names based on the responsible organization's identity, the same convention that is traditionally used for naming Java packages." - Encode this
   //"Note: As of the publication of this document, no ONNX implementation is known to process operator set documents." - backlog
 
-  val onnxHelper = new ONNXHelper(fileName)
+ 
 
   def fullSource = {
     val params = onnxHelper.params
@@ -121,7 +134,7 @@ object ONNXProgramGenerator {
       .mkString("") +
     (nodesInputsOpsAndOutputs zip attributes)
       .map { x =>
-        val nodesOrParams = x._1._1._1.map(y => "Some(node" + y + (if(y.contains("dropout")) "._1" else "") + ")") // ,""" + y.name.getString + "name" + " = " + """ Some("""" + y + """")""")
+        val nodesOrParams = x._1._1._1.map(y => "Some(node" + y + (if(y.contains("dropout") || y.contains("bn_1")) "._1" else "") + ")") // ,""" + y.name.getString + "name" + " = " + """ Some("""" + y + """")""")
         val nodesOrParamsRaw = x._1._1._1.map(y => "node" + y)
           val longFields = x._2
           .filter { y => y.has_i
@@ -180,12 +193,16 @@ object ONNXProgramGenerator {
           schemaMap(opName)._1.get(b).GetName.getString
         }
 
-        val sinceVersion = schemaMap(opName)._2.toString.replaceAll("8","1") //Hack for compatibility with ONNX 1.2.2 models
+        val opInputsIsVariadic = (0 until schemaMap(opName)._1.size.toInt).map { b =>
+          schemaMap(opName)._1.get(b).GetOption === 2
+        }
+
+        val sinceVersion = schemaMap(opName)._2.toString //.replaceAll("8","1") //Hack for compatibility with ONNX 1.2.2 models
 
 
-        val opInputs = opInputsNames zip nodesOrParams
+        val opInputs = (opInputsNames zip opInputsIsVariadic) zip nodesOrParams
 
-        val namedNodesOrParams = opInputs.map(t => t._1 + " = " + t._2)
+        val namedNodesOrParams = opInputs.map(t => t._1._1.replaceAll("var", "someVar") + " = " + (if(t._1._2) t._2.replaceAll("Some", "Seq(Some").replaceAll("\\)", "\\)\\)") else t._2))
 
         val nodeName = x._1._2(0) 
 

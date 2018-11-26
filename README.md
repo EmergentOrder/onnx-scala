@@ -57,7 +57,7 @@ sbt "project programGeneratorJVM" "run squeezenet.onnx"
 
 The resulting generated program appears as `programGenerator/src/main/scala/generatedprograms/Squeezenet.scala` and you can run `sbt compile` to confirm that the generated code compiles.
 
-### Project Details 
+## Project Details 
 
 Automatic differentiation to enable training is under consideration (ONNX does not provide facilities for training).
 

@@ -43,6 +43,19 @@ libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala-free" % "1.3.0-0.
 
 and build away with the traits provided. Backend implementation (and other) PRs welcome!
 
+## Program Generator
+
+To generate an ONNX-Scala program from an ONNX Protobuf file (often `*.onnx`):
+
+First get `squeezenet.onnx` [here](https://s3.amazonaws.com/download.onnx/models/opset_8/squeezenet.tar.gz) (rename `model.onnx` from inside the tar.gz).
+
+Then:
+
+```
+sbt "project programGeneratorJVM" "run squeezenet.onnx"
+```
+
+The resulting generated program appears as `programGenerator/src/main/scala/generatedprograms/Squeezenet.scala` and you can run `sbt compile` to confirm that the generated code compiles.
 
 ### Project Details 
 

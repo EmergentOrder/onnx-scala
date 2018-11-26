@@ -52,7 +52,7 @@ object ONNXProgramGenerator {
           (x.inputs, x.since_version))
       .toMap
 
-    val FS = true
+    val FS = false
     val useDotty = false
     val unionTypeOperator = (if (useDotty) " | " else " TypeOr ")
     //TODO: Get input types from first node

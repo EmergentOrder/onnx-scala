@@ -97,7 +97,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
       )
     )
 
-lazy val coreDotty = (crossProject(JVMPlatform)
+lazy val coreDotty = (crossProject(JVMPlatform) //TODO: fix fail on common in clean cross-build
   .crossType(CrossType.Pure)).in(file("coreDotty")).dependsOn(common)
   .enablePlugins(dotty.tools.sbtplugin.DottyPlugin)
   .disablePlugins(wartremover.WartRemover)

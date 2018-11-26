@@ -41,7 +41,7 @@ lazy val programGenerator = (crossProject(JVMPlatform)
     .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
     name := "onnx-scala-program-generator",
-    libraryDependencies ++= Seq("org.bytedeco.javacpp-presets" % "onnx-platform" % "1.3.0-1.4.4-SNAPSHOT"),
+    libraryDependencies ++= Seq("org.bytedeco.javacpp-presets" % "onnx-platform" % "1.3.0-1.4.3"),
     scalaVersion := scala212Version,
     mainClass in (Compile, run) := Some("org.emergentorder.onnx.ONNXProgramGenerator"),
     libraryDependencies ++=  Seq(

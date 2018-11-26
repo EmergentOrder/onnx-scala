@@ -47,7 +47,15 @@ and build away with the traits provided. Backend implementation (and other) PRs 
 
 To generate an ONNX-Scala program from an ONNX Protobuf file (often `*.onnx`):
 
-First get `squeezenet.onnx` [here](https://s3.amazonaws.com/download.onnx/models/opset_8/squeezenet.tar.gz) (rename `model.onnx` from inside the tar.gz).
+Depending on the size of the ONNX model, you may need to 
+
+```
+export SBT_OPTS="-XX:+CMSClassUnloadingEnabled -Xmx28G -Xss8M -XX:MaxMetaspaceSize=1024M"
+```
+
+either each time in the terminal, or in your `~/.bashrc` file or equivalent, or you will encounter errors.
+
+Now, get `squeezenet.onnx` [here](https://s3.amazonaws.com/download.onnx/models/opset_8/squeezenet.tar.gz) (rename `model.onnx` from inside the tar.gz). This model and more can be found in the [ONNX Model Zoo](https://github.com/onnx/models).
 
 Then:
 

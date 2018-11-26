@@ -18,8 +18,16 @@ All together, these should enable model inspection and modification, extra compi
 You'll need sbt.
 
 ```
+sbt publishLocal
+```
+
+or 
+
+```
 sbt +publishLocal
 ```
+
+to build against all of Scala 2.11, 2.12, 2.13 Milestone, and Dotty/3.0, where possible.
 
 Then you can add this to your project's build.sbt 
 

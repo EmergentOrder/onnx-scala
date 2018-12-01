@@ -23,7 +23,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     name := "onnx-scala-common"
   )
   .jvmSettings(
-    scalaVersion := dottyVersion,
+    scalaVersion := scala212Version,
     crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version),
     publishArtifact in (Compile, packageDoc) := false
   )

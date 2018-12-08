@@ -24,7 +24,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
   )
   .jvmSettings(
     scalaVersion := scala212Version,
-    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version),
+    crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version),
     publishArtifact in (Compile, packageDoc) := false
   )
   .jsSettings(
@@ -32,6 +32,17 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
   )
   .nativeSettings(
     scalaVersion := scala211Version
+  )
+
+lazy val commonDotty = (crossProject(JVMPlatform)
+    .crossType(CrossType.Pure) in file("commonDotty"))
+  .disablePlugins(wartremover.WartRemover)
+  .settings( commonSettings,
+    name := "onnx-scala-common"
+  )
+  .jvmSettings(
+    scalaVersion := dottyVersion,
+    publishArtifact in (Compile, packageDoc) := false
   )
 
 lazy val commonJS = common.js.disablePlugins(dotty.tools.sbtplugin.DottyPlugin).disablePlugins(dotty.tools.sbtplugin.DottyIDEPlugin)
@@ -98,7 +109,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     )
 
 lazy val coreDotty = (crossProject(JVMPlatform) //TODO: fix fail on common in clean cross-build
-  .crossType(CrossType.Pure)).in(file("coreDotty")).dependsOn(common)
+  .crossType(CrossType.Pure)).in(file("coreDotty")).dependsOn(commonDotty)
   .enablePlugins(dotty.tools.sbtplugin.DottyPlugin)
   .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,

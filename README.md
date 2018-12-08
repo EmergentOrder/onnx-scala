@@ -6,7 +6,7 @@ A) a complete, versioned, numerically generic, type-safe / typeful API to ONNX(O
 
 This API is expressed via traits, with version-named methods. For example, Abs, the absolute value operator (defined in operator sets 1 and 6):
 
-```
+```scala
 trait Abs extends Operator {
 
     def Abs1[@sp T: Numeric: ClassTag](name: String,
@@ -25,7 +25,7 @@ trait Abs extends Operator {
 
 B) a program generator, capable of translating ONNX model Protobuf (.onnx) files into Scala programs written in terms of this API. For example, a no-op network:
 
-```
+```scala
 trait NoOpNet {
   val dataSource: DataSource
   def program[

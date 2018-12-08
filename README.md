@@ -23,17 +23,23 @@ trait Abs extends Operator {
 }
 ```
 
-B) a program generator, capable of translating ONNX model Protobuf (.onnx) files into Scala programs written in terms of this API. For example, a no-op network:
+B) a program generator, capable of translating ONNX model Protobuf (.onnx) files into Scala programs written in terms of this API. For example, an "absolute value network":
 
 ```scala
-trait NoOpNet {
+trait AbsNet {
   val dataSource: DataSource
+  val abs: Abs
   def program[
       T: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check: Numeric: ClassTag]
     : List[Tensor[T]] =
     for {
       nodedata <- List(dataSource.inputData[T])
-    } yield (nodedata)
+      nodeabs <- List(
+        Abs.Abs6[T](
+          "abs",
+          X = Some(nodedata)
+        ))
+    } yield (nodeabs)
 }
 ```
 

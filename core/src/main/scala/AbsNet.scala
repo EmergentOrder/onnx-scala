@@ -13,7 +13,7 @@ import scala.language.higherKinds
 
 trait AbsNet {
   val dataSource: DataSource
-  val abs: Abs
+  val Abs: Abs
   def program[
       T: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check: Numeric: ClassTag]
     : List[Tensor[T]] =
@@ -22,7 +22,7 @@ trait AbsNet {
       nodeabs <- List(
         Abs.Abs6[T](
           "abs",
-          X = Some(nodedata),
+          X = Some(nodedata)
         ))
     } yield (nodeabs)
 }

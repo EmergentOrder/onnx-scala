@@ -69,13 +69,13 @@ to build against all of Scala 2.11, 2.12, 2.13 Milestone, and Dotty/3.0, where p
 Then you can add this to your project's build.sbt 
 
 ```scala
-libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala" % "1.3.0-0.1.0-SNAPSHOT"
+libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala" % "1.4.1-0.1.0-SNAPSHOT"
 ```
 
 or 
 
 ```scala
-libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala-free" % "1.3.0-0.1.0-SNAPSHOT"
+libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala-free" % "1.4.1-0.1.0-SNAPSHOT"
 ``` 
 
 and build away with the traits provided. Backend implementation (and other) PRs welcome!
@@ -114,7 +114,7 @@ To take advantage of union types to express type constraints, a Dotty (Scala 3) 
 
 Due to Freestyle's dependency on the EOLed scalameta paradise compiler plugin, the free variant is not available for Scala 2.13 or Dotty.
 
-Currently at ONNX 1.3.0.
+Currently at ONNX 1.4.1.
 
 
 ### Built With
@@ -137,7 +137,7 @@ Currently at ONNX 1.3.0.
 
 #### Program Generator
 
-* [JavaCPP Preset for ONNX 1.3.0](https://github.com/bytedeco/javacpp-presets/tree/master/onnx) - The missing bridge between Java and native C++ libraries (For access to Protobuf definitions and operator schemas)
+* [JavaCPP Preset for ONNX 1.4.1](https://github.com/bytedeco/javacpp-presets/tree/master/onnx) - The missing bridge between Java and native C++ libraries (For access to Protobuf definitions and operator schemas)
 
 * [Scalameta](https://github.com/scalameta/scalameta) - Library to read, analyze, transform and generate Scala programs (For a runtime parse pass of generated programs)
 

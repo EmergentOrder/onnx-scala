@@ -1,5 +1,5 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
-val dottyVersion = "0.13.0-RC1"
+val dottyVersion = "0.12.0"
 val scala211Version = "2.11.12"
 val scala212Version = "2.12.8"
 val scala213Version = "2.13.0-M5"
@@ -152,7 +152,7 @@ lazy val coreDotty = (crossProject(JVMPlatform) //TODO: fix fail on common in cl
 )
 
 lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
-    .crossType(CrossType.Pure) in file("free")) //.dependsOn(backends)
+    .crossType(CrossType.Pure) in file("free")).dependsOn(core) //.dependsOn(backends)
   .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
   .settings( commonSettings,
     name := "onnx-scala-free", 

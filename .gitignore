@@ -1,0 +1,16 @@
+common/.js/
+common/.jvm/
+common/.native/
+commonDotty/.jvm/
+core/.js/
+core/.jvm/
+core/.native/
+coreDotty/.jvm/
+free/.js/
+free/.jvm/
+free/.native/
+node_modules/
+programGenerator/.jvm/
+project/project/
+project/target/
+target/

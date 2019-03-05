@@ -152,7 +152,7 @@ lazy val coreDotty = (crossProject(JVMPlatform) //TODO: fix fail on common in cl
 )
 
 lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
-    .crossType(CrossType.Pure) in file("free")).dependsOn(backends)
+    .crossType(CrossType.Pure) in file("free")) //.dependsOn(backends)
   .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
   .settings( commonSettings,
     name := "onnx-scala-free", 

@@ -64,7 +64,7 @@ lazy val programGenerator = (crossProject(JVMPlatform)
     publishArtifact in (Compile, packageDoc) := false
   )
 
-/*
+
 lazy val backends = (crossProject(JVMPlatform, JSPlatform, NativePlatform)
     .crossType(CrossType.Pure) in file("backends")).dependsOn(core) //Should split into core and free?
     .disablePlugins(wartremover.WartRemover)
@@ -87,7 +87,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .nativeSettings(
     scalaVersion := scala211Version
   )
-*/
+
 
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
@@ -152,7 +152,7 @@ lazy val coreDotty = (crossProject(JVMPlatform) //TODO: fix fail on common in cl
 )
 
 lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
-    .crossType(CrossType.Pure) in file("free")).dependsOn(core) //.dependsOn(backends)
+    .crossType(CrossType.Pure) in file("free")).dependsOn(backends)
   .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
   .settings( commonSettings,
     name := "onnx-scala-free", 

@@ -48,6 +48,9 @@ ONNX-Scala will also be home to:
 
 C) at least one, eventually many backend implementations of ONNX accessible from the JVM.
 
+Currently there is a rough sketch of an [nGraph](https://github.com/NervanaSystems/ngraph) backend, which is capable of running a single ReLU node network, based on the new nGraph JavaCPP Preset.
+
+
 All together, these should enable model inspection and modification, extra compile-time assurances, mixing/matching of backend operator implementations and integration into JVM-based production systems, for a start.
 
 ## Getting Started

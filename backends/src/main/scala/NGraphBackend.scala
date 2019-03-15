@@ -250,38 +250,6 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
         result
       }
 
-      /*
-  def addInput(input: Option[Tensor[T]], inputName: String){
-
-    input match {
-          case Some(tens) => {
-            node.add_input(inputName)
-
-            val inputValueInfo = graph.add_input
-
-            inputValueInfo.set_name(inputName)
-            inputValueInfo.mutable_type
-            inputValueInfo.`type`.mutable_tensor_type
-            inputValueInfo.`type`.tensor_type.set_elem_type(1) //missing : type
-
-            val dims = tens._2
-            inputValueInfo.`type`.tensor_type.mutable_shape
-            dims.foreach{x =>
-              val inputDim = inputValueInfo.`type`.tensor_type.shape.add_dim
-
-//              inputDim.set_dim_param("NAME?")
-              inputDim.set_dim_value(x)
-//              println("in dim val " + x)
-            }
-          }
-          case None =>
-
-          }
-
-  }
-
-*/
-
   def MaxPool1[@sp T: Numeric: ClassTag](name: String,
                                            auto_pad: Option[(String)] = None,
                                            kernel_shape: Option[(Array[Int])],
@@ -384,30 +352,5 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
             val map: Map[String, Any] = Map("shape" -> shape)
             unaryOrBinaryOp(name, "Reshape", data, None, map) 
           }
-
-
-/*
-                                            abstract class Node
-    case class convNode(inputs: Seq[String], output: String, attributes: Map[String, Seq[Int]]) extends Node
-    case class bnNode(inputs: Seq[String], output: String, attributeMap: Map[String, Float]) extends Node
-    case class sumNode(inputs: Seq[String], output: String) extends Node
-    case class reluNode(input: String, output: String) extends Node
-    case class maxpoolNode(input: String, output: String, attributes: Map[String, Seq[Int]]) extends Node
-    case class averagePoolNode(input: String, output: String, attributes: Map[String, Seq[Int]]) extends Node
-    case class concatNode(inputs: Seq[String], output: String, axis: Int) extends Node
-    case class dropoutNode(input: String, outputs: Seq[String], ratio: Float) extends Node
-    case class globalAveragePoolNode(input: String, output: String) extends Node
-    case class softmaxNode(input: String, output: String) extends Node
-    case class reshapeNode(inputs: Seq[String], output: String) extends Node
-    case class gemmNode(inputs: Seq[String], output: String, attInts: Map[String, Int], attFloats: Map[String, Float]) extends Node
-    case class flattenNode(input: String, output: String, axis: Int) extends Node
-    case class addNode(inputs: Seq[String], output: String) extends Node
-    case class padNode(input: String, output: String, mode: String, pads: List[Int], value: Float) extends Node
-    case class shapeNode(input: String, output: String) extends Node
-    case class sliceNode(input: String, output: String, attMap: Map[String, List[Int]]) extends Node
-    case class squeezeNode(input: String, output: String, axes: List[Int]) extends Node
-    case class unsqueezeNode(input: String, output: String, axes: List[Int]) extends Node
-    case class constantNode(output: String, data: Float) extends Node
-*/
 
 }

@@ -57,6 +57,17 @@ All together, these should enable model inspection and modification, extra compi
 
 You'll need sbt.
 
+Due to an issue with Sonatype, until the release of JavaCPP Presets 1.5, you will first need to manually compile and install the following:
+
+onnx
+onnx-platform
+ngraph
+ngraph-platform
+mkl-dnn
+mkl-dnn-platform
+
+See the [JavaCPP Presets README](https://github.com/bytedeco/javacpp-presets/blob/master/README.md) for further details.
+
 ```
 sbt publishLocal
 ```

@@ -12,7 +12,7 @@ lazy val commonSettings = Seq(
   organization := "org.emergentorder.onnx",
   version      := "1.4.1-0.1.0-SNAPSHOT",
   resolvers += Resolver.mavenLocal, //TODO: fix issue with mkl-dnn JavaCPP preset resolution
-  resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
+//  resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
   scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
   autoCompilerPlugins := true
@@ -55,7 +55,7 @@ lazy val programGenerator = (crossProject(JVMPlatform)
     .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
     name := "onnx-scala-program-generator",
-    libraryDependencies ++= Seq("org.bytedeco.javacpp-presets" % "onnx-platform" % "1.4.1-1.5-SNAPSHOT"),
+    libraryDependencies ++= Seq("org.bytedeco" % "onnx-platform" % "1.4.1-1.5-SNAPSHOT"),
     scalaVersion := scala212Version,
     mainClass in (Compile, run) := Some("org.emergentorder.onnx.ONNXProgramGenerator"),
     libraryDependencies ++=  Seq(
@@ -70,11 +70,11 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform, NativePlatform)
     .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
     name := "onnx-scala-backends",
-    libraryDependencies ++= Seq("org.bytedeco.javacpp-presets" % "onnx-platform" % "1.4.1-1.5-SNAPSHOT",
+    libraryDependencies ++= Seq("org.bytedeco" % "onnx-platform" % "1.4.1-1.5-SNAPSHOT",
                                ),
     scalaVersion := scala212Version,
 //    mainClass in (Compile, run) := Some("org.emergentorder.onnx.ONNXProgramGenerator"),
-   libraryDependencies ++= Seq("org.bytedeco.javacpp-presets" % "ngraph-platform" % "0.15.0-1.5-SNAPSHOT"),
+   libraryDependencies ++= Seq("org.bytedeco" % "ngraph-platform" % "0.15.0-1.5-SNAPSHOT"),
 
     publishArtifact in (Compile, packageDoc) := false
   )

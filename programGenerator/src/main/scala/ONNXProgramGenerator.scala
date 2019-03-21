@@ -21,7 +21,7 @@ package org.emergentorder.onnx
 import java.nio.file._
 import java.nio.ByteBuffer
 import scala.meta._
-import org.bytedeco.javacpp.onnx.TensorProto
+import org.bytedeco.onnx.TensorProto
 import collection.JavaConverters._
 import spire.math.Number
 
@@ -41,7 +41,7 @@ object ONNXProgramGenerator {
     val maxOpsetVersion = onnxHelper.maxOpsetVersion
 
     val schemas =
-      org.bytedeco.javacpp.onnx.OpSchemaRegistry.get_all_schemas_with_history
+      org.bytedeco.onnx.OpSchemaRegistry.get_all_schemas_with_history
     val schemasSize = schemas.size
 
     val scalaCollSchemas = (0 until schemasSize.toInt).map(x => schemas.get(x))

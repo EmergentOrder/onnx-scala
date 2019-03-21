@@ -20,13 +20,13 @@ import spire.math.Complex
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.UnionType._
 import org.bytedeco.javacpp._;
-import org.bytedeco.javacpp.onnx.ModelProto;
-import org.bytedeco.javacpp.onnx.ParseProtoFromBytes;
-import org.bytedeco.javacpp.onnx.MessageLite;
-import org.bytedeco.javacpp.onnx.NodeProto;
-import org.bytedeco.javacpp.ngraph.import_onnx_model
-import org.bytedeco.javacpp.ngraph.Backend
-import org.bytedeco.javacpp.ngraph.f32
+import org.bytedeco.onnx.ModelProto;
+import org.bytedeco.onnx.global.onnx.ParseProtoFromBytes;
+import org.bytedeco.onnx.MessageLite;
+import org.bytedeco.onnx.NodeProto;
+import org.bytedeco.ngraph.global.ngraph.import_onnx_model
+import org.bytedeco.ngraph.Backend
+import org.bytedeco.ngraph.global.ngraph.f32
 
 
 class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout with AveragePool with Reshape{
@@ -100,7 +100,7 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
       : (Tensor[T]) = {
 
         val model = new ModelProto()
-        val graph = new org.bytedeco.javacpp.onnx.GraphProto
+        val graph = new org.bytedeco.onnx.GraphProto
         val node = graph.add_node
     
 //        println("name : " + name)
@@ -194,10 +194,10 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
         val ngraphBackend = Backend.create("CPU") 
 
 
-        val shape:org.bytedeco.javacpp.ngraph.Shape = X match {
+        val shape:org.bytedeco.ngraph.Shape = X match {
           case Some(tens) => {
             val dims = tens._2
-            val s =   new org.bytedeco.javacpp.ngraph.Shape(tens._2.size)
+            val s =   new org.bytedeco.ngraph.Shape(tens._2.size)
             s.resize(tens._2.size)
             val longShape = tens._2.map{x => 
 //            println("Shape val: " + x)
@@ -205,7 +205,7 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
             s.put(longShape: _*)
             s
           }
-          case None =>  new org.bytedeco.javacpp.ngraph.Shape
+          case None =>  new org.bytedeco.ngraph.Shape
 
           }
        
@@ -217,13 +217,13 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
         }
         val input = ngraphBackend.create_tensor(f32, shape, inputTens)
         val output = ngraphBackend.create_tensor(f32, shape)
-        val inputVector = new org.bytedeco.javacpp.ngraph.NgraphTensorVector(input)
-        val outputVector = new org.bytedeco.javacpp.ngraph.NgraphTensorVector(output)
+        val inputVector = new org.bytedeco.ngraph.NgraphTensorVector(input)
+        val outputVector = new org.bytedeco.ngraph.NgraphTensorVector(output)
 
 //        println("sizes " + shape)
           //+ inputVector.size + " " + outputVector.size)
-        ngraphBackend.compile(ngraphFunc)
-        ngraphBackend.call(ngraphFunc, outputVector, inputVector)
+        val executable = ngraphBackend.compile(ngraphFunc)
+        executable.call(outputVector, inputVector)
         //convert result to onnx-scala Tensor
         
         val arraySize = (0 until shape.size.toInt).map{ x =>

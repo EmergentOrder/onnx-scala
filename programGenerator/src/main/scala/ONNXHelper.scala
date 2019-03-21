@@ -24,14 +24,15 @@ import collection.JavaConverters._
 import scala.reflect.ClassTag
 
 import org.bytedeco.javacpp._
-import org.bytedeco.javacpp.onnx._
+import org.bytedeco.onnx._
+import org.bytedeco.onnx.global.onnx._
 
 class ONNXHelper(modelFileName: String) {
 
   //TODO: Add the rest of the types
   type ValidTensorProtoTypes = Array[Float]
 
-  org.bytedeco.javacpp.Loader.load(classOf[org.bytedeco.javacpp.onnx])
+//  org.bytedeco.javacpp.Loader.load(classOf[org.bytedeco.onnx])
 
   val byteArray = Files.readAllBytes(Paths.get(modelFileName))
 

@@ -57,7 +57,7 @@ All together, these should enable model inspection and modification, extra compi
 
 You'll need sbt.
 
-At the moment, you will need to install Intel MKL. Instructions for installing on Debian/Ubuntu are [here](https://software.intel.com/en-us/articles/installing-intel-free-libs-and-python-apt-repo)
+At the moment, you will need to install Intel MKL. Instructions for installing on Debian/Ubuntu are [here](https://software.intel.com/en-us/articles/installing-intel-free-libs-and-python-apt-repo). 
 MKL is required by the JavaCPP Preset for MKL-DNN, which is required by the JavaCPP Preset for nGraph. However, MKL-DNN itself does not require MKL (which is not available under a Free/Libre/Open Source license), so nor should the MKL-DNN Preset. Stay tuned for a fix for this so that the entire stack can once again be FLOSS.
 
 Due to an issue with Sonatype, until the release of JavaCPP Presets 1.5, you will first need to manually compile and install the following:

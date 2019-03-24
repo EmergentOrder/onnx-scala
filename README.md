@@ -55,21 +55,9 @@ All together, these should enable model inspection and modification, extra compi
 
 ## Getting Started
 
+Due to an issue with Sonatype, until the release of JavaCPP Presets 1.5, you may need to manually copy the [ONNX](https://oss.sonatype.org/content/repositories/snapshots/org/bytedeco/onnx/1.4.1-1.5-SNAPSHOT/), [nGraph](https://oss.sonatype.org/content/repositories/snapshots/org/bytedeco/ngraph/0.15.0-1.5-SNAPSHOT/) and [MKL-DNN](https://oss.sonatype.org/content/repositories/snapshots/org/bytedeco/mkl-dnn/0.18.1-1.5-SNAPSHOT/) Preset jars to your local ivy or maven repo (follow the download errors on compile).
+
 You'll need sbt.
-
-At the moment, you will need to install Intel MKL. Instructions for installing on Debian/Ubuntu are [here](https://software.intel.com/en-us/articles/installing-intel-free-libs-and-python-apt-repo). 
-MKL is required by the JavaCPP Preset for MKL-DNN, which is required by the JavaCPP Preset for nGraph. However, MKL-DNN itself does not require MKL (which is not available under a Free/Libre/Open Source license), so nor should the MKL-DNN Preset. Stay tuned for a fix for this so that the entire stack can once again be FLOSS.
-
-Due to an issue with Sonatype, until the release of JavaCPP Presets 1.5, you will first need to manually compile and install the following:
-
-onnx
-onnx-platform
-ngraph
-ngraph-platform
-mkl-dnn
-mkl-dnn-platform
-
-See the [JavaCPP Presets README](https://github.com/bytedeco/javacpp-presets/blob/master/README.md) for further details.
 
 ```
 sbt publishLocal

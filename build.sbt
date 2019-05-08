@@ -4,7 +4,7 @@ val scala211Version = "2.11.12"
 val scala212Version = "2.12.8"
 val scala213Version = "2.13.0-M5"
 //Might want to remove cats ( conflict with Freestyle's version)
-val catsVersion = "1.6.0"
+val catsVersion = "2.0.0-M1" //"1.6.0"
 //TODO: Replace wartremover with scalafix
 
 lazy val commonSettings = Seq(
@@ -55,7 +55,7 @@ lazy val programGenerator = (crossProject(JVMPlatform)
     .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
     name := "onnx-scala-program-generator",
-    libraryDependencies ++= Seq("org.bytedeco" % "onnx-platform" % "1.4.1-1.5-SNAPSHOT"),
+    libraryDependencies ++= Seq("org.bytedeco" % "onnx-platform" % "1.4.1-1.5"),
     scalaVersion := scala212Version,
     mainClass in (Compile, run) := Some("org.emergentorder.onnx.ONNXProgramGenerator"),
     libraryDependencies ++=  Seq(
@@ -70,11 +70,11 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform, NativePlatform)
     .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
     name := "onnx-scala-backends",
-    libraryDependencies ++= Seq("org.bytedeco" % "onnx-platform" % "1.4.1-1.5-SNAPSHOT",
+    libraryDependencies ++= Seq("org.bytedeco" % "onnx-platform" % "1.4.1-1.5",
                                ),
     scalaVersion := scala212Version,
 //    mainClass in (Compile, run) := Some("org.emergentorder.onnx.ONNXProgramGenerator"),
-   libraryDependencies ++= Seq("org.bytedeco" % "ngraph-platform" % "0.15.0-1.5-SNAPSHOT"),
+   libraryDependencies ++= Seq("org.bytedeco" % "ngraph-platform" % "0.15.0-1.5"),
 
     publishArtifact in (Compile, packageDoc) := false
   )
@@ -108,10 +108,10 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
       }),
 
       libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_2.12" % "0.16.0",
+        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_2.12" % "0.16.1",
                                             "eu.timepit" % "singleton-ops_2.12" % "0.3.1" 
                                            )
-        case _ => Seq("org.typelevel" %% "spire" % "0.16.0",
+        case _ => Seq("org.typelevel" %% "spire" % "0.16.1",
                       "eu.timepit" %% "singleton-ops" % "0.3.1"
                   )
       })
@@ -119,11 +119,11 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     .jsSettings(
       crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version),
       libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_sjs0.6_2.12" % "0.16.0"  excludeAll(
+        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_sjs0.6_2.12" % "0.16.1"  excludeAll(
     ExclusionRule(organization = "org.scala-js")),
                                             "eu.timepit" %%% "singleton-ops" % "0.3.1"
                                            )
-        case _ => Seq("org.typelevel" %%% "spire" % "0.16.0",
+        case _ => Seq("org.typelevel" %%% "spire" % "0.16.1",
                       "eu.timepit" %%% "singleton-ops" % "0.3.1"
                   )
       })
@@ -131,7 +131,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     .nativeSettings(
       scalaVersion := scala211Version,
       libraryDependencies ++= Seq(
-        "org.typelevel" %% "spire" % "0.16.0",
+        "org.typelevel" %% "spire" % "0.16.1",
         "eu.timepit" %% "singleton-ops" % "0.3.1",
       )
     )
@@ -146,7 +146,7 @@ lazy val coreDotty = (crossProject(JVMPlatform) //TODO: fix fail on common in cl
     publishArtifact in (Compile, packageDoc) := false,
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2") else Nil },
     libraryDependencies ++= Seq(
-      ("org.typelevel" %% "spire" % "0.16.0").withDottyCompat(dottyVersion),
+      ("org.typelevel" %% "spire" % "0.16.1").withDottyCompat(dottyVersion),
       ("eu.timepit" %% "singleton-ops" % "0.3.1").withDottyCompat(dottyVersion)
     )
 )

@@ -55,13 +55,7 @@ object ONNXProgramGenerator {
     val FS = false
     val useDotty = false
     val unionTypeOperator = (if (useDotty) " | " else " TypeOr ")
-    //TODO: Get input types from first node
-    val inputTypes = "T " + (if (useDotty) "<: " else ": ") + (if (useDotty) ""
-                                                               else
-                                                                 "(UNil TypeOr ") + "Float16" + unionTypeOperator + "Float" + unionTypeOperator + "Double" + (if (useDotty)
-                                                                                                                                                                ""
-                                                                                                                                                              else
-                                                                                                                                                                ")#check") + ":Numeric:ClassTag"
+
 
     //TODO: Fix output for the benchmark models shown here: https://github.com/onnx/backend-scoreboard
     //TODO: run time benchmarks on the same models
@@ -83,12 +77,36 @@ object ONNXProgramGenerator {
       val params = onnxHelper.params
 //    val nodes = onnxHelper.nodes
       val nodeInputs = onnxHelper.nodeInputs
+      val graphInputs = onnxHelper.graphInputs
+      val graphOutputs = onnxHelper.graphOutputs
+
       val nodeOutputs = onnxHelper.nodeOutputs
       val outputs = onnxHelper.outputs
       val attributes = onnxHelper.attributes
+
       //val sortedParamNames = params.keys.toSeq.sorted.map(x => "param_" + x)
       val ops = onnxHelper.ops
       val distinctOps = ops.distinct
+
+       def replaceTypeStrings(s: String) = s.replaceAll("uint64", "ULong")
+            .replaceAll("uint32", "UInt")
+            .replaceAll("uint16", "UShort")
+            .replaceAll("uint8", "UByte")
+            .replaceAll("int64", "Long")
+            .replaceAll("Int64", "Long")
+            .replaceAll("int32", "Int")
+            .replaceAll("Int32", "Int")
+            .replaceAll("int16", "Short")
+            .replaceAll("int8", "Byte")
+            .replaceAll("string", "String")
+            .replaceAll("float", "Float")
+            .replaceAll("double", "Double")
+            .replaceAll("Bool", "Boolean")
+            .replaceAll("bool", "Boolean")
+            .replaceAll("complex64", "Complex[Float]")
+.replaceAll("complex128", "Complex[Double]")
+
+     val graphOutputType = replaceTypeStrings(graphOutputs(0)._2)
 
       val nodesInputsOpsAndOutputs = (nodeInputs zip ops) zip nodeOutputs
 
@@ -125,41 +143,45 @@ object ONNXProgramGenerator {
         "  val dataSource: DataSource" + (if (FS) "Free" else "") + "\n" +
 //    "  import cats.implicits._\n" +
         //Omit return type here for now
-        //TODO: Don't re-use T for all inputData / params
-        "  def program[" + inputTypes + "]" + (if (FS) ": FS.Seq[Tensor[T]] "
+        "  def program" + (if (FS) ": FS.Seq[Tensor[" + graphOutputType + "]] "
                                                else
-                                                 ": List[Tensor[T]] ") + " = \n" +
+                                                 ": List[Tensor[" + graphOutputType + "]] ") + " = \n" +
         //Body of program generated here
         "    for {\n" +
         //TODO: Assumes one output for now, enable multiple outputs for full computation graph
-        "      node" +
-        nodeInputs(0)(0) +
+        graphInputs.map{ x =>
+          "      node" + x._1.replaceAll("\\.","") +
         " <- " + (if (FS) "" else "List(") + "dataSource.inputData" + (if (FS)
                                                                          "Free"
                                                                        else
-                                                                         "") + "[T]" + (if (FS)
+                                                                         "") + "[" + replaceTypeStrings(x._2) + "]" + //"[T]" +
+                                                                       (if (FS)
                                                                                           ""
                                                                                         else
-                                                                                          ")") + "\n" +
+                                                                                          ")")
+        }.mkString("\n") +
+        "\n" +
         params
           .map(x =>
-            "      node" + x + " <- "
+            "      node" + x._1.replaceAll("\\.", "") + " <- "
               + (if (FS) "" else "List(") + " dataSource.getParams" + (if (FS)
                                                                          "Free"
                                                                        else
-                                                                         "") + "[T]" + "(\"" + x + "\")" + (if (FS) ""
+                                                                         "") + "[" + x._2 + "]" + "(\"" + x._1 + "\")" + (if (FS) ""
                                                                                                             else
                                                                                                               ")") + "\n")
           .mkString("") +
         (nodesInputsOpsAndOutputs zip attributes)
           .map { x =>
             //TODO: handle multiple outputs
-            val nodesOrParams = x._1._1._1.map(
+            val nodesOrParams = x._1._1._1.map{
               y =>
-                "Some(node" + y + (if (y.contains("dropout") || y.contains(
+                "Some(node" + y.replaceAll("\\.", "") + (if (y.contains("dropout") || y.contains(
                                          "bn_1") || y.contains(
                                          "pool5_7x7_s1_2")) "._1"
-                                   else "") + ")") // ,""" + y.name.getString + "name" + " = " + """ Some("""" + y + """")""")
+                                   else "") + ")"
+            }// ,""" + y.name.getString + "name" + " = " + """ Some("""" + y + """")""")
+
             val nodesOrParamsRaw = x._1._1._1.map(y => "node" + y)
             val longFields = x._2
               .filter { y =>
@@ -231,34 +253,35 @@ object ONNXProgramGenerator {
                 schemaMap(opName)._1.get(b).GetOption === 2
               }
 
-            val sinceVersion = schemaMap(opName)._2.toString //.replaceAll("8","1") //Hack for compatibility with ONNX 1.2.2 models
+            val sinceVersion = schemaMap(opName)._2.toString 
 
-            val opInputs = (opInputsNames zip opInputsIsVariadic) zip nodesOrParams
+            val groupedNodesOrParams: Array[String] = nodesOrParams.take(opInputsNames.size - 1) ++ Seq(nodesOrParams.drop(opInputsNames.size -1).mkString(","))
 
-            val opInputsCleaned = opInputs.map(
+            val opInputs = (opInputsNames zip opInputsIsVariadic) zip groupedNodesOrParams 
+
+            val opInputsCleaned = opInputs.map{
               t =>
                 ((t._1._1, t._1._2),
                  (if (opName.contains("Reshape") && sinceVersion
                         .equals("5") && t._1._1.equals("shape"))
                     t._2 + ".asInstanceOf[Option[Tensor[Long]]]"
-                  else t._2)))
+                  else t._2))
+            }
 
             val namedNodesOrParams = opInputsCleaned.map(
               t =>
                 t._1._1
                   .replaceAll("var", "someVar") + " = " + (if (t._1._2)
                                                              t._2
-                                                               .replaceAll(
+                                                               .replaceFirst(
                                                                  "Some",
                                                                  "Seq(Some")
-                                                               .replaceAll(
-                                                                 "\\)",
-                                                                 "\\)\\)")
+                                                                + ")"
                                                            else t._2))
 
             val nodeName = x._1._2(0)
 
-            "      node" + nodeName + " <- " + (if (FS) ""
+            "      node" + nodeName.replaceAll("\\.", "") + " <- " + (if (FS) ""
                                                 else
                                                   "List(") + opName + (if (FS)
                                                                          "Free"
@@ -266,7 +289,8 @@ object ONNXProgramGenerator {
                                                                          "") + "." + opName + sinceVersion + (if (FS)
                                                                                                                 "Free"
                                                                                                               else
-                                                                                                                "") + "[T]" +
+                                                                                                                "") + 
+                                                                                                              (if( nodeName.contains("output")) "[" + graphOutputType + "]" else "") +
               "(" +
               """"""" + nodeName + """" """ + //assumes > 0 args
               (if (tensorProtoFields.size > 0) "," else "") +

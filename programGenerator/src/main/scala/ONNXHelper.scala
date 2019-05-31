@@ -29,10 +29,10 @@ import org.bytedeco.onnx.global.onnx._
 
 class ONNXHelper(modelFileName: String) {
 
+
+
   //TODO: Add the rest of the types
   type ValidTensorProtoTypes = Array[Float]
-
-//  org.bytedeco.javacpp.Loader.load(classOf[org.bytedeco.onnx])
 
   val byteArray = Files.readAllBytes(Paths.get(modelFileName))
 
@@ -48,8 +48,6 @@ class ONNXHelper(modelFileName: String) {
     } catch {
       case e: Exception => { 1 }
     }
-
-//  println("max opset : " + maxOpsetVersion)
 
   def dimsToArray[VV: spire.math.Numeric: ClassTag](
       dimsCount: Int,
@@ -105,7 +103,6 @@ class ONNXHelper(modelFileName: String) {
         val arrX = dimsToArray[Float](dimsCount, dimsList)
         bytesBuffer.asFloatBuffer.get(arrX)
         arrX.toArray
-        //arrX.map(y => if(y.isNaN) 0.0f else y).map(x => x.asInstanceOf[VV])
       }
     }
     array
@@ -122,6 +119,50 @@ class ONNXHelper(modelFileName: String) {
     }.toArray
 
   def ops = node.map(x => x.op_type.getString).toArray
+
+  def graphInputs = {
+    val inputCount = graph.input_size.toInt
+    val input = (0 until inputCount).map(y => graph.input(y)).toList
+    input.toArray.map( y =>
+        (y.name.getString
+          .asInstanceOf[String]
+          .replaceAll("-", "_")
+          .replaceAll("/", "_"), tensorElemTypeMap(y.`type`.tensor_type.elem_type)))
+          .filter(z => !(params exists (_._1.equals(z._1))))
+  }
+ 
+
+  def graphOutputs = {
+    val outputCount = graph.output_size.toInt
+    val output = (0 until outputCount).map(y => graph.output(y)).toList
+    output.toArray.map( y =>
+        (y.name.getString
+          .asInstanceOf[String]
+          .replaceAll("-", "_")
+          .replaceAll("/", "_"), tensorElemTypeMap(y.`type`.tensor_type.elem_type)))
+          .filter(z => !(params exists (_._1.equals(z._1))))
+  }
+
+
+  val tensorElemTypeMap = Map(org.bytedeco.onnx.TensorProto.UNDEFINED ->"Undefined",
+                      org.bytedeco.onnx.TensorProto.FLOAT -> "Float",
+                      org.bytedeco.onnx.TensorProto.UINT8 -> "UByte",
+                      org.bytedeco.onnx.TensorProto.INT8 -> "Byte",
+                      org.bytedeco.onnx.TensorProto.UINT16 -> "UShort",
+                      org.bytedeco.onnx.TensorProto.INT16 -> "Short",
+                      org.bytedeco.onnx.TensorProto.INT32 -> "Int",
+                      org.bytedeco.onnx.TensorProto.INT64 -> "Long",
+                      org.bytedeco.onnx.TensorProto.STRING -> "String",
+                      org.bytedeco.onnx.TensorProto.BOOL -> "Boolean",
+                      org.bytedeco.onnx.TensorProto.FLOAT16 -> "Float16",
+
+                      org.bytedeco.onnx.TensorProto.DOUBLE -> "Double",
+
+                      org.bytedeco.onnx.TensorProto.UINT32 -> "UInt",
+                      org.bytedeco.onnx.TensorProto.UINT64 -> "ULong",
+                      org.bytedeco.onnx.TensorProto.COMPLEX64 -> "Complex[Float]",
+                      org.bytedeco.onnx.TensorProto.COMPLEX128 -> "Complex[Double]",
+                      org.bytedeco.onnx.TensorProto.BFLOAT16 -> "???")
 
   def nodeInputs =
     node
@@ -140,9 +181,6 @@ class ONNXHelper(modelFileName: String) {
                 .asInstanceOf[String]
                 .replaceAll("-", "_")
                 .replaceAll("/", "_"))
-      //.filter(x =>
-      //  nodeNames.contains("input_" + x) || nodeNames
-      //   .contains("param_" + x) || nodeNames.contains("output_" + x))
       }
 
   def nodeOutputs =
@@ -171,10 +209,8 @@ class ONNXHelper(modelFileName: String) {
     val outputArray = globalOutput.toArray
     outputArray
       .map(x => x.name.getString.replaceAll("-", "_").replaceAll("/", "_"))
-      .filter(x => nodeNames.contains("output_" + x))
+      .filter(x => nodes.contains("output_" + x))
   }
-
-  def nodeNames = nodes.map(y => y) // y._1
 
   val inputCount = graph.input_size.toInt
   val input = (0 until inputCount).map(x => graph.input(x)).toList
@@ -182,10 +218,10 @@ class ONNXHelper(modelFileName: String) {
   def nodes = {
     val someNodes = input.map { x =>
       val name = x.name.getString
-      if (params exists (_.equals(name)))
-        ("param_" + name) //, params.get(name).map(y => y._2)) //TODO: Separate getting the param arrays
-      else ("input_" + name) //, params.get(name).map(y => y._2))
-    } ++ nodeOutputs.flatten.map(y => ("output_" + y)) //,None))
+      if (params exists (_._1.equals(name)))
+        ("param_" + name) 
+      else ("input_" + name)
+    } ++ nodeOutputs.flatten.map(y => ("output_" + y)) 
     someNodes
   }
 
@@ -193,14 +229,14 @@ class ONNXHelper(modelFileName: String) {
   val initializer =
     (0 until initializerCount).map(x => graph.initializer(x)).toList
 
-  def params =
+  val params =
     initializer.map { x =>
       val dimsCount = x.dims_size
       val dimsList = (0 until dimsCount.toInt).map(y => x.dims(y)).toList
-      //def arrX: ValidTensorProtoTypes = onnxTensorProtoToArray(x)
-      x.name.getString.replaceAll("-", "_").replaceAll("/", "_")
+      def arrX: ValidTensorProtoTypes = onnxTensorProtoToArray(x)
+      val tensorElemType = tensorElemTypeMap(x.data_type)
+      (x.name.getString.replaceAll("-", "_").replaceAll("/", "_"), tensorElemType, arrX, dimsList.map(y => y.toInt).toArray)
     }
-  //-> (arrX, dimsList)
-  // }.toMap
 
+  def paramsMap[T : spire.math.Numeric : ClassTag]  = params.map( x => x._1 -> (x._2, x._3.asInstanceOf[Array[T]], x._4)).toMap
 }

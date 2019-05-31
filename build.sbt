@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 val dottyVersion = "0.15.0-RC1"
 val scala211Version = "2.11.12"
 val scala212Version = "2.12.8"
-val scala213Version = "2.13.0-M5"
+val scala213Version = "2.13.0-RC3"
 //Might want to remove cats ( conflict with Freestyle's version)
 val catsVersion = "2.0.0-M1" //"1.6.0"
 //TODO: Replace wartremover with scalafix

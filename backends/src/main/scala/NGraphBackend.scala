@@ -27,11 +27,53 @@ import org.bytedeco.onnx.NodeProto;
 import org.bytedeco.ngraph.global.ngraph.import_onnx_model
 import org.bytedeco.ngraph.Backend
 import org.bytedeco.ngraph.global.ngraph.f32
+import org.bytedeco.ngraph.global.ngraph.i32
+import org.bytedeco.onnx.global.onnx.check_model
 
-
-class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout with AveragePool with Reshape{
+class NGraphBackend(onnxHelper: ONNXHelper) extends Conv with Sigmoid with Gemm with Gather with Mul with Relu with MaxPool with Concat with Dropout with AveragePool with Reshape{
 //with DataSource
-   
+
+
+  def getParamsFree[ T : Numeric : ClassTag](name: String)
+  : (Tensor[T]) = {
+    val params = onnxHelper.paramsMap.get(name)
+    params match {
+      case Some(x) => (x._2, x._3)
+      case None => throw new Exception("No params found for param name: " + name)
+    } 
+  }
+
+  def Mul7[@sp T : Numeric:ClassTag](name: String,A: Option[Tensor[T]], B: Option[Tensor[T]])
+//(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
+  : (Tensor[T]) = {
+    (trinaryOpNoAttrs(name, "Mul", A, B, None))
+  }
+
+def Sigmoid6[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
+//(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
+  : (Tensor[T]) = {
+    (trinaryOpNoAttrs(name, "Sigmoid", X, None, None))
+  }
+
+    def Gemm9[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,transA : Option[(Int)] = None,transB : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]], C: Option[Tensor[T]])
+//(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[T])
+  : (Tensor[T]) = {
+    val map: Map[String, Any] = Map("alpha" -> alpha,
+      "beta" -> beta,
+      "transA" -> transA,
+      "transB" -> transB)
+    (trinaryOp(name, "Gemm", A, B, C, map)) 
+    }
+
+
+
+   def Gather1[@sp T : Numeric:ClassTag,@sp Tind : Numeric:ClassTag](name: String,axis : Option[(Int)],data: Option[Tensor[T]], indices: Option[Tensor[Tind]])
+//(implicit evT:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T],evTind:(UNil TypeOr Int TypeOr Long)#check[Tind])    
+   : (Tensor[T]) = {
+    (trinaryOpNoAttrs(name, "Gather", data, indices, None : Option[Tensor[T]]))
+}
+
+
   def Conv1[@sp T: Numeric: ClassTag](name: String,
                                         auto_pad: Option[(String)] = None,
                                         dilations: Option[(Array[Int])] = None,
@@ -53,7 +95,7 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
    "pads" -> pads,
    "strides" -> strides)
    
-    unaryOrBinaryOp(name, "Conv", X, W, map) //TODO: B
+    trinaryOp(name, "Conv", X, W, None, map) //TODO: B
       }
 
  
@@ -73,8 +115,12 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
 //      (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    
       : (Tensor[T], Tensor[T]) = {
         val map: Map[String, Any] = Map("ratio" -> ratio)
-        (unaryOrBinaryOp(name, "Dropout", data, None, map), null) //TODO: optional output
+        (trinaryOp(name, "Dropout", data, None, None, map), null) //TODO: optional output
       }
+
+  def Dropout10[@sp T : Numeric:ClassTag,@sp T1 : Numeric:ClassTag](name: String,ratio : Option[(Float)] = None,data: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],evT1:(UNil TypeOr Boolean)#check[T1])    : (Tensor[T], Tensor[T1]) = ???
+
 
 
   def Relu1[@sp T : Numeric : ClassTag](name: String,
@@ -87,13 +133,13 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
   def Relu6[@sp T : Numeric : ClassTag](name: String, X: Option[Tensor[T]])
 //  (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
       : (Tensor[T]) = {
-        unaryOrBinaryOpNoAttrs(name, "Relu", X, None)
+        trinaryOpNoAttrs(name, "Relu", X, None, None)
       }
 
-  def unaryOrBinaryOpNoAttrs[@sp T : ClassTag](name: String, opName: String, X: Option[Tensor[T]], W: Option[Tensor[T]]) : (Tensor[T]) =
-    unaryOrBinaryOp(name, opName, X, W, Map())
+  def trinaryOpNoAttrs[@sp T : ClassTag, T1 : ClassTag, T2: ClassTag](name: String, opName: String, A: Option[Tensor[T]], B: Option[Tensor[T1]], C: Option[Tensor[T2]]) : (Tensor[T]) =
+    trinaryOp(name, opName, A, B, C, Map())
  
-  def unaryOrBinaryOp[@sp T : ClassTag](name: String, opName: String, X: Option[Tensor[T]], W: Option[Tensor[T]], attrs: Map[String, Any]) 
+  def trinaryOp[@sp T : ClassTag, T1 : ClassTag, T2: ClassTag](name: String, opName: String, A: Option[Tensor[T]], B: Option[Tensor[T1]], C: Option[Tensor[T2]], attrs: Map[String, Any]) 
   //(
 //        implicit evT:  (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
    //       Float] TypeOr Complex[Double])#check[T])
@@ -103,29 +149,47 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
         val graph = new org.bytedeco.onnx.GraphProto
         val node = graph.add_node
     
-//        println("name : " + name)
-
-        model.set_producer_name("backend-test")
+        model.set_producer_name("backend")
         graph.set_name(name)
+
         node.set_name(name)
         node.set_op_type(opName)
-        node.add_output("Y")
+        node.add_output("C")
 
-        //TODO: handle attrs here
+        def handleAttrs = attrs.foreach{ case (key, value) =>
 
+          val longVal = value.asInstanceOf[Option[Int]] match {
+            case Some(x) => { 
+              node.add_attribute
+              val attr = node.mutable_attribute(0)
+              val attrName = new BytePointer(key)
+              attr.set_name(attrName)
+              attr.set_type(2)
+              val longVal = x.toLong
+              attr.set_i(longVal)
+            }
+            case None => 
+          }
+        }
 
-          def addInput(input: Option[Tensor[T]], inputName: String){
+          def addInput[A](input: Option[Tensor[A]], inputName: String){
 
     input match {
           case Some(tens) => {
             node.add_input(inputName)
+
+            val elemType = tens._1 match {
+              case f: Array[Float] => 1
+              case i: Array[Int] => 6
+              case l: Array[Long] => 7
+            }
 
             val inputValueInfo = graph.add_input
 
             inputValueInfo.set_name(inputName)
             inputValueInfo.mutable_type
             inputValueInfo.`type`.mutable_tensor_type
-            inputValueInfo.`type`.tensor_type.set_elem_type(1) //missing : type
+            inputValueInfo.`type`.tensor_type.set_elem_type(elemType)
 
             val dims = tens._2
             inputValueInfo.`type`.tensor_type.mutable_shape
@@ -134,7 +198,7 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
 
 //              inputDim.set_dim_param("NAME?")
               inputDim.set_dim_value(x)
-//              println("in dim val " + x)
+
             }
           }
           case None =>
@@ -143,64 +207,41 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
 
   }
 
-
-        addInput(W, "w")
-
-        addInput(X, "X")
+        addInput(A, "A")
+        addInput(B, "B")
+        addInput(C, "C")
 
         val outputValueInfo = graph.add_output
 
 
-        outputValueInfo.set_name("Y")
+        outputValueInfo.set_name("C")
 
  
         outputValueInfo.mutable_type
         outputValueInfo.`type`.mutable_tensor_type
         outputValueInfo.`type`.tensor_type.set_elem_type(1)
 
-     
-        X match {
-          case Some(tens) => {
-            val dims = tens._2
-            outputValueInfo.`type`.tensor_type.mutable_shape
-            dims.foreach{x =>  
-              val outputDim = outputValueInfo.`type`.tensor_type.shape.add_dim
-//              outputDim.set_dim_param("NAME?")
-              outputDim.set_dim_value(x)
-//               println("Out dim val " +x)
-            }
-          }
-          case None =>
-           
-          }
-
-
+        handleAttrs
         model.set_allocated_graph(graph)
         model.set_ir_version(3)
 
         model.add_opset_import
-        model.opset_import(0).set_version(6)
-        val modelString = model.SerializeAsString.getString
-//        println(modelString)
-//        println(modelString.size)
-//        println("graph string size  " + model.graph.SerializeAsString.getString.size)
-//        println("node string size " + model.graph.node(0).SerializeAsString.getString.size)
-//        println("value info DIM size" + inputValueInfo.`type`.tensor_type.shape.dim_size)
-//        println("value info DIM size" + outputValueInfo.`type`.tensor_type.shape.dim_size)
-//        println("value info tring size" + outputValueInfo.`type`.tensor_type.SerializeAsString.getString.size)
-        val ngraphFunc = import_onnx_model(modelString)
+        model.opset_import(0).set_version(8)
+        val modelString = model.SerializeAsString
+        println(modelString.getString)
+
+         val ngraphFunc = import_onnx_model(modelString)
 
 
         val ngraphBackend = Backend.create("CPU") 
 
 
-        val shape:org.bytedeco.ngraph.Shape = X match {
+        val inputShape:org.bytedeco.ngraph.Shape = A match {
           case Some(tens) => {
             val dims = tens._2
             val s =   new org.bytedeco.ngraph.Shape(tens._2.size)
             s.resize(tens._2.size)
             val longShape = tens._2.map{x => 
-//            println("Shape val: " + x)
             x.toLong}
             s.put(longShape: _*)
             s
@@ -208,26 +249,71 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
           case None =>  new org.bytedeco.ngraph.Shape
 
           }
-       
-        val inputTens: FloatPointer =  X match {
+
+        val outputShape =  ngraphFunc.get_output_shape(0)
+
+        val inputTens: FloatPointer =  A match {
           case Some(tens) => {
+
             new FloatPointer(tens._1.asInstanceOf[Array[Float]]: _*)
           }
           case None => new FloatPointer
         }
-        val input = ngraphBackend.create_tensor(f32, shape, inputTens)
-        val output = ngraphBackend.create_tensor(f32, shape)
-        val inputVector = new org.bytedeco.ngraph.NgraphTensorVector(input)
-        val outputVector = new org.bytedeco.ngraph.NgraphTensorVector(output)
 
-//        println("sizes " + shape)
-          //+ inputVector.size + " " + outputVector.size)
+         val secondInputTens: (Pointer, org.bytedeco.ngraph.Type) =  B match {
+          case Some((data: Array[Int], shape: Array[Int])) => {
+
+            (new IntPointer(data.asInstanceOf[Array[Int]]: _*), i32)
+          }
+
+          case Some((data: Array[Float], shape: Array[Int])) => {
+        
+            (new FloatPointer(data.asInstanceOf[Array[Float]]: _*), f32)
+          }
+          case None => (new IntPointer, f32)
+        }
+
+
+        val thirdInputTens: Pointer =  C match {
+          case Some((data: Array[Int], shape: Array[Int])) => {
+
+            new IntPointer(data.asInstanceOf[Array[Int]]: _*)
+          }
+
+          case Some((data: Array[Float], shape: Array[Int])) => {
+
+            new FloatPointer(data.asInstanceOf[Array[Float]]: _*)
+          }
+          case None => new IntPointer
+        }
+
+
+
+        val input = ngraphBackend.create_tensor(f32, inputShape, inputTens)
+        val output = ngraphBackend.create_tensor(f32, outputShape)
+        //TODO: assumes second input has same shape, assumes third input type
+        val inputVector = B match {
+          case Some(_) => {
+            val tens2 = ngraphBackend.create_tensor(secondInputTens._2, inputShape, secondInputTens._1)
+            C match {
+              case Some(_) => new org.bytedeco.ngraph.TensorVector(input, tens2, ngraphBackend.create_tensor(f32, inputShape, thirdInputTens))
+              case None => new org.bytedeco.ngraph.TensorVector(input, tens2) 
+            }
+          }
+          case None => new org.bytedeco.ngraph.TensorVector(input)
+        }
+        
+        val outputVector = new org.bytedeco.ngraph.TensorVector(output)
+
+        println(outputShape)
+        println(ngraphFunc)
+        println(ngraphFunc.get_output_shape(0))
         val executable = ngraphBackend.compile(ngraphFunc)
-        executable.call(outputVector, inputVector)
+        executable.call(outputVector, inputVector) 
         //convert result to onnx-scala Tensor
         
-        val arraySize = (0 until shape.size.toInt).map{ x =>
-          shape.get(x).toInt}.reduceLeft(_ * _)
+        val arraySize = (0 until outputShape.size.toInt).map{ x =>
+          outputShape.get(x).toInt}.reduceLeft(_ * _)
 
         val fp = new FloatPointer(arraySize)
         outputVector.get(0).read(fp, 0, arraySize*4)
@@ -238,11 +324,11 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
           fa.update(x,fb.get(x).asInstanceOf[T]) //unsafe : asInstanceOf
         }
        
-//        println(shape)
-//        println(fa(2))
-        val shapeArray = new Array[Int](shape.size.toInt)
-        (0 until shape.size.toInt).map{ x =>
-          shapeArray.update(x,shape.get(x).toInt)
+
+
+        val shapeArray = new Array[Int](outputShape.size.toInt)
+        (0 until outputShape.size.toInt).map{ x =>
+          shapeArray.update(x,outputShape.get(x).toInt)
         }
 
         val result: Tensor[T] = (fa,shapeArray) 
@@ -274,20 +360,23 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
             "storage_order" -> storage_order,
             "strides" -> strides)
 
-          (unaryOrBinaryOp(name, "MaxPool", X, None, map), null) //TODO:optional output
+          (trinaryOp[T,T, T](name, "MaxPool", X, None, None, map), null) //TODO:optional output
         }
 
+  def MaxPool10[@sp T : Numeric:ClassTag,@sp I : Numeric:ClassTag](name: String,auto_pad : Option[(String)] = None,ceil_mode : Option[(Int)] = None,dilations : Option[(Array[Int])] = None,kernel_shape : Option[(Array[Int])],pads : Option[(Array[Int])] = None,storage_order : Option[(Int)] = None,strides : Option[(Array[Int])] = None,X: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],evI:(UNil TypeOr Long)#check[I])    : (Tensor[T], Tensor[I]) = ???
 
   def Concat4[@sp T: Numeric: ClassTag](name: String,
                                           axis: Option[(Int)],
-                                          inputs: Seq[Option[Tensor[T]]])(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
-          Float] TypeOr Complex[Double])#check[T]): (Tensor[T]) = {
+                                          inputs: Seq[Option[Tensor[T]]])
+//        (implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])
+  : (Tensor[T]) = {
             val map: Map[String, Any] = Map("axis" -> axis)
             val X = inputs(0)
-            val W = inputs(1)
-            unaryOrBinaryOp(name, "Concat", X, W, map)
-                //TODO: > 2 inputs
+            val Y = inputs(1)
+            val Z = if(inputs.size > 2) inputs(2) else None
+            trinaryOp(name, "Concat", X, Y, Z, map) 
+                //TODO: > 3 inputs
           }
 
 
@@ -334,8 +423,12 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
           "pads" -> pads,
           "strides" -> strides)
 
-        unaryOrBinaryOp(name, "AveragePool", X, None, map)
+        trinaryOp(name, "AveragePool", X, None, None, map)
         }
+
+   def AveragePool10[@sp T : Numeric:ClassTag](name: String,auto_pad : Option[(String)] = None,ceil_mode : Option[(Int)] = None,count_include_pad : Option[(Int)] = None,kernel_shape : Option[(Array[Int])],pads : Option[(Array[Int])] = None,strides : Option[(Array[Int])] = None,X: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = ???
+
           def Reshape1[@sp T: Numeric: ClassTag](
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
@@ -350,7 +443,7 @@ class NGraphBackend extends Conv with Relu with MaxPool with Concat with Dropout
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float] TypeOr Complex[Double])#check[T]): (Tensor[T]) = {
             val map: Map[String, Any] = Map("shape" -> shape)
-            unaryOrBinaryOp(name, "Reshape", data, None, map) 
+            trinaryOp(name, "Reshape", data, None, None, map) 
           }
 
 }

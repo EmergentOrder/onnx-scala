@@ -88,12 +88,6 @@ trait Add extends Operator {
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 }
-trait Affine extends Operator {
-
-  def Affine1[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,X: Option[Tensor[T]])
-(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
-
-}
 trait And extends Operator {
 
   def And1[@sp T : Numeric:ClassTag,@sp T1 : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
@@ -153,6 +147,10 @@ trait AveragePool extends Operator {
 
 
   def AveragePool7[@sp T : Numeric:ClassTag](name: String,auto_pad : Option[(String)] = None,count_include_pad : Option[(Int)] = None,kernel_shape : Option[(Array[Int])],pads : Option[(Array[Int])] = None,strides : Option[(Array[Int])] = None,X: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
+
+
+  def AveragePool10[@sp T : Numeric:ClassTag](name: String,auto_pad : Option[(String)] = None,ceil_mode : Option[(Int)] = None,count_include_pad : Option[(Int)] = None,kernel_shape : Option[(Array[Int])],pads : Option[(Array[Int])] = None,strides : Option[(Array[Int])] = None,X: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 }
@@ -258,7 +256,14 @@ trait ConstantOfShape extends Operator {
 trait Conv extends Operator {
 
   def Conv1[@sp T : Numeric:ClassTag](name: String,auto_pad : Option[(String)] = None,dilations : Option[(Array[Int])] = None,group : Option[(Int)] = None,kernel_shape : Option[(Array[Int])] = None,pads : Option[(Array[Int])] = None,strides : Option[(Array[Int])] = None,X: Option[Tensor[T]], W: Option[Tensor[T]],B: Option[Tensor[T]] = None)
-(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    
+: (Tensor[T])
+
+}
+trait ConvInteger extends Operator {
+
+  def ConvInteger10[@sp T1 : Numeric:ClassTag,@sp T2 : Numeric:ClassTag,@sp T3 : Numeric:ClassTag](name: String,auto_pad : Option[(String)] = None,dilations : Option[(Array[Int])] = None,group : Option[(Int)] = None,kernel_shape : Option[(Array[Int])] = None,pads : Option[(Array[Int])] = None,strides : Option[(Array[Int])] = None,x: Option[Tensor[T1]], w: Option[Tensor[T2]],x_zero_point: Option[Tensor[T1]] = None, w_zero_point: Option[Tensor[T2]] = None)
+(implicit evT1:(UNil TypeOr Byte TypeOr UByte)#check[T1],evT2:(UNil TypeOr Byte TypeOr UByte)#check[T2],evT3:(UNil TypeOr Int)#check[T3])    : (Tensor[T3])
 
 }
 trait ConvTranspose extends Operator {
@@ -279,16 +284,16 @@ trait Cosh extends Operator {
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 }
-trait Crop extends Operator {
-
-  def Crop1[@sp T : Numeric:ClassTag](name: String,border : Option[(Array[Int])] = None,scaleAttr : Option[(Array[Int])] = None,input: Option[Tensor[T]])
-(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
-
-}
 trait DepthToSpace extends Operator {
 
   def DepthToSpace1[@sp T : Numeric:ClassTag](name: String,blocksize : Option[(Int)],input: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])    : (Tensor[T])
+
+}
+trait DequantizeLinear extends Operator {
+
+  def DequantizeLinear10[@sp T : Numeric:ClassTag](name: String,x: Option[Tensor[T]], x_scale: Option[Tensor[Float]],x_zero_point: Option[Tensor[T]] = None)
+(implicit evT:(UNil TypeOr Byte TypeOr UByte TypeOr Int)#check[T])    : (Tensor[Float])
 
 }
 trait DictVectorizer extends Operator {
@@ -322,14 +327,12 @@ trait Dropout extends Operator {
 
 
   def Dropout7[@sp T : Numeric:ClassTag](name: String,ratio : Option[(Float)] = None,data: Option[Tensor[T]])
-//(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]) 
-  : (Tensor[T], Tensor[T])
+//(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])  
+: (Tensor[T], Tensor[T])
 
-}
-trait DynamicSlice extends Operator {
 
-  def DynamicSlice1[@sp T : Numeric:ClassTag,@sp Tind : Numeric:ClassTag](name: String,data: Option[Tensor[T]], starts: Option[Tensor[Tind]], ends: Option[Tensor[Tind]],axes: Option[Tensor[Tind]] = None)
-(implicit evT:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T],evTind:(UNil TypeOr Int TypeOr Long)#check[Tind])    : (Tensor[T])
+  def Dropout10[@sp T : Numeric:ClassTag,@sp T1 : Numeric:ClassTag](name: String,ratio : Option[(Float)] = None,data: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],evT1:(UNil TypeOr Boolean)#check[T1])    : (Tensor[T], Tensor[T1])
 
 }
 trait Elu extends Operator {
@@ -414,12 +417,6 @@ trait GRU extends Operator {
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],evT1:(UNil TypeOr Int)#check[T1])    : (Tensor[T], Tensor[T])
 
 }
-trait GRUUnit extends Operator {
-
-  def GRUUnit1[@sp T : Numeric:ClassTag](name: String,drop_states : Option[(Int)] = None,hidden_prev: Option[Tensor[T]], gates: Option[Tensor[T]], seq_lengths: Option[Tensor[T]], t: Option[Tensor[T]])
-(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
-
-}
 trait Gather extends Operator {
 
   def Gather1[@sp T : Numeric:ClassTag,@sp Tind : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,data: Option[Tensor[T]], indices: Option[Tensor[Tind]])
@@ -428,7 +425,8 @@ trait Gather extends Operator {
 
 }
 trait Gemm extends Operator {
-/*
+
+  /*
   def Gemm1[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,broadcast : Option[(Int)] = None,transA : Option[(Int)] = None,transB : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]], C: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[T])    : (Tensor[T])
 
@@ -441,16 +439,9 @@ trait Gemm extends Operator {
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[T])    : (Tensor[T])
 
 */
-
   def Gemm9[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,transA : Option[(Int)] = None,transB : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]], C: Option[Tensor[T]])
 //(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[T])    
   : (Tensor[T])
-
-}
-trait GivenTensorFill extends Operator {
-
-  def GivenTensorFill1[@sp T : Numeric:ClassTag](name: String,extra_shape : Option[(Array[Int])] = None,input_as_shape : Option[(Int)] = None,shape : Option[(Array[Int])] = None,values : Option[(Array[Float])] = None,shapeInput: Option[Tensor[T]] = None)
-(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 }
 trait GlobalAveragePool extends Operator {
@@ -517,12 +508,6 @@ trait If extends Operator {
 (implicit evB:(UNil TypeOr Boolean)#check[B],evV:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[V])    : (Tensor[V])
 
 }
-trait ImageScaler extends Operator {
-
-  def ImageScaler1[@sp T : Numeric:ClassTag](name: String,bias : Option[(Array[Float])] = None,scaleAttr : Option[(Float)] = None,input: Option[Tensor[T]])
-(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
-
-}
 trait Imputer extends Operator {
 
   def Imputer1[@sp T : Numeric:ClassTag](name: String,imputed_value_floats : Option[(Array[Float])] = None,imputed_value_int64s : Option[(Array[Int])] = None,replaced_value_float : Option[(Float)] = None,replaced_value_int64 : Option[(Int)] = None,X: Option[Tensor[T]])
@@ -537,6 +522,12 @@ trait InstanceNormalization extends Operator {
 
   def InstanceNormalization6[@sp T : Numeric:ClassTag](name: String,epsilon : Option[(Float)] = None,input: Option[Tensor[T]], scale: Option[Tensor[T]], B: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
+
+}
+trait IsInf extends Operator {
+
+  def IsInf10[@sp T1 : Numeric:ClassTag,@sp T2 : Numeric:ClassTag](name: String,detect_negative : Option[(Int)] = None,detect_positive : Option[(Int)] = None,X: Option[Tensor[T1]])
+(implicit evT1:(UNil TypeOr Float TypeOr Double)#check[T1],evT2:(UNil TypeOr Boolean)#check[T2])    : (Tensor[T2])
 
 }
 trait IsNaN extends Operator {
@@ -655,6 +646,12 @@ trait MatMul extends Operator {
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[T])    : (Tensor[T])
 
 }
+trait MatMulInteger extends Operator {
+
+  def MatMulInteger10[@sp T1 : Numeric:ClassTag,@sp T2 : Numeric:ClassTag,@sp T3 : Numeric:ClassTag](name: String,A: Option[Tensor[T1]], B: Option[Tensor[T2]],a_zero_point: Option[Tensor[T1]] = None, b_zero_point: Option[Tensor[T2]] = None)
+(implicit evT1:(UNil TypeOr Byte TypeOr UByte)#check[T1],evT2:(UNil TypeOr Byte TypeOr UByte)#check[T2],evT3:(UNil TypeOr Int)#check[T3])    : (Tensor[T3])
+
+}
 trait Max extends Operator {
 
   def Max6[@sp T : Numeric:ClassTag](name: String,data_0: Seq[Option[Tensor[T]]])
@@ -672,6 +669,11 @@ trait MaxPool extends Operator {
 
 
   def MaxPool8[@sp T : Numeric:ClassTag,@sp I : Numeric:ClassTag](name: String,auto_pad : Option[(String)] = None,kernel_shape : Option[(Array[Int])],pads : Option[(Array[Int])] = None,storage_order : Option[(Int)] = None,strides : Option[(Array[Int])] = None,X: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],evI:(UNil TypeOr Long)#check[I])    
+: (Tensor[T], Tensor[I])
+
+
+  def MaxPool10[@sp T : Numeric:ClassTag,@sp I : Numeric:ClassTag](name: String,auto_pad : Option[(String)] = None,ceil_mode : Option[(Int)] = None,dilations : Option[(Array[Int])] = None,kernel_shape : Option[(Array[Int])],pads : Option[(Array[Int])] = None,storage_order : Option[(Int)] = None,strides : Option[(Array[Int])] = None,X: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],evI:(UNil TypeOr Long)#check[I])    : (Tensor[T], Tensor[I])
 
 }
@@ -697,6 +699,12 @@ trait Mean extends Operator {
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 }
+trait MeanVarianceNormalization extends Operator {
+
+  def MeanVarianceNormalization9[@sp T : Numeric:ClassTag](name: String,axes : Option[(Array[Int])] = None,X: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
+
+}
 trait Min extends Operator {
 
   def Min6[@sp T : Numeric:ClassTag](name: String,data_0: Seq[Option[Tensor[T]]])
@@ -707,18 +715,24 @@ trait Min extends Operator {
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 }
+trait Mod extends Operator {
+
+  def Mod10[@sp T : Numeric:ClassTag](name: String,fmod : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
+
+}
 trait Mul extends Operator {
+/*
+  def Mul1[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,consumed_inputs : Option[(Array[Int])] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
-//  def Mul1[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,consumed_inputs : Option[(Array[Int])] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
-//(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
-
-//  def Mul6[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
-//(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
-
+  def Mul6[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
+*/
 
   def Mul7[@sp T : Numeric:ClassTag](name: String,A: Option[Tensor[T]], B: Option[Tensor[T]])
-//(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    
+//(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])  
   : (Tensor[T])
 
 }
@@ -736,6 +750,12 @@ trait Neg extends Operator {
 
   def Neg6[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float TypeOr Int TypeOr Byte TypeOr Short TypeOr Long TypeOr Float16 TypeOr Double)#check[T])    : (Tensor[T])
+
+}
+trait NonMaxSuppression extends Operator {
+
+  def NonMaxSuppression10(name: String,center_point_box : Option[(Int)] = None,boxes: Option[Tensor[Float]], scores: Option[Tensor[Float]],max_output_boxes_per_class: Option[Tensor[Long]] = None, iou_threshold: Option[Tensor[Float]] = None, score_threshold: Option[Tensor[Float]] = None)
+    : (Tensor[Long])
 
 }
 trait NonZero extends Operator {
@@ -806,12 +826,6 @@ trait Pad extends Operator {
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 }
-trait ParametricSoftplus extends Operator {
-
-  def ParametricSoftplus1[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,X: Option[Tensor[T]])
-(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
-
-}
 trait Pow extends Operator {
 
   def Pow1[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,X: Option[Tensor[T]], Y: Option[Tensor[T]])
@@ -820,6 +834,24 @@ trait Pow extends Operator {
 
   def Pow7[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]], Y: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
+
+}
+trait QLinearConv extends Operator {
+
+  def QLinearConv10[@sp T1 : Numeric:ClassTag,@sp T2 : Numeric:ClassTag,@sp T3 : Numeric:ClassTag,@sp T4 : Numeric:ClassTag](name: String,auto_pad : Option[(String)] = None,dilations : Option[(Array[Int])] = None,group : Option[(Int)] = None,kernel_shape : Option[(Array[Int])] = None,pads : Option[(Array[Int])] = None,strides : Option[(Array[Int])] = None,x: Option[Tensor[T1]], x_scale: Option[Tensor[Float]], x_zero_point: Option[Tensor[T1]], w: Option[Tensor[T2]], w_scale: Option[Tensor[Float]], w_zero_point: Option[Tensor[T2]], y_scale: Option[Tensor[Float]], y_zero_point: Option[Tensor[T3]],B: Option[Tensor[T4]] = None)
+(implicit evT1:(UNil TypeOr Byte TypeOr UByte)#check[T1],evT2:(UNil TypeOr Byte TypeOr UByte)#check[T2],evT3:(UNil TypeOr Byte TypeOr UByte)#check[T3],evT4:(UNil TypeOr Int)#check[T4])    : (Tensor[T3])
+
+}
+trait QLinearMatMul extends Operator {
+
+  def QLinearMatMul10[@sp T1 : Numeric:ClassTag,@sp T2 : Numeric:ClassTag,@sp T3 : Numeric:ClassTag](name: String,a: Option[Tensor[T1]], a_scale: Option[Tensor[Float]], a_zero_point: Option[Tensor[T1]], b: Option[Tensor[T2]], b_scale: Option[Tensor[Float]], b_zero_point: Option[Tensor[T2]], y_scale: Option[Tensor[Float]], y_zero_point: Option[Tensor[T3]])
+(implicit evT1:(UNil TypeOr Byte TypeOr UByte)#check[T1],evT2:(UNil TypeOr Byte TypeOr UByte)#check[T2],evT3:(UNil TypeOr Byte TypeOr UByte)#check[T3])    : (Tensor[T3])
+
+}
+trait QuantizeLinear extends Operator {
+
+  def QuantizeLinear10[@sp T1 : Numeric:ClassTag,@sp T2 : Numeric:ClassTag](name: String,x: Option[Tensor[T1]], y_scale: Option[Tensor[Float]],y_zero_point: Option[Tensor[T2]] = None)
+(implicit evT1:(UNil TypeOr Float TypeOr Int)#check[T1],evT2:(UNil TypeOr Byte TypeOr UByte)#check[T2])    : (Tensor[T2])
 
 }
 trait RNN extends Operator {
@@ -928,14 +960,13 @@ trait ReduceSumSquare extends Operator {
 }
 trait Relu extends Operator {
 
-  def Relu1[@sp T : Numeric : ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,X: Option[Tensor[T]])
-(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]) 
-: (Tensor[T])
+  def Relu1[@sp T : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,X: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 
-  def Relu6[@sp T : Numeric : ClassTag](name: String,X: Option[Tensor[T]])
-//(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
-: (Tensor[T])
+  def Relu6[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
+//(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    
+  : (Tensor[T])
 
 }
 trait Reshape extends Operator {
@@ -948,6 +979,24 @@ trait Reshape extends Operator {
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])    : (Tensor[T])
 
 }
+trait Resize extends Operator {
+
+  def Resize10[@sp T : Numeric:ClassTag](name: String,mode : Option[(String)] = None,X: Option[Tensor[T]], scales: Option[Tensor[Float]])
+(implicit evT:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])    : (Tensor[T])
+
+}
+trait ReverseSequence extends Operator {
+
+  def ReverseSequence10[@sp T : Numeric:ClassTag](name: String,batch_axis : Option[(Int)] = None,time_axis : Option[(Int)] = None,input: Option[Tensor[T]], sequence_lens: Option[Tensor[Long]])
+(implicit evT:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])    : (Tensor[T])
+
+}
+trait RoiAlign extends Operator {
+
+  def RoiAlign10[@sp T1 : Numeric:ClassTag,@sp T2 : Numeric:ClassTag](name: String,mode : Option[(String)] = None,output_height : Option[(Int)] = None,output_width : Option[(Int)] = None,sampling_ratio : Option[(Int)] = None,spatial_scaleAttr : Option[(Float)] = None,X: Option[Tensor[T1]], rois: Option[Tensor[T1]], batch_indices: Option[Tensor[T2]])
+(implicit evT1:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T1],evT2:(UNil TypeOr Long)#check[T2])    : (Tensor[T1])
+
+}
 trait SVMClassifier extends Operator {
 
   def SVMClassifier1[@sp T1 : Numeric:ClassTag,@sp T2 : Numeric:ClassTag](name: String,classlabels_ints : Option[(Array[Int])] = None,classlabels_strings : Option[(Array[String])] = None,coefficients : Option[(Array[Float])] = None,kernel_params : Option[(Array[Float])] = None,kernel_type : Option[(String)] = None,post_transform : Option[(String)] = None,prob_a : Option[(Array[Float])] = None,prob_b : Option[(Array[Float])] = None,rho : Option[(Array[Float])] = None,support_vectors : Option[(Array[Float])] = None,vectors_per_class : Option[(Array[Int])] = None,X: Option[Tensor[T1]])
@@ -958,18 +1007,6 @@ trait SVMRegressor extends Operator {
 
   def SVMRegressor1[@sp T : Numeric:ClassTag](name: String,coefficients : Option[(Array[Float])] = None,kernel_params : Option[(Array[Float])] = None,kernel_type : Option[(String)] = None,n_supports : Option[(Int)] = None,one_class : Option[(Int)] = None,post_transform : Option[(String)] = None,rho : Option[(Array[Float])] = None,support_vectors : Option[(Array[Float])] = None,X: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check[T])    : (Tensor[Float])
-
-}
-trait Scale extends Operator {
-
-  def Scale1[@sp T : Numeric:ClassTag](name: String,scaleAttr : Option[(Float)] = None,input: Option[Tensor[T]])
-(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
-
-}
-trait ScaledTanh extends Operator {
-
-  def ScaledTanh1[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,input: Option[Tensor[T]])
-(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 }
 trait Scaler extends Operator {
@@ -1013,14 +1050,14 @@ trait Shrink extends Operator {
 
 }
 trait Sigmoid extends Operator {
-/*
-  def Sigmoid1[@sp T : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,X: Option[Tensor[T]])
-(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
-*/
+
+//  def Sigmoid1[@sp T : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,X: Option[Tensor[T]])
+//(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
+
 
   def Sigmoid6[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
 //(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    
-  : (Tensor[T])
+: (Tensor[T])
 
 }
 trait Sign extends Operator {
@@ -1051,6 +1088,10 @@ trait Slice extends Operator {
 
   def Slice1[@sp T : Numeric:ClassTag](name: String,axes : Option[(Array[Int])] = None,ends : Option[(Array[Int])],starts : Option[(Array[Int])],data: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])    : (Tensor[T])
+
+
+  def Slice10[@sp T : Numeric:ClassTag,@sp Tind : Numeric:ClassTag](name: String,data: Option[Tensor[T]], starts: Option[Tensor[Tind]], ends: Option[Tensor[Tind]],axes: Option[Tensor[Tind]] = None, steps: Option[Tensor[Tind]] = None)
+(implicit evT:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T],evTind:(UNil TypeOr Int TypeOr Long)#check[Tind])    : (Tensor[T])
 
 }
 trait Softmax extends Operator {
@@ -1103,6 +1144,12 @@ trait Squeeze extends Operator {
 (implicit evT:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])    : (Tensor[T])
 
 }
+trait StringNormalizer extends Operator {
+
+  def StringNormalizer10(name: String,case_change_action : Option[(String)] = None,is_case_sensitive : Option[(Int)] = None,locale : Option[(String)] = None,stopwords : Option[(Array[String])] = None,X: Option[Tensor[String]])
+    : (Tensor[String])
+
+}
 trait Sub extends Operator {
 
   def Sub1[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,consumed_inputs : Option[(Array[Int])] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
@@ -1151,7 +1198,7 @@ trait TfIdfVectorizer extends Operator {
 }
 trait ThresholdedRelu extends Operator {
 
-  def ThresholdedRelu1[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,X: Option[Tensor[T]])
+  def ThresholdedRelu10[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,X: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T])
 
 }
@@ -1168,6 +1215,10 @@ trait Tile extends Operator {
 trait TopK extends Operator {
 
   def TopK1[@sp T : Numeric:ClassTag,@sp I : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,k : Option[(Int)],X: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],evI:(UNil TypeOr Long)#check[I])    : (Tensor[T], Tensor[I])
+
+
+  def TopK10[@sp T : Numeric:ClassTag,@sp I : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,X: Option[Tensor[T]], K: Option[Tensor[Long]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],evI:(UNil TypeOr Long)#check[I])    : (Tensor[T], Tensor[I])
 
 }
@@ -1206,6 +1257,10 @@ trait Upsample extends Operator {
 
 
   def Upsample9[@sp T : Numeric:ClassTag](name: String,mode : Option[(String)] = None,X: Option[Tensor[T]], scales: Option[Tensor[Float]])
+(implicit evT:(UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])    : (Tensor[T])
+
+
+  def Upsample10[@sp T : Numeric:ClassTag](name: String,mode : Option[(String)] = None,X: Option[Tensor[T]], scales: Option[Tensor[Float]])
 (implicit evT:(UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])    : (Tensor[T])
 
 }

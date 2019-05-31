@@ -10,7 +10,7 @@ val catsVersion = "2.0.0-M1" //"1.6.0"
 lazy val commonSettings = Seq(
   scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
-  version      := "1.4.1-0.1.0-SNAPSHOT",
+  version      := "1.5.0-0.1.0-SNAPSHOT", //TODO : Generate APIs for 1.5.0
   resolvers += Resolver.mavenLocal, //TODO: fix issue with mkl-dnn JavaCPP preset resolution
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
@@ -55,7 +55,6 @@ lazy val programGenerator = (crossProject(JVMPlatform)
     .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
     name := "onnx-scala-program-generator",
-    libraryDependencies ++= Seq("org.bytedeco" % "onnx-platform" % "1.4.1-1.5"),
     scalaVersion := scala212Version,
     mainClass in (Compile, run) := Some("org.emergentorder.onnx.ONNXProgramGenerator"),
     libraryDependencies ++=  Seq(
@@ -70,12 +69,8 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform, NativePlatform)
     .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
     name := "onnx-scala-backends",
-    libraryDependencies ++= Seq("org.bytedeco" % "onnx-platform" % "1.4.1-1.5",
-                               ),
     scalaVersion := scala212Version,
-//    mainClass in (Compile, run) := Some("org.emergentorder.onnx.ONNXProgramGenerator"),
-   libraryDependencies ++= Seq("org.bytedeco" % "ngraph-platform" % "0.15.0-1.5"),
-
+   libraryDependencies ++= Seq("org.bytedeco" % "ngraph-platform" % "0.19.0-1.5.1-SNAPSHOT"),
     publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(
@@ -92,7 +87,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform, NativePlatform)
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     .crossType(CrossType.Pure) in file("core")).dependsOn(common)
-  .enablePlugins(wartremover.WartRemover)
+  .disablePlugins(wartremover.WartRemover)
   .settings(commonSettings,
     name := "onnx-scala",
     scalaVersion := scala212Version,
@@ -106,18 +101,20 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
         case _ => Seq(
                   )
       }),
-
       libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_2.12" % "0.16.1",
-                                            "eu.timepit" % "singleton-ops_2.12" % "0.3.1" 
+                                            "eu.timepit" % "singleton-ops_2.12" % "0.3.1"
                                            )
         case _ => Seq("org.typelevel" %% "spire" % "0.16.1",
                       "eu.timepit" %% "singleton-ops" % "0.3.1"
                   )
-      })
+      }),
+      libraryDependencies ++= Seq("org.bytedeco" % "onnx-platform" % "1.5.0-1.5.1-SNAPSHOT") 
     )
     .jsSettings(
       crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version),
+
+      libraryDependencies ++= Seq("org.bytedeco" % "onnx-platform" % "1.5.0-1.5.1-SNAPSHOT"),
       libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_sjs0.6_2.12" % "0.16.1"  excludeAll(
     ExclusionRule(organization = "org.scala-js")),
@@ -132,11 +129,12 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
       scalaVersion := scala211Version,
       libraryDependencies ++= Seq(
         "org.typelevel" %% "spire" % "0.16.1",
+        "org.bytedeco" % "onnx-platform" % "1.5.0-1.5.1-SNAPSHOT", 
         "eu.timepit" %% "singleton-ops" % "0.3.1",
       )
     )
 
-lazy val coreDotty = (crossProject(JVMPlatform) //TODO: fix fail on common in clean cross-build
+lazy val coreDotty = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure)).in(file("coreDotty")).dependsOn(commonDotty)
   .enablePlugins(dotty.tools.sbtplugin.DottyPlugin)
   .disablePlugins(wartremover.WartRemover)

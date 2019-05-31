@@ -102,11 +102,11 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
                   )
       }),
       libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_2.12" % "0.16.1",
-                                            "eu.timepit" % "singleton-ops_2.12" % "0.3.1"
+        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_2.12" % "0.16.1"
+                                      //      "eu.timepit" % "singleton-ops_2.12" % "0.3.1"
                                            )
-        case _ => Seq("org.typelevel" %% "spire" % "0.16.1",
-                      "eu.timepit" %% "singleton-ops" % "0.3.1"
+        case _ => Seq("org.typelevel" %% "spire" % "0.16.1"
+                      //"eu.timepit" %% "singleton-ops" % "0.3.1"
                   )
       }),
       libraryDependencies ++= Seq("org.bytedeco" % "onnx-platform" % "1.5.0-1.5.1-SNAPSHOT") 
@@ -118,10 +118,10 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
       libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_sjs0.6_2.12" % "0.16.1"  excludeAll(
     ExclusionRule(organization = "org.scala-js")),
-                                            "eu.timepit" %%% "singleton-ops" % "0.3.1"
+                                           // "eu.timepit" %%% "singleton-ops" % "0.3.1"
                                            )
         case _ => Seq("org.typelevel" %%% "spire" % "0.16.1",
-                      "eu.timepit" %%% "singleton-ops" % "0.3.1"
+                      //"eu.timepit" %%% "singleton-ops" % "0.3.1"
                   )
       })
     )
@@ -130,7 +130,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
       libraryDependencies ++= Seq(
         "org.typelevel" %% "spire" % "0.16.1",
         "org.bytedeco" % "onnx-platform" % "1.5.0-1.5.1-SNAPSHOT", 
-        "eu.timepit" %% "singleton-ops" % "0.3.1",
+        //"eu.timepit" %% "singleton-ops" % "0.3.1",
       )
     )
 
@@ -145,7 +145,7 @@ lazy val coreDotty = (crossProject(JVMPlatform)
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2") else Nil },
     libraryDependencies ++= Seq(
       ("org.typelevel" %% "spire" % "0.16.1").withDottyCompat(dottyVersion),
-      ("eu.timepit" %% "singleton-ops" % "0.3.1").withDottyCompat(dottyVersion)
+      //("eu.timepit" %% "singleton-ops" % "0.3.1").withDottyCompat(dottyVersion)
     )
 )
 

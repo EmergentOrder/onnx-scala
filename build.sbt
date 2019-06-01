@@ -149,8 +149,9 @@ lazy val coreDotty = (crossProject(JVMPlatform)
     )
 )
 
-lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
+lazy val free = (crossProject(JVMPlatform)
     .crossType(CrossType.Pure) in file("free")).dependsOn(backends)
+  .disablePlugins(wartremover.WartRemover) 
   .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
   .settings( commonSettings,
     name := "onnx-scala-free", 
@@ -186,23 +187,4 @@ lazy val free = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
   )
   .jvmSettings(
     crossScalaVersions := Seq(scala212Version, scala211Version), 
-  )
-  .jsSettings(
-      crossScalaVersions := Seq(scala212Version, scala211Version),
-      libraryDependencies ++= Seq(
-        "org.typelevel" %%% "cats-free" % catsVersion,
-        "org.typelevel" %%% "cats-effect" % "1.0.0",
-        "io.frees" %%% "frees-core" % "0.8.2",
-        "io.frees" %%% "iota-core" % "0.3.7"
-                  ),
-
-    )
-  .nativeSettings(
-      scalaVersion := scala211Version,
-      libraryDependencies ++= Seq(
-        "org.typelevel" %% "cats-free" % catsVersion,
-        "org.typelevel" %% "cats-effect" % "1.0.0", 
-        "io.frees" %% "frees-core" % "0.8.2",
-        "io.frees" %% "iota-core" % "0.3.7"
-      )
-    )
+  ) 

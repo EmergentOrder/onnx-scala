@@ -18,7 +18,7 @@ lazy val commonSettings = Seq(
   autoCompilerPlugins := true
 )
 
-lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
+lazy val common = (crossProject(JSPlatform, JVMPlatform)
     .crossType(CrossType.Pure) in file("common"))
   .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
@@ -33,9 +33,9 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     scalaVersion := scala212Version,
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
   )
-  .nativeSettings(
+/*  .nativeSettings(
     scalaVersion := scala211Version
-  )
+  ) */
 
 lazy val commonDotty = (crossProject(JVMPlatform)
     .crossType(CrossType.Pure) in file("commonDotty"))
@@ -64,7 +64,7 @@ lazy val programGenerator = (crossProject(JVMPlatform)
   )
 
 
-lazy val backends = (crossProject(JVMPlatform, JSPlatform, NativePlatform)
+lazy val backends = (crossProject(JVMPlatform, JSPlatform)
     .crossType(CrossType.Pure) in file("backends")).dependsOn(core) //Should split into core and free?
     .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
@@ -79,13 +79,13 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform, NativePlatform)
  .jsSettings(
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
   )
-  .nativeSettings(
+/*  .nativeSettings(
     scalaVersion := scala211Version
-  )
+  ) */
 
 
 
-lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
+lazy val core = (crossProject(JSPlatform, JVMPlatform)
     .crossType(CrossType.Pure) in file("core")).dependsOn(common)
   .disablePlugins(wartremover.WartRemover)
   .settings(commonSettings,
@@ -125,14 +125,14 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
                   )
       })
     )
-    .nativeSettings(
+   /* .nativeSettings(
       scalaVersion := scala211Version,
       libraryDependencies ++= Seq(
         "org.typelevel" %% "spire" % "0.16.1",
         "org.bytedeco" % "onnx-platform" % "1.5.0-1.5.1-SNAPSHOT", 
         //"eu.timepit" %% "singleton-ops" % "0.3.1",
       )
-    )
+    ) */
 
 lazy val coreDotty = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure)).in(file("coreDotty")).dependsOn(commonDotty)

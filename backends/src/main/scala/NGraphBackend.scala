@@ -30,6 +30,8 @@ import org.bytedeco.ngraph.global.ngraph.f32
 import org.bytedeco.ngraph.global.ngraph.i32
 import org.bytedeco.onnx.global.onnx.check_model
 
+//TODO: ONNX-JS backend for both JS and JVM
+
 class NGraphBackend(onnxHelper: ONNXHelper) extends Conv with Sigmoid with Gemm with Gather with Mul with Relu with MaxPool with Concat with Dropout with AveragePool with Reshape{
 //with DataSource
 

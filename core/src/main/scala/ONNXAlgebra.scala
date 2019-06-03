@@ -11,7 +11,6 @@ import spire.math.Numeric
 import spire.implicits._
 import spire.algebra.Field
 import scala.reflect.ClassTag
-import singleton.ops._
 
 package object onnx {
 type |:[+A1, +A2] = Either[A1, A2]

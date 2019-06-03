@@ -52,6 +52,7 @@ object ONNXProgramGenerator {
           (x.inputs, x.since_version))
       .toMap
 
+    //TODO: Replace Freestyle with ZIO
     val FS = false
     val useDotty = false
     val unionTypeOperator = (if (useDotty) " | " else " TypeOr ")
@@ -129,7 +130,7 @@ object ONNXProgramGenerator {
         "import spire.math.Complex\n" +
         "import spire.algebra.Field\n" +
         "import spire.math.Numeric\n" +
-        "import singleton.ops._\n" +
+//        "import singleton.ops._\n" +
         "import scala.language.higherKinds\n\n" +
         (if (FS) "@module " else "") + "trait " + programName + " {\n" +
         distinctOps
@@ -177,8 +178,8 @@ object ONNXProgramGenerator {
             val nodesOrParams = x._1._1._1.map{
               y =>
                 "Some(node" + y.replaceAll("\\.", "") + (if (y.contains("dropout") || y.contains(
-                                         "bn_1") || y.contains(
-                                         "pool5_7x7_s1_2")) "._1"
+                                         "bn_1") || y.contains("fire9_concat_2") || y.contains(
+                                         "pool5_7x7_s1_2")) "._1" //TODO: Access multiple outputs correctly
                                    else "") + ")"
             }// ,""" + y.name.getString + "name" + " = " + """ Some("""" + y + """")""")
 

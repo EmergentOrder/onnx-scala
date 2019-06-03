@@ -16,7 +16,6 @@ import spire.math.ULong
 import spire.math.Complex
 import spire.algebra.Field
 import spire.math.Numeric
-import singleton.ops._
 import scala.language.higherKinds
 
 @module trait Single_reluFree {

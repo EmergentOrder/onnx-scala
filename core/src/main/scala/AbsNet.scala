@@ -8,7 +8,6 @@ import spire.math.UShort
 import spire.math.Complex
 import spire.algebra.Field
 import spire.math.Numeric
-import singleton.ops._
 import scala.language.higherKinds
 
 trait AbsNet {

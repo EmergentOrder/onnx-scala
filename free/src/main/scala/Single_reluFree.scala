@@ -22,13 +22,11 @@ import scala.language.higherKinds
   val reluFree: ReluFree
   val dataSource: DataSourceFree
   val dropoutFree: DropoutFree
-  def program[T :Numeric:ClassTag]
-//  (implicit ev:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check[T])
-//  (implicit ev:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
-  : FS.Seq[Tensor[T]]  = 
+  def program
+  : FS.Seq[Tensor[Float]]  = 
     for {
-      nodex <- dataSource.inputDataFree[T]
-      nodey <- reluFree.Relu6Free[T]("y" ,X = Some(nodex))
-      nodez <- dropoutFree.Dropout7Free[T]("z" , None, data = Some(nodey))
+      nodex <- dataSource.inputDataFree[Float]
+      nodey <- reluFree.Relu6Free("y" ,X = Some(nodex))
+      nodez <- dropoutFree.Dropout7Free("z" , None, data = Some(nodey))
     } yield (nodez._1)
 }

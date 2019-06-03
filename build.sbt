@@ -4,7 +4,7 @@ val scala211Version = "2.11.12"
 val scala212Version = "2.12.8"
 val scala213Version = "2.13.0-RC3"
 //Might want to remove cats ( conflict with Freestyle's version)
-val catsVersion = "2.0.0-M1" //"1.6.0"
+val catsVersion = "2.0.0-M3" //"1.6.0"
 //TODO: Replace wartremover with scalafix
 
 lazy val commonSettings = Seq(
@@ -58,7 +58,7 @@ lazy val programGenerator = (crossProject(JVMPlatform)
     scalaVersion := scala212Version,
     mainClass in (Compile, run) := Some("org.emergentorder.onnx.ONNXProgramGenerator"),
     libraryDependencies ++=  Seq(
-                      ("org.scalameta" %% "scalameta" % "1.8.0").withDottyCompat(dottyVersion) 
+                      ("org.scalameta" %% "scalameta" % "4.1.11").withDottyCompat(dottyVersion) 
                   ),
     publishArtifact in (Compile, packageDoc) := false
   )
@@ -102,10 +102,10 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
                   )
       }),
       libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_2.12" % "0.16.1"
+        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_2.12" % "0.16.2"
                                       //      "eu.timepit" % "singleton-ops_2.12" % "0.3.1"
                                            )
-        case _ => Seq("org.typelevel" %% "spire" % "0.16.1"
+        case _ => Seq("org.typelevel" %% "spire" % "0.16.2"
                       //"eu.timepit" %% "singleton-ops" % "0.3.1"
                   )
       }),
@@ -116,11 +116,11 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
 
       libraryDependencies ++= Seq("org.bytedeco" % "onnx-platform" % "1.5.0-1.5.1-SNAPSHOT"),
       libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_sjs0.6_2.12" % "0.16.1"  excludeAll(
+        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_sjs0.6_2.12" % "0.16.2"  excludeAll(
     ExclusionRule(organization = "org.scala-js")),
                                            // "eu.timepit" %%% "singleton-ops" % "0.3.1"
                                            )
-        case _ => Seq("org.typelevel" %%% "spire" % "0.16.1",
+        case _ => Seq("org.typelevel" %%% "spire" % "0.16.2",
                       //"eu.timepit" %%% "singleton-ops" % "0.3.1"
                   )
       })
@@ -144,7 +144,7 @@ lazy val coreDotty = (crossProject(JVMPlatform)
     publishArtifact in (Compile, packageDoc) := false,
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2") else Nil },
     libraryDependencies ++= Seq(
-      ("org.typelevel" %% "spire" % "0.16.1").withDottyCompat(dottyVersion),
+      ("org.typelevel" %% "spire" % "0.16.2").withDottyCompat(dottyVersion),
       //("eu.timepit" %% "singleton-ops" % "0.3.1").withDottyCompat(dottyVersion)
     )
 )
@@ -172,13 +172,13 @@ lazy val free = (crossProject(JVMPlatform)
    libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n == 13 => Seq(
                                             "org.typelevel" % "cats-free_2.12" % catsVersion,
-                                            "org.typelevel" % "cats-effect_2.12" % "1.2.0",
+                                            "org.typelevel" % "cats-effect_2.12" % "2.0.0-M3",
                                             "io.frees" % "frees-core_2.12" % "0.8.2",
                                             "io.frees" % "iota-core_2.12" % "0.3.7"
                                            )
         case _ => Seq(
                       "org.typelevel" %% "cats-free" % catsVersion,
-                      "org.typelevel" %% "cats-effect" % "1.0.0",
+                      "org.typelevel" %% "cats-effect" % "2.0.0-M3",
                       "io.frees" %% "frees-core" % "0.8.2",
                       "io.frees" %% "iota-core" % "0.3.7"
                   )

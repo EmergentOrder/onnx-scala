@@ -139,7 +139,7 @@ object ONNXProgramGenerator {
                                                                                "Free"
                                                                              else
                                                                                "") + "\n"
-          }
+          } //TODO: Make class instead of object and inject implementations
           .mkString("") +
         "  val dataSource: DataSource" + (if (FS) "Free" else "") + "\n" +
 //    "  import cats.implicits._\n" +

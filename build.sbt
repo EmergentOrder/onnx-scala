@@ -3,8 +3,10 @@ val dottyVersion = "0.15.0-RC1"
 val scala211Version = "2.11.12"
 val scala212Version = "2.12.8"
 val scala213Version = "2.13.0-RC3"
-//Might want to remove cats ( conflict with Freestyle's version)
-val catsVersion = "2.0.0-M3" //"1.6.0"
+
+
+scalaVersion := scala212Version
+
 //TODO: Replace wartremover with scalafix
 
 lazy val commonSettings = Seq(
@@ -14,11 +16,11 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal, //TODO: fix issue with mkl-dnn JavaCPP preset resolution
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
-  scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
+  scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"), 
   autoCompilerPlugins := true
 )
 
-lazy val common = (crossProject(JSPlatform, JVMPlatform)
+lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     .crossType(CrossType.Pure) in file("common"))
   .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
@@ -33,9 +35,9 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform)
     scalaVersion := scala212Version,
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
   )
-/*  .nativeSettings(
-    scalaVersion := scala211Version
-  ) */
+  .nativeSettings(
+    scalaVersion := scala211Version 
+  )
 
 lazy val commonDotty = (crossProject(JVMPlatform)
     .crossType(CrossType.Pure) in file("commonDotty"))
@@ -50,7 +52,7 @@ lazy val commonDotty = (crossProject(JVMPlatform)
 
 lazy val commonJS = common.js.disablePlugins(dotty.tools.sbtplugin.DottyPlugin).disablePlugins(dotty.tools.sbtplugin.DottyIDEPlugin)
 
-lazy val programGenerator = (crossProject(JVMPlatform)
+lazy val programGenerator = (crossProject(JSPlatform, JVMPlatform)
     .crossType(CrossType.Pure) in file("programGenerator")).dependsOn(core)
     .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
@@ -64,7 +66,7 @@ lazy val programGenerator = (crossProject(JVMPlatform)
   )
 
 
-lazy val backends = (crossProject(JVMPlatform, JSPlatform)
+lazy val backends = (crossProject(JVMPlatform, JSPlatform, NativePlatform)
     .crossType(CrossType.Pure) in file("backends")).dependsOn(core) //Should split into core and free?
     .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
@@ -79,13 +81,13 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
  .jsSettings(
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
   )
-/*  .nativeSettings(
+  .nativeSettings(
     scalaVersion := scala211Version
-  ) */
+  )
 
 
 
-lazy val core = (crossProject(JSPlatform, JVMPlatform)
+lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     .crossType(CrossType.Pure) in file("core")).dependsOn(common)
   .disablePlugins(wartremover.WartRemover)
   .settings(commonSettings,
@@ -125,14 +127,14 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
                   )
       })
     )
-   /* .nativeSettings(
+    .nativeSettings(
       scalaVersion := scala211Version,
       libraryDependencies ++= Seq(
         "org.typelevel" %% "spire" % "0.16.1",
         "org.bytedeco" % "onnx-platform" % "1.5.0-1.5.1-SNAPSHOT", 
         //"eu.timepit" %% "singleton-ops" % "0.3.1",
       )
-    ) */
+    )
 
 lazy val coreDotty = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure)).in(file("coreDotty")).dependsOn(commonDotty)
@@ -149,7 +151,7 @@ lazy val coreDotty = (crossProject(JVMPlatform)
     )
 )
 
-lazy val free = (crossProject(JVMPlatform)
+lazy val free = (crossProject(JVMPlatform, JSPlatform)
     .crossType(CrossType.Pure) in file("free")).dependsOn(backends)
   .disablePlugins(wartremover.WartRemover) 
   .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
@@ -163,28 +165,19 @@ lazy val free = (crossProject(JVMPlatform)
         case _ => Seq(
                   )
     }),
-    libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, n)) if n != 13 => Seq( compilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full) 
-                                           )
-        case _ => Seq(
-                  )
-    }),
+
+
    libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n == 13 => Seq(
-                                            "org.typelevel" % "cats-free_2.12" % catsVersion,
-                                            "org.typelevel" % "cats-effect_2.12" % "2.0.0-M3",
-                                            "io.frees" % "frees-core_2.12" % "0.8.2",
-                                            "io.frees" % "iota-core_2.12" % "0.3.7"
+                                            "org.scalaz" % "scalaz-zio_2.12" % "1.0-RC5"
+
                                            )
         case _ => Seq(
-                      "org.typelevel" %% "cats-free" % catsVersion,
-                      "org.typelevel" %% "cats-effect" % "2.0.0-M3",
-                      "io.frees" %% "frees-core" % "0.8.2",
-                      "io.frees" %% "iota-core" % "0.3.7"
+                      "org.scalaz" %% "scalaz-zio" % "1.0-RC5"
                   )
       })
 
   )
   .jvmSettings(
-    crossScalaVersions := Seq(scala212Version, scala211Version), 
-  ) 
+    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version), 
+  )

@@ -45,20 +45,43 @@ class NGraphBackend(onnxHelper: ONNXHelper) extends Conv with Sigmoid with Gemm 
     } 
   }
 
+    def Mul1[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,consumed_inputs : Option[(Array[Int])] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = ???
+
+
+  def Mul6[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = ???
+
+
   def Mul7[@sp T : Numeric:ClassTag](name: String,A: Option[Tensor[T]], B: Option[Tensor[T]])
-//(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
   : (Tensor[T]) = {
     (trinaryOpNoAttrs(name, "Mul", A, B, None))
   }
 
+  def Sigmoid1[@sp T : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,X: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = ???
+
 def Sigmoid6[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
-//(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
   : (Tensor[T]) = {
     (trinaryOpNoAttrs(name, "Sigmoid", X, None, None))
   }
+ def Gemm1[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,broadcast : Option[(Int)] = None,transA : Option[(Int)] = None,transB : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]], C: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[T])    : (Tensor[T]) = ???
+
+
+  def Gemm6[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,broadcast : Option[(Int)] = None,transA : Option[(Int)] = None,transB : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]], C: Option[Tensor[T]])
+  (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[T])    : (Tensor[T]) = ???
+
+
+  def Gemm7[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,transA : Option[(Int)] = None,transB : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]], C: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[T])    : (Tensor[T]) = ???
+
+
 
     def Gemm9[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,transA : Option[(Int)] = None,transB : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]], C: Option[Tensor[T]])
-//(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[T])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[T])
   : (Tensor[T]) = {
     val map: Map[String, Any] = Map("alpha" -> alpha,
       "beta" -> beta,
@@ -70,7 +93,7 @@ def Sigmoid6[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
 
 
    def Gather1[@sp T : Numeric:ClassTag,@sp Tind : Numeric:ClassTag](name: String,axis : Option[(Int)],data: Option[Tensor[T]], indices: Option[Tensor[Tind]])
-//(implicit evT:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T],evTind:(UNil TypeOr Int TypeOr Long)#check[Tind])    
+(implicit evT:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T],evTind:(UNil TypeOr Int TypeOr Long)#check[Tind])    
    : (Tensor[T]) = {
     (trinaryOpNoAttrs(name, "Gather", data, indices, None : Option[Tensor[T]]))
 }
@@ -114,7 +137,7 @@ def Sigmoid6[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
 
 
   def Dropout7[@sp T : Numeric:ClassTag](name: String,ratio : Option[(Float)],data: Option[Tensor[T]])
-//      (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    
+      (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    
       : (Tensor[T], Tensor[T]) = {
         val map: Map[String, Any] = Map("ratio" -> ratio)
         (trinaryOp(name, "Dropout", data, None, None, map), null) //TODO: optional output
@@ -133,7 +156,7 @@ def Sigmoid6[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
       : (Tensor[T]) = ???
 
   def Relu6[@sp T : Numeric : ClassTag](name: String, X: Option[Tensor[T]])
-//  (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
+  (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
       : (Tensor[T]) = {
         trinaryOpNoAttrs(name, "Relu", X, None, None)
       }
@@ -371,7 +394,7 @@ def Sigmoid6[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
   def Concat4[@sp T: Numeric: ClassTag](name: String,
                                           axis: Option[(Int)],
                                           inputs: Seq[Option[Tensor[T]]])
-//        (implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])
+        (implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])
   : (Tensor[T]) = {
             val map: Map[String, Any] = Map("axis" -> axis)
             val X = inputs(0)

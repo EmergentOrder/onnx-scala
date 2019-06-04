@@ -1,10 +1,6 @@
 package org.emergentorder.onnxFree
 
-import freestyle.free._
-import freestyle.free.implicits._
-import cats.free.{ Free, FreeApplicative } 
-import cats.implicits._ 
-import cats.effect.IO
+import scalaz.zio.Task
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.UnionType._
 import scala.reflect.ClassTag
@@ -16,7 +12,7 @@ import spire.algebra.Field
 import spire.math.Numeric
 import scala.language.higherKinds
 
-@module trait SqueezenetFree {
+trait SqueezenetFree {
   val ConvFree: ConvFree
   val ReluFree: ReluFree
   val MaxPoolFree: MaxPoolFree
@@ -25,7 +21,7 @@ import scala.language.higherKinds
   val GlobalAveragePoolFree: GlobalAveragePoolFree
   val SoftmaxFree: SoftmaxFree
   val dataSource: DataSourceFree
-  def program: FS.Seq[Tensor[Float]]  = 
+  def program: Task[Tensor[Float]]  = 
     for {
       nodedata_0 <- dataSource.inputDataFree[Float]
       nodeconv10_b_0 <-  dataSource.getParamsFree[Float]("conv10_b_0")

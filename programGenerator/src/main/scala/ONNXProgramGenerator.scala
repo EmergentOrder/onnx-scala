@@ -52,7 +52,6 @@ object ONNXProgramGenerator {
           (x.inputs, x.since_version))
       .toMap
 
-    //TODO: Replace Freestyle with ZIO
     val FS = false
     val useDotty = false
     val unionTypeOperator = (if (useDotty) " | " else " TypeOr ")
@@ -113,11 +112,7 @@ object ONNXProgramGenerator {
 
       "package org.emergentorder.onnx" + (if (FS) "Free" else "") + "\n\n" +
         (if (FS)
-           "import freestyle.free._\n" +
-             "import freestyle.free.implicits._\n" +
-             "import cats.free.{ Free, FreeApplicative } \n" +
-             "import cats.implicits._ \n" +
-             "import cats.effect.IO\n" +
+             "import scalaz.zio.Task\n" +
              "import org.emergentorder.onnx._\n"
          else "") +
         (if (useDotty) ""
@@ -132,7 +127,7 @@ object ONNXProgramGenerator {
         "import spire.math.Numeric\n" +
 //        "import singleton.ops._\n" +
         "import scala.language.higherKinds\n\n" +
-        (if (FS) "@module " else "") + "trait " + programName + " {\n" +
+        "trait " + programName + " {\n" +
         distinctOps
           .map { x =>
             "  val " + x + (if (FS) "Free" else "") + ": " + x.capitalize + (if (FS)
@@ -144,7 +139,7 @@ object ONNXProgramGenerator {
         "  val dataSource: DataSource" + (if (FS) "Free" else "") + "\n" +
 //    "  import cats.implicits._\n" +
         //Omit return type here for now
-        "  def program" + (if (FS) ": FS.Seq[Tensor[" + graphOutputType + "]] "
+        "  def program" + (if (FS) ": Task[Tensor[" + graphOutputType + "]] "
                                                else
                                                  ": List[Tensor[" + graphOutputType + "]] ") + " = \n" +
         //Body of program generated here

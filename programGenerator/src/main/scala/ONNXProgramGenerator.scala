@@ -27,6 +27,7 @@ import spire.math.Number
 
 import scala.reflect.ClassTag
 
+//TODO: de-tuple on the left hand side when there are multiple outputs . should also solved the other output TODOs
 object ONNXProgramGenerator {
   def main(args: Array[String]): Unit = {
 
@@ -75,8 +76,8 @@ object ONNXProgramGenerator {
 
     def fullSource = {
       val params = onnxHelper.params
-//    val nodes = onnxHelper.nodes
       val nodeInputs = onnxHelper.nodeInputs
+      println ( "N " + nodeInputs.size)
       val graphInputs = onnxHelper.graphInputs
       val graphOutputs = onnxHelper.graphOutputs
 
@@ -117,7 +118,7 @@ object ONNXProgramGenerator {
          else "") +
         (if (useDotty) ""
          else
-           "import org.emergentorder.onnx.UnionType._\n") +
+           "import org.emergentorder.union.UnionType._\n") +
         "import scala.reflect.ClassTag\n" +
         "import spire.implicits._\n" +
         "import spire.math.UByte\n" +
@@ -139,12 +140,11 @@ object ONNXProgramGenerator {
         "  val dataSource: DataSource" + (if (FS) "Free" else "") + "\n" +
 //    "  import cats.implicits._\n" +
         //Omit return type here for now
-        "  def program" + (if (FS) ": Task[Tensor[" + graphOutputType + "]] "
+        "  def program" + (if (FS) ": Task[Tensor[" + graphOutputType + "]] " //TODO: Fix graphOutputType
                                                else
                                                  ": List[Tensor[" + graphOutputType + "]] ") + " = \n" +
         //Body of program generated here
         "    for {\n" +
-        //TODO: Assumes one output for now, enable multiple outputs for full computation graph
         graphInputs.map{ x =>
           "      node" + x._1.replaceAll("\\.","") +
         " <- " + (if (FS) "" else "List(") + "dataSource.inputData" + (if (FS)
@@ -212,9 +212,9 @@ object ONNXProgramGenerator {
               .map { y =>
                 val stringCount = y.strings_size
                 val stringList =
-                  (0 until stringCount.toInt).map(z => y.strings(z)).toList
-                val field = stringList.asInstanceOf[String]
-                y.name.getString + """ = Some(Array(""" + field + """))"""
+                  (0 until stringCount.toInt).map(z => y.strings(z).getString).toList
+                val field = stringList
+                y.name.getString + """ = Some(Array(""" + field.map(z => "\"" + z + "\"").mkString(",") + """))"""
               }
             val tensorProtoFields = x._2
               .filter { y =>
@@ -264,7 +264,7 @@ object ONNXProgramGenerator {
                   else t._2))
             }
 
-            val namedNodesOrParams = opInputsCleaned.map(
+            val namedNodesOrParams = opInputsCleaned.filter( t => !t._2.equals("")).map(
               t =>
                 t._1._1
                   .replaceAll("var", "someVar") + " = " + (if (t._1._2)
@@ -281,7 +281,7 @@ object ONNXProgramGenerator {
                                                 else
                                                   "List(") + opName + (if (FS)
                                                                          "Free"
-                                                                       else
+                                                                       else //TODO: Tell the compiler when one of the type params in an output type
                                                                          "") + "." + opName + sinceVersion + (if (FS)
                                                                                                                 "Free"
                                                                                                               else

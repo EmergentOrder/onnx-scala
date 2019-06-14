@@ -12,10 +12,11 @@ import spire.math.Numeric
 import spire.implicits._
 import spire.algebra.Field
 import scala.reflect.ClassTag
+import org.emergentorder.union.UnionType._
+
 import onnx._
 package object onnxFree {
 
-    import UnionType._
     trait DataSourceFree  {
   def inputDataFree[T : Numeric:ClassTag](implicit ev:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check[T]): Task[Tensor[T]]
   def getParamsFree[T : Numeric:ClassTag](name: String)(implicit ev:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check[T]): Task[Tensor[T]]

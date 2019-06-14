@@ -16,7 +16,7 @@ import scalaz.zio.DefaultRuntime
 
 import org.emergentorder.onnx._
 import org.emergentorder.onnxFree._
-import org.emergentorder.onnx.UnionType._
+import org.emergentorder.union.UnionType._
 
 import org.emergentorder.onnx.backends._
 
@@ -36,7 +36,7 @@ object ONNXNGraphHandlers extends App {
     : Task[Tensor[T]] = {
       Task{
         //TODO
-        (Array(0f, 220f, -2200f, 5000f, 10000f), Array(5)).asInstanceOf[Tensor[T]]
+        (Array(0f, -220f, -2200f, 5000f, 10000f), Array(5)).asInstanceOf[Tensor[T]]
       }
     }
 

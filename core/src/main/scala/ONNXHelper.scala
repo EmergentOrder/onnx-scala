@@ -26,13 +26,9 @@ import scala.reflect.ClassTag
 import org.bytedeco.javacpp._
 import org.bytedeco.onnx._
 import org.bytedeco.onnx.global.onnx._
+import org.emergentorder.union.UnionType._
 
 class ONNXHelper(modelFileName: String) {
-
-
-
-  //TODO: Add the rest of the types
-  type ValidTensorProtoTypes = Array[Float]
 
   val byteArray = Files.readAllBytes(Paths.get(modelFileName))
 
@@ -78,8 +74,7 @@ class ONNXHelper(modelFileName: String) {
     arrX
   }
 
-  def onnxTensorProtoToArray(
-      tensorProto: TensorProto): ValidTensorProtoTypes = {
+  def onnxTensorProtoToArray(tensorProto :TensorProto) = {
 
     val onnxDataType = tensorProto.data_type
     val dimsCount = tensorProto.dims_size
@@ -88,17 +83,24 @@ class ONNXHelper(modelFileName: String) {
 
     val bytesBuffer = tensorProto.raw_data.asByteBuffer
 
+    //TODO: Add the rest of the types
     val TensProtoInt = TensorProto.INT32
+
+    val TensProtoLong = TensorProto.INT64
 
     val TensProtoFloat = TensorProto.FLOAT
 
-    val array: ValidTensorProtoTypes = onnxDataType match {
-//      case TensProtoInt => {
-//        val arrX = dimsToArray[Int](dimsCount, dimsList)
-//        bytesBuffer.asIntBuffer.get(arrX)
-//        arrX.toArray
-//        //arrX.map(x => x.asInstanceOf[VV])
-//      }
+    def array = onnxDataType match {
+      case TensProtoInt => {
+        val arrX = dimsToArray[Int](dimsCount, dimsList)
+        bytesBuffer.asIntBuffer.get(arrX)
+        arrX.toArray
+      }
+      case TensProtoLong => {
+        val arrX = dimsToArray[Long](dimsCount, dimsList)
+        bytesBuffer.asLongBuffer.get(arrX)
+        arrX.toArray
+      }
       case TensProtoFloat => {
         val arrX = dimsToArray[Float](dimsCount, dimsList)
         bytesBuffer.asFloatBuffer.get(arrX)
@@ -233,7 +235,7 @@ class ONNXHelper(modelFileName: String) {
     initializer.map { x =>
       val dimsCount = x.dims_size
       val dimsList = (0 until dimsCount.toInt).map(y => x.dims(y)).toList
-      def arrX: ValidTensorProtoTypes = onnxTensorProtoToArray(x)
+      def arrX = onnxTensorProtoToArray(x)
       val tensorElemType = tensorElemTypeMap(x.data_type)
       (x.name.getString.replaceAll("-", "_").replaceAll("/", "_"), tensorElemType, arrX, dimsList.map(y => y.toInt).toArray)
     }

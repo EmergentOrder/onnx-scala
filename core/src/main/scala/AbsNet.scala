@@ -1,6 +1,6 @@
 package org.emergentorder.onnx
 
-import org.emergentorder.onnx.UnionType._
+import org.emergentorder.union.UnionType._
 import scala.reflect.ClassTag
 import spire.implicits._
 import spire.math.UByte

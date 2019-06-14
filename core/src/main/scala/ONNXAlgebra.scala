@@ -11,40 +11,14 @@ import spire.math.Numeric
 import spire.implicits._
 import spire.algebra.Field
 import scala.reflect.ClassTag
+import org.emergentorder.union.UnionType._
+
 package object onnx {
-type |:[+A1, +A2] = Either[A1, A2]
+
   type Tensor[U] = Tuple2[Array[U],  Array[Int]]
   trait Operator
 trait Graph
-object UnionType {
 
-      trait inv[-A] {}
-
-      sealed trait OrR {
-        type L <: OrR
-        type R
-        type invIntersect
-        type intersect
-      }
-
-      sealed class TypeOr[A <: OrR, B] extends OrR {
-        type L = A
-        type R = B
-
-        type intersect = (L#intersect with R)
-        type invIntersect = (L#invIntersect with inv[R])
-        type check[X] = invIntersect <:< inv[X]
-      }
-
-      object UNil extends OrR {
-        type intersect = Any
-        type invIntersect = inv[Nothing]
-      }
-      type UNil = UNil.type
-
-    }
-    
-    import UnionType._
     trait DataSource {
   def inputData[T : Numeric:ClassTag](implicit ev:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check[T]): Tensor[T]
   def getParams[T : Numeric:ClassTag](name: String)(implicit ev:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check[T]): Tensor[T]
@@ -490,7 +464,7 @@ trait Hardmax extends Operator {
 }
 trait Identity extends Operator {
 
-  def Identity1[@sp T : Numeric:ClassTag](name: String,input: Option[Tensor[T]])
+  def Identity1[@sp T : ClassTag](name: String,input: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])    : (Tensor[T])
 
 }
@@ -1218,7 +1192,7 @@ trait Transpose extends Operator {
 }
 trait TreeEnsembleClassifier extends Operator {
 
-  def TreeEnsembleClassifier1[@sp T1 : Numeric:ClassTag,@sp T2 : Numeric:ClassTag](name: String,base_values : Option[(Array[Float])] = None,class_ids : Option[(Array[Int])] = None,class_nodeids : Option[(Array[Int])] = None,class_treeids : Option[(Array[Int])] = None,class_weights : Option[(Array[Float])] = None,classlabels_int64s : Option[(Array[Int])] = None,classlabels_strings : Option[(Array[String])] = None,nodes_falsenodeids : Option[(Array[Int])] = None,nodes_featureids : Option[(Array[Int])] = None,nodes_hitrates : Option[(Array[Float])] = None,nodes_missing_value_tracks_true : Option[(Array[Int])] = None,nodes_modes : Option[(Array[String])] = None,nodes_nodeids : Option[(Array[Int])] = None,nodes_treeids : Option[(Array[Int])] = None,nodes_truenodeids : Option[(Array[Int])] = None,nodes_values : Option[(Array[Float])] = None,post_transform : Option[(String)] = None,X: Option[Tensor[T1]])
+  def TreeEnsembleClassifier1[@sp T1 : Numeric:ClassTag,@sp T2 : ClassTag](name: String,base_values : Option[(Array[Float])] = None,class_ids : Option[(Array[Int])] = None,class_nodeids : Option[(Array[Int])] = None,class_treeids : Option[(Array[Int])] = None,class_weights : Option[(Array[Float])] = None,classlabels_int64s : Option[(Array[Int])] = None,classlabels_strings : Option[(Array[String])] = None,nodes_falsenodeids : Option[(Array[Int])] = None,nodes_featureids : Option[(Array[Int])] = None,nodes_hitrates : Option[(Array[Float])] = None,nodes_missing_value_tracks_true : Option[(Array[Int])] = None,nodes_modes : Option[(Array[String])] = None,nodes_nodeids : Option[(Array[Int])] = None,nodes_treeids : Option[(Array[Int])] = None,nodes_truenodeids : Option[(Array[Int])] = None,nodes_values : Option[(Array[Float])] = None,post_transform : Option[(String)] = None,X: Option[Tensor[T1]])
 (implicit evT1:(UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check[T1],evT2:(UNil TypeOr String TypeOr Long)#check[T2])    : (Tensor[T2], Tensor[Float])
 
 }
@@ -1270,7 +1244,7 @@ trait Xor extends Operator {
 }
 trait ZipMap extends Operator {
 
-  def ZipMap1[@sp T : Numeric:ClassTag](name: String,classlabels_int64s : Option[(Array[Int])] = None,classlabels_strings : Option[(Array[String])] = None,X: Option[Tensor[Float]])
+  def ZipMap1[@sp T : ClassTag](name: String,classlabels_int64s : Option[(Array[Int])] = None,classlabels_strings : Option[(Array[String])] = None,X: Option[Tensor[Float]])
 (implicit evT:(UNil TypeOr Seq[Map[String, Float]] TypeOr Seq[Map[Long, Float]])#check[T])    : (T)
 
 }}

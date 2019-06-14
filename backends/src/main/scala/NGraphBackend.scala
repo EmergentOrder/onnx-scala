@@ -18,7 +18,7 @@ import spire.math.Complex
 
 
 import org.emergentorder.onnx._
-import org.emergentorder.onnx.UnionType._
+import org.emergentorder.union.UnionType._
 import org.bytedeco.javacpp._;
 import org.bytedeco.onnx.ModelProto;
 import org.bytedeco.onnx.global.onnx.ParseProtoFromBytes;
@@ -32,7 +32,7 @@ import org.bytedeco.onnx.global.onnx.check_model
 
 //TODO: ONNX-JS backend for both JS and JVM
 
-class NGraphBackend(onnxHelper: ONNXHelper) extends Conv with Sigmoid with Gemm with Gather with Mul with Relu with MaxPool with Concat with Dropout with AveragePool with Reshape{
+class NGraphBackend(onnxHelper: ONNXHelper) extends Add with Constant with ArgMin with ArgMax with Equal with GlobalAveragePool with Log with Softmax with Max with Min with Less with Greater with Abs with Conv with Sigmoid with Gemm with Gather with Mul with Relu with MaxPool with Concat with Dropout with AveragePool with Reshape{
 //with DataSource
 
 
@@ -44,6 +44,137 @@ class NGraphBackend(onnxHelper: ONNXHelper) extends Conv with Sigmoid with Gemm 
       case None => throw new Exception("No params found for param name: " + name)
     } 
   }
+
+
+
+  def Abs1[@sp T : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,X: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = ???
+
+
+  def Abs6[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = {
+    (trinaryOpNoAttrs(name, "Abs", X, None, None))
+}
+
+  def Add1[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,consumed_inputs : Option[(Array[Int])] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = ???
+
+
+  def Add6[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = ???
+
+
+  def Add7[@sp T : Numeric:ClassTag](name: String,A: Option[Tensor[T]], B: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = {
+    (trinaryOpNoAttrs(name, "Add", A, B, None))
+}
+
+
+
+  def ArgMax1[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,keepdims : Option[(Int)] = None,data: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[Long]) = {
+    val map: Map[String, Any] = Map("axis" -> axis,
+                                    "keepdims" -> keepdims) 
+ // (trinaryOp(name, "ArgMax", data, None, None, map))
+ ???
+}
+
+  def ArgMin1[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,keepdims : Option[(Int)] = None,data: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[Long]) = {
+    val map: Map[String, Any] = Map("axis" -> axis,
+                                    "keepdims" -> keepdims)
+  //(trinaryOp(name, "ArgMin", data, None, None, map))
+  ???
+}
+
+
+  def Constant1[@sp T : Numeric:ClassTag](name: String,value : Option[(Tensor[T])])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])    : (Tensor[T]) = ???
+
+
+  def Constant9[@sp T : Numeric:ClassTag](name: String,value : Option[(Tensor[T])])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])    : (Tensor[T]) = {
+    (trinaryOpNoAttrs(name, "Constant", value, None, None))
+}
+
+  def Equal1[@sp T : Numeric:ClassTag,@sp T1 : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Boolean TypeOr Int TypeOr Long)#check[T],evT1:(UNil TypeOr Boolean)#check[T1])    : (Tensor[T1]) = ???
+
+
+  def Equal7[@sp T : Numeric:ClassTag,@sp T1 : Numeric:ClassTag](name: String,A: Option[Tensor[T]], B: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Boolean TypeOr Int TypeOr Long)#check[T],evT1:(UNil TypeOr Boolean)#check[T1])    : (Tensor[T1]) = {
+    //(trinaryOpNoAttrs(name, "Equal", A, B, None))
+    ???
+}
+
+  def GlobalAveragePool1[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = {
+    (trinaryOpNoAttrs(name, "GlobalAveragePool", X, None, None))
+}
+
+  def Greater1[@sp T : Numeric:ClassTag,@sp T1 : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T],evT1:(UNil TypeOr Boolean)#check[T1])    : (Tensor[T1]) = ???
+
+
+  def Greater7[@sp T : Numeric:ClassTag,@sp T1 : Numeric:ClassTag](name: String,A: Option[Tensor[T]], B: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T],evT1:(UNil TypeOr Boolean)#check[T1])    : (Tensor[T1]) = ???
+
+
+  def Greater9[@sp T : Numeric:ClassTag,@sp T1 : Numeric:ClassTag](name: String,A: Option[Tensor[T]], B: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T],evT1:(UNil TypeOr Boolean)#check[T1])    : (Tensor[T1]) = {
+    //(trinaryOpNoAttrs(name, "Greater", A, B, None))
+    ???
+}
+
+
+  def Less1[@sp T : Numeric:ClassTag,@sp T1 : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T],evT1:(UNil TypeOr Boolean)#check[T1])    : (Tensor[T1]) = ???
+
+
+  def Less7[@sp T : Numeric:ClassTag,@sp T1 : Numeric:ClassTag](name: String,A: Option[Tensor[T]], B: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T],evT1:(UNil TypeOr Boolean)#check[T1])    : (Tensor[T1]) = ???
+
+
+  def Less9[@sp T : Numeric:ClassTag,@sp T1 : Numeric:ClassTag](name: String,A: Option[Tensor[T]], B: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T],evT1:(UNil TypeOr Boolean)#check[T1])    : (Tensor[T1]) = {
+    //(trinaryOpNoAttrs(name, "Less", A, B, None))
+    ???
+}
+
+  def Log1[@sp T : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,input: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = ???
+
+
+  def Log6[@sp T : Numeric:ClassTag](name: String,input: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = { 
+    (trinaryOpNoAttrs(name, "Log", input, None, None))
+}
+
+ def Max6[@sp T : Numeric:ClassTag](name: String,data_0: Seq[Option[Tensor[T]]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = ???
+
+
+  def Max8[@sp T : Numeric:ClassTag](name: String,data_0: Seq[Option[Tensor[T]]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = {
+  ???  
+  //(trinaryOpNoAttrs(name, "Max", data_0, None, None))
+}
+
+ def Min6[@sp T : Numeric:ClassTag](name: String,data_0: Seq[Option[Tensor[T]]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = ???
+
+
+  def Min8[@sp T : Numeric:ClassTag](name: String,data_0: Seq[Option[Tensor[T]]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = {
+    //(trinaryOpNoAttrs(name, "Min", data_0, None, None))
+    ???
+}
+
+  def Softmax1[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,input: Option[Tensor[T]])
+(implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = {
+    val map: Map[String, Any] = Map("axis" -> axis)
+    (trinaryOp(name, "Softmax", input, None, None, map))
+}
 
     def Mul1[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,consumed_inputs : Option[(Array[Int])] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : (Tensor[T]) = ???
@@ -120,7 +251,7 @@ def Sigmoid6[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
    "pads" -> pads,
    "strides" -> strides)
    
-    trinaryOp(name, "Conv", X, W, None, map) //TODO: B
+    trinaryOp(name, "Conv", X, W, B, map) 
       }
 
  

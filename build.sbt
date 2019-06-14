@@ -1,8 +1,8 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
-val dottyVersion = "0.15.0-RC1"
+val dottyVersion = "0.16.0-RC3"
 val scala211Version = "2.11.12"
 val scala212Version = "2.12.8"
-val scala213Version = "2.13.0-RC3"
+val scala213Version = "2.13.0"
 
 
 scalaVersion := scala212Version
@@ -67,12 +67,12 @@ lazy val programGenerator = (crossProject(JSPlatform, JVMPlatform)
 
 
 lazy val backends = (crossProject(JVMPlatform, JSPlatform, NativePlatform)
-    .crossType(CrossType.Pure) in file("backends")).dependsOn(core) //Should split into core and free?
+    .crossType(CrossType.Pure) in file("backends")).dependsOn(core)
     .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
     name := "onnx-scala-backends",
     scalaVersion := scala212Version,
-   libraryDependencies ++= Seq("org.bytedeco" % "ngraph-platform" % "0.19.0-1.5.1-SNAPSHOT"),
+   libraryDependencies ++= Seq("org.bytedeco" % "ngraph-platform" % "0.21.0-1.5.1-SNAPSHOT"),
     publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(

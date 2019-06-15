@@ -1,6 +1,6 @@
 # ONNX-Scala
 
-This project currently provides:
+This project provides:
 
 A) a complete, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep learning and classical machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++) via the JavaCPP Preset for ONNX.
 
@@ -43,11 +43,38 @@ trait AbsNet {
 }
 ```
 
-C) Currently a single partial backend implementations of ONNX, accessible from the JVM. More backends may be added in due time.
+C) Currently a single partial backend implementation of ONNX, accessible from the JVM, is available. More backends may be added in due time.
 
-The current backend is based on [nGraph](https://github.com/NervanaSystems/ngraph), via nGraph JavaCPP Preset.
+This backend is based on [nGraph](https://github.com/NervanaSystems/ngraph), via nGraph JavaCPP Preset.
 
-The most extensive working example currently is `zio/src/main/scala/NCFZIO.scala`.
+Supported ONNX ops (more coming):
+
+* Abs
+* Add
+* ArgMax
+* ArgMin
+* AveragePool
+* Concat
+* Constant
+* Conv
+* Dropout
+* Equal
+* Gather
+* Gemm
+* GlobalAveragePool
+* Greater
+* Less
+* Log 
+* Max
+* MaxPool
+* Min
+* Mul
+* Relu
+* Reshape
+* Sigmoid
+* Softmax
+
+The most extensive working example at the moment is `zio/src/main/scala/NCFZIO.scala`, an implementation of Neural Collaborative Filtering.
 
 To run it, use: 
 ```

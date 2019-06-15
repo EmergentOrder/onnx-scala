@@ -6,9 +6,9 @@ core/.js/
 core/.jvm/
 core/.native/
 coreDotty/.jvm/
-free/.js/
-free/.jvm/
-free/.native/
+zio/.js/
+zio/.jvm/
+zio/.native/
 node_modules/
 programGenerator/.jvm/
 project/project/

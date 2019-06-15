@@ -36,7 +36,7 @@ class NGraphBackend(onnxHelper: ONNXHelper) extends Add with Constant with ArgMi
 //with DataSource
 
 
-  def getParamsFree[ T : Numeric : ClassTag](name: String)
+  def getParams[ T : Numeric : ClassTag](name: String)
   : (Tensor[T]) = {
     val params = onnxHelper.paramsMap.get(name)
     params match {

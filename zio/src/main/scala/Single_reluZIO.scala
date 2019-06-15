@@ -1,4 +1,4 @@
-package org.emergentorder.onnxFree
+package org.emergentorder.onnxZIO
 
 import scalaz.zio.Task
 import org.emergentorder.onnx._
@@ -14,18 +14,18 @@ import spire.algebra.Field
 import spire.math.Numeric
 import scala.language.higherKinds
 
-object Single_reluFree {
-  val reluFree: ReluFree = new ONNXNGraphHandlers.ReluHandler()
-  val dataSource: DataSourceFree = new ONNXNGraphHandlers.DatasourceHandler()
-  val dropoutFree: DropoutFree = new ONNXNGraphHandlers.DropoutHandler()
+object Single_reluZIO {
+  val reluZIO: ReluZIO = new ONNXNGraphHandlers.ReluHandler()
+  val dataSource: DataSourceZIO = new ONNXNGraphHandlers.DatasourceHandler()
+  val dropoutZIO: DropoutZIO = new ONNXNGraphHandlers.DropoutHandler()
   def program
   : Task[Tensor[Float]]  = 
     for {
-      nodex <- dataSource.inputDataFree[Float].fork
+      nodex <- dataSource.inputDataZIO[Float].fork
       nodexjoined <- nodex.join
-      nodey <- reluFree.Relu6Free("y" ,X = Some(nodexjoined)).fork
+      nodey <- reluZIO.Relu6ZIO("y" ,X = Some(nodexjoined)).fork
       nodeyjoined <- nodey.join
-      nodez <- dropoutFree.Dropout7Free("z" , None, data = Some(nodeyjoined)).fork
+      nodez <- dropoutZIO.Dropout7ZIO("z" , None, data = Some(nodeyjoined)).fork
       nodezjoined <- nodez.join
     } yield (nodezjoined._1)
 }

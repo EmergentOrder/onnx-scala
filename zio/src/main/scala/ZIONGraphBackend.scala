@@ -1,4 +1,4 @@
-package org.emergentorder.onnxFree
+package org.emergentorder.onnxZIO
 
 import scala.{specialized => sp}
 import scala.collection.mutable.{Map => MMap};
@@ -15,7 +15,7 @@ import scalaz.zio.Task
 import scalaz.zio.DefaultRuntime
 
 import org.emergentorder.onnx._
-import org.emergentorder.onnxFree._
+import org.emergentorder.onnxZIO._
 import org.emergentorder.union.UnionType._
 
 import org.emergentorder.onnx.backends._
@@ -30,31 +30,31 @@ object ONNXNGraphHandlers extends App {
 
   //TODO: Fix concurrency problem caused by protobuf sharedDtor
 
-  class DatasourceHandler extends DataSourceFree {
-    override def inputDataFree[T: Numeric: ClassTag]
+  class DatasourceHandler extends DataSourceZIO {
+    override def inputDataZIO[T: Numeric: ClassTag]
     (implicit ev:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check[T])
     : Task[Tensor[T]] = {
       Task{
-        //TODO
-        (Array(0f, -220f, -2200f, 5000f, 10000f), Array(5)).asInstanceOf[Tensor[T]]
+        //TODO 
+        (Array(220, 240), Array(2)).asInstanceOf[Tensor[T]]
       }
     }
 
-    def getParamsFree[ T : Numeric : ClassTag](name: String)
+    def getParamsZIO[ T : Numeric : ClassTag](name: String)
     (implicit ev:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check[T])
     : Task[Tensor[T]] = {
        Task{ 
-           ngraphBackend.getParamsFree(name)
+           ngraphBackend.getParams(name)
       } 
 
     }
 
-     def getAttributesFree[T : Numeric:ClassTag](name: String)(implicit ev:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check[T]): Task[Tensor[T]] = ???
+     def getAttributesZIO[T : Numeric:ClassTag](name: String)(implicit ev:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check[T]): Task[Tensor[T]] = ???
   }
   
-  class ReluHandler extends ReluFree {
+  class ReluHandler extends ReluZIO {
 
-  override def Relu1Free[@sp T: Numeric: ClassTag](name: String,
+  override def Relu1ZIO[@sp T: Numeric: ClassTag](name: String,
                                         consumed_inputs: Option[(Array[Int])],
                                         X: Option[Tensor[T]])(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
@@ -63,7 +63,7 @@ object ONNXNGraphHandlers extends App {
       }
   
 
-  override def Relu6Free[@sp T : Numeric: ClassTag](name: String, X: Option[org.emergentorder.onnx.Tensor[T]])
+  override def Relu6ZIO[@sp T : Numeric: ClassTag](name: String, X: Option[org.emergentorder.onnx.Tensor[T]])
   //(
         (implicit ev: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
       : Task[(Tensor[T])] = {
@@ -76,21 +76,21 @@ object ONNXNGraphHandlers extends App {
 
 
 
-  class DropoutHandler extends DropoutFree {
+  class DropoutHandler extends DropoutZIO {
 
-     def Dropout1Free[@sp T : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,is_test : Option[(Int)] = None,ratio : Option[(Float)] = None,data: Option[Tensor[T]])
+     def Dropout1ZIO[@sp T : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,is_test : Option[(Int)] = None,ratio : Option[(Float)] = None,data: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : Task[(Tensor[T], Tensor[T])] = ???
 
 
-  def Dropout6Free[@sp T : Numeric:ClassTag](name: String,is_test : Option[(Int)] = None,ratio : Option[(Float)] = None,data: Option[Tensor[T]])
+  def Dropout6ZIO[@sp T : Numeric:ClassTag](name: String,is_test : Option[(Int)] = None,ratio : Option[(Float)] = None,data: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : Task[(Tensor[T], Tensor[T])] = ???
 
 
-  def Dropout10Free[@sp T : Numeric:ClassTag,@sp T1 : Numeric:ClassTag](name: String,ratio : Option[(Float)] = None,data: Option[Tensor[T]])
+  def Dropout10ZIO[@sp T : Numeric:ClassTag,@sp T1 : Numeric:ClassTag](name: String,ratio : Option[(Float)] = None,data: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],evT1:(UNil TypeOr Boolean)#check[T1])    : Task[(Tensor[T], Tensor[T1])] = ???
 
 
-      override def Dropout7Free[@sp T : Numeric:ClassTag](name: String,ratio : Option[(Float)] = None,data: Option[Tensor[T]])
+      override def Dropout7ZIO[@sp T : Numeric:ClassTag](name: String,ratio : Option[(Float)] = None,data: Option[Tensor[T]])
       (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
       : Task[(Tensor[T], Tensor[T])] = 
         Task{
@@ -99,10 +99,10 @@ object ONNXNGraphHandlers extends App {
 
   }
 
-    class GatherHandler extends GatherFree {
+    class GatherHandler extends GatherZIO {
 
 
-     override def Gather1Free[@sp T : Numeric:ClassTag,@sp Tind : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,data: Option[Tensor[T]], indices: Option[Tensor[Tind]])
+     override def Gather1ZIO[@sp T : Numeric:ClassTag,@sp Tind : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,data: Option[Tensor[T]], indices: Option[Tensor[Tind]])
 (implicit evT:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T],evTind:(UNil TypeOr Int TypeOr Long)#check[Tind])
       : Task[(Tensor[T])] =
         Task{
@@ -112,15 +112,15 @@ object ONNXNGraphHandlers extends App {
   }
 
 
-  class MulHandler extends MulFree {
-     def Mul1Free[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,consumed_inputs : Option[(Array[Int])] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
+  class MulHandler extends MulZIO {
+     def Mul1ZIO[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,consumed_inputs : Option[(Array[Int])] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : Task[(Tensor[T])] = ???
 
 
-  def Mul6Free[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
+  def Mul6ZIO[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : Task[(Tensor[T])] = ???
 
-    override def Mul7Free[@sp T : Numeric:ClassTag](name: String,A: Option[Tensor[T]], B: Option[Tensor[T]])
+    override def Mul7ZIO[@sp T : Numeric:ClassTag](name: String,A: Option[Tensor[T]], B: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
     : Task[(Tensor[T])] =
       Task{
@@ -128,21 +128,21 @@ object ONNXNGraphHandlers extends App {
       }
   }
 
-  class GemmHandler extends GemmFree {
+  class GemmHandler extends GemmZIO {
 
-      def Gemm1Free[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,broadcast : Option[(Int)] = None,transA : Option[(Int)] = None,transB : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]], C: Option[Tensor[T]])
+      def Gemm1ZIO[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,broadcast : Option[(Int)] = None,transA : Option[(Int)] = None,transB : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]], C: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[T])    : Task[(Tensor[T])] = ???
 
 
-  def Gemm6Free[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,broadcast : Option[(Int)] = None,transA : Option[(Int)] = None,transB : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]], C: Option[Tensor[T]])
+  def Gemm6ZIO[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,broadcast : Option[(Int)] = None,transA : Option[(Int)] = None,transB : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]], C: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[T])    : Task[(Tensor[T])] = ???
 
 
-  def Gemm7Free[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,transA : Option[(Int)] = None,transB : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]], C: Option[Tensor[T]])
+  def Gemm7ZIO[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,transA : Option[(Int)] = None,transB : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]], C: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[T])    : Task[(Tensor[T])] = ???
 
 
-     override def Gemm9Free[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,transA : Option[(Int)] = None,transB : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]], C: Option[Tensor[T]])
+     override def Gemm9ZIO[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,transA : Option[(Int)] = None,transB : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]], C: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[T])
   : Task[(Tensor[T])] =
     Task{
@@ -151,11 +151,11 @@ object ONNXNGraphHandlers extends App {
   }
 
 
-  class SigmoidHandler extends SigmoidFree {
-      def Sigmoid1Free[@sp T : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,X: Option[Tensor[T]])
+  class SigmoidHandler extends SigmoidZIO {
+      def Sigmoid1ZIO[@sp T : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,X: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : Task[(Tensor[T])] = ???
 
-    override   def Sigmoid6Free[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
+    override   def Sigmoid6ZIO[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
   : Task[(Tensor[T])] =
     Task{
@@ -164,8 +164,8 @@ object ONNXNGraphHandlers extends App {
 
   }
 
-  class ConcatHandler extends ConcatFree {
-     override def Concat4Free[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)],inputs: Seq[Option[Tensor[T]]])
+  class ConcatHandler extends ConcatZIO {
+     override def Concat4ZIO[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)],inputs: Seq[Option[Tensor[T]]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])
   : Task[(Tensor[T])] = {
 
@@ -176,39 +176,24 @@ object ONNXNGraphHandlers extends App {
 
  }
 
-
-/*
-//  def program[T: Numeric : ClassTag]
-//  (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])
-//  : FreeS[Single_reluFree.Op,(Tensor[T])] = Single_reluFree.instance.program[T]
-
-  
-//   def output = program[Float].interpret[Task].unsafeRunSync
-   val output = program[Float].interpret[Task].unsafeRunSync
-   println("Output size: " + output._1.size)
-   println("Output 0: " + output._1(0))
-   println("Output 1: " + output._1(1))
-   println("Output 2: " + output._1(2))
-   println("Output 3: " + output._1(3))
-   println("Output 4: " + output._1(4))
-*/
-
-  def program = Single_reluFree.program
+  def program = NCFZIO.program
 
   val runtime = new DefaultRuntime {}
 
+  val before = System.nanoTime
   val output2 = runtime.unsafeRun(program)
+  val after = System.nanoTime
+  println("Elapsed: " + (after - before))
 
-//  def program2 : FreeS[NCFFree.Op, (Tensor[Float])]  = NCFFree.instance.program
 
-//   def output = program[Float].interpret[Task].unsafeRunSync
-//   val output2 = program2.interpret[Task].unsafeRunSync
+
+
    println("Output size: " + output2._1.size)
    println("Output 0: " + output2._1(0))
    println("Output 1: " + output2._1(1))
-   println("Output 2: " + output2._1(2))
-   println("Output 3: " + output2._1(3))
-   println("Output 4: " + output2._1(4))
+//   println("Output 2: " + output2._1(2))
+//   println("Output 3: " + output2._1(3))
+//   println("Output 4: " + output2._1(4))
 
 
 }

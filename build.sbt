@@ -3,7 +3,7 @@ val dottyVersion = "0.16.0-RC3"
 val scala211Version = "2.11.12"
 val scala212Version = "2.12.8"
 val scala213Version = "2.13.0"
-
+val spireVersion = "0.16.2"
 
 scalaVersion := scala212Version
 
@@ -104,10 +104,10 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
                   )
       }),
       libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_2.12" % "0.16.2"
+        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_2.12" % spireVersion
                                       //      "eu.timepit" % "singleton-ops_2.12" % "0.3.1"
                                            )
-        case _ => Seq("org.typelevel" %% "spire" % "0.16.2"
+        case _ => Seq("org.typelevel" %% "spire" % spireVersion
                       //"eu.timepit" %% "singleton-ops" % "0.3.1"
                   )
       }),
@@ -118,11 +118,11 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
 
       libraryDependencies ++= Seq("org.bytedeco" % "onnx-platform" % "1.5.0-1.5.1-SNAPSHOT"),
       libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_sjs0.6_2.12" % "0.16.2"  excludeAll(
+        case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_sjs0.6_2.12" % spireVersion  excludeAll(
     ExclusionRule(organization = "org.scala-js")),
                                            // "eu.timepit" %%% "singleton-ops" % "0.3.1"
                                            )
-        case _ => Seq("org.typelevel" %%% "spire" % "0.16.2",
+        case _ => Seq("org.typelevel" %%% "spire" % spireVersion,
                       //"eu.timepit" %%% "singleton-ops" % "0.3.1"
                   )
       })
@@ -130,7 +130,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     .nativeSettings(
       scalaVersion := scala211Version,
       libraryDependencies ++= Seq(
-        "org.typelevel" %% "spire" % "0.16.1",
+        "org.typelevel" %% "spire" % spireVersion,
         "org.bytedeco" % "onnx-platform" % "1.5.0-1.5.1-SNAPSHOT", 
         //"eu.timepit" %% "singleton-ops" % "0.3.1",
       )
@@ -146,17 +146,17 @@ lazy val coreDotty = (crossProject(JVMPlatform)
     publishArtifact in (Compile, packageDoc) := false,
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2") else Nil },
     libraryDependencies ++= Seq(
-      ("org.typelevel" %% "spire" % "0.16.2").withDottyCompat(dottyVersion),
+      ("org.typelevel" %% "spire" % spireVersion).withDottyCompat(dottyVersion),
       //("eu.timepit" %% "singleton-ops" % "0.3.1").withDottyCompat(dottyVersion)
     )
 )
 
-lazy val free = (crossProject(JVMPlatform, JSPlatform)
-    .crossType(CrossType.Pure) in file("free")).dependsOn(backends)
+lazy val zio = (crossProject(JVMPlatform, JSPlatform)
+    .crossType(CrossType.Pure) in file("zio")).dependsOn(backends)
   .disablePlugins(wartremover.WartRemover) 
   .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
   .settings( commonSettings,
-    name := "onnx-scala-free", 
+    name := "onnx-scala-zio",
     scalaVersion := scala212Version,
     publishArtifact in (Compile, packageDoc) := false,
     scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {

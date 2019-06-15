@@ -1,6 +1,6 @@
 /*
- * ONNXFreestyleProgramGenerator
- * Copyright (c) 2018 Alexander Merritt
+ * ONNXProgramGenerator
+ * Copyright (c) 2018, 2019 Alexander Merritt
  * All rights reserved.
  * This program is free software: you can redistribute it and/or modify
  *
@@ -53,7 +53,7 @@ object ONNXProgramGenerator {
           (x.inputs, x.since_version))
       .toMap
 
-    val FS = false
+    val useZIO = true
     val useDotty = false
     val unionTypeOperator = (if (useDotty) " | " else " TypeOr ")
 
@@ -61,7 +61,7 @@ object ONNXProgramGenerator {
     //TODO: Fix output for the benchmark models shown here: https://github.com/onnx/backend-scoreboard
     //TODO: run time benchmarks on the same models
 
-    val programName = fileName.stripSuffix(".onnx").capitalize + (if (FS) "Free"
+    val programName = fileName.stripSuffix(".onnx").capitalize + (if (useZIO) "ZIO"
                                                                   else "")
     val path = Paths.get(
       "programGenerator/src/main/scala/generatedprograms/" + programName + ".scala");
@@ -69,7 +69,7 @@ object ONNXProgramGenerator {
     //TODO: Be explicit about model version, metadata
     //Notes, from the standard:
     //"Each model MUST explicitly name the operator sets that it relies on for its functionality."
-    //"An implementation must support all operators in the set or reject the model" - This can happen at runtime via Freestyle implicits, possibly mixing backends
+    //"An implementation must support all operators in the set or reject the model" - This can happen at runtime via ZIOstyle implicits, possibly mixing backends
     //"Operator sets other than the default operator set MUST specify its domain and SHOULD use reverse domain names based on the responsible organization's identity, the same convention that is used for naming Java packages." - - "Must be unique among all sets."  - Do not support custom opsets initially, backlog
     //"Models MUST specify a domain and use reverse domain names based on the responsible organization's identity, the same convention that is traditionally used for naming Java packages." - Encode this
     //"Note: As of the publication of this document, no ONNX implementation is known to process operator set documents." - backlog
@@ -111,8 +111,8 @@ object ONNXProgramGenerator {
 
       val nodesInputsOpsAndOutputs = (nodeInputs zip ops) zip nodeOutputs
 
-      "package org.emergentorder.onnx" + (if (FS) "Free" else "") + "\n\n" +
-        (if (FS)
+      "package org.emergentorder.onnx" + (if (useZIO) "ZIO" else "") + "\n\n" +
+        (if (useZIO)
              "import scalaz.zio.Task\n" +
              "import org.emergentorder.onnx._\n"
          else "") +
@@ -128,30 +128,30 @@ object ONNXProgramGenerator {
         "import spire.math.Numeric\n" +
 //        "import singleton.ops._\n" +
         "import scala.language.higherKinds\n\n" +
-        "trait " + programName + " {\n" +
+        (if(useZIO) "object" else "trait ") + programName + " {\n" +
         distinctOps
           .map { x =>
-            "  val " + x + (if (FS) "Free" else "") + ": " + x.capitalize + (if (FS)
-                                                                               "Free"
+            "  val " + x + (if (useZIO) "ZIO" else "") + ": " + x.capitalize + (if (useZIO)
+                                                                               "ZIO"
                                                                              else
                                                                                "") + "\n"
           } //TODO: Make class instead of object and inject implementations
           .mkString("") +
-        "  val dataSource: DataSource" + (if (FS) "Free" else "") + "\n" +
+        "  val dataSource: DataSource" + (if (useZIO) "ZIO" else "") + "\n" +
 //    "  import cats.implicits._\n" +
         //Omit return type here for now
-        "  def program" + (if (FS) ": Task[Tensor[" + graphOutputType + "]] " //TODO: Fix graphOutputType
+        "  def program" + (if (useZIO) ": Task[Tensor[" + graphOutputType + "]] " //TODO: Fix graphOutputType
                                                else
                                                  ": List[Tensor[" + graphOutputType + "]] ") + " = \n" +
         //Body of program generated here
         "    for {\n" +
         graphInputs.map{ x =>
           "      node" + x._1.replaceAll("\\.","") +
-        " <- " + (if (FS) "" else "List(") + "dataSource.inputData" + (if (FS)
-                                                                         "Free"
+        " <- " + (if (useZIO) "" else "List(") + "dataSource.inputData" + (if (useZIO)
+                                                                         "ZIO"
                                                                        else
                                                                          "") + "[" + replaceTypeStrings(x._2) + "]" + //"[T]" +
-                                                                       (if (FS)
+                                                                       (if (useZIO)
                                                                                           ""
                                                                                         else
                                                                                           ")")
@@ -160,10 +160,10 @@ object ONNXProgramGenerator {
         params
           .map(x =>
             "      node" + x._1.replaceAll("\\.", "") + " <- "
-              + (if (FS) "" else "List(") + " dataSource.getParams" + (if (FS)
-                                                                         "Free"
+              + (if (useZIO) "" else "List(") + " dataSource.getParams" + (if (useZIO)
+                                                                         "ZIO"
                                                                        else
-                                                                         "") + "[" + x._2 + "]" + "(\"" + x._1 + "\")" + (if (FS) ""
+                                                                         "") + "[" + x._2 + "]" + "(\"" + x._1 + "\")" + (if (useZIO) ""
                                                                                                             else
                                                                                                               ")") + "\n")
           .mkString("") +
@@ -277,13 +277,13 @@ object ONNXProgramGenerator {
 
             val nodeName = x._1._2(0)
 
-            "      node" + nodeName.replaceAll("\\.", "") + " <- " + (if (FS) ""
+            "      node" + nodeName.replaceAll("\\.", "") + " <- " + (if (useZIO) ""
                                                 else
-                                                  "List(") + opName + (if (FS)
-                                                                         "Free"
+                                                  "List(") + opName + (if (useZIO)
+                                                                         "ZIO"
                                                                        else //TODO: Tell the compiler when one of the type params in an output type
-                                                                         "") + "." + opName + sinceVersion + (if (FS)
-                                                                                                                "Free"
+                                                                         "") + "." + opName + sinceVersion + (if (useZIO)
+                                                                                                                "ZIO"
                                                                                                               else
                                                                                                                 "") + 
                                                                                                               (if( nodeName.contains("output")) "[" + graphOutputType + "]" else "") +
@@ -299,7 +299,7 @@ object ONNXProgramGenerator {
               longFields.mkString(",") +
               "," +
               namedNodesOrParams.mkString(",") +
-              ")" + (if (FS) ""
+              ")" + (if (useZIO) ""
                      // "}"
                      else ")") + "\n"
           }

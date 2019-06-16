@@ -28,7 +28,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
   )
   .jvmSettings(
     scalaVersion := scala212Version,
-    crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version),
+    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version),
     publishArtifact in (Compile, packageDoc) := false
   )
   .jsSettings(
@@ -39,16 +39,6 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     scalaVersion := scala211Version 
   )
 
-lazy val commonDotty = (crossProject(JVMPlatform)
-    .crossType(CrossType.Pure) in file("commonDotty"))
-  .disablePlugins(wartremover.WartRemover)
-  .settings( commonSettings,
-    name := "onnx-scala-common"
-  )
-  .jvmSettings(
-    scalaVersion := dottyVersion,
-    publishArtifact in (Compile, packageDoc) := false
-  )
 
 lazy val commonJS = common.js.disablePlugins(dotty.tools.sbtplugin.DottyPlugin).disablePlugins(dotty.tools.sbtplugin.DottyIDEPlugin)
 
@@ -58,6 +48,7 @@ lazy val programGenerator = (crossProject(JSPlatform, JVMPlatform)
   .settings( commonSettings,
     name := "onnx-scala-program-generator",
     scalaVersion := scala212Version,
+    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version),
     mainClass in (Compile, run) := Some("org.emergentorder.onnx.ONNXProgramGenerator"),
     libraryDependencies ++=  Seq(
                       ("org.scalameta" %% "scalameta" % "4.1.11").withDottyCompat(dottyVersion) 
@@ -96,7 +87,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     wartremoverErrors ++= Warts.allBut(Wart.DefaultArguments, Wart.Nothing)
     )
     .jvmSettings(
-      crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version),
+      crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version),
       scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n == 13 => Seq("-Xsource:2.14" //For opaque types - not merged to 2.13 yet
                                            )
@@ -107,11 +98,12 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
         case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_2.12" % spireVersion
                                       //      "eu.timepit" % "singleton-ops_2.12" % "0.3.1"
                                            )
-        case _ => Seq("org.typelevel" %% "spire" % spireVersion
-                      //"eu.timepit" %% "singleton-ops" % "0.3.1"
+        case _ => Seq(("org.typelevel" %% "spire" % spireVersion).withDottyCompat(dottyVersion)
+ 
+                     //"eu.timepit" %% "singleton-ops" % "0.3.1"
                   )
       }),
-      libraryDependencies ++= Seq("org.bytedeco" % "onnx-platform" % "1.5.0-1.5.1-SNAPSHOT") 
+      libraryDependencies ++= Seq(("org.bytedeco" % "onnx-platform" % "1.5.0-1.5.1-SNAPSHOT").withDottyCompat(dottyVersion))
     )
     .jsSettings(
       crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version),
@@ -136,28 +128,14 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
       )
     )
 
-lazy val coreDotty = (crossProject(JVMPlatform)
-  .crossType(CrossType.Pure)).in(file("coreDotty")).dependsOn(commonDotty)
-  .enablePlugins(dotty.tools.sbtplugin.DottyPlugin)
-  .disablePlugins(wartremover.WartRemover)
-  .settings( commonSettings,
-    name := "onnx-scala",
-    scalaVersion := dottyVersion,
-    publishArtifact in (Compile, packageDoc) := false,
-    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2") else Nil },
-    libraryDependencies ++= Seq(
-      ("org.typelevel" %% "spire" % spireVersion).withDottyCompat(dottyVersion),
-      //("eu.timepit" %% "singleton-ops" % "0.3.1").withDottyCompat(dottyVersion)
-    )
-)
-
 lazy val zio = (crossProject(JVMPlatform, JSPlatform)
     .crossType(CrossType.Pure) in file("zio")).dependsOn(backends)
   .disablePlugins(wartremover.WartRemover) 
   .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
   .settings( commonSettings,
     name := "onnx-scala-zio",
-    scalaVersion := scala212Version,
+    scalaVersion := scala212Version, 
+    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version), 
     publishArtifact in (Compile, packageDoc) := false,
     scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n == 13 => Seq("-Ymacro-annotations"
@@ -177,7 +155,4 @@ lazy val zio = (crossProject(JVMPlatform, JSPlatform)
                   )
       })
 
-  )
-  .jvmSettings(
-    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version), 
   )

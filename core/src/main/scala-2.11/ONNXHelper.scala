@@ -26,7 +26,6 @@ import scala.reflect.ClassTag
 import org.bytedeco.javacpp._
 import org.bytedeco.onnx._
 import org.bytedeco.onnx.global.onnx._
-import org.emergentorder.union.UnionType._
 
 class ONNXHelper(modelFileName: String) {
 

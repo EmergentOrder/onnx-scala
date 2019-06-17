@@ -74,19 +74,9 @@ Supported ONNX ops (more coming):
 * Sigmoid
 * Softmax
 
-The most extensive working example at the moment is `zio/src/main/scala/NCFZIO.scala`, an implementation of Neural Collaborative Filtering.
-
-To run it, use: 
-```
-sbt "project zioJVM" "run"`
-```
-
-
 All together, these should enable model inspection and modification, extra compile-time assurances, mixing/matching of backend operator implementations and integration into JVM-based production systems, for a start.
 
 ## Getting Started
-
-Due to an issue with Sonatype, until the release of JavaCPP Presets 1.5, you may need to manually copy the [ONNX](https://oss.sonatype.org/content/repositories/snapshots/org/bytedeco/onnx/1.4.1-1.5-SNAPSHOT/), [nGraph](https://oss.sonatype.org/content/repositories/snapshots/org/bytedeco/ngraph/0.15.0-1.5-SNAPSHOT/) and [MKL-DNN](https://oss.sonatype.org/content/repositories/snapshots/org/bytedeco/mkl-dnn/0.18.1-1.5-SNAPSHOT/) Preset jars to your local ivy or maven repo (follow the download errors on compile).
 
 You'll need sbt.
 
@@ -137,6 +127,15 @@ sbt "project programGeneratorJVM" "run squeezenet.onnx"
 ```
 
 The resulting generated program appears as `programGenerator/src/main/scala/generatedprograms/Squeezenet.scala` and you can run `sbt compile` to confirm that the generated code compiles.
+
+## Program Execution
+
+The most extensive working example at the moment is `zio/src/main/scala/NCFZIO.scala`, an implementation of Neural Collaborative Filtering.
+
+To run it, use: 
+```
+sbt "project zioJVM" "run"`
+```
 
 ## Project Details 
 

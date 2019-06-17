@@ -3,7 +3,7 @@ val dottyVersion = "0.16.0-RC3"
 val scala211Version = "2.11.12"
 val scala212Version = "2.12.8"
 val scala213Version = "2.13.0"
-val spireVersion = "0.16.2"
+val spireVersion = "0.17.0-M1"
 
 scalaVersion := scala212Version
 

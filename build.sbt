@@ -52,7 +52,7 @@ lazy val programGenerator = (crossProject(JSPlatform, JVMPlatform)
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version),
     mainClass in (Compile, run) := Some("org.emergentorder.onnx.ONNXProgramGenerator"),
     libraryDependencies ++=  Seq(
-                      ("org.scalameta" %% "scalameta" % "4.1.11").withDottyCompat(dottyVersion) 
+                      ("org.scalameta" %% "scalameta" % "4.1.12").withDottyCompat(dottyVersion)
                   ),
     publishArtifact in (Compile, packageDoc) := false
   )

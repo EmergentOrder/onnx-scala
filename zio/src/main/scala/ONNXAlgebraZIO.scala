@@ -1,6 +1,6 @@
 package org.emergentorder
 
-import scalaz.zio.Task
+import zio.Task
 import scala.language.higherKinds
 import scala.{specialized => sp}
 import spire.math.UByte

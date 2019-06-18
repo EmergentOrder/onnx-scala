@@ -12,8 +12,8 @@ import spire.math.UInt
 import spire.math.ULong
 import spire.math.Complex
 
-import scalaz.zio.Task
-import scalaz.zio.DefaultRuntime
+import zio.Task
+import zio.DefaultRuntime
 
 import org.emergentorder.onnx._
 import org.emergentorder.onnxZIO._

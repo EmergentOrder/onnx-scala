@@ -4,7 +4,8 @@ val scala211Version = "2.11.12"
 val scala212Version = "2.12.8"
 val scala213Version = "2.13.0"
 val spireVersion = "0.17.0-M1"
-
+val zioVersion = "1.0.0-RC8-4"
+val onnxJavaCPPPresetVersion = "1.5.0-1.5.1-SNAPSHOT"
 scalaVersion := scala212Version
 
 //TODO: Replace wartremover with scalafix
@@ -57,7 +58,7 @@ lazy val programGenerator = (crossProject(JSPlatform, JVMPlatform)
   )
 
 
-lazy val backends = (crossProject(JVMPlatform, JSPlatform, NativePlatform)
+lazy val backends = (crossProject(JVMPlatform, JSPlatform)
     .crossType(CrossType.Pure) in file("backends")).dependsOn(core)
     .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
@@ -72,13 +73,13 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform, NativePlatform)
  .jsSettings(
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
   )
-  .nativeSettings(
-    scalaVersion := scala211Version
-  )
+//  .nativeSettings(
+//    scalaVersion := scala211Version
+//  )
 
 
 
-lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
+lazy val core = (crossProject(JSPlatform, JVMPlatform)
     .crossType(CrossType.Pure) in file("core")).dependsOn(common)
   .disablePlugins(wartremover.WartRemover)
   .settings(commonSettings,
@@ -103,12 +104,12 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
                      //"eu.timepit" %% "singleton-ops" % "0.3.1"
                   )
       }),
-      libraryDependencies ++= Seq(("org.bytedeco" % "onnx-platform" % "1.5.0-1.5.1-SNAPSHOT").withDottyCompat(dottyVersion))
+      libraryDependencies ++= Seq(("org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion).withDottyCompat(dottyVersion))
     )
     .jsSettings(
       crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version),
 
-      libraryDependencies ++= Seq("org.bytedeco" % "onnx-platform" % "1.5.0-1.5.1-SNAPSHOT"),
+      libraryDependencies ++= Seq("org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion),
       libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_sjs0.6_2.12" % spireVersion  excludeAll(
     ExclusionRule(organization = "org.scala-js")),
@@ -119,14 +120,14 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
                   )
       })
     )
-    .nativeSettings(
-      scalaVersion := scala211Version,
-      libraryDependencies ++= Seq(
-        "org.typelevel" %% "spire" % spireVersion,
-        "org.bytedeco" % "onnx-platform" % "1.5.0-1.5.1-SNAPSHOT", 
-        //"eu.timepit" %% "singleton-ops" % "0.3.1",
-      )
-    )
+//    .nativeSettings(
+//      scalaVersion := scala211Version,
+//      libraryDependencies ++= Seq(
+//        "org.typelevel" %% "spire" % spireVersion,
+//        "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion, 
+//        //"eu.timepit" %% "singleton-ops" % "0.3.1",
+//      )
+//    )
 
 lazy val zio = (crossProject(JVMPlatform, JSPlatform)
     .crossType(CrossType.Pure) in file("zio")).dependsOn(backends)
@@ -147,11 +148,11 @@ lazy val zio = (crossProject(JVMPlatform, JSPlatform)
 
    libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n == 13 => Seq(
-                                            "org.scalaz" % "scalaz-zio_2.12" % "1.0-RC5"
+                                            "dev.zio" % "zio_2.12" % zioVersion
 
                                            )
         case _ => Seq(
-                      "org.scalaz" %% "scalaz-zio" % "1.0-RC5"
+                      "dev.zio" %% "zio" %  zioVersion
                   )
       })
 

@@ -113,7 +113,7 @@ object ONNXProgramGenerator {
 
       "package org.emergentorder.onnx" + (if (useZIO) "ZIO" else "") + "\n\n" +
         (if (useZIO)
-             "import scalaz.zio.Task\n" +
+             "import zio.Task\n" +
              "import org.emergentorder.onnx._\n"
          else "import org.emergentorder.onnx.backends._\n") +
         (if (useDotty) ""

@@ -1,6 +1,6 @@
 package org.emergentorder.onnxZIO
 
-import scalaz.zio.Task
+import zio.Task
 import org.emergentorder.onnx._
 import org.emergentorder.union.UnionType._
 import scala.reflect.ClassTag

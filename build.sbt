@@ -48,7 +48,6 @@ lazy val programGenerator = (crossProject(JSPlatform, JVMPlatform)
   .settings( commonSettings,
     name := "onnx-scala-program-generator",
     scalaVersion := scala212Version,
-    run := Defaults.runTask(fullClasspath in Runtime, mainClass in run in Compile, runner in run).evaluated,
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version),
     mainClass in (Compile, run) := Some("org.emergentorder.onnx.ONNXProgramGenerator"),
     libraryDependencies ++=  Seq(
@@ -135,8 +134,7 @@ lazy val zio = (crossProject(JVMPlatform, JSPlatform)
   .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
   .settings( commonSettings,
     name := "onnx-scala-zio",
-    scalaVersion := scala212Version,
-    run := Defaults.runTask(fullClasspath in Runtime, mainClass in run in Compile, runner in run).evaluated,
+    scalaVersion := scala212Version, 
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version), 
     publishArtifact in (Compile, packageDoc) := false,
     scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {

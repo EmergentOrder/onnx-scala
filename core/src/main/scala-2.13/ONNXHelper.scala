@@ -31,9 +31,7 @@ import org.bytedeco.onnx.global.onnx._
 
 class ONNXHelper(modelFileName: String) {
 
-  val file = getClass.getResource("/" + modelFileName).getFile
-
-  val byteArray = Files.readAllBytes(Paths.get(file))
+  val byteArray = getClass.getResourceAsStream("/" + modelFileName).readAllBytes()
 
   val res = new ModelProto()
   ParseProtoFromBytes(res.asInstanceOf[MessageLite],

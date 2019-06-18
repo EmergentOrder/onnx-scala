@@ -43,7 +43,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
 lazy val commonJS = common.js.disablePlugins(dotty.tools.sbtplugin.DottyPlugin).disablePlugins(dotty.tools.sbtplugin.DottyIDEPlugin)
 
 lazy val programGenerator = (crossProject(JSPlatform, JVMPlatform)
-    .crossType(CrossType.Pure) in file("programGenerator")).dependsOn(core)
+    .crossType(CrossType.Pure) in file("programGenerator")).dependsOn(backends)
     .disablePlugins(wartremover.WartRemover)
   .settings( commonSettings,
     name := "onnx-scala-program-generator",

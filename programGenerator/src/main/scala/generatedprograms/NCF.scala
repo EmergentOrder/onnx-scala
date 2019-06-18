@@ -1,5 +1,6 @@
 package org.emergentorder.onnx
 
+import org.emergentorder.onnx.backends._
 import org.emergentorder.union.UnionType._
 import scala.reflect.ClassTag
 import spire.implicits._
@@ -11,17 +12,18 @@ import spire.math.Numeric
 import scala.language.higherKinds
 
 trait NCF {
-  val Gather: Gather
-  val Concat: Concat
-  val Mul: Mul
-  val Gemm: Gemm
-  val Relu: Relu
-  val Sigmoid: Sigmoid
-  val dataSource: DataSource
-  def program: List[Tensor[Float]]  = 
+val onnxHelper = new ONNXHelper("NCF.onnx")
+  val Gather: Gather = new NGraphBackend(onnxHelper)
+  val Concat: Concat = new NGraphBackend(onnxHelper)
+  val Mul: Mul = new NGraphBackend(onnxHelper)
+  val Gemm: Gemm = new NGraphBackend(onnxHelper)
+  val Relu: Relu = new NGraphBackend(onnxHelper)
+  val Sigmoid: Sigmoid = new NGraphBackend(onnxHelper)
+  val dataSource: DataSource = new NGraphBackend(onnxHelper)
+  def program(inputDataactual_input_1: Tensor[Long],inputDatalearned_0: Tensor[Long]): List[Tensor[Float]]  = 
     for {
-      nodeactual_input_1 <- List(dataSource.inputData[Long])
-      nodelearned_0 <- List(dataSource.inputData[Long])
+      nodeactual_input_1 <- List(inputDataactual_input_1)
+      nodelearned_0 <- List(inputDatalearned_0)
       nodeaffine_outputbias <- List( dataSource.getParams[Float]("affine_output.bias"))
       nodeaffine_outputweight <- List( dataSource.getParams[Float]("affine_output.weight"))
       nodefc_layers0bias <- List( dataSource.getParams[Float]("fc_layers.0.bias"))

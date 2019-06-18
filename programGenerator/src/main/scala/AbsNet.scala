@@ -15,13 +15,15 @@ trait AbsNet {
   val Abs: Abs
   def program[
       T: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check: Numeric: ClassTag]
-    : List[Tensor[T]] =
+      (inputData: Tensor[T])
+    : List[Tensor[T]] = {
     for {
-      nodedata <- List(dataSource.inputData[T])
+      nodedata <- List(inputData)
       nodeabs <- List(
         Abs.Abs6[T](
           "abs",
           X = Some(nodedata)
         ))
     } yield (nodeabs)
+    }
 }

@@ -1,5 +1,6 @@
 package org.emergentorder.onnxZIO
 
+import scala.util.Random
 import scala.{specialized => sp}
 import scala.collection.mutable.{Map => MMap};
 import scala.reflect.ClassTag
@@ -20,25 +21,14 @@ import org.emergentorder.union.UnionType._
 
 import org.emergentorder.onnx.backends._
 
-object ONNXNGraphHandlers extends App {
+class ONNXNGraphHandlers(onnxHelper: ONNXHelper) extends SigmoidZIO with GemmZIO with GatherZIO with MulZIO with ReluZIO with ConcatZIO with DropoutZIO with DataSourceZIO {
 
-   val fileName = "NCF.onnx" //Needed for params at runtime //TODO: inject
-   val onnxHelper = new ONNXHelper(fileName)
    val ngraphBackend = new NGraphBackend(onnxHelper)
 
+   val dummyArraySize = 70000
   
 
   //TODO: Fix concurrency problem caused by protobuf sharedDtor
-
-  class DatasourceHandler extends DataSourceZIO {
-    override def inputDataZIO[T: Numeric: ClassTag]
-    (implicit ev:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check[T])
-    : Task[Tensor[T]] = {
-      Task{
-        //TODO 
-        (Array(220, 240), Array(2)).asInstanceOf[Tensor[T]]
-      }
-    }
 
     def getParamsZIO[ T : Numeric : ClassTag](name: String)
     (implicit ev:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check[T])
@@ -50,10 +40,8 @@ object ONNXNGraphHandlers extends App {
     }
 
      def getAttributesZIO[T : Numeric:ClassTag](name: String)(implicit ev:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check[T]): Task[Tensor[T]] = ???
-  }
-  
-  class ReluHandler extends ReluZIO {
 
+  
   override def Relu1ZIO[@sp T: Numeric: ClassTag](name: String,
                                         consumed_inputs: Option[(Array[Int])],
                                         X: Option[Tensor[T]])(
@@ -71,12 +59,7 @@ object ONNXNGraphHandlers extends App {
           ngraphBackend.Relu6[T](name, X)
         }
       }
-}
 
-
-
-
-  class DropoutHandler extends DropoutZIO {
 
      def Dropout1ZIO[@sp T : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,is_test : Option[(Int)] = None,ratio : Option[(Float)] = None,data: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : Task[(Tensor[T], Tensor[T])] = ???
@@ -97,22 +80,15 @@ object ONNXNGraphHandlers extends App {
           ngraphBackend.Dropout7[T](name, None, data)
         }
 
-  }
-
-    class GatherHandler extends GatherZIO {
-
-
      override def Gather1ZIO[@sp T : Numeric:ClassTag,@sp Tind : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,data: Option[Tensor[T]], indices: Option[Tensor[Tind]])
 (implicit evT:(UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T],evTind:(UNil TypeOr Int TypeOr Long)#check[Tind])
       : Task[(Tensor[T])] =
         Task{
           ngraphBackend.Gather1[T, Tind](name, axis, data, indices)
-        }
-
-  }
+        } 
 
 
-  class MulHandler extends MulZIO {
+
      def Mul1ZIO[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,broadcast : Option[(Int)] = None,consumed_inputs : Option[(Array[Int])] = None,A: Option[Tensor[T]], B: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : Task[(Tensor[T])] = ???
 
@@ -126,9 +102,7 @@ object ONNXNGraphHandlers extends App {
       Task{
         ngraphBackend.Mul7[T](name, A, B)
       }
-  }
 
-  class GemmHandler extends GemmZIO {
 
       def Gemm1ZIO[@sp T : Numeric:ClassTag](name: String,alpha : Option[(Float)] = None,beta : Option[(Float)] = None,broadcast : Option[(Int)] = None,transA : Option[(Int)] = None,transB : Option[(Int)] = None,A: Option[Tensor[T]], B: Option[Tensor[T]], C: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[T])    : Task[(Tensor[T])] = ???
@@ -148,10 +122,7 @@ object ONNXNGraphHandlers extends App {
     Task{
         ngraphBackend.Gemm9[T](name, alpha, beta, transA, transB, A, B, C)
     }
-  }
 
-
-  class SigmoidHandler extends SigmoidZIO {
       def Sigmoid1ZIO[@sp T : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,X: Option[Tensor[T]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T])    : Task[(Tensor[T])] = ???
 
@@ -162,9 +133,6 @@ object ONNXNGraphHandlers extends App {
       ngraphBackend.Sigmoid6[T](name, X)
     }
 
-  }
-
-  class ConcatHandler extends ConcatZIO {
      override def Concat4ZIO[@sp T : Numeric:ClassTag](name: String,axis : Option[(Int)],inputs: Seq[Option[Tensor[T]]])
 (implicit evT:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[Float] TypeOr Complex[Double])#check[T])
   : Task[(Tensor[T])] = {
@@ -174,9 +142,21 @@ object ONNXNGraphHandlers extends App {
     }
   }
 
- }
+}
 
-  def program = NCFZIO.program
+object ZIONGraphMain extends App{
+  val input = Task{
+        //TODO 
+        //(Seq.fill(dummyArraySize)(Random.nextInt(10000)).toArray, Array(dummyArraySize)).asInstanceOf[Tensor[T]]
+        (Array(0, 10000), Array(2)).asInstanceOf[Tensor[Long]]
+      }
+  val input2 = Task{
+        //TODO 
+        //(Seq.fill(dummyArraySize)(Random.nextInt(10000)).toArray, Array(dummyArraySize)).asInstanceOf[Tensor[T]]
+        (Array(0, 10000), Array(2)).asInstanceOf[Tensor[Long]]
+      }
+
+  def program = NCFZIO.program(input, input2)
 
   val runtime = new DefaultRuntime {}
 
@@ -190,7 +170,7 @@ object ONNXNGraphHandlers extends App {
 
    println("Output size: " + output2._1.size)
    println("Output 0: " + output2._1(0))
-   println("Output 1: " + output2._1(1))
+   println("Output 1: " + output2._1(1))  //TODO: Investigate output flipping here, possibly due to race
 //   println("Output 2: " + output2._1(2))
 //   println("Output 3: " + output2._1(3))
 //   println("Output 4: " + output2._1(4))

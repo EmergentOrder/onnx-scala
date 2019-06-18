@@ -13,17 +13,18 @@ import spire.math.Numeric
 import scala.language.higherKinds
 
 object NCFZIO {
-  val GatherZIO: GatherZIO  = new ONNXNGraphHandlers.GatherHandler()
-  val ConcatZIO: ConcatZIO  = new ONNXNGraphHandlers.ConcatHandler()
-  val MulZIO: MulZIO  = new ONNXNGraphHandlers.MulHandler()
-  val GemmZIO: GemmZIO  = new ONNXNGraphHandlers.GemmHandler()
-  val ReluZIO: ReluZIO  = new ONNXNGraphHandlers.ReluHandler()
-  val SigmoidZIO: SigmoidZIO  = new ONNXNGraphHandlers.SigmoidHandler()
-  val dataSource: DataSourceZIO  = new ONNXNGraphHandlers.DatasourceHandler()
-  def program: Task[Tensor[Float]]  = 
+val onnxHelper = new ONNXHelper("NCF.onnx")
+  val GatherZIO: GatherZIO = new ONNXNGraphHandlers(onnxHelper)
+  val ConcatZIO: ConcatZIO = new ONNXNGraphHandlers(onnxHelper)
+  val MulZIO: MulZIO = new ONNXNGraphHandlers(onnxHelper)
+  val GemmZIO: GemmZIO = new ONNXNGraphHandlers(onnxHelper)
+  val ReluZIO: ReluZIO = new ONNXNGraphHandlers(onnxHelper)
+  val SigmoidZIO: SigmoidZIO = new ONNXNGraphHandlers(onnxHelper)
+  val dataSource: DataSourceZIO = new ONNXNGraphHandlers(onnxHelper)
+  def program(inputDataactual_input_1: Task[Tensor[Long]],inputDatalearned_0: Task[Tensor[Long]]): Task[Tensor[Float]]  = 
     for {
-      nodeactual_input_1 <- dataSource.inputDataZIO[Long]
-      nodelearned_0 <- dataSource.inputDataZIO[Long]
+      nodeactual_input_1 <- inputDataactual_input_1
+      nodelearned_0 <- inputDatalearned_0
       nodeaffine_outputbias <-  dataSource.getParamsZIO[Float]("affine_output.bias")
       nodeaffine_outputweight <-  dataSource.getParamsZIO[Float]("affine_output.weight")
       nodefc_layers0bias <-  dataSource.getParamsZIO[Float]("fc_layers.0.bias")

@@ -1,5 +1,6 @@
 package org.emergentorder.onnx
 
+import org.emergentorder.onnx.backends._
 import org.emergentorder.union.UnionType._
 import scala.reflect.ClassTag
 import spire.implicits._
@@ -11,17 +12,18 @@ import spire.math.Numeric
 import scala.language.higherKinds
 
 trait Squeezenet {
-  val Conv: Conv
-  val Relu: Relu
-  val MaxPool: MaxPool
-  val Concat: Concat
-  val Dropout: Dropout
-  val GlobalAveragePool: GlobalAveragePool
-  val Softmax: Softmax
-  val dataSource: DataSource
-  def program: List[Tensor[Float]]  = 
+val onnxHelper = new ONNXHelper("squeezenet.onnx")
+  val Conv: Conv = new NGraphBackend(onnxHelper)
+  val Relu: Relu = new NGraphBackend(onnxHelper)
+  val MaxPool: MaxPool = new NGraphBackend(onnxHelper)
+  val Concat: Concat = new NGraphBackend(onnxHelper)
+  val Dropout: Dropout = new NGraphBackend(onnxHelper)
+  val GlobalAveragePool: GlobalAveragePool = new NGraphBackend(onnxHelper)
+  val Softmax: Softmax = new NGraphBackend(onnxHelper)
+  val dataSource: DataSource = new NGraphBackend(onnxHelper)
+  def program(inputDatadata_0: Tensor[Float]): List[Tensor[Float]]  = 
     for {
-      nodedata_0 <- List(dataSource.inputData[Float])
+      nodedata_0 <- List(inputDatadata_0)
       nodeconv10_b_0 <- List( dataSource.getParams[Float]("conv10_b_0"))
       nodeconv10_w_0 <- List( dataSource.getParams[Float]("conv10_w_0"))
       nodeconv1_b_0 <- List( dataSource.getParams[Float]("conv1_b_0"))

@@ -32,12 +32,12 @@ import org.bytedeco.onnx.global.onnx.check_model
 
 //TODO: ONNX-JS backend for both JS and JVM
 
-class NGraphBackend(onnxHelper: ONNXHelper) extends Add with Constant with ArgMin with ArgMax with Equal with GlobalAveragePool with Log with Softmax with Max with Min with Less with Greater with Abs with Conv with Sigmoid with Gemm with Gather with Mul with Relu with MaxPool with Concat with Dropout with AveragePool with Reshape{
+class NGraphBackend(onnxHelper: ONNXHelper) extends Add with DataSource with Constant with ArgMin with ArgMax with Equal with GlobalAveragePool with Log with Softmax with Max with Min with Less with Greater with Abs with Conv with Sigmoid with Gemm with Gather with Mul with Relu with MaxPool with Concat with Dropout with AveragePool with Reshape{
 //with DataSource
 
 
-  def getParams[ T : Numeric : ClassTag](name: String)
-  : (Tensor[T]) = {
+  override def getParams[T : Numeric:ClassTag](name: String)(implicit ev:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check[T])
+  : Tensor[T] = {
     val params = onnxHelper.paramsMap.get(name)
     params match {
       case Some(x) => (x._2, x._3)

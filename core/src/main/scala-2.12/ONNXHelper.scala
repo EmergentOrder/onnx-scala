@@ -89,6 +89,7 @@ class ONNXHelper(modelFileName: String) {
 
     val TensProtoFloat = TensorProto.FLOAT
 
+    //TODO: Fix races happening here
     def array = onnxDataType match {
       case TensProtoInt => {
         val arrX = dimsToArray[Int](dimsCount, dimsList)

@@ -53,7 +53,7 @@ object ONNXProgramGenerator {
           (x.inputs, x.since_version))
       .toMap
 
-    val useZIO = true
+    val useZIO = false
     val useDotty = false
     val unionTypeOperator = (if (useDotty) " | " else " TypeOr ")
 
@@ -115,7 +115,7 @@ object ONNXProgramGenerator {
         (if (useZIO)
              "import scalaz.zio.Task\n" +
              "import org.emergentorder.onnx._\n"
-         else "") +
+         else "import org.emergentorder.onnx.backends._\n") +
         (if (useDotty) ""
          else
            "import org.emergentorder.union.UnionType._\n") +
@@ -128,29 +128,33 @@ object ONNXProgramGenerator {
         "import spire.math.Numeric\n" +
 //        "import singleton.ops._\n" +
         "import scala.language.higherKinds\n\n" +
-        (if(useZIO) "object" else "trait ") + programName + " {\n" +
+        (if(useZIO) "object " else "trait ") + programName + " {\n" +
+        "val onnxHelper = new ONNXHelper(\"" + fileName + "\")" + "\n" + //TODO: Use one global NGraphBackend?
         distinctOps
           .map { x =>
             "  val " + x + (if (useZIO) "ZIO" else "") + ": " + x.capitalize + (if (useZIO)
                                                                                "ZIO"
                                                                              else
-                                                                               "") + "\n"
+                                                                               "") +
+            ( if(useZIO) " = new ONNXNGraphHandlers(onnxHelper)" else " = new NGraphBackend(onnxHelper)") +
+            "\n"
           } //TODO: Make class instead of object and inject implementations
           .mkString("") +
-        "  val dataSource: DataSource" + (if (useZIO) "ZIO" else "") + "\n" +
+        "  val dataSource: DataSource" + (if (useZIO) "ZIO = new ONNXNGraphHandlers(onnxHelper)" else " = new NGraphBackend(onnxHelper)") + "\n" +
 //    "  import cats.implicits._\n" +
         //Omit return type here for now
-        "  def program" + (if (useZIO) ": Task[Tensor[" + graphOutputType + "]] " //TODO: Fix graphOutputType
+        "  def program" + (if(graphInputs.size > 0) "(" + graphInputs.map{ x => "inputData" + x._1 + ": " + (if(useZIO) "Task[" else "") + "Tensor[" + x._2 + "]" + (if(useZIO) "]" else "")}.mkString(",") + ")") +
+          (if (useZIO) ": Task[Tensor[" + graphOutputType + "]] " //TODO: Fix graphOutputType
                                                else
                                                  ": List[Tensor[" + graphOutputType + "]] ") + " = \n" +
         //Body of program generated here
         "    for {\n" +
         graphInputs.map{ x =>
           "      node" + x._1.replaceAll("\\.","") +
-        " <- " + (if (useZIO) "" else "List(") + "dataSource.inputData" + (if (useZIO)
-                                                                         "ZIO"
+        " <- " + (if (useZIO) "" else "List(") + "inputData" + x._1 + (if (useZIO)
+                                                                         ""
                                                                        else
-                                                                         "") + "[" + replaceTypeStrings(x._2) + "]" + //"[T]" +
+                                                                         "") + //"[" + replaceTypeStrings(x._2) + "]" + //"[T]" +
                                                                        (if (useZIO)
                                                                                           ""
                                                                                         else

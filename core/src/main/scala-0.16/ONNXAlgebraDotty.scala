@@ -11,16 +11,12 @@ import spire.math.Numeric
 import spire.implicits._
 import spire.algebra.Field
 import scala.reflect.ClassTag
-
 package object onnx {
-type |:[+A1, +A2] = Either[A1, A2]
   type Tensor[U] = Tuple2[Array[U],  Array[Int]]
   trait Operator
 trait Graph
 trait DataSource {
-  def inputData[T <: (Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | UInt | ULong | Complex[Float] | Complex[Double]):Numeric:ClassTag]: Tensor[T]
   def getParams[T <: (Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | UInt | ULong | Complex[Float] | Complex[Double]):Numeric:ClassTag](name: String): Tensor[T]
-  def getAttributes[T <: (Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | UInt | ULong | Complex[Float] | Complex[Double]):Numeric:ClassTag](name: String): Tensor[T]
 }
 trait Abs extends Operator {
 

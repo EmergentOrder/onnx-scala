@@ -23,13 +23,17 @@ import java.nio.ByteBuffer
 import collection.JavaConverters._
 import scala.reflect.ClassTag
 
+import java.io.File
+
 import org.bytedeco.javacpp._
 import org.bytedeco.onnx._
 import org.bytedeco.onnx.global.onnx._
 
 class ONNXHelper(modelFileName: String) {
 
-  val byteArray = Files.readAllBytes(Paths.get(modelFileName))
+  val file = getClass.getResource("/" + modelFileName).getFile
+
+  val byteArray = Files.readAllBytes(Paths.get(file))
 
   val res = new ModelProto()
   ParseProtoFromBytes(res.asInstanceOf[MessageLite],
@@ -89,6 +93,7 @@ class ONNXHelper(modelFileName: String) {
 
     val TensProtoFloat = TensorProto.FLOAT
 
+    //TODO: Fix races happening here
     def array = onnxDataType match {
       case TensProtoInt => {
         val arrX = dimsToArray[Int](dimsCount, dimsList)

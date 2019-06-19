@@ -89,6 +89,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
     )
     .jvmSettings(
       crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version),
+      publishArtifact in (Compile, packageDoc) := false,
       scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n == 13 => Seq("-Xsource:2.14" //For opaque types - not merged to 2.13 yet
                                            )
@@ -96,6 +97,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
                   )
       }),
       libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, n)) if n == 11 => Seq("org.typelevel" % "spire_2.11" % spireVersion)
         case Some((2, n)) if n == 13 => Seq("org.typelevel" % "spire_2.12" % spireVersion
                                       //      "eu.timepit" % "singleton-ops_2.12" % "0.3.1"
                                            )

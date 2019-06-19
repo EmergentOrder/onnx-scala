@@ -35,10 +35,11 @@ import org.bytedeco.onnx.global.onnx.check_model
 class NGraphBackend(onnxHelper: ONNXHelper) extends Add with DataSource with Constant with ArgMin with ArgMax with Equal with GlobalAveragePool with Log with Softmax with Max with Min with Less with Greater with Abs with Conv with Sigmoid with Gemm with Gather with Mul with Relu with MaxPool with Concat with Dropout with AveragePool with Reshape{
 //with DataSource
 
+def paramsMap[T : spire.math.Numeric : ClassTag]  = onnxHelper.params.map( x => x._1 -> (x._2, x._3.asInstanceOf[Array[T]], x._4)).toMap
 
   override def getParams[T : Numeric:ClassTag](name: String)(implicit ev:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check[T])
   : Tensor[T] = {
-    val params = onnxHelper.paramsMap.get(name)
+    val params = paramsMap.get(name)
     params match {
       case Some(x) => (x._2, x._3)
       case None => throw new Exception("No params found for param name: " + name)
@@ -305,7 +306,7 @@ def Sigmoid6[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
         val graph = new org.bytedeco.onnx.GraphProto
         val node = graph.add_node
     
-        model.set_producer_name("backend")
+//        model.set_producer_name("backend")
         graph.set_name(name)
 
         node.set_name(name)
@@ -384,6 +385,7 @@ def Sigmoid6[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
         model.add_opset_import
         model.opset_import(0).set_version(8)
         val modelString = model.SerializeAsString
+
         println(modelString.getString)
 
          val ngraphFunc = import_onnx_model(modelString)

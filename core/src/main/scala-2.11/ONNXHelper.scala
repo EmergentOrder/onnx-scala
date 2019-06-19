@@ -24,22 +24,26 @@ import collection.JavaConverters._
 import scala.reflect.ClassTag
 
 import java.io.File
-
+import scala.reflect.io.Streamable
 import org.bytedeco.javacpp._
 import org.bytedeco.onnx._
 import org.bytedeco.onnx.global.onnx._
 
 class ONNXHelper(modelFileName: String) {
 
-  val byteArray = getClass.getResourceAsStream("/" + modelFileName).readAllBytes()
+  val byteArray = Streamable.bytes(getClass.getResourceAsStream("/" + modelFileName))  // JAVA 9+ only : .readAllBytes()
 
-  val res = new ModelProto()
-  ParseProtoFromBytes(res.asInstanceOf[MessageLite],
+  val res = {
+    val r = new ModelProto()
+  ParseProtoFromBytes(r.asInstanceOf[MessageLite],
                       new BytePointer(byteArray: _*),
                       byteArray.length.toLong)
+    r
+  }
+
   val graph = res.graph
 
-  def maxOpsetVersion =
+  val maxOpsetVersion =
     try {
       res.opset_import(0).version
     } catch {
@@ -82,7 +86,7 @@ class ONNXHelper(modelFileName: String) {
     val dimsList =
       (0 until dimsCount.toInt).map(x => tensorProto.dims(x)).toList
 
-    val bytesBuffer = tensorProto.raw_data.asByteBuffer
+    val rawData = tensorProto.raw_data
 
     //TODO: Add the rest of the types
     val TensProtoInt = TensorProto.INT32
@@ -91,21 +95,20 @@ class ONNXHelper(modelFileName: String) {
 
     val TensProtoFloat = TensorProto.FLOAT
 
-    //TODO: Fix races happening here
-    def array = onnxDataType match {
+    val array = onnxDataType match {
       case TensProtoInt => {
         val arrX = dimsToArray[Int](dimsCount, dimsList)
-        bytesBuffer.asIntBuffer.get(arrX)
+        (0 until arrX.length).foreach(x => arrX(x) = rawData.getInt(x*4))
         arrX.toArray
       }
       case TensProtoLong => {
-        val arrX = dimsToArray[Long](dimsCount, dimsList)
-        bytesBuffer.asLongBuffer.get(arrX)
+        val arrX = dimsToArray[Long](dimsCount, dimsList)  
+        (0 until arrX.length).foreach(x => arrX(x) = rawData.getLong(x*8))
         arrX.toArray
       }
       case TensProtoFloat => {
         val arrX = dimsToArray[Float](dimsCount, dimsList)
-        bytesBuffer.asFloatBuffer.get(arrX)
+        (0 until arrX.length).foreach(x => arrX(x) = rawData.getFloat(x*4)) 
         arrX.toArray
       }
     }
@@ -115,38 +118,14 @@ class ONNXHelper(modelFileName: String) {
   val nodeCount = graph.node_size.toInt
   val node = (0 until nodeCount).map(x => graph.node(x)).toList
 
-  def attributes =
+  val attributes =
     node.map { x =>
       val attributeCount = x.attribute_size.toInt
       val attribute = (0 until attributeCount).map(y => x.attribute(y)).toArray
       attribute
     }.toArray
 
-  def ops = node.map(x => x.op_type.getString).toArray
-
-  def graphInputs = {
-    val inputCount = graph.input_size.toInt
-    val input = (0 until inputCount).map(y => graph.input(y)).toList
-    input.toArray.map( y =>
-        (y.name.getString
-          .asInstanceOf[String]
-          .replaceAll("-", "_")
-          .replaceAll("/", "_"), tensorElemTypeMap(y.`type`.tensor_type.elem_type)))
-          .filter(z => !(params exists (_._1.equals(z._1))))
-  }
- 
-
-  def graphOutputs = {
-    val outputCount = graph.output_size.toInt
-    val output = (0 until outputCount).map(y => graph.output(y)).toList
-    output.toArray.map( y =>
-        (y.name.getString
-          .asInstanceOf[String]
-          .replaceAll("-", "_")
-          .replaceAll("/", "_"), tensorElemTypeMap(y.`type`.tensor_type.elem_type)))
-          .filter(z => !(params exists (_._1.equals(z._1))))
-  }
-
+  val ops = node.map(x => x.op_type.getString).toArray
 
   val tensorElemTypeMap = Map(org.bytedeco.onnx.TensorProto.UNDEFINED ->"Undefined",
                       org.bytedeco.onnx.TensorProto.FLOAT -> "Float",
@@ -168,7 +147,7 @@ class ONNXHelper(modelFileName: String) {
                       org.bytedeco.onnx.TensorProto.COMPLEX128 -> "Complex[Double]",
                       org.bytedeco.onnx.TensorProto.BFLOAT16 -> "???")
 
-  def nodeInputs =
+  val nodeInputs =
     node
       .map { x =>
         val inputCount = x.input_size.toInt
@@ -187,7 +166,7 @@ class ONNXHelper(modelFileName: String) {
                 .replaceAll("/", "_"))
       }
 
-  def nodeOutputs =
+  val nodeOutputs =
     node
       .map { x =>
         val outputCount = x.output_size.toInt
@@ -209,25 +188,9 @@ class ONNXHelper(modelFileName: String) {
   val globalOutput =
     (0 until globalOutputCount).map(x => graph.output(x)).toList
 
-  def outputs = {
-    val outputArray = globalOutput.toArray
-    outputArray
-      .map(x => x.name.getString.replaceAll("-", "_").replaceAll("/", "_"))
-      .filter(x => nodes.contains("output_" + x))
-  }
-
   val inputCount = graph.input_size.toInt
   val input = (0 until inputCount).map(x => graph.input(x)).toList
 
-  def nodes = {
-    val someNodes = input.map { x =>
-      val name = x.name.getString
-      if (params exists (_._1.equals(name)))
-        ("param_" + name) 
-      else ("input_" + name)
-    } ++ nodeOutputs.flatten.map(y => ("output_" + y)) 
-    someNodes
-  }
 
   val initializerCount = graph.initializer_size
   val initializer =
@@ -237,10 +200,52 @@ class ONNXHelper(modelFileName: String) {
     initializer.map { x =>
       val dimsCount = x.dims_size
       val dimsList = (0 until dimsCount.toInt).map(y => x.dims(y)).toList
-      def arrX = onnxTensorProtoToArray(x)
+      val name = x.name.getString.replaceAll("-", "_").replaceAll("/", "_")
       val tensorElemType = tensorElemTypeMap(x.data_type)
-      (x.name.getString.replaceAll("-", "_").replaceAll("/", "_"), tensorElemType, arrX, dimsList.map(y => y.toInt).toArray)
+      val arrX = onnxTensorProtoToArray(x)
+      (name, tensorElemType, arrX, dimsList.map(y => y.toInt).toArray)
     }
 
-  def paramsMap[T : spire.math.Numeric : ClassTag]  = params.map( x => x._1 -> (x._2, x._3.asInstanceOf[Array[T]], x._4)).toMap
+
+  val nodes = {
+    val someNodes = input.map { x =>
+      val name = x.name.getString
+      if (params exists (_._1.equals(name)))
+        ("param_" + name) 
+      else ("input_" + name)
+    } ++ nodeOutputs.flatten.map(y => ("output_" + y)) 
+    someNodes
+  }
+
+  val outputs = {
+    val outputArray = globalOutput.toArray
+    outputArray
+      .map(x => x.name.getString.replaceAll("-", "_").replaceAll("/", "_"))
+      .filter(x => nodes.contains("output_" + x))
+  }
+
+  val graphInputs = {
+    val inputCount = graph.input_size.toInt
+    val input = (0 until inputCount).map(y => graph.input(y)).toList
+    input.toArray.map{ y => 
+        (y.name.getString
+          .asInstanceOf[String]
+          .replaceAll("-", "_")
+          .replaceAll("/", "_"),
+               tensorElemTypeMap(y.`type`.tensor_type.elem_type))}
+          .filter(z => !(params exists (_._1.equals(z._1))))
+  }
+ 
+
+  val graphOutputs = {
+    val outputCount = graph.output_size.toInt
+    val output = (0 until outputCount).map(y => graph.output(y)).toList
+    output.toArray.map( y =>
+        (y.name.getString
+          .asInstanceOf[String]
+          .replaceAll("-", "_")
+          .replaceAll("/", "_"), tensorElemTypeMap(y.`type`.tensor_type.elem_type)))
+          .filter(z => !(params exists (_._1.equals(z._1))))
+  }
+
 }

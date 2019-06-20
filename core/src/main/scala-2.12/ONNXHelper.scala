@@ -33,24 +33,28 @@ class ONNXHelper(modelFileName: String) {
 
   val byteArray = Streamable.bytes(getClass.getResourceAsStream("/" + modelFileName))  // JAVA 9+ only : .readAllBytes()
 
-  val res = {
-    val r = new ModelProto()
-  ParseProtoFromBytes(r.asInstanceOf[MessageLite],
+  val loaded = org.bytedeco.javacpp.Loader.load(classOf[org.bytedeco.onnx.global.onnx]) 
+  
+  private val res = {
+    val r = (new ModelProto).New()
+ 
+    ParseProtoFromBytes(r,
                       new BytePointer(byteArray: _*),
                       byteArray.length.toLong)
-    r
+   r
   }
 
-  val graph = res.graph
+  private val graph = res.graph
 
   val maxOpsetVersion =
     try {
+      print(res.opset_import(0).version + " VERSION")
       res.opset_import(0).version
     } catch {
       case e: Exception => { 1 }
     }
 
-  def dimsToArray[VV: spire.math.Numeric: ClassTag](
+  private def dimsToArray[VV: spire.math.Numeric: ClassTag](
       dimsCount: Int,
       dimsList: List[Long]): Array[VV] = {
     val dimsArrayInt = dimsList.map(x => x.toInt).toArray
@@ -115,8 +119,8 @@ class ONNXHelper(modelFileName: String) {
     array
   }
 
-  val nodeCount = graph.node_size.toInt
-  val node = (0 until nodeCount).map(x => graph.node(x)).toList
+  private val nodeCount = graph.node_size.toInt
+  private val node = (0 until nodeCount).map(x => graph.node(x)).toList
 
   val attributes =
     node.map { x =>
@@ -127,7 +131,7 @@ class ONNXHelper(modelFileName: String) {
 
   val ops = node.map(x => x.op_type.getString).toArray
 
-  val tensorElemTypeMap = Map(org.bytedeco.onnx.TensorProto.UNDEFINED ->"Undefined",
+  private val tensorElemTypeMap = Map(org.bytedeco.onnx.TensorProto.UNDEFINED ->"Undefined",
                       org.bytedeco.onnx.TensorProto.FLOAT -> "Float",
                       org.bytedeco.onnx.TensorProto.UINT8 -> "UByte",
                       org.bytedeco.onnx.TensorProto.INT8 -> "Byte",
@@ -192,8 +196,8 @@ class ONNXHelper(modelFileName: String) {
   val input = (0 until inputCount).map(x => graph.input(x)).toList
 
 
-  val initializerCount = graph.initializer_size
-  val initializer =
+  private val initializerCount = graph.initializer_size
+  private val initializer =
     (0 until initializerCount).map(x => graph.initializer(x)).toList
 
   val params =

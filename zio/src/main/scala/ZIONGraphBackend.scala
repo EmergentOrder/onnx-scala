@@ -25,10 +25,7 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper) extends SigmoidZIO with GemmZIO
 
    val ngraphBackend = new NGraphBackend(onnxHelper)
 
-   val dummyArraySize = 70000
-  
-
-  //TODO: Fix concurrency problem caused by protobuf sharedDtor
+   val dummyArraySize = 70000 
 
     def getParamsZIO[ T : Numeric : ClassTag](name: String)
     (implicit ev:(UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[Float] TypeOr Complex[Double])#check[T])
@@ -146,12 +143,10 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper) extends SigmoidZIO with GemmZIO
 
 object ZIONGraphMain extends App{
   val input = Task{
-        //TODO 
         //(Seq.fill(dummyArraySize)(Random.nextInt(10000)).toArray, Array(dummyArraySize)).asInstanceOf[Tensor[T]]
         (Array(0, 10000), Array(2)).asInstanceOf[Tensor[Long]]
       }
-  val input2 = Task{
-        //TODO 
+  val input2 = Task{ 
         //(Seq.fill(dummyArraySize)(Random.nextInt(10000)).toArray, Array(dummyArraySize)).asInstanceOf[Tensor[T]]
         (Array(0, 10000), Array(2)).asInstanceOf[Tensor[Long]]
       }

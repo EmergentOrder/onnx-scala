@@ -301,12 +301,13 @@ def Sigmoid6[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
 //        implicit evT:  (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
    //       Float] TypeOr Complex[Double])#check[T])
       : (Tensor[T]) = {
+ 
+        val model = (new ModelProto).New()
 
-        val model = new ModelProto()
         val graph = new org.bytedeco.onnx.GraphProto
         val node = graph.add_node
     
-//        model.set_producer_name("backend")
+        model.set_producer_name("backend")
         graph.set_name(name)
 
         node.set_name(name)

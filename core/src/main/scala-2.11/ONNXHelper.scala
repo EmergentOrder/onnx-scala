@@ -48,7 +48,6 @@ class ONNXHelper(modelFileName: String) {
 
   val maxOpsetVersion =
     try {
-      print(res.opset_import(0).version + " VERSION")
       res.opset_import(0).version
     } catch {
       case e: Exception => { 1 }

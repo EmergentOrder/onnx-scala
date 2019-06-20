@@ -387,7 +387,7 @@ def Sigmoid6[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
         model.opset_import(0).set_version(8)
         val modelString = model.SerializeAsString
 
-        println(modelString.getString)
+        //println(modelString.getString)
 
          val ngraphFunc = import_onnx_model(modelString)
 
@@ -464,9 +464,9 @@ def Sigmoid6[@sp T : Numeric:ClassTag](name: String,X: Option[Tensor[T]])
         
         val outputVector = new org.bytedeco.ngraph.TensorVector(output)
 
-        println(outputShape)
-        println(ngraphFunc)
-        println(ngraphFunc.get_output_shape(0))
+        //println(outputShape)
+        //println(ngraphFunc)
+        //println(ngraphFunc.get_output_shape(0))
         val executable = ngraphBackend.compile(ngraphFunc)
         executable.call(outputVector, inputVector) 
         //convert result to onnx-scala Tensor

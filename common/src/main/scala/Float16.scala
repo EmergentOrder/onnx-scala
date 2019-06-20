@@ -93,10 +93,10 @@ class Float16(val raw: Short) extends AnyVal { lhs =>
     * signs.
     */
   def signum: Float =
-    if (raw == -0x8000) 0F
-    else if (raw == 0) -0F
+    if (raw == -0x8000) 0f
+    else if (raw == 0) -0f
     else if ((raw & 0x7fff) > 0x7c00) Float.NaN
-    else ((raw >>> 14) & 2) - 1F
+    else ((raw >>> 14) & 2) - 1f
 
   /**
     * Reverse the sign of this Float16 value.
@@ -186,12 +186,12 @@ class Float16(val raw: Short) extends AnyVal { lhs =>
     val m = (raw & 1023) // mantissa
     if (e == 0) {
       // either zero or a subnormal number
-      if (m != 0) (s - 1F) * pow(2F, -14).toFloat * (m / 1024F)
-      else if (s == 0) -0F
-      else 0F
+      if (m != 0) (s - 1f) * pow(2f, -14).toFloat * (m / 1024f)
+      else if (s == 0) -0f
+      else 0f
     } else if (e != 31) {
       // normal number
-      (s - 1F) * pow(2F, e - 15).toFloat * (1F + m / 1024F)
+      (s - 1f) * pow(2f, e - 15).toFloat * (1f + m / 1024f)
     } else if ((raw & 1023) != 0) {
       Float.NaN
     } else if (raw < 0) {
@@ -246,12 +246,12 @@ object Float16 {
     def createFinite(e: Int, x: Float): Float16 = {
       def createNormal(e: Int, m: Int): Float16 =
         new Float16((((e + 15) << 10) | m | 0x8000).toShort)
-      val m = round((x - 1F) * 1024).toInt
+      val m = round((x - 1f) * 1024).toInt
       if (e == -14 && m == 0) {
         Float16.MinPositiveNormal
       } else if (e == -14) {
         if (m == 0) Float16.Zero
-        else if (x >= 1F) createNormal(e, m)
+        else if (x >= 1f) createNormal(e, m)
         else new Float16((0x8000 | round(x * 1024)).toShort)
       } else if (e == 15) {
         if (m < 1024) createNormal(e, m)
@@ -264,17 +264,17 @@ object Float16 {
     if (JFloat.isNaN(n)) Float16.NaN
     else if (n == Float.PositiveInfinity) Float16.PositiveInfinity
     else if (n == Float.NegativeInfinity) Float16.NegativeInfinity
-    else if (JFloat.compare(n, -0F) == 0) Float16.NegativeZero
-    else if (n == 0F) Float16.Zero
-    else if (n < 0F) -fromFloat(-n)
-    else if (1F <= n && n < 2F) createFinite(0, n)
+    else if (JFloat.compare(n, -0f) == 0) Float16.NegativeZero
+    else if (n == 0f) Float16.Zero
+    else if (n < 0f) -fromFloat(-n)
+    else if (1f <= n && n < 2f) createFinite(0, n)
     else {
       var e = 0
       var x = n
-      if (n < 1F) {
-        while (x < 1F && e > -14) { x *= 2F; e -= 1 }
+      if (n < 1f) {
+        while (x < 1f && e > -14) { x *= 2f; e -= 1 }
       } else {
-        while (x >= 2F && e < 15) { x *= 0.5F; e += 1 }
+        while (x >= 2f && e < 15) { x *= 0.5f; e += 1 }
       }
       createFinite(e, x)
     }

@@ -27,10 +27,12 @@ import org.bytedeco.ngraph.global.ngraph.import_onnx_model
 import org.bytedeco.ngraph.Backend
 import org.bytedeco.ngraph.global.ngraph.f32
 import org.bytedeco.ngraph.global.ngraph.i32
+import org.bytedeco.ngraph.global.ngraph.i64
+import org.bytedeco.ngraph.global.ngraph.i32
 import org.bytedeco.onnx.global.onnx.check_model
 
 //TODO: ONNX-JS backend for both JS and JVM
-
+//TODO: Find and squash memory leaks
 class NGraphBackend(onnxHelper: ONNXHelper)
     extends Add
     with DataSource
@@ -695,6 +697,11 @@ class NGraphBackend(onnxHelper: ONNXHelper)
       case Some((data: Array[Int], shape: Array[Int])) => {
 
         (new IntPointer(data.asInstanceOf[Array[Int]]: _*), i32)
+      }
+
+      case Some((data: Array[Long], shape: Array[Int])) => {
+
+        (new LongPointer(data.asInstanceOf[Array[Long]]: _*), i64)
       }
 
       case Some((data: Array[Float], shape: Array[Int])) => {

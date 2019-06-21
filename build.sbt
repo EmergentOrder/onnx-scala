@@ -5,6 +5,7 @@ val scala212Version = "2.12.8"
 val scala213Version = "2.13.0"
 val spireVersion = "0.17.0-M1"
 val zioVersion = "1.0.0-RC8-4"
+val scalametaVersion = "4.1.12"
 val onnxJavaCPPPresetVersion = "1.5.0-1.5.1-SNAPSHOT"
 scalaVersion := scala212Version
 
@@ -64,7 +65,7 @@ lazy val programGenerator = (crossProject(JSPlatform, JVMPlatform)
       "org.emergentorder.onnx.ONNXProgramGenerator"
     ),
     libraryDependencies ++= Seq(
-      ("org.scalameta" %% "scalameta" % "4.1.12").withDottyCompat(dottyVersion)
+      ("org.scalameta" %% "scalameta" % scalametaVersion).withDottyCompat(dottyVersion)
     ),
     publishArtifact in (Compile, packageDoc) := false
   )

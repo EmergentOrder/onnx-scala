@@ -273,14 +273,13 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
 
 object ZIONGraphMain extends App {
 
-  //TODO: Fails if these are not BOTH Int and Long.. fix
   val input = Task {
     //(Seq.fill(dummyArraySize)(Random.nextInt(10000)).toArray, Array(dummyArraySize)).asInstanceOf[Tensor[T]]
-    (Array(0, 10000), Array(2)).asInstanceOf[Tensor[Long]]
+    (Array(0l, 10000l), Array(2))
   }
   val input2 = Task {
     //(Seq.fill(dummyArraySize)(Random.nextInt(10000)).toArray, Array(dummyArraySize)).asInstanceOf[Tensor[T]]
-    (Array(0, 10000), Array(2)).asInstanceOf[Tensor[Long]]
+    (Array(0l, 10000l), Array(2))
   }
 
   def program = NCFZIO.program(input, input2)

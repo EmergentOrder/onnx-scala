@@ -168,7 +168,6 @@ lazy val zio = (crossProject(JVMPlatform, JSPlatform)
       scala213Version
     ),
     publishArtifact in (Compile, packageDoc) := false,
-libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.0.0",
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {
       case Some((2, n)) if n == 13 =>

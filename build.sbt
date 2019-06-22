@@ -4,7 +4,7 @@ val scala211Version = "2.11.12"
 val scala212Version = "2.12.8"
 val scala213Version = "2.13.0"
 val spireVersion = "0.17.0-M1"
-val zioVersion = "1.0.0-RC8-4"
+val zioVersion = "1.0.0-RC8-9"
 val scalametaVersion = "4.1.12"
 val onnxJavaCPPPresetVersion = "1.5.0-1.5.1-SNAPSHOT"
 scalaVersion := scala212Version
@@ -111,24 +111,8 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
       scala211Version
     ),
     publishArtifact in (Compile, packageDoc) := false,
-    scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, n)) if n == 13 =>
-        Seq(
-          "-Xsource:2.14" //For opaque types - not merged to 2.13 yet
-        )
-      case _ =>
-        Seq(
-          )
-    }),
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, n)) if n == 11 =>
-        Seq("org.typelevel" % "spire_2.11" % spireVersion)
-      case Some((2, n)) if n == 13 =>
-        Seq(
-          "org.typelevel" % "spire_2.12" % spireVersion
-          //      "eu.timepit" % "singleton-ops_2.12" % "0.3.1"
-        )
       case _ =>
         Seq(
           ("org.typelevel" %% "spire" % spireVersion)
@@ -153,12 +137,6 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
     ),
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, n)) if n == 13 =>
-        Seq(
-          "org.typelevel" % "spire_sjs0.6_2.12" % spireVersion excludeAll (ExclusionRule(
-           organization = "org.scala-js"
-          )), // "eu.timepit" %%% "singleton-ops" % "0.3.1"
-        )
       case _ =>
         Seq(
           "org.typelevel" %%% "spire" % spireVersion,
@@ -190,12 +168,7 @@ lazy val zio = (crossProject(JVMPlatform, JSPlatform)
       scala213Version
     ),
     publishArtifact in (Compile, packageDoc) := false,
-    scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, n)) if n == 13 => Seq("-Ymacro-annotations")
-      case _ =>
-        Seq(
-          )
-    }),
+libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.0.0",
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {
       case Some((2, n)) if n == 13 =>

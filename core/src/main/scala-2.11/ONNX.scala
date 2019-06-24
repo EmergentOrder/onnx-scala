@@ -13,17 +13,19 @@ import spire.algebra.Field
 import scala.reflect.ClassTag
 package object onnx {
 
-  type Tensor[T] = Tuple2[Array[T], Array[Int]]
-
   trait Dim
 
-  sealed trait Scalar
-  sealed trait Vec[T <: Dim]
-  sealed trait Mat[T <: Dim, U <: Dim]
-  sealed trait Tuple3OfDim[T <: Dim, U <: Dim, V <: Dim]
+  sealed trait Axes
 
-  final case class TypesafeTensor[T, AxisType](tens: Tensor[T])
-  
+  sealed trait Scalar extends Axes
+  sealed trait Vec[T <: Dim] extends Axes
+  sealed trait Mat[T <: Dim, U <: Dim] extends Axes
+  sealed trait Tuple3OfDim[T <: Dim, U <: Dim, V <: Dim] extends Axes
+
+  type TypesafeTensor[T, A <: Axes] = Tuple2[Array[T], Array[Int]]
+ 
+  type Tensor[T] = TypesafeTensor[T, Axes]
+
   trait Operator
   trait Graph
 

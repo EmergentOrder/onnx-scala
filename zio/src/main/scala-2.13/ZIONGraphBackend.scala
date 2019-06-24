@@ -12,8 +12,7 @@ import spire.math.UInt
 import spire.math.ULong
 import spire.math.Complex
 
-import zio.Task
-import zio.DefaultRuntime
+import cats.effect.IO
 
 import org.emergentorder.onnx._
 import org.emergentorder.onnxZIO._
@@ -40,8 +39,8 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
       implicit ev: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[
         Float
       ] TypeOr Complex[Double])#check[T]
-  ): Task[Tensor[T]] = {
-    Task {
+  ): IO[Tensor[T]] = {
+    IO {
       ngraphBackend.getParams(name)
     }
 
@@ -51,7 +50,7 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
       implicit ev: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[
         Float
       ] TypeOr Complex[Double])#check[T]
-  ): Task[Tensor[T]] = ???
+  ): IO[Tensor[T]] = ???
 
   override def Relu1ZIO[@sp T: Numeric: ClassTag](
       name: String,
@@ -59,7 +58,7 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
       X: Option[Tensor[T]]
   )(
       implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-  ): Task[(Tensor[T])] = Task {
+  ): IO[(Tensor[T])] = IO {
     ngraphBackend.Relu1(name, consumed_inputs, X)
   }
 
@@ -70,8 +69,8 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
   //(
   (
       implicit ev: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-  ): Task[(Tensor[T])] = {
-    Task {
+  ): IO[(Tensor[T])] = {
+    IO {
       ngraphBackend.Relu6[T](name, X)
     }
   }
@@ -84,7 +83,7 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
       data: Option[Tensor[T]]
   )(
       implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-  ): Task[(Tensor[T], Tensor[T])] = ???
+  ): IO[(Tensor[T], Tensor[T])] = ???
 
   def Dropout6ZIO[@sp T: Numeric: ClassTag](
       name: String,
@@ -93,7 +92,7 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
       data: Option[Tensor[T]]
   )(
       implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-  ): Task[(Tensor[T], Tensor[T])] = ???
+  ): IO[(Tensor[T], Tensor[T])] = ???
 
   def Dropout10ZIO[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
       name: String,
@@ -102,7 +101,7 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
   )(
       implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
       evT1: (UNil TypeOr Boolean)#check[T1]
-  ): Task[(Tensor[T], Tensor[T1])] = ???
+  ): IO[(Tensor[T], Tensor[T1])] = ???
 
   override def Dropout7ZIO[@sp T: Numeric: ClassTag](
       name: String,
@@ -110,8 +109,8 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
       data: Option[Tensor[T]]
   )(
       implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-  ): Task[(Tensor[T], Tensor[T])] =
-    Task {
+  ): IO[(Tensor[T], Tensor[T])] =
+    IO {
       ngraphBackend.Dropout7[T](name, None, data)
     }
 
@@ -128,8 +127,8 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
         Float
       ] TypeOr Complex[Double])#check[T],
       evTind: (UNil TypeOr Int TypeOr Long)#check[Tind]
-  ): Task[(Tensor[T])] =
-    Task {
+  ): IO[(Tensor[T])] =
+    IO {
       ngraphBackend.Gather1[T, Tind](name, axis, data, indices)
     }
 
@@ -144,7 +143,7 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
       implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
         T
       ]
-  ): Task[(Tensor[T])] = ???
+  ): IO[(Tensor[T])] = ???
 
   def Mul6ZIO[@sp T: Numeric: ClassTag](
       name: String,
@@ -156,7 +155,7 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
       implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
         T
       ]
-  ): Task[(Tensor[T])] = ???
+  ): IO[(Tensor[T])] = ???
 
   override def Mul7ZIO[@sp T: Numeric: ClassTag](
       name: String,
@@ -166,8 +165,8 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
       implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
         T
       ]
-  ): Task[(Tensor[T])] =
-    Task {
+  ): IO[(Tensor[T])] =
+    IO {
       ngraphBackend.Mul7[T](name, A, B)
     }
 
@@ -185,7 +184,7 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
       implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
         T
       ]
-  ): Task[(Tensor[T])] = ???
+  ): IO[(Tensor[T])] = ???
 
   def Gemm6ZIO[@sp T: Numeric: ClassTag](
       name: String,
@@ -201,7 +200,7 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
       implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
         T
       ]
-  ): Task[(Tensor[T])] = ???
+  ): IO[(Tensor[T])] = ???
 
   def Gemm7ZIO[@sp T: Numeric: ClassTag](
       name: String,
@@ -216,7 +215,7 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
       implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
         T
       ]
-  ): Task[(Tensor[T])] = ???
+  ): IO[(Tensor[T])] = ???
 
   override def Gemm9ZIO[@sp T: Numeric: ClassTag](
       name: String,
@@ -231,8 +230,8 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
       implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
         T
       ]
-  ): Task[(Tensor[T])] =
-    Task {
+  ): IO[(Tensor[T])] =
+    IO {
       ngraphBackend.Gemm9[T](name, alpha, beta, transA, transB, A, B, C)
     }
 
@@ -242,15 +241,15 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
       X: Option[Tensor[T]]
   )(
       implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-  ): Task[(Tensor[T])] = ???
+  ): IO[(Tensor[T])] = ???
 
   override def Sigmoid6ZIO[@sp T: Numeric: ClassTag](
       name: String,
       X: Option[Tensor[T]]
   )(
       implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-  ): Task[(Tensor[T])] =
-    Task {
+  ): IO[(Tensor[T])] =
+    IO {
       ngraphBackend.Sigmoid6[T](name, X)
     }
 
@@ -262,9 +261,9 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
       implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
         Float
       ] TypeOr Complex[Double])#check[T]
-  ): Task[(Tensor[T])] = {
+  ): IO[(Tensor[T])] = {
 
-    Task {
+    IO {
       ngraphBackend.Concat4[T](name, axis, inputs)
     }
   }
@@ -273,22 +272,20 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
 
 object ZIONGraphMain extends App {
 
-  val input = Task {
+  val input = IO {
     //(Seq.fill(dummyArraySize)(Random.nextInt(10000)).toArray, Array(dummyArraySize)).asInstanceOf[Tensor[T]]
     val tens = (Array(0l, 10000l), ShapeDimFactory.getShapeDim(Array(2).map(z => z:XInt)))
     tens
   }
-  val input2 = Task {
+  val input2 = IO {
     //(Seq.fill(dummyArraySize)(Random.nextInt(10000)).toArray, Array(dummyArraySize)).asInstanceOf[Tensor[T]]
     (Array(0l, 10000l), ShapeDimFactory.getShapeDim(Array(2).map(z => z:XInt)))
   }
 
-  def program = NCFZIO.program(input, input2)
-
-  val runtime = new DefaultRuntime {}
+  def program = NCFZIO.program(input, input2) 
 
   val before = System.nanoTime
-  val output2 = runtime.unsafeRun(program)
+  val output2 = program.unsafeRunSync()
   val after = System.nanoTime
   println("Elapsed: " + (after - before))
 

@@ -19,17 +19,8 @@ package object onnx {
   }
 
   object ShapeDimFactory {
-    def getShapeDim[T](t: Array[XInt]) = if(t.length == 3) new ShapeDim3((t(0), t(1), t(2))) else new ShapeDim2((t(0), t(1)))
+    def getShapeDim[T](t: Array[XInt]) = if(t.length == 3) new ShapeDim3((t(0), t(1), t(2))) else if(t.length == 1) new ShapeDim1(t(0)) else new ShapeDim2((t(0), t(1)))
   }
-/*  
-  final case class ShapeDim1[P <: Product](p: P)(implicit ev: IsComposite[P] { type H = XInt}) extends ShapeDim[P] {
-    def toTuple = (ev.head(p))
-  }
-  
-  final case class ShapeDim2[P <: Product](p: P)(implicit ev: IsComposite[P] { type H = XInt}, evT: IsComposite[P] { type T = (XInt, _)}) extends ShapeDim[P] {
-    def toTuple: Tuple2[XInt, XInt] = (ev.head(p), evT.tail(p)._1)
-  }
-*/
 
   class ShapeDim3[I <: XInt, J <: XInt, K <: XInt](t: Tuple3[I,J,K]) extends ShapeDim[I,J,K] {
     def rawShape: Array[XInt] = t.productIterator.toList.asInstanceOf[List[XInt]].toArray
@@ -39,41 +30,26 @@ package object onnx {
     def rawShape: Array[XInt] = t.productIterator.toList.asInstanceOf[List[XInt]].toArray
   }  
  
-//  type Tensor1[T] = Tuple2[Array[T], ]
-  //type Tensor[T] = Tuple2[Array[T], Array[Int]]
+  class ShapeDim1[I <: XInt, J, K](t: I) extends ShapeDim[I,J,K] {
+    def rawShape: Array[XInt] = Array(t)
+  }
+    
   type ShapedTensor[T, I, J, K, S <: ShapeDim[I,J,K]] = Tuple2[Array[T], S]
 
-  type Tensor[T] = ShapedTensor[T, _, _, _,ShapeDim[_,_,_]]
-
-//  val t: ShapedTensor[Long, 1, 2, 3, ShapeDim3[1,2,3]] = (Array(5l, 3l),new ShapeDim3((1,2,3)))
-  
-/*
-  sealed trait Tensor[T]{
-    def _1: Array[T]
-    def _2: Array[XInt]
-  }
-
-  final class TensorFromShapedTensor[T](shapedTens: ShapedTensor[T,_,_,_,ShapeDim[_,_,_]]) extends Tensor[T] {
-    def _1: Array[T] = shapedTens._1
-    def _2: Array[XInt] = shapedTens._2.rawShape
-  }
-
-  final class RawTensor[T](tens: Tuple2[Array[T], Array[XInt]]) extends Tensor[T] {
-    def _1: Array[T] = tens._1
-    def _2: Array[XInt] = tens._2
-  }
-*/
-  
-  //type Tensor3[T, ShapeDim3[I,J,K] = Tuple2[Array[T], Array[Int]]
+  type SimpleShapedTensor[T] = ShapedTensor[T, _, _, _,ShapeDim[_,_,_]]
   
   trait Dim
 
-  sealed trait Scalar
-  sealed trait Vec[T <: Dim]
-  sealed trait Mat[T <: Dim, U <: Dim]
-  sealed trait Tuple3OfDim[T <: Dim, U <: Dim, V <: Dim]
+  sealed trait Axes
 
-  final case class TypesafeTensor[T, AxisType](tens: Tensor[T])
+  sealed trait Scalar extends Axes
+  sealed trait Vec[T <: Dim] extends Axes
+  sealed trait Mat[T <: Dim, U <: Dim] extends Axes
+  sealed trait Tuple3OfDim[T <: Dim, U <: Dim, V <: Dim] extends Axes
+
+  type TypesafeTensor[T, A <: Axes] = SimpleShapedTensor[T]
+ 
+  type Tensor[T] = TypesafeTensor[T, Axes] 
   
   trait Operator
   trait Graph

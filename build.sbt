@@ -113,6 +113,10 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
     publishArtifact in (Compile, packageDoc) := false,
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {
+      case Some((2, n)) if n == 13 =>
+        Seq(
+          "org.typelevel" %% "spire" % spireVersion
+        )
       case _ =>
         Seq(
           ("org.typelevel" %% "spire" % spireVersion)
@@ -137,6 +141,10 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
     ),
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {
+      case Some((2, n)) if n == 13 =>
+        Seq(
+          "org.typelevel" %%% "spire" % spireVersion
+        )
       case _ =>
         Seq(
           "org.typelevel" %%% "spire" % spireVersion,
@@ -172,7 +180,8 @@ lazy val zio = (crossProject(JVMPlatform, JSPlatform)
       .partialVersion(scalaVersion.value) match {
       case Some((2, n)) if n == 13 =>
         Seq(
-          "dev.zio" % "zio_2.12" % zioVersion
+          "org.typelevel" %% "cats-effect" % "2.0.0-M4"
+          //"dev.zio" %% "zio" % zioVersion
         )
       case _ =>
         Seq(

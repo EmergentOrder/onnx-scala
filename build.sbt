@@ -56,11 +56,6 @@ lazy val programGenerator = (crossProject(JSPlatform, JVMPlatform)
     commonSettings,
     name := "onnx-scala-program-generator",
     scalaVersion := scala212Version,
-    crossScalaVersions := Seq(
-      scala212Version,
-      scala211Version,
-      scala213Version
-    ),
     mainClass in (Compile, run) := Some(
       "org.emergentorder.onnx.ONNXProgramGenerator"
     ),
@@ -69,7 +64,21 @@ lazy val programGenerator = (crossProject(JSPlatform, JVMPlatform)
     ),
     publishArtifact in (Compile, packageDoc) := false
   )
-
+  .jvmSettings(
+    crossScalaVersions := Seq(
+//      dottyVersion,
+      scala212Version,
+      scala211Version,
+      scala213Version
+    )
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(
+      scala212Version,
+      scala211Version,
+      scala213Version
+    )
+  )
 lazy val backends = (crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure) in file("backends"))
   .dependsOn(core)
@@ -79,12 +88,12 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
     name := "onnx-scala-backends",
     scalaVersion := scala212Version,
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "ngraph-platform" % "0.21.0-1.5.1-SNAPSHOT"
+      "org.bytedeco" % "ngraph-platform" % "0.22.0-1.5.1-SNAPSHOT"
     ),
     publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(
-    crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
+    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version)
   )
   .jsSettings(
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)

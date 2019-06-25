@@ -122,7 +122,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
     publishArtifact in (Compile, packageDoc) := false,
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, n)) if n == 13 =>
+      case Some((2, n)) if (n == 13 || n == 11) =>
         Seq(
           "org.typelevel" %% "spire" % spireVersion
         )
@@ -150,7 +150,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
     ),
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, n)) if n == 13 =>
+      case Some((2, n)) if (n == 13 || n == 11) =>
         Seq(
           "org.typelevel" %%% "spire" % spireVersion
         )

@@ -11,9 +11,25 @@ import spire.math.Complex
 import spire.algebra.Field
 import spire.math.Numeric
 import scala.language.higherKinds
+import scala.io.Source
 
 object NCFZIO {
-  val onnxHelper = new ONNXHelper("NCF.onnx")
+
+  val itemIdMapFilename = "itemIds.csv"
+  val userIdMapFilename = "userIds.csv"
+  def getIdMap(idMapFilename: String) = {
+
+    val idsMapSource = Source.fromInputStream(getClass.getResourceAsStream("/" + idMapFilename))
+    idsMapSource.getLines.toList.drop(1).map{ line =>
+      val cols = line.split(",").map(_.trim)
+      cols(1).toLong -> cols(2).toLong
+    }.toMap
+  }
+
+  val userIdsMap = getIdMap(userIdMapFilename)
+  val itemIdsMap = getIdMap(itemIdMapFilename)
+
+val onnxHelper = new ONNXHelper("NCF.onnx")
   val GatherZIO: GatherZIO = new ONNXNGraphHandlers(onnxHelper)
   val ConcatZIO: ConcatZIO = new ONNXNGraphHandlers(onnxHelper)
   val MulZIO: MulZIO = new ONNXNGraphHandlers(onnxHelper)
@@ -26,8 +42,8 @@ object NCFZIO {
       inputDatalearned_0: IO[Tensor[Long]]
   ): IO[Tensor[Float]] =
     for {
-      nodeactual_input_1 <- inputDataactual_input_1
-      nodelearned_0 <- inputDatalearned_0
+      nodeactual_input_1 <- inputDataactual_input_1.map(x => (x._1.map(y => userIdsMap(y)), x._2))
+      nodelearned_0 <- inputDatalearned_0.map(x => (x._1.map(y => itemIdsMap(y)), x._2))
       nodeaffine_outputbias <- dataSource.getParamsZIO[Float](
         "affine_output.bias"
       )

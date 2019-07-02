@@ -4,7 +4,7 @@ val scala211Version = "2.11.12"
 val scala212Version = "2.12.8"
 val scala213Version = "2.13.0"
 val spireVersion = "0.17.0-M1"
-val zioVersion = "1.0.0-RC8-12"
+val zioVersion = "1.0.0-RC9"
 val scalametaVersion = "4.1.12"
 val onnxJavaCPPPresetVersion = "1.5.0-1.5.1-SNAPSHOT"
 scalaVersion := scala212Version
@@ -88,7 +88,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
     name := "onnx-scala-backends",
     scalaVersion := scala212Version,
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "ngraph-platform" % "0.22.0-1.5.1-SNAPSHOT"
+      "org.bytedeco" % "ngraph-platform" % "0.23.0-rc.1-1.5.1-SNAPSHOT"
     ),
     publishArtifact in (Compile, packageDoc) := false
   )
@@ -130,8 +130,6 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
         Seq(
           ("org.typelevel" %% "spire" % spireVersion)
             .withDottyCompat(dottyVersion)
-
-          //"eu.timepit" %% "singleton-ops" % "0.3.1"
         )
     }),
     libraryDependencies ++= Seq(
@@ -156,19 +154,19 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
         )
       case _ =>
         Seq(
-          "org.typelevel" %%% "spire" % spireVersion,
-          //"eu.timepit" %%% "singleton-ops" % "0.3.1"
+          "org.typelevel" %%% "spire" % spireVersion
         )
     })
   )
-//    .nativeSettings(
-//      scalaVersion := scala211Version,
-//      libraryDependencies ++= Seq(
-//        "org.typelevel" %% "spire" % spireVersion,
-//        "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion,
-//        //"eu.timepit" %% "singleton-ops" % "0.3.1",
-//      )
-//    )
+/*
+    .nativeSettings(
+      scalaVersion := scala211Version,
+      libraryDependencies ++= Seq(
+        "org.typelevel" %% "spire" % spireVersion,
+        "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion
+      )
+    )
+*/
 
 lazy val zio = (crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure) in file("zio"))

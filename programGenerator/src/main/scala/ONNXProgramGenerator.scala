@@ -36,7 +36,7 @@ object ONNXProgramGenerator {
       def ===(other: A): Boolean = self == other
     }
 
-    val fileName = args(0)
+    val fileName   = args(0)
     val onnxHelper = new ONNXHelper(fileName)
 
     val maxOpsetVersion = onnxHelper.maxOpsetVersion
@@ -55,8 +55,8 @@ object ONNXProgramGenerator {
       )
       .toMap
 
-    val useZIO = true
-    val useDotty = false
+    val useZIO            = true
+    val useDotty          = false
     val unionTypeOperator = (if (useDotty) " | " else " TypeOr ")
 
     //TODO: Fix output for the benchmark models shown here: https://github.com/onnx/backend-scoreboard
@@ -78,18 +78,18 @@ object ONNXProgramGenerator {
     //"Note: As of the publication of this document, no ONNX implementation is known to process operator set documents." - backlog
 
     def fullSource = {
-      val params = onnxHelper.params
+      val params     = onnxHelper.params
       val nodeInputs = onnxHelper.nodeInputs
       println("N " + nodeInputs.size)
-      val graphInputs = onnxHelper.graphInputs
+      val graphInputs  = onnxHelper.graphInputs
       val graphOutputs = onnxHelper.graphOutputs
 
       val nodeOutputs = onnxHelper.nodeOutputs
-      val outputs = onnxHelper.outputs
-      val attributes = onnxHelper.attributes
+      val outputs     = onnxHelper.outputs
+      val attributes  = onnxHelper.attributes
 
       //val sortedParamNames = params.keys.toSeq.sorted.map(x => "param_" + x)
-      val ops = onnxHelper.ops
+      val ops         = onnxHelper.ops
       val distinctOps = ops.distinct
 
       def replaceTypeStrings(s: String) =
@@ -277,9 +277,8 @@ object ONNXProgramGenerator {
 
             val opName = x._1._1._2
 
-            val opInputsNames = (0 until schemaMap(opName)._1.size.toInt).map {
-              b =>
-                schemaMap(opName)._1.get(b).GetName.getString
+            val opInputsNames = (0 until schemaMap(opName)._1.size.toInt).map { b =>
+              schemaMap(opName)._1.get(b).GetName.getString
             }
 
             val opInputsIsVariadic =

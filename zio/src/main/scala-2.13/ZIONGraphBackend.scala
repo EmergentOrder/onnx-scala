@@ -274,19 +274,19 @@ object ZIONGraphMain extends App {
 
   val input = IO {
     //(Seq.fill(dummyArraySize)(Random.nextInt(10000)).toArray, Array(dummyArraySize)).asInstanceOf[Tensor[T]]
-    val tens = (Array(0l, 10000l), ShapeDimFactory.getShapeDim(Array(2).map(z => z:XInt)))
+    val tens = (Array(130874L, 180558L), ShapeDimFactory.getShapeDim(Array(2).map(z => z: XInt)))
     tens
   }
   val input2 = IO {
     //(Seq.fill(dummyArraySize)(Random.nextInt(10000)).toArray, Array(dummyArraySize)).asInstanceOf[Tensor[T]]
-    (Array(0l, 10000l), ShapeDimFactory.getShapeDim(Array(2).map(z => z:XInt)))
+    (Array(10626847L, 8008064L), ShapeDimFactory.getShapeDim(Array(2).map(z => z: XInt)))
   }
 
-  def program = NCFZIO.program(input, input2) 
+  def program = NCFZIO.program(input, input2)
 
-  val before = System.nanoTime
+  val before  = System.nanoTime
   val output2 = program.unsafeRunSync()
-  val after = System.nanoTime
+  val after   = System.nanoTime
   println("Elapsed: " + (after - before))
 
   println("Output size: " + output2._1.size)

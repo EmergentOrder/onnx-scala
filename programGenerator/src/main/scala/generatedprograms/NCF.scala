@@ -12,13 +12,13 @@ import spire.math.Numeric
 import scala.language.higherKinds
 
 trait NCF {
-  val onnxHelper = new ONNXHelper("NCF.onnx")
-  val Gather: Gather = new NGraphBackend(onnxHelper)
-  val Concat: Concat = new NGraphBackend(onnxHelper)
-  val Mul: Mul = new NGraphBackend(onnxHelper)
-  val Gemm: Gemm = new NGraphBackend(onnxHelper)
-  val Relu: Relu = new NGraphBackend(onnxHelper)
-  val Sigmoid: Sigmoid = new NGraphBackend(onnxHelper)
+  val onnxHelper             = new ONNXHelper("NCF.onnx")
+  val Gather: Gather         = new NGraphBackend(onnxHelper)
+  val Concat: Concat         = new NGraphBackend(onnxHelper)
+  val Mul: Mul               = new NGraphBackend(onnxHelper)
+  val Gemm: Gemm             = new NGraphBackend(onnxHelper)
+  val Relu: Relu             = new NGraphBackend(onnxHelper)
+  val Sigmoid: Sigmoid       = new NGraphBackend(onnxHelper)
   val dataSource: DataSource = new NGraphBackend(onnxHelper)
   def program(
       inputDataactual_input_1: Tensor[Long],
@@ -26,7 +26,7 @@ trait NCF {
   ): List[Tensor[Float]] =
     for {
       nodeactual_input_1 <- List(inputDataactual_input_1)
-      nodelearned_0 <- List(inputDatalearned_0)
+      nodelearned_0      <- List(inputDatalearned_0)
       nodeaffine_outputbias <- List(
         dataSource.getParams[Float]("affine_output.bias")
       )

@@ -93,7 +93,7 @@ class ONNXHelper(modelFileName: String) {
   def onnxTensorProtoToArray(tensorProto: TensorProto) = {
 
     val onnxDataType = tensorProto.data_type
-    val dimsCount = tensorProto.dims_size
+    val dimsCount    = tensorProto.dims_size
     val dimsList =
       (0 until dimsCount.toInt).map(x => tensorProto.dims(x)).toList
 
@@ -127,42 +127,42 @@ class ONNXHelper(modelFileName: String) {
   }
 
   private val nodeCount = graph.node_size.toInt
-  private val node = (0 until nodeCount).map(x => graph.node(x)).toList
+  private val node      = (0 until nodeCount).map(x => graph.node(x)).toList
 
   val attributes =
     node.map { x =>
       val attributeCount = x.attribute_size.toInt
-      val attribute = (0 until attributeCount).map(y => x.attribute(y)).toArray
+      val attribute      = (0 until attributeCount).map(y => x.attribute(y)).toArray
       attribute
     }.toArray
 
   val ops = node.map(x => x.op_type.getString).toArray
 
   private val tensorElemTypeMap = Map(
-    org.bytedeco.onnx.TensorProto.UNDEFINED -> "Undefined",
-    org.bytedeco.onnx.TensorProto.FLOAT -> "Float",
-    org.bytedeco.onnx.TensorProto.UINT8 -> "UByte",
-    org.bytedeco.onnx.TensorProto.INT8 -> "Byte",
-    org.bytedeco.onnx.TensorProto.UINT16 -> "UShort",
-    org.bytedeco.onnx.TensorProto.INT16 -> "Short",
-    org.bytedeco.onnx.TensorProto.INT32 -> "Int",
-    org.bytedeco.onnx.TensorProto.INT64 -> "Long",
-    org.bytedeco.onnx.TensorProto.STRING -> "String",
-    org.bytedeco.onnx.TensorProto.BOOL -> "Boolean",
-    org.bytedeco.onnx.TensorProto.FLOAT16 -> "Float16",
-    org.bytedeco.onnx.TensorProto.DOUBLE -> "Double",
-    org.bytedeco.onnx.TensorProto.UINT32 -> "UInt",
-    org.bytedeco.onnx.TensorProto.UINT64 -> "ULong",
-    org.bytedeco.onnx.TensorProto.COMPLEX64 -> "Complex[Float]",
+    org.bytedeco.onnx.TensorProto.UNDEFINED  -> "Undefined",
+    org.bytedeco.onnx.TensorProto.FLOAT      -> "Float",
+    org.bytedeco.onnx.TensorProto.UINT8      -> "UByte",
+    org.bytedeco.onnx.TensorProto.INT8       -> "Byte",
+    org.bytedeco.onnx.TensorProto.UINT16     -> "UShort",
+    org.bytedeco.onnx.TensorProto.INT16      -> "Short",
+    org.bytedeco.onnx.TensorProto.INT32      -> "Int",
+    org.bytedeco.onnx.TensorProto.INT64      -> "Long",
+    org.bytedeco.onnx.TensorProto.STRING     -> "String",
+    org.bytedeco.onnx.TensorProto.BOOL       -> "Boolean",
+    org.bytedeco.onnx.TensorProto.FLOAT16    -> "Float16",
+    org.bytedeco.onnx.TensorProto.DOUBLE     -> "Double",
+    org.bytedeco.onnx.TensorProto.UINT32     -> "UInt",
+    org.bytedeco.onnx.TensorProto.UINT64     -> "ULong",
+    org.bytedeco.onnx.TensorProto.COMPLEX64  -> "Complex[Float]",
     org.bytedeco.onnx.TensorProto.COMPLEX128 -> "Complex[Double]",
-    org.bytedeco.onnx.TensorProto.BFLOAT16 -> "???"
+    org.bytedeco.onnx.TensorProto.BFLOAT16   -> "???"
   )
 
   val nodeInputs =
     node
       .map { x =>
         val inputCount = x.input_size.toInt
-        val input = (0 until inputCount).map(y => x.input(y)).toList
+        val input      = (0 until inputCount).map(y => x.input(y)).toList
 
         input
       }
@@ -182,7 +182,7 @@ class ONNXHelper(modelFileName: String) {
     node
       .map { x =>
         val outputCount = x.output_size.toInt
-        val output = (0 until outputCount).map(y => x.output(y)).toList
+        val output      = (0 until outputCount).map(y => x.output(y)).toList
 
         output
       }
@@ -202,7 +202,7 @@ class ONNXHelper(modelFileName: String) {
     (0 until globalOutputCount).map(x => graph.output(x)).toList
 
   val inputCount = graph.input_size.toInt
-  val input = (0 until inputCount).map(x => graph.input(x)).toList
+  val input      = (0 until inputCount).map(x => graph.input(x)).toList
 
   private val initializerCount = graph.initializer_size
   private val initializer =
@@ -210,11 +210,11 @@ class ONNXHelper(modelFileName: String) {
 
   val params =
     initializer.map { x =>
-      val dimsCount = x.dims_size
-      val dimsList = (0 until dimsCount.toInt).map(y => x.dims(y)).toList
-      val name = x.name.getString.replaceAll("-", "_").replaceAll("/", "_")
+      val dimsCount      = x.dims_size
+      val dimsList       = (0 until dimsCount.toInt).map(y => x.dims(y)).toList
+      val name           = x.name.getString.replaceAll("-", "_").replaceAll("/", "_")
       val tensorElemType = tensorElemTypeMap(x.data_type)
-      val arrX = onnxTensorProtoToArray(x)
+      val arrX           = onnxTensorProtoToArray(x)
       (name, tensorElemType, arrX, dimsList.map(y => y.toInt).toArray)
     }
 
@@ -237,7 +237,7 @@ class ONNXHelper(modelFileName: String) {
 
   val graphInputs = {
     val inputCount = graph.input_size.toInt
-    val input = (0 until inputCount).map(y => graph.input(y)).toList
+    val input      = (0 until inputCount).map(y => graph.input(y)).toList
     input.toArray
       .map { y =>
         (
@@ -253,7 +253,7 @@ class ONNXHelper(modelFileName: String) {
 
   val graphOutputs = {
     val outputCount = graph.output_size.toInt
-    val output = (0 until outputCount).map(y => graph.output(y)).toList
+    val output      = (0 until outputCount).map(y => graph.output(y)).toList
     output.toArray
       .map(
         y =>

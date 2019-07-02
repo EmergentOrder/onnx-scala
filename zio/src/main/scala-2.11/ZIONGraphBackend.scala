@@ -275,20 +275,21 @@ object ZIONGraphMain extends App {
 
   val input = Task {
     //(Seq.fill(dummyArraySize)(Random.nextInt(10000)).toArray, Array(dummyArraySize)).asInstanceOf[Tensor[T]]
-    (Array(0l, 10000l), Array(2))
+    val tens = (Array(130874L, 180558L), Array(2))
+    tens
   }
   val input2 = Task {
     //(Seq.fill(dummyArraySize)(Random.nextInt(10000)).toArray, Array(dummyArraySize)).asInstanceOf[Tensor[T]]
-    (Array(0l, 10000l), Array(2))
+    (Array(10626847L, 8008064L), Array(2))
   }
 
   def program = NCFZIO.program(input, input2)
 
   val runtime = new DefaultRuntime {}
 
-  val before = System.nanoTime
+  val before  = System.nanoTime
   val output2 = runtime.unsafeRun(program)
-  val after = System.nanoTime
+  val after   = System.nanoTime
   println("Elapsed: " + (after - before))
 
   println("Output size: " + output2._1.size)

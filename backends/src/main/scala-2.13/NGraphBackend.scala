@@ -73,7 +73,7 @@ class NGraphBackend(onnxHelper: ONNXHelper)
   ): Tensor[T] = {
     val params = paramsMap.get(name)
     params match {
-      case Some(x) => (x._2, ShapeDimFactory.getShapeDim(x._3.map(z => z:XInt)))
+      case Some(x) => (x._2, ShapeDimFactory.getShapeDim(x._3.map(z => z: XInt)))
       case None =>
         throw new Exception("No params found for param name: " + name)
     }
@@ -463,8 +463,8 @@ class NGraphBackend(onnxHelper: ONNXHelper)
       ]
   ): (Tensor[T]) = {
     val map: Map[String, Any] = Map(
-      "alpha" -> alpha,
-      "beta" -> beta,
+      "alpha"  -> alpha,
+      "beta"   -> beta,
       "transA" -> transA,
       "transB" -> transB
     )
@@ -501,12 +501,12 @@ class NGraphBackend(onnxHelper: ONNXHelper)
   ): (Tensor[T]) = {
 
     val map: Map[String, Any] = Map(
-      "auto_pad" -> auto_pad,
-      "dilations" -> dilations,
-      "group" -> group,
+      "auto_pad"     -> auto_pad,
+      "dilations"    -> dilations,
+      "group"        -> group,
       "kernel_shape" -> kernel_shape,
-      "pads" -> pads,
-      "strides" -> strides
+      "pads"         -> pads,
+      "strides"      -> strides
     )
 
     trinaryOp(name, "Conv", X, W, B, map)
@@ -578,12 +578,12 @@ class NGraphBackend(onnxHelper: ONNXHelper)
   //(
 //        implicit evT:  (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
   //       Float] TypeOr Complex[Double])#check[T])
-    : (Tensor[T]) = {
+      : (Tensor[T]) = {
 
     val model = (new ModelProto).New()
 
     val graph = new org.bytedeco.onnx.GraphProto
-    val node = graph.add_node
+    val node  = graph.add_node
 
     model.set_producer_name("backend")
     graph.set_name(name)
@@ -597,7 +597,7 @@ class NGraphBackend(onnxHelper: ONNXHelper)
         val longVal = value.asInstanceOf[Option[Int]] match {
           case Some(x) => {
             node.add_attribute
-            val attr = node.mutable_attribute(0)
+            val attr     = node.mutable_attribute(0)
             val attrName = new BytePointer(key)
             attr.set_name(attrName)
             attr.set_type(2)
@@ -671,7 +671,7 @@ class NGraphBackend(onnxHelper: ONNXHelper)
     val inputShape: org.bytedeco.ngraph.Shape = A match {
       case Some(tens) => {
         val dims = tens._2
-        val s = new org.bytedeco.ngraph.Shape(tens._2.rawShape.size)
+        val s    = new org.bytedeco.ngraph.Shape(tens._2.rawShape.size)
         s.resize(tens._2.rawShape.size)
         val longShape = tens._2.rawShape.map { x =>
           x.toLong
@@ -693,7 +693,9 @@ class NGraphBackend(onnxHelper: ONNXHelper)
       case None => new FloatPointer
     }
 
-    val secondInputTens: (Pointer, org.bytedeco.ngraph.Type) = B.map{case (x,y) => (x,y.rawShape)} match {
+    val secondInputTens: (Pointer, org.bytedeco.ngraph.Type) = B.map {
+      case (x, y) => (x, y.rawShape)
+    } match {
       case Some((data: Array[Int], shape: Array[XInt])) => {
 
         (new IntPointer(data.asInstanceOf[Array[Int]]: _*), i32)
@@ -711,7 +713,7 @@ class NGraphBackend(onnxHelper: ONNXHelper)
       case None => (new IntPointer, f32)
     }
 
-    val thirdInputTens: Pointer = C.map{case (x,y) => (x, y.rawShape)} match {
+    val thirdInputTens: Pointer = C.map { case (x, y) => (x, y.rawShape) } match {
       case Some((data: Array[Int], shape: Array[XInt])) => {
 
         new IntPointer(data.asInstanceOf[Array[Int]]: _*)
@@ -724,7 +726,7 @@ class NGraphBackend(onnxHelper: ONNXHelper)
       case None => new IntPointer
     }
 
-    val input = ngraphBackend.create_tensor(f32, inputShape, inputTens)
+    val input  = ngraphBackend.create_tensor(f32, inputShape, inputTens)
     val output = ngraphBackend.create_tensor(f32, outputShape)
     //TODO: assumes second input has same shape, assumes third input type
     val inputVector = B match {
@@ -776,7 +778,7 @@ class NGraphBackend(onnxHelper: ONNXHelper)
       shapeArray.update(x, outputShape.get(x).toInt)
     }
 
-    val result: Tensor[T] = (fa, ShapeDimFactory.getShapeDim(shapeArray.map(z => z:XInt)))
+    val result: Tensor[T] = (fa, ShapeDimFactory.getShapeDim(shapeArray.map(z => z: XInt)))
 
     result
   }
@@ -805,11 +807,11 @@ class NGraphBackend(onnxHelper: ONNXHelper)
       evI: (UNil TypeOr Long)#check[I]
   ): (Tensor[T], Tensor[I]) = {
     val map: Map[String, Any] = Map(
-      "auto_pad" -> auto_pad,
-      "kernel_shape" -> kernel_shape,
-      "pads" -> pads,
+      "auto_pad"      -> auto_pad,
+      "kernel_shape"  -> kernel_shape,
+      "pads"          -> pads,
       "storage_order" -> storage_order,
-      "strides" -> strides
+      "strides"       -> strides
     )
 
     (trinaryOp[T, T, T](name, "MaxPool", X, None, None, map), null) //TODO:optional output
@@ -840,9 +842,9 @@ class NGraphBackend(onnxHelper: ONNXHelper)
       ] TypeOr Complex[Double])#check[T]
   ): (Tensor[T]) = {
     val map: Map[String, Any] = Map("axis" -> axis)
-    val X = inputs(0)
-    val Y = inputs(1)
-    val Z = if (inputs.size > 2) inputs(2) else None
+    val X                     = inputs(0)
+    val Y                     = inputs(1)
+    val Z                     = if (inputs.size > 2) inputs(2) else None
     trinaryOp(name, "Concat", X, Y, Z, map)
     //TODO: > 3 inputs
   }
@@ -889,11 +891,11 @@ class NGraphBackend(onnxHelper: ONNXHelper)
       implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
   ): (Tensor[T]) = {
     val map: Map[String, Any] = Map(
-      "auto_pad" -> auto_pad,
+      "auto_pad"          -> auto_pad,
       "count_include_pad" -> count_include_pad,
-      "kernel_shape" -> kernel_shape,
-      "pads" -> pads,
-      "strides" -> strides
+      "kernel_shape"      -> kernel_shape,
+      "pads"              -> pads,
+      "strides"           -> strides
     )
 
     trinaryOp(name, "AveragePool", X, None, None, map)

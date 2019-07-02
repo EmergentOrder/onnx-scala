@@ -12,22 +12,22 @@ import spire.math.Numeric
 import scala.language.higherKinds
 
 trait Squeezenet {
-  val onnxHelper = new ONNXHelper("squeezenet.onnx")
-  val Conv: Conv = new NGraphBackend(onnxHelper)
-  val Relu: Relu = new NGraphBackend(onnxHelper)
-  val MaxPool: MaxPool = new NGraphBackend(onnxHelper)
-  val Concat: Concat = new NGraphBackend(onnxHelper)
-  val Dropout: Dropout = new NGraphBackend(onnxHelper)
+  val onnxHelper                           = new ONNXHelper("squeezenet.onnx")
+  val Conv: Conv                           = new NGraphBackend(onnxHelper)
+  val Relu: Relu                           = new NGraphBackend(onnxHelper)
+  val MaxPool: MaxPool                     = new NGraphBackend(onnxHelper)
+  val Concat: Concat                       = new NGraphBackend(onnxHelper)
+  val Dropout: Dropout                     = new NGraphBackend(onnxHelper)
   val GlobalAveragePool: GlobalAveragePool = new NGraphBackend(onnxHelper)
-  val Softmax: Softmax = new NGraphBackend(onnxHelper)
-  val dataSource: DataSource = new NGraphBackend(onnxHelper)
+  val Softmax: Softmax                     = new NGraphBackend(onnxHelper)
+  val dataSource: DataSource               = new NGraphBackend(onnxHelper)
   def program(inputDatadata_0: Tensor[Float]): List[Tensor[Float]] =
     for {
-      nodedata_0 <- List(inputDatadata_0)
+      nodedata_0     <- List(inputDatadata_0)
       nodeconv10_b_0 <- List(dataSource.getParams[Float]("conv10_b_0"))
       nodeconv10_w_0 <- List(dataSource.getParams[Float]("conv10_w_0"))
-      nodeconv1_b_0 <- List(dataSource.getParams[Float]("conv1_b_0"))
-      nodeconv1_w_0 <- List(dataSource.getParams[Float]("conv1_w_0"))
+      nodeconv1_b_0  <- List(dataSource.getParams[Float]("conv1_b_0"))
+      nodeconv1_w_0  <- List(dataSource.getParams[Float]("conv1_w_0"))
       nodefire2_expand1x1_b_0 <- List(
         dataSource.getParams[Float]("fire2_expand1x1_b_0")
       )

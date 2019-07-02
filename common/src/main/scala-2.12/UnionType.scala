@@ -15,13 +15,13 @@ object UnionType {
     type L = A
     type R = B
 
-    type intersect = (L#intersect with R)
+    type intersect    = (L#intersect with R)
     type invIntersect = (L#invIntersect with inv[R])
-    type check[X] = invIntersect <:< inv[X]
+    type check[X]     = invIntersect <:< inv[X]
   }
 
   object UNil extends OrR {
-    type intersect = Any
+    type intersect    = Any
     type invIntersect = inv[Nothing]
   }
   type UNil = UNil.type

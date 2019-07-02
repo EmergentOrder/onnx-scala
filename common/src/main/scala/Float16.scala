@@ -52,7 +52,7 @@ import scala.language.implicitConversions
   */
 class Float16(val raw: Short) extends AnyVal { lhs =>
 
-  def isNaN: Boolean = (raw & 0x7fff) > 0x7c00
+  def isNaN: Boolean  = (raw & 0x7fff) > 0x7c00
   def nonNaN: Boolean = (raw & 0x7fff) <= 0x7c00
 
   /**
@@ -65,7 +65,7 @@ class Float16(val raw: Short) extends AnyVal { lhs =>
   def isPositiveZero: Boolean = raw == -0x8000
   def isNegativeZero: Boolean = raw == 0
 
-  def isInfinite: Boolean = (raw & 0x7fff) == 0x7c00
+  def isInfinite: Boolean         = (raw & 0x7fff) == 0x7c00
   def isPositiveInfinity: Boolean = raw == 0x7c00
   def isNegativeInfinity: Boolean = raw == 0xfc00
 
@@ -181,9 +181,9 @@ class Float16(val raw: Short) extends AnyVal { lhs =>
     * values which are not precisely representable as Float16 values.
     */
   def toFloat: Float = {
-    val s = (raw >>> 14) & 2 // sign*2
+    val s = (raw >>> 14) & 2  // sign*2
     val e = (raw >>> 10) & 31 // exponent
-    val m = (raw & 1023) // mantissa
+    val m = (raw & 1023)      // mantissa
     if (e == 0) {
       // either zero or a subnormal number
       if (m != 0) (s - 1f) * pow(2f, -14).toFloat * (m / 1024f)
@@ -212,19 +212,19 @@ object Float16 {
 
   // interesting Float16 constants
   // with the exception of NaN, values go from smallest to largest
-  val NaN = new Float16(0x7c01.toShort)
-  val NegativeInfinity = new Float16(0x7c00.toShort)
-  val MinValue = new Float16(0x7bff.toShort)
-  val MinusOne = new Float16(0x3c00.toShort)
+  val NaN               = new Float16(0x7c01.toShort)
+  val NegativeInfinity  = new Float16(0x7c00.toShort)
+  val MinValue          = new Float16(0x7bff.toShort)
+  val MinusOne          = new Float16(0x3c00.toShort)
   val MaxNegativeNormal = new Float16(0x0400.toShort)
-  val MaxNegative = new Float16(0x0001.toShort)
-  val NegativeZero = new Float16(0x0000.toShort)
-  val Zero = new Float16(0x8000.toShort)
-  val MinPositive = new Float16(0x8001.toShort)
+  val MaxNegative       = new Float16(0x0001.toShort)
+  val NegativeZero      = new Float16(0x0000.toShort)
+  val Zero              = new Float16(0x8000.toShort)
+  val MinPositive       = new Float16(0x8001.toShort)
   val MinPositiveNormal = new Float16(0x8400.toShort)
-  val One = new Float16(0xbc00.toShort)
-  val MaxValue = new Float16(0xfbff.toShort)
-  val PositiveInfinity = new Float16(0xfc00.toShort)
+  val One               = new Float16(0xbc00.toShort)
+  val MaxValue          = new Float16(0xfbff.toShort)
+  val PositiveInfinity  = new Float16(0xfc00.toShort)
 
   /**
     * Create a Float16 value from a Float.

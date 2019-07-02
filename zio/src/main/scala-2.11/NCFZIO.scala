@@ -19,22 +19,25 @@ object NCFZIO {
   def getIdMap(idMapFilename: String) = {
 
     val idsMapSource = Source.fromInputStream(getClass.getResourceAsStream("/" + idMapFilename))
-    idsMapSource.getLines.toList.drop(1).map{ line =>
-      val cols = line.split(",").map(_.trim)
-      cols(1).toLong -> cols(2).toLong
-    }.toMap
+    idsMapSource.getLines.toList
+      .drop(1)
+      .map { line =>
+        val cols = line.split(",").map(_.trim)
+        cols(1).toLong -> cols(2).toLong
+      }
+      .toMap
   }
 
   val userIdsMap = getIdMap(userIdMapFilename)
   val itemIdsMap = getIdMap(itemIdMapFilename)
 
-  val onnxHelper = new ONNXHelper("NCF.onnx")
-  val GatherZIO: GatherZIO = new ONNXNGraphHandlers(onnxHelper)
-  val ConcatZIO: ConcatZIO = new ONNXNGraphHandlers(onnxHelper)
-  val MulZIO: MulZIO = new ONNXNGraphHandlers(onnxHelper)
-  val GemmZIO: GemmZIO = new ONNXNGraphHandlers(onnxHelper)
-  val ReluZIO: ReluZIO = new ONNXNGraphHandlers(onnxHelper)
-  val SigmoidZIO: SigmoidZIO = new ONNXNGraphHandlers(onnxHelper)
+  val onnxHelper                = new ONNXHelper("NCF.onnx")
+  val GatherZIO: GatherZIO      = new ONNXNGraphHandlers(onnxHelper)
+  val ConcatZIO: ConcatZIO      = new ONNXNGraphHandlers(onnxHelper)
+  val MulZIO: MulZIO            = new ONNXNGraphHandlers(onnxHelper)
+  val GemmZIO: GemmZIO          = new ONNXNGraphHandlers(onnxHelper)
+  val ReluZIO: ReluZIO          = new ONNXNGraphHandlers(onnxHelper)
+  val SigmoidZIO: SigmoidZIO    = new ONNXNGraphHandlers(onnxHelper)
   val dataSource: DataSourceZIO = new ONNXNGraphHandlers(onnxHelper)
   def program(
       inputDataactual_input_1: Task[Tensor[Long]],
@@ -42,7 +45,7 @@ object NCFZIO {
   ): Task[Tensor[Float]] =
     for {
       nodeactual_input_1 <- inputDataactual_input_1.map(x => (x._1.map(y => userIdsMap(y)), x._2))
-      nodelearned_0 <- inputDatalearned_0.map(x => (x._1.map(y => itemIdsMap(y)), x._2))
+      nodelearned_0      <- inputDatalearned_0.map(x => (x._1.map(y => itemIdsMap(y)), x._2))
       nodeaffine_outputbias <- dataSource.getParamsZIO[Float](
         "affine_output.bias"
       )

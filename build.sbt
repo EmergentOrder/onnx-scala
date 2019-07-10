@@ -5,8 +5,8 @@ val scala212Version = "2.12.8"
 val scala213Version = "2.13.0"
 val spireVersion = "0.17.0-M1"
 val zioVersion = "1.0.0-RC9"
-val scalametaVersion = "4.1.12"
-val onnxJavaCPPPresetVersion = "1.5.0-1.5.1-SNAPSHOT"
+val scalametaVersion = "4.2.0"
+val onnxJavaCPPPresetVersion = "1.5.0-1.5.1"
 scalaVersion := scala212Version
 
 //TODO: Replace wartremover with scalafix
@@ -14,9 +14,9 @@ scalaVersion := scala212Version
 lazy val commonSettings = Seq(
   scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
-  version := "1.5.0-0.1.0-SNAPSHOT", //TODO : Generate APIs for 1.5.0
-  resolvers += Resolver.mavenLocal, //TODO: fix issue with mkl-dnn JavaCPP preset resolution
-  resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
+  version := "1.5.0-0.1.0-SNAPSHOT",
+  resolvers += Resolver.mavenLocal,
+  //resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
   scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
   autoCompilerPlugins := true
@@ -88,7 +88,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
     name := "onnx-scala-backends",
     scalaVersion := scala212Version,
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "ngraph-platform" % "0.23.0-rc.3-1.5.1-SNAPSHOT"
+      "org.bytedeco" % "ngraph-platform" % "0.22.0-1.5.1"
     ),
     publishArtifact in (Compile, packageDoc) := false
   )

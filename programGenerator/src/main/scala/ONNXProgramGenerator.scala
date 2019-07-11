@@ -25,6 +25,7 @@ import org.bytedeco.onnx.TensorProto
 import collection.JavaConverters._
 import spire.math.Number
 
+import scala.reflect.io.Streamable
 import scala.reflect.ClassTag
 
 //TODO: de-tuple on the left hand side when there are multiple outputs . should also solved the other output TODOs
@@ -37,7 +38,13 @@ object ONNXProgramGenerator {
     }
 
     val fileName   = args(0)
-    val onnxHelper = new ONNXHelper(fileName)
+    
+    val byteArray = Streamable.bytes(
+      getClass.getResourceAsStream("/" + fileName)
+    ) // JAVA 9+ only : .readAllBytes()
+
+
+    val onnxHelper = new ONNXHelper(byteArray)
 
     val maxOpsetVersion = onnxHelper.maxOpsetVersion
 

@@ -12,10 +12,17 @@ import spire.algebra.Field
 import spire.math.Numeric
 import scala.language.higherKinds
 import scala.io.Source
+import scala.reflect.io.Streamable
 
 object NCFZIO {
   val itemIdMapFilename = "itemIds.csv"
   val userIdMapFilename = "userIds.csv"
+  val onnxFileName = "NCF.onnx"
+
+  val byteArray = Streamable.bytes(
+      getClass.getResourceAsStream("/" + onnxFileName)
+    ) // JAVA 9+ only : .readAllBytes()
+  
   def getIdMap(idMapFilename: String) = {
 
     val idsMapSource = Source.fromInputStream(getClass.getResourceAsStream("/" + idMapFilename))
@@ -31,7 +38,7 @@ object NCFZIO {
   val userIdsMap = getIdMap(userIdMapFilename)
   val itemIdsMap = getIdMap(itemIdMapFilename)
 
-  val onnxHelper                = new ONNXHelper("NCF.onnx")
+  val onnxHelper                = new ONNXHelper(byteArray)
   val GatherZIO: GatherZIO      = new ONNXNGraphHandlers(onnxHelper)
   val ConcatZIO: ConcatZIO      = new ONNXNGraphHandlers(onnxHelper)
   val MulZIO: MulZIO            = new ONNXNGraphHandlers(onnxHelper)

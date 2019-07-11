@@ -29,11 +29,7 @@ import org.bytedeco.javacpp._
 import org.bytedeco.onnx._
 import org.bytedeco.onnx.global.onnx._
 
-class ONNXHelper(modelFileName: String) {
-
-  val byteArray = Streamable.bytes(
-    getClass.getResourceAsStream("/" + modelFileName)
-  ) // JAVA 9+ only : .readAllBytes()
+class ONNXHelper(byteArray: Array[Byte]) {
 
   val loaded =
     org.bytedeco.javacpp.Loader.load(classOf[org.bytedeco.onnx.global.onnx])

@@ -25,7 +25,14 @@ lazy val commonSettings = Seq(
 lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure) in file("common"))
   .disablePlugins(wartremover.WartRemover)
-  .settings(commonSettings, name := "onnx-scala-common")
+  .settings(commonSettings, name := "onnx-scala-common",
+    excludeFilter in unmanagedSources := (CrossVersion
+      .partialVersion(scalaVersion.value) match {
+      case Some((0, n)) => "UnionType.scala"
+      case _ => ""
+      }
+    )
+  )
   .jvmSettings(
     scalaVersion := scala212Version,
     crossScalaVersions := Seq(
@@ -110,7 +117,15 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
     commonSettings,
     name := "onnx-scala",
     scalaVersion := scala212Version,
-    wartremoverErrors ++= Warts.allBut(Wart.DefaultArguments, Wart.Nothing)
+    wartremoverErrors ++= Warts.allBut(Wart.DefaultArguments, Wart.Nothing),
+    excludeFilter in unmanagedSources := (CrossVersion
+      .partialVersion(scalaVersion.value) match {
+      case Some((0, n)) => ("ONNXHelper.scala")
+      case _ => ""
+      }
+    )
+  )
+  .jvmSettings(
   )
   .jvmSettings(
     crossScalaVersions := Seq(

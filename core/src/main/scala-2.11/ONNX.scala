@@ -13,6 +13,7 @@ import spire.algebra.Field
 import scala.reflect.ClassTag
 package object onnx {
 
+  //TODO: Use Dim / Shape from scala-infer ?
   trait Dim
 
   sealed trait Axes

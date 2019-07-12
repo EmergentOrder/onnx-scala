@@ -34,7 +34,7 @@ class ONNXHelper(byteArray: Array[Byte]) {
   val loaded =
     org.bytedeco.javacpp.Loader.load(classOf[org.bytedeco.onnx.global.onnx])
 
-  private val res = {
+  val model = {
     val r = (new ModelProto).New()
 
     ParseProtoFromBytes(
@@ -45,11 +45,11 @@ class ONNXHelper(byteArray: Array[Byte]) {
     r
   }
 
-  private val graph = res.graph
+  private val graph = model.graph
 
   val maxOpsetVersion =
     try {
-      res.opset_import(0).version
+      model.opset_import(0).version
     } catch {
       case e: Exception => { 1 }
     }

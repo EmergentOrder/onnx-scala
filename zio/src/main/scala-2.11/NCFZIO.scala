@@ -14,14 +14,14 @@ import scala.language.higherKinds
 import scala.io.Source
 import scala.reflect.io.Streamable
 
-object NCFZIO {
+class NCFZIO(byteArray: Array[Byte]) {
   val itemIdMapFilename = "itemIds.csv"
   val userIdMapFilename = "userIds.csv"
   val onnxFileName = "NCF.onnx"
 
-  val byteArray = Streamable.bytes(
-      getClass.getResourceAsStream("/" + onnxFileName)
-    ) // JAVA 9+ only : .readAllBytes()
+//  val byteArray = Streamable.bytes(
+//      getClass.getResourceAsStream("/" + onnxFileName)
+//    ) // JAVA 9+ only : .readAllBytes()
   
   def getIdMap(idMapFilename: String) = {
 

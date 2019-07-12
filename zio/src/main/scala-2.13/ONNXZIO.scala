@@ -1,6 +1,6 @@
 package org.emergentorder
 
-import cats.effect.IO
+import zio.Task
 import scala.language.higherKinds
 import scala.{specialized => sp}
 import spire.math.UByte
@@ -21,7 +21,7 @@ package object onnxZIO {
         implicit ev: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[Tensor[T]]
+    ): Task[Tensor[T]]
   }
   trait AbsZIO extends Operator {
 
@@ -33,13 +33,13 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Abs6ZIO[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait AcosZIO extends Operator {
@@ -49,7 +49,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait AcoshZIO extends Operator {
@@ -59,7 +59,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait AddZIO extends Operator {
@@ -75,7 +75,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Add6ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -87,7 +87,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Add7ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -97,7 +97,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait AndZIO extends Operator {
@@ -111,7 +111,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Boolean)#check[T],
         evT1: (UNil TypeOr Boolean)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
     def And7ZIO[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
@@ -120,7 +120,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Boolean)#check[T],
         evT1: (UNil TypeOr Boolean)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
   }
   trait ArgMaxZIO extends Operator {
@@ -134,7 +134,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[Long])]
+    ): Task[(Tensor[Long])]
 
   }
   trait ArgMinZIO extends Operator {
@@ -148,7 +148,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[Long])]
+    ): Task[(Tensor[Long])]
 
   }
   trait ArrayFeatureExtractorZIO extends Operator {
@@ -161,7 +161,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int TypeOr String)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait AsinZIO extends Operator {
@@ -171,7 +171,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait AsinhZIO extends Operator {
@@ -181,7 +181,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait AtanZIO extends Operator {
@@ -191,7 +191,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait AtanhZIO extends Operator {
@@ -201,7 +201,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait AveragePoolZIO extends Operator {
@@ -215,7 +215,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def AveragePool7ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -227,7 +227,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def AveragePool10ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -240,7 +240,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait BatchNormalizationZIO extends Operator {
@@ -259,7 +259,7 @@ package object onnxZIO {
         someVar: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T], Tensor[T], Tensor[T], Tensor[T], Tensor[T])]
+    ): Task[(Tensor[T], Tensor[T], Tensor[T], Tensor[T], Tensor[T])]
 
     def BatchNormalization6ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -274,7 +274,7 @@ package object onnxZIO {
         someVar: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T], Tensor[T], Tensor[T], Tensor[T], Tensor[T])]
+    ): Task[(Tensor[T], Tensor[T], Tensor[T], Tensor[T], Tensor[T])]
 
     def BatchNormalization7ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -288,7 +288,7 @@ package object onnxZIO {
         someVar: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T], Tensor[T], Tensor[T], Tensor[T], Tensor[T])]
+    ): Task[(Tensor[T], Tensor[T], Tensor[T], Tensor[T], Tensor[T])]
 
     def BatchNormalization9ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -301,7 +301,7 @@ package object onnxZIO {
         someVar: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T], Tensor[T], Tensor[T], Tensor[T], Tensor[T])]
+    ): Task[(Tensor[T], Tensor[T], Tensor[T], Tensor[T], Tensor[T])]
 
   }
   trait BinarizerZIO extends Operator {
@@ -314,7 +314,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait CastMapZIO extends Operator {
@@ -330,7 +330,7 @@ package object onnxZIO {
           T1
         ],
         evT2: (UNil TypeOr String TypeOr Float TypeOr Long)#check[T2]
-    ): IO[(Tensor[T2])]
+    ): Task[(Tensor[T2])]
 
   }
   trait CastZIO extends Operator {
@@ -346,7 +346,7 @@ package object onnxZIO {
         evT2: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr String)#check[
           T2
         ]
-    ): IO[(Tensor[T2])]
+    ): Task[(Tensor[T2])]
 
     def Cast6ZIO[@sp T1: Numeric: ClassTag, @sp T2: Numeric: ClassTag](
         name: String,
@@ -359,7 +359,7 @@ package object onnxZIO {
         evT2: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr String)#check[
           T2
         ]
-    ): IO[(Tensor[T2])]
+    ): Task[(Tensor[T2])]
 
     def Cast9ZIO[@sp T1: Numeric: ClassTag, @sp T2: Numeric: ClassTag](
         name: String,
@@ -372,7 +372,7 @@ package object onnxZIO {
         evT2: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr String)#check[
           T2
         ]
-    ): IO[(Tensor[T2])]
+    ): Task[(Tensor[T2])]
 
   }
   trait CategoryMapperZIO extends Operator {
@@ -390,7 +390,7 @@ package object onnxZIO {
     )(
         implicit evT1: (UNil TypeOr String TypeOr Long)#check[T1],
         evT2: (UNil TypeOr String TypeOr Long)#check[T2]
-    ): IO[(Tensor[T2])]
+    ): Task[(Tensor[T2])]
 
   }
   trait CeilZIO extends Operator {
@@ -401,11 +401,11 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Ceil6ZIO[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ClipZIO extends Operator {
@@ -418,7 +418,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Clip6ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -427,7 +427,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait CompressZIO extends Operator {
@@ -442,7 +442,7 @@ package object onnxZIO {
           Float
         ] TypeOr Complex[Double])#check[T],
         evT1: (UNil TypeOr Boolean)#check[T1]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ConcatZIO extends Operator {
@@ -455,7 +455,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ConstantOfShapeZIO extends Operator {
@@ -472,7 +472,7 @@ package object onnxZIO {
         evT2: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean)#check[
           T2
         ]
-    ): IO[(Tensor[T2])]
+    ): Task[(Tensor[T2])]
 
   }
   trait ConstantZIO extends Operator {
@@ -484,7 +484,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Constant9ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -493,7 +493,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ConvIntegerZIO extends Operator {
@@ -518,7 +518,7 @@ package object onnxZIO {
         implicit evT1: (UNil TypeOr Byte TypeOr UByte)#check[T1],
         evT2: (UNil TypeOr Byte TypeOr UByte)#check[T2],
         evT3: (UNil TypeOr Int)#check[T3]
-    ): IO[(Tensor[T3])]
+    ): Task[(Tensor[T3])]
 
   }
   trait ConvTransposeZIO extends Operator {
@@ -538,7 +538,7 @@ package object onnxZIO {
         B: Option[Tensor[T]] = None
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ConvZIO extends Operator {
@@ -556,7 +556,7 @@ package object onnxZIO {
         B: Option[Tensor[T]] = None
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait CosZIO extends Operator {
@@ -566,7 +566,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait CoshZIO extends Operator {
@@ -576,7 +576,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait DepthToSpaceZIO extends Operator {
@@ -589,7 +589,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait DequantizeLinearZIO extends Operator {
@@ -601,7 +601,7 @@ package object onnxZIO {
         x_zero_point: Option[Tensor[T]] = None
     )(
         implicit evT: (UNil TypeOr Byte TypeOr UByte TypeOr Int)#check[T]
-    ): IO[(Tensor[Float])]
+    ): Task[(Tensor[Float])]
 
   }
   trait DictVectorizerZIO extends Operator {
@@ -625,7 +625,7 @@ package object onnxZIO {
         evT2: (UNil TypeOr Long TypeOr Float TypeOr Double TypeOr String)#check[
           T2
         ]
-    ): IO[(Tensor[T2])]
+    ): Task[(Tensor[T2])]
 
   }
   trait DivZIO extends Operator {
@@ -641,7 +641,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Div6ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -653,7 +653,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Div7ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -663,7 +663,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait DropoutZIO extends Operator {
@@ -676,7 +676,7 @@ package object onnxZIO {
         data: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T], Tensor[T])]
+    ): Task[(Tensor[T], Tensor[T])]
 
     def Dropout6ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -685,7 +685,7 @@ package object onnxZIO {
         data: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T], Tensor[T])]
+    ): Task[(Tensor[T], Tensor[T])]
 
     def Dropout7ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -693,7 +693,7 @@ package object onnxZIO {
         data: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T], Tensor[T])]
+    ): Task[(Tensor[T], Tensor[T])]
 
     def Dropout10ZIO[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
@@ -702,7 +702,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
         evT1: (UNil TypeOr Boolean)#check[T1]
-    ): IO[(Tensor[T], Tensor[T1])]
+    ): Task[(Tensor[T], Tensor[T1])]
 
   }
   trait EluZIO extends Operator {
@@ -714,7 +714,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Elu6ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -722,7 +722,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait EqualZIO extends Operator {
@@ -736,7 +736,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Boolean TypeOr Int TypeOr Long)#check[T],
         evT1: (UNil TypeOr Boolean)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
     def Equal7ZIO[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
@@ -745,7 +745,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Boolean TypeOr Int TypeOr Long)#check[T],
         evT1: (UNil TypeOr Boolean)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
   }
   trait ErfZIO extends Operator {
@@ -757,7 +757,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ExpZIO extends Operator {
@@ -768,14 +768,14 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Exp6ZIO[@sp T: Numeric: ClassTag](
         name: String,
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ExpandZIO extends Operator {
@@ -788,7 +788,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait EyeLikeZIO extends Operator {
@@ -805,7 +805,7 @@ package object onnxZIO {
         evT2: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean)#check[
           T2
         ]
-    ): IO[(Tensor[T2])]
+    ): Task[(Tensor[T2])]
 
   }
   trait FlattenZIO extends Operator {
@@ -818,7 +818,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Flatten9ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -828,7 +828,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait FloorZIO extends Operator {
@@ -839,11 +839,11 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Floor6ZIO[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait GRUZIO extends Operator {
@@ -866,7 +866,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
         evT1: (UNil TypeOr Int)#check[T1]
-    ): IO[(Tensor[T], Tensor[T])]
+    ): Task[(Tensor[T], Tensor[T])]
 
     def GRU3ZIO[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
@@ -887,7 +887,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
         evT1: (UNil TypeOr Int)#check[T1]
-    ): IO[(Tensor[T], Tensor[T])]
+    ): Task[(Tensor[T], Tensor[T])]
 
     def GRU7ZIO[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
@@ -907,7 +907,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
         evT1: (UNil TypeOr Int)#check[T1]
-    ): IO[(Tensor[T], Tensor[T])]
+    ): Task[(Tensor[T], Tensor[T])]
 
   }
   trait GatherZIO extends Operator {
@@ -922,7 +922,7 @@ package object onnxZIO {
           Float
         ] TypeOr Complex[Double])#check[T],
         evTind: (UNil TypeOr Int TypeOr Long)#check[Tind]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait GemmZIO extends Operator {
@@ -941,7 +941,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Gemm6ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -957,7 +957,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Gemm7ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -972,7 +972,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Gemm9ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -987,7 +987,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait GlobalAveragePoolZIO extends Operator {
@@ -997,7 +997,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait GlobalLpPoolZIO extends Operator {
@@ -1008,7 +1008,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def GlobalLpPool2ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -1016,7 +1016,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait GlobalMaxPoolZIO extends Operator {
@@ -1026,7 +1026,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait GreaterZIO extends Operator {
@@ -1042,7 +1042,7 @@ package object onnxZIO {
           T
         ],
         evT1: (UNil TypeOr Boolean)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
     def Greater7ZIO[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
@@ -1053,7 +1053,7 @@ package object onnxZIO {
           T
         ],
         evT1: (UNil TypeOr Boolean)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
     def Greater9ZIO[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
@@ -1064,7 +1064,7 @@ package object onnxZIO {
           T
         ],
         evT1: (UNil TypeOr Boolean)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
   }
   trait HardSigmoidZIO extends Operator {
@@ -1077,7 +1077,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def HardSigmoid6ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -1086,7 +1086,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait HardmaxZIO extends Operator {
@@ -1097,7 +1097,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait IdentityZIO extends Operator {
@@ -1109,7 +1109,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait IfZIO extends Operator {
@@ -1124,7 +1124,7 @@ package object onnxZIO {
         evV: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[V]
-    ): IO[(Tensor[V])]
+    ): Task[(Tensor[V])]
 
   }
   trait ImputerZIO extends Operator {
@@ -1140,7 +1140,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait InstanceNormalizationZIO extends Operator {
@@ -1154,7 +1154,7 @@ package object onnxZIO {
         B: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def InstanceNormalization6ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -1164,7 +1164,7 @@ package object onnxZIO {
         B: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait IsInfZIO extends Operator {
@@ -1177,7 +1177,7 @@ package object onnxZIO {
     )(
         implicit evT1: (UNil TypeOr Float TypeOr Double)#check[T1],
         evT2: (UNil TypeOr Boolean)#check[T2]
-    ): IO[(Tensor[T2])]
+    ): Task[(Tensor[T2])]
 
   }
   trait IsNaNZIO extends Operator {
@@ -1190,7 +1190,7 @@ package object onnxZIO {
           T1
         ],
         evT2: (UNil TypeOr Boolean)#check[T2]
-    ): IO[(Tensor[T2])]
+    ): Task[(Tensor[T2])]
 
   }
   trait LRNZIO extends Operator {
@@ -1204,7 +1204,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait LSTMZIO extends Operator {
@@ -1230,7 +1230,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
         evT1: (UNil TypeOr Int)#check[T1]
-    ): IO[(Tensor[T], Tensor[T], Tensor[T])]
+    ): Task[(Tensor[T], Tensor[T], Tensor[T])]
 
     def LSTM7ZIO[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
@@ -1252,7 +1252,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
         evT1: (UNil TypeOr Int)#check[T1]
-    ): IO[(Tensor[T], Tensor[T], Tensor[T])]
+    ): Task[(Tensor[T], Tensor[T], Tensor[T])]
 
   }
   trait LabelEncoderZIO extends Operator {
@@ -1270,7 +1270,7 @@ package object onnxZIO {
         evT2: (UNil TypeOr String TypeOr Long TypeOr String TypeOr Long TypeOr Float)#check[
           T2
         ]
-    ): IO[(Tensor[T2])]
+    ): Task[(Tensor[T2])]
 
     def LabelEncoder2ZIO[@sp T1: Numeric: ClassTag, @sp T2: Numeric: ClassTag](
         name: String,
@@ -1291,7 +1291,7 @@ package object onnxZIO {
         evT2: (UNil TypeOr String TypeOr Long TypeOr String TypeOr Long TypeOr Float)#check[
           T2
         ]
-    ): IO[(Tensor[T2])]
+    ): Task[(Tensor[T2])]
 
   }
   trait LeakyReluZIO extends Operator {
@@ -1303,7 +1303,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def LeakyRelu6ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -1311,7 +1311,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait LessZIO extends Operator {
@@ -1327,7 +1327,7 @@ package object onnxZIO {
           T
         ],
         evT1: (UNil TypeOr Boolean)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
     def Less7ZIO[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
@@ -1338,7 +1338,7 @@ package object onnxZIO {
           T
         ],
         evT1: (UNil TypeOr Boolean)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
     def Less9ZIO[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
@@ -1349,7 +1349,7 @@ package object onnxZIO {
           T
         ],
         evT1: (UNil TypeOr Boolean)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
   }
   trait LinearClassifierZIO extends Operator {
@@ -1371,7 +1371,7 @@ package object onnxZIO {
           T1
         ],
         evT2: (UNil TypeOr String TypeOr Long)#check[T2]
-    ): IO[(Tensor[T2], Tensor[Float])]
+    ): Task[(Tensor[T2], Tensor[Float])]
 
   }
   trait LinearRegressorZIO extends Operator {
@@ -1387,7 +1387,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check[
           T
         ]
-    ): IO[(Tensor[Float])]
+    ): Task[(Tensor[Float])]
 
   }
   trait LogSoftmaxZIO extends Operator {
@@ -1398,7 +1398,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait LogZIO extends Operator {
@@ -1409,14 +1409,14 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Log6ZIO[@sp T: Numeric: ClassTag](
         name: String,
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait LoopZIO extends Operator {
@@ -1437,7 +1437,7 @@ package object onnxZIO {
         evV: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[V]
-    ): IO[(Tensor[V])]
+    ): Task[(Tensor[V])]
 
   }
   trait LpNormalizationZIO extends Operator {
@@ -1449,7 +1449,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait LpPoolZIO extends Operator {
@@ -1464,7 +1464,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def LpPool2ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -1476,7 +1476,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait MatMulIntegerZIO extends Operator {
@@ -1495,7 +1495,7 @@ package object onnxZIO {
         implicit evT1: (UNil TypeOr Byte TypeOr UByte)#check[T1],
         evT2: (UNil TypeOr Byte TypeOr UByte)#check[T2],
         evT3: (UNil TypeOr Int)#check[T3]
-    ): IO[(Tensor[T3])]
+    ): Task[(Tensor[T3])]
 
   }
   trait MatMulZIO extends Operator {
@@ -1508,7 +1508,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def MatMul9ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -1518,7 +1518,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait MaxPoolZIO extends Operator {
@@ -1532,7 +1532,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def MaxPool8ZIO[@sp T: Numeric: ClassTag, @sp I: Numeric: ClassTag](
         name: String,
@@ -1545,7 +1545,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
         evI: (UNil TypeOr Long)#check[I]
-    ): IO[(Tensor[T], Tensor[I])]
+    ): Task[(Tensor[T], Tensor[I])]
 
     def MaxPool10ZIO[@sp T: Numeric: ClassTag, @sp I: Numeric: ClassTag](
         name: String,
@@ -1560,7 +1560,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
         evI: (UNil TypeOr Long)#check[I]
-    ): IO[(Tensor[T], Tensor[I])]
+    ): Task[(Tensor[T], Tensor[I])]
 
   }
   trait MaxRoiPoolZIO extends Operator {
@@ -1573,7 +1573,7 @@ package object onnxZIO {
         rois: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait MaxUnpoolZIO extends Operator {
@@ -1591,7 +1591,7 @@ package object onnxZIO {
           T1
         ],
         evT2: (UNil TypeOr Long)#check[T2]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
   }
   trait MaxZIO extends Operator {
@@ -1601,14 +1601,14 @@ package object onnxZIO {
         data_0: Seq[Option[Tensor[T]]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Max8ZIO[@sp T: Numeric: ClassTag](
         name: String,
         data_0: Seq[Option[Tensor[T]]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait MeanVarianceNormalizationZIO extends Operator {
@@ -1619,7 +1619,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait MeanZIO extends Operator {
@@ -1629,14 +1629,14 @@ package object onnxZIO {
         data_0: Seq[Option[Tensor[T]]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Mean8ZIO[@sp T: Numeric: ClassTag](
         name: String,
         data_0: Seq[Option[Tensor[T]]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait MinZIO extends Operator {
@@ -1646,14 +1646,14 @@ package object onnxZIO {
         data_0: Seq[Option[Tensor[T]]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Min8ZIO[@sp T: Numeric: ClassTag](
         name: String,
         data_0: Seq[Option[Tensor[T]]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ModZIO extends Operator {
@@ -1667,7 +1667,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait MulZIO extends Operator {
@@ -1683,7 +1683,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Mul6ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -1695,7 +1695,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Mul7ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -1705,7 +1705,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait MultinomialZIO extends Operator {
@@ -1721,7 +1721,7 @@ package object onnxZIO {
           T1
         ],
         evT2: (UNil TypeOr Int TypeOr Long)#check[T2]
-    ): IO[(Tensor[T2])]
+    ): Task[(Tensor[T2])]
 
   }
   trait NegZIO extends Operator {
@@ -1734,13 +1734,13 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float TypeOr Int TypeOr Byte TypeOr Short TypeOr Long TypeOr Float16 TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Neg6ZIO[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float TypeOr Int TypeOr Byte TypeOr Short TypeOr Long TypeOr Float16 TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait NonMaxSuppressionZIO extends Operator {
@@ -1753,7 +1753,7 @@ package object onnxZIO {
         max_output_boxes_per_class: Option[Tensor[Long]] = None,
         iou_threshold: Option[Tensor[Float]] = None,
         score_threshold: Option[Tensor[Float]] = None
-    ): IO[(Tensor[Long])]
+    ): Task[(Tensor[Long])]
 
   }
   trait NonZeroZIO extends Operator {
@@ -1765,7 +1765,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[Long])]
+    ): Task[(Tensor[Long])]
 
   }
   trait NormalizerZIO extends Operator {
@@ -1778,14 +1778,14 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check[
           T
         ]
-    ): IO[(Tensor[Float])]
+    ): Task[(Tensor[Float])]
 
   }
   trait NotZIO extends Operator {
 
     def Not1ZIO[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
         implicit evT: (UNil TypeOr Boolean)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait OneHotEncoderZIO extends Operator {
@@ -1800,7 +1800,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr String TypeOr Long TypeOr Int TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[Float])]
+    ): Task[(Tensor[Float])]
 
   }
   trait OneHotZIO extends Operator {
@@ -1825,7 +1825,7 @@ package object onnxZIO {
         evT3: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T3]
-    ): IO[(Tensor[T3])]
+    ): Task[(Tensor[T3])]
 
   }
   trait OrZIO extends Operator {
@@ -1839,7 +1839,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Boolean)#check[T],
         evT1: (UNil TypeOr Boolean)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
     def Or7ZIO[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
@@ -1848,7 +1848,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Boolean)#check[T],
         evT1: (UNil TypeOr Boolean)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
   }
   trait PReluZIO extends Operator {
@@ -1862,7 +1862,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def PRelu6ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -1872,7 +1872,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def PRelu7ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -1882,7 +1882,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def PRelu9ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -1892,7 +1892,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait PadZIO extends Operator {
@@ -1905,7 +1905,7 @@ package object onnxZIO {
         data: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Pad2ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -1915,7 +1915,7 @@ package object onnxZIO {
         data: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait PowZIO extends Operator {
@@ -1928,7 +1928,7 @@ package object onnxZIO {
         Y: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Pow7ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -1936,7 +1936,7 @@ package object onnxZIO {
         Y: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait QLinearConvZIO extends Operator {
@@ -1968,7 +1968,7 @@ package object onnxZIO {
         evT2: (UNil TypeOr Byte TypeOr UByte)#check[T2],
         evT3: (UNil TypeOr Byte TypeOr UByte)#check[T3],
         evT4: (UNil TypeOr Int)#check[T4]
-    ): IO[(Tensor[T3])]
+    ): Task[(Tensor[T3])]
 
   }
   trait QLinearMatMulZIO extends Operator {
@@ -1991,7 +1991,7 @@ package object onnxZIO {
         implicit evT1: (UNil TypeOr Byte TypeOr UByte)#check[T1],
         evT2: (UNil TypeOr Byte TypeOr UByte)#check[T2],
         evT3: (UNil TypeOr Byte TypeOr UByte)#check[T3]
-    ): IO[(Tensor[T3])]
+    ): Task[(Tensor[T3])]
 
   }
   trait QuantizeLinearZIO extends Operator {
@@ -2007,7 +2007,7 @@ package object onnxZIO {
     )(
         implicit evT1: (UNil TypeOr Float TypeOr Int)#check[T1],
         evT2: (UNil TypeOr Byte TypeOr UByte)#check[T2]
-    ): IO[(Tensor[T2])]
+    ): Task[(Tensor[T2])]
 
   }
   trait RNNZIO extends Operator {
@@ -2030,7 +2030,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
         evT1: (UNil TypeOr Int)#check[T1]
-    ): IO[(Tensor[T], Tensor[T])]
+    ): Task[(Tensor[T], Tensor[T])]
 
     def RNN7ZIO[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
@@ -2049,7 +2049,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
         evT1: (UNil TypeOr Int)#check[T1]
-    ): IO[(Tensor[T], Tensor[T])]
+    ): Task[(Tensor[T], Tensor[T])]
 
   }
   trait RandomNormalLikeZIO extends Operator {
@@ -2069,7 +2069,7 @@ package object onnxZIO {
           Float
         ] TypeOr Complex[Double])#check[T1],
         evT2: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T2]
-    ): IO[(Tensor[T2])]
+    ): Task[(Tensor[T2])]
 
   }
   trait RandomNormalZIO extends Operator {
@@ -2083,7 +2083,7 @@ package object onnxZIO {
         shape: Option[(Array[Int])]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait RandomUniformLikeZIO extends Operator {
@@ -2103,7 +2103,7 @@ package object onnxZIO {
           Float
         ] TypeOr Complex[Double])#check[T1],
         evT2: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T2]
-    ): IO[(Tensor[T2])]
+    ): Task[(Tensor[T2])]
 
   }
   trait RandomUniformZIO extends Operator {
@@ -2117,7 +2117,7 @@ package object onnxZIO {
         shape: Option[(Array[Int])]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ReciprocalZIO extends Operator {
@@ -2128,14 +2128,14 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Reciprocal6ZIO[@sp T: Numeric: ClassTag](
         name: String,
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ReduceL1ZIO extends Operator {
@@ -2149,7 +2149,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ReduceL2ZIO extends Operator {
@@ -2163,7 +2163,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ReduceLogSumExpZIO extends Operator {
@@ -2177,7 +2177,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ReduceLogSumZIO extends Operator {
@@ -2191,7 +2191,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ReduceMaxZIO extends Operator {
@@ -2205,7 +2205,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ReduceMeanZIO extends Operator {
@@ -2219,7 +2219,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ReduceMinZIO extends Operator {
@@ -2233,7 +2233,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ReduceProdZIO extends Operator {
@@ -2247,7 +2247,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ReduceSumSquareZIO extends Operator {
@@ -2261,7 +2261,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ReduceSumZIO extends Operator {
@@ -2275,7 +2275,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ReluZIO extends Operator {
@@ -2286,11 +2286,11 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Relu6ZIO[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ReshapeZIO extends Operator {
@@ -2304,7 +2304,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Reshape5ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -2314,7 +2314,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ResizeZIO extends Operator {
@@ -2328,7 +2328,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ReverseSequenceZIO extends Operator {
@@ -2343,7 +2343,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait RoiAlignZIO extends Operator {
@@ -2363,7 +2363,7 @@ package object onnxZIO {
           T1
         ],
         evT2: (UNil TypeOr Long)#check[T2]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
   }
   trait SVMClassifierZIO extends Operator {
@@ -2387,7 +2387,7 @@ package object onnxZIO {
           T1
         ],
         evT2: (UNil TypeOr String TypeOr Long)#check[T2]
-    ): IO[(Tensor[T2], Tensor[Float])]
+    ): Task[(Tensor[T2], Tensor[Float])]
 
   }
   trait SVMRegressorZIO extends Operator {
@@ -2407,7 +2407,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check[
           T
         ]
-    ): IO[(Tensor[Float])]
+    ): Task[(Tensor[Float])]
 
   }
   trait ScalerZIO extends Operator {
@@ -2421,7 +2421,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check[
           T
         ]
-    ): IO[(Tensor[Float])]
+    ): Task[(Tensor[Float])]
 
   }
   trait ScanZIO extends Operator {
@@ -2439,7 +2439,7 @@ package object onnxZIO {
         implicit evV: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[V]
-    ): IO[(Tensor[V])]
+    ): Task[(Tensor[V])]
 
   }
   trait ScatterZIO extends Operator {
@@ -2455,7 +2455,7 @@ package object onnxZIO {
           Float
         ] TypeOr Complex[Double])#check[T],
         evTind: (UNil TypeOr Int TypeOr Long)#check[Tind]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait SeluZIO extends Operator {
@@ -2468,7 +2468,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Selu6ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -2477,7 +2477,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait ShapeZIO extends Operator {
@@ -2490,7 +2490,7 @@ package object onnxZIO {
           Float
         ] TypeOr Complex[Double])#check[T],
         evT1: (UNil TypeOr Long)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
   }
   trait ShrinkZIO extends Operator {
@@ -2504,7 +2504,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait SigmoidZIO extends Operator {
@@ -2515,14 +2515,14 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Sigmoid6ZIO[@sp T: Numeric: ClassTag](
         name: String,
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait SignZIO extends Operator {
@@ -2534,7 +2534,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait SinZIO extends Operator {
@@ -2544,7 +2544,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait SinhZIO extends Operator {
@@ -2554,7 +2554,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait SizeZIO extends Operator {
@@ -2567,7 +2567,7 @@ package object onnxZIO {
           Float
         ] TypeOr Complex[Double])#check[T],
         evT1: (UNil TypeOr Long)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
   }
   trait SliceZIO extends Operator {
@@ -2582,7 +2582,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Slice10ZIO[@sp T: Numeric: ClassTag, @sp Tind: Numeric: ClassTag](
         name: String,
@@ -2596,7 +2596,7 @@ package object onnxZIO {
           Float
         ] TypeOr Complex[Double])#check[T],
         evTind: (UNil TypeOr Int TypeOr Long)#check[Tind]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait SoftmaxZIO extends Operator {
@@ -2607,7 +2607,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait SoftplusZIO extends Operator {
@@ -2617,7 +2617,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait SoftsignZIO extends Operator {
@@ -2627,7 +2627,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait SpaceToDepthZIO extends Operator {
@@ -2640,7 +2640,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait SplitZIO extends Operator {
@@ -2655,7 +2655,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Split2ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -2666,7 +2666,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait SqrtZIO extends Operator {
@@ -2677,11 +2677,11 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Sqrt6ZIO[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait SqueezeZIO extends Operator {
@@ -2694,7 +2694,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait StringNormalizerZIO extends Operator {
@@ -2706,7 +2706,7 @@ package object onnxZIO {
         locale: Option[(String)] = None,
         stopwords: Option[(Array[String])] = None,
         X: Option[Tensor[String]]
-    ): IO[(Tensor[String])]
+    ): Task[(Tensor[String])]
 
   }
   trait SubZIO extends Operator {
@@ -2722,7 +2722,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Sub6ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -2734,7 +2734,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Sub7ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -2744,7 +2744,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
           T
         ]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait SumZIO extends Operator {
@@ -2754,14 +2754,14 @@ package object onnxZIO {
         data_0: Seq[Option[Tensor[T]]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Sum8ZIO[@sp T: Numeric: ClassTag](
         name: String,
         data_0: Seq[Option[Tensor[T]]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait TanZIO extends Operator {
@@ -2771,7 +2771,7 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait TanhZIO extends Operator {
@@ -2782,14 +2782,14 @@ package object onnxZIO {
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Tanh6ZIO[@sp T: Numeric: ClassTag](
         name: String,
         input: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait TfIdfVectorizerZIO extends Operator {
@@ -2812,7 +2812,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr String TypeOr Int TypeOr Long)#check[T],
         evT1: (UNil TypeOr Float)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
   }
   trait ThresholdedReluZIO extends Operator {
@@ -2823,7 +2823,7 @@ package object onnxZIO {
         X: Option[Tensor[T]]
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait TileZIO extends Operator {
@@ -2837,7 +2837,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Tile6ZIO[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
@@ -2848,7 +2848,7 @@ package object onnxZIO {
           Float
         ] TypeOr Complex[Double])#check[T],
         evT1: (UNil TypeOr Long)#check[T1]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait TopKZIO extends Operator {
@@ -2861,7 +2861,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
         evI: (UNil TypeOr Long)#check[I]
-    ): IO[(Tensor[T], Tensor[I])]
+    ): Task[(Tensor[T], Tensor[I])]
 
     def TopK10ZIO[@sp T: Numeric: ClassTag, @sp I: Numeric: ClassTag](
         name: String,
@@ -2871,7 +2871,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
         evI: (UNil TypeOr Long)#check[I]
-    ): IO[(Tensor[T], Tensor[I])]
+    ): Task[(Tensor[T], Tensor[I])]
 
   }
   trait TransposeZIO extends Operator {
@@ -2884,7 +2884,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait TreeEnsembleClassifierZIO extends Operator {
@@ -2917,7 +2917,7 @@ package object onnxZIO {
           T1
         ],
         evT2: (UNil TypeOr String TypeOr Long)#check[T2]
-    ): IO[(Tensor[T2], Tensor[Float])]
+    ): Task[(Tensor[T2], Tensor[Float])]
 
   }
   trait TreeEnsembleRegressorZIO extends Operator {
@@ -2946,7 +2946,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Float TypeOr Double TypeOr Long TypeOr Int)#check[
           T
         ]
-    ): IO[(Tensor[Float])]
+    ): Task[(Tensor[Float])]
 
   }
   trait UnsqueezeZIO extends Operator {
@@ -2959,7 +2959,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait UpsampleZIO extends Operator {
@@ -2974,7 +2974,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Upsample7ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -2985,7 +2985,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Upsample9ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -2996,7 +2996,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
     def Upsample10ZIO[@sp T: Numeric: ClassTag](
         name: String,
@@ -3007,7 +3007,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait WhereZIO extends Operator {
@@ -3022,7 +3022,7 @@ package object onnxZIO {
         evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
-    ): IO[(Tensor[T])]
+    ): Task[(Tensor[T])]
 
   }
   trait XorZIO extends Operator {
@@ -3036,7 +3036,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Boolean)#check[T],
         evT1: (UNil TypeOr Boolean)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
     def Xor7ZIO[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
@@ -3045,7 +3045,7 @@ package object onnxZIO {
     )(
         implicit evT: (UNil TypeOr Boolean)#check[T],
         evT1: (UNil TypeOr Boolean)#check[T1]
-    ): IO[(Tensor[T1])]
+    ): Task[(Tensor[T1])]
 
   }
   trait ZipMapZIO extends Operator {
@@ -3059,7 +3059,7 @@ package object onnxZIO {
         implicit evT: (UNil TypeOr Seq[Map[String, Float]] TypeOr Seq[
           Map[Long, Float]
         ])#check[T]
-    ): IO[(T)]
+    ): Task[(T)]
 
   }
 }

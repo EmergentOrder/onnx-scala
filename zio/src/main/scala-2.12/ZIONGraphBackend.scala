@@ -1,5 +1,6 @@
 package org.emergentorder.onnxZIO
 
+import scala.reflect.io.Streamable
 import scala.util.Random
 import scala.{specialized => sp}
 import scala.collection.mutable.{Map => MMap};
@@ -283,7 +284,11 @@ object ZIONGraphMain extends App {
     (Array(10626847L, 8008064L), Array(2))
   }
 
-  def program = NCFZIO.program(input, input2)
+  val byteArray = Streamable.bytes(
+     getClass.getResourceAsStream("/" + "NCF.onnx")
+    ) // JAVA 9+ only : .readAllBytes()
+
+  def program = (new NCFZIO(byteArray)).program(input, input2)
 
   val runtime = new DefaultRuntime {}
 

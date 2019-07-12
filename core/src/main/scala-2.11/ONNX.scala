@@ -25,6 +25,8 @@ package object onnx {
 
   type TypesafeTensor[T, A <: Axes] = Tuple2[Array[T], Array[Int]]
 
+  //TODO: Put name, Scala ModelProto into tensor
+  //TODO: Use PBDirect or ScalaPB generated case classes instead of ONNX JavaCPP Protos everywhere (will allow JS interop)
   type Tensor[T] = TypesafeTensor[T, Axes]
 
   trait Operator

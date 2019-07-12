@@ -4,7 +4,7 @@ val scala211Version = "2.11.12"
 val scala212Version = "2.12.8"
 val scala213Version = "2.13.0"
 val spireVersion = "0.17.0-M1"
-val zioVersion = "1.0.0-RC9"
+val zioVersion = "1.0.0-RC10-1"
 val scalametaVersion = "4.2.0"
 val onnxJavaCPPPresetVersion = "1.5.0-1.5.1"
 scalaVersion := scala212Version
@@ -202,8 +202,8 @@ lazy val zio = (crossProject(JVMPlatform, JSPlatform)
       .partialVersion(scalaVersion.value) match {
       case Some((2, n)) if n == 13 =>
         Seq(
-          "org.typelevel" %% "cats-effect" % "2.0.0-M4"
-          //"dev.zio" %% "zio" % zioVersion
+          //"org.typelevel" %% "cats-effect" % "2.0.0-M4"
+          "dev.zio" %% "zio" % zioVersion
         )
       case _ =>
         Seq(

@@ -280,7 +280,7 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
 }
 
 object ZIONGraphMain extends App {
-  val dummyArraySize = 80000000
+  val dummyArraySize = 8000000
   val input = Task {
     val tens = (Seq.fill(dummyArraySize)(130874L).toArray, ShapeDimFactory.getShapeDim(Array(dummyArraySize).map(z => z: XInt)))
     //val tens = (Array(130874L, 180558L), ShapeDimFactory.getShapeDim(Array(2).map(z => z: XInt)))
@@ -314,7 +314,7 @@ object ZIONGraphMain extends App {
   val itemIdsMap = getIdMap(itemIdMapFilename)
 
 
-  def program = (new NCFZIO(byteArray, userIdsMap, itemIdsMap)).program(input, input2)
+  def program = (new NCFZIO(byteArray, userIdsMap, itemIdsMap)).fastProgram(input, input2)
 
   val runtime = new DefaultRuntime {}
 

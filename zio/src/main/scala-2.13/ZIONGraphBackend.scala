@@ -1,6 +1,7 @@
 package org.emergentorder.onnxZIO
 
 import scala.reflect.io.Streamable
+import scala.io.Source
 import scala.util.Random
 import scala.{specialized => sp}
 import scala.collection.mutable.{Map => MMap};
@@ -279,10 +280,11 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
 }
 
 object ZIONGraphMain extends App {
-  val dummyArraySize = 2000000
+  val dummyArraySize = 80000000
   val input = Task {
     val tens = (Seq.fill(dummyArraySize)(130874L).toArray, ShapeDimFactory.getShapeDim(Array(dummyArraySize).map(z => z: XInt)))
     //val tens = (Array(130874L, 180558L), ShapeDimFactory.getShapeDim(Array(2).map(z => z: XInt)))
+
     tens
   }
   val input2 = Task {
@@ -293,7 +295,26 @@ object ZIONGraphMain extends App {
     getClass.getResourceAsStream("/" + "NCF.onnx")
   ) // JAVA 9+ only : .readAllBytes()
 
-  def program = (new NCFZIO(byteArray)).program(input, input2)
+  def getIdMap(idMapFilename: String) = {
+
+    val idsMapSource = Source.fromInputStream(getClass.getResourceAsStream("/" + idMapFilename))
+    idsMapSource.getLines.toList
+      .drop(1)
+      .map { line =>
+        val cols = line.split(",").map(_.trim)
+        cols(1).toLong -> cols(2).toLong
+      }
+      .toMap
+  }
+
+  val itemIdMapFilename = "itemIds.csv"
+  val userIdMapFilename = "userIds.csv"
+
+  val userIdsMap = getIdMap(userIdMapFilename)
+  val itemIdsMap = getIdMap(itemIdMapFilename)
+
+
+  def program = (new NCFZIO(byteArray, userIdsMap, itemIdsMap)).program(input, input2)
 
   val runtime = new DefaultRuntime {}
 

@@ -1,6 +1,7 @@
 package org.emergentorder.onnxZIO
 
 import scala.reflect.io.Streamable
+import scala.io.Source
 import scala.util.Random
 import scala.{specialized => sp}
 import scala.collection.mutable.{Map => MMap};
@@ -35,8 +36,14 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
   //TODO: Each time the effect loads, it loads the model: Inject Onnxhelper?
   val ngraphBackend = new NGraphBackend(onnxHelper)
 
-  val dummyArraySize = 70000
-
+  def fullModel[@sp T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag](
+      A: Option[Tensor[T]],
+      B: Option[Tensor[T1]],
+      C: Option[Tensor[T2]])
+     : (Tensor[T3]) = {
+       ngraphBackend.fullModel[T, T1, T2, T3](A,B,C)
+     }
+ 
   def getParamsZIO[T: Numeric: ClassTag](name: String)(
       implicit ev: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[
         Float
@@ -273,22 +280,41 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
 }
 
 object ZIONGraphMain extends App {
-
+  val dummyArraySize = 80000000
   val input = Task {
-    //(Seq.fill(dummyArraySize)(Random.nextInt(10000)).toArray, Array(dummyArraySize)).asInstanceOf[Tensor[T]]
-    val tens = (Array(130874L, 180558L), Array(2))
+    val tens = (Seq.fill(dummyArraySize)(130874L).toArray, Array(dummyArraySize)) 
+    //val tens = (Array(130874L, 180558L), Array(2))
+
     tens
   }
   val input2 = Task {
-    //(Seq.fill(dummyArraySize)(Random.nextInt(10000)).toArray, Array(dummyArraySize)).asInstanceOf[Tensor[T]]
-    (Array(10626847L, 8008064L), Array(2))
+    (Seq.fill(dummyArraySize)(10626847L).toArray, Array(dummyArraySize)) 
+    //(Array(10626847L, 8008064L), Array(2))
+  }
+  val byteArray = Streamable.bytes(
+    getClass.getResourceAsStream("/" + "NCF.onnx")
+  ) // JAVA 9+ only : .readAllBytes()
+
+  def getIdMap(idMapFilename: String) = {
+
+    val idsMapSource = Source.fromInputStream(getClass.getResourceAsStream("/" + idMapFilename))
+    idsMapSource.getLines.toList
+      .drop(1)
+      .map { line =>
+        val cols = line.split(",").map(_.trim)
+        cols(1).toLong -> cols(2).toLong
+      }
+      .toMap
   }
 
-  val byteArray = Streamable.bytes(
-     getClass.getResourceAsStream("/" + "NCF.onnx")
-    ) // JAVA 9+ only : .readAllBytes()
+  val itemIdMapFilename = "itemIds.csv"
+  val userIdMapFilename = "userIds.csv"
 
-  def program = (new NCFZIO(byteArray)).program(input, input2)
+  val userIdsMap = getIdMap(userIdMapFilename)
+  val itemIdsMap = getIdMap(itemIdMapFilename)
+
+
+  def program = (new NCFZIO(byteArray, userIdsMap, itemIdsMap)).program(input, input2)
 
   val runtime = new DefaultRuntime {}
 

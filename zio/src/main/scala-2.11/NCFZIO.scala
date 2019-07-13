@@ -14,29 +14,8 @@ import scala.language.higherKinds
 import scala.io.Source
 import scala.reflect.io.Streamable
 
-class NCFZIO(byteArray: Array[Byte]) {
-  val itemIdMapFilename = "itemIds.csv"
-  val userIdMapFilename = "userIds.csv"
-  val onnxFileName = "NCF.onnx"
-
-//  val byteArray = Streamable.bytes(
-//      getClass.getResourceAsStream("/" + onnxFileName)
-//    ) // JAVA 9+ only : .readAllBytes()
-  
-  def getIdMap(idMapFilename: String) = {
-
-    val idsMapSource = Source.fromInputStream(getClass.getResourceAsStream("/" + idMapFilename))
-    idsMapSource.getLines.toList
-      .drop(1)
-      .map { line =>
-        val cols = line.split(",").map(_.trim)
-        cols(1).toLong -> cols(2).toLong
-      }
-      .toMap
-  }
-
-  val userIdsMap = getIdMap(userIdMapFilename)
-  val itemIdsMap = getIdMap(itemIdMapFilename)
+//TODO: Add changes to generator; Generate both full model and layerwise programs each time
+class NCFZIO(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[Long, Long]) {
 
   val onnxHelper                = new ONNXHelper(byteArray)
   val GatherZIO: GatherZIO      = new ONNXNGraphHandlers(onnxHelper)
@@ -45,7 +24,20 @@ class NCFZIO(byteArray: Array[Byte]) {
   val GemmZIO: GemmZIO          = new ONNXNGraphHandlers(onnxHelper)
   val ReluZIO: ReluZIO          = new ONNXNGraphHandlers(onnxHelper)
   val SigmoidZIO: SigmoidZIO    = new ONNXNGraphHandlers(onnxHelper)
-  val dataSource: DataSourceZIO = new ONNXNGraphHandlers(onnxHelper)
+  val dataSource: DataSourceZIO = new ONNXNGraphHandlers(onnxHelper) 
+  val fullNgraphHandler = new ONNXNGraphHandlers(onnxHelper)
+  def fastProgram(
+      inputDataactual_input_1: Task[Tensor[Long]],
+      inputDatalearned_0: Task[Tensor[Long]]
+  ): Task[Tensor[Float]] =
+    for {
+      nodeactual_input_1 <- inputDataactual_input_1.map(x => (x._1.map(y => userIdsMap(y)), x._2))
+      nodelearned_0      <- inputDatalearned_0.map(x => (x._1.map(y => itemIdsMap(y)), x._2))
+      nodeFullOutput <- Task{
+      (fullNgraphHandler.fullModel[Long, Long, Long, Float](Some(nodeactual_input_1), Some(nodelearned_0), None))
+      }       
+    } yield (nodeFullOutput)
+
   def program(
       inputDataactual_input_1: Task[Tensor[Long]],
       inputDatalearned_0: Task[Tensor[Long]]

@@ -14,43 +14,51 @@ import scala.reflect.ClassTag
 package object onnx {
 
   type XInt = Int with Singleton
-  sealed trait ShapeDim[I, J, K] {
-    def rawShape: Array[XInt]
-  }
-
-  object ShapeDimFactory {
-    def getShapeDim[T](t: Array[XInt]) =
-      if (t.length == 3) new ShapeDim3((t(0), t(1), t(2)))
-      else if (t.length == 1) new ShapeDim1(t(0))
-      else new ShapeDim2((t(0), t(1)))
-  }
-
-  class ShapeDim3[I <: XInt, J <: XInt, K <: XInt](t: Tuple3[I, J, K]) extends ShapeDim[I, J, K] {
-    def rawShape: Array[XInt] = t.productIterator.toList.asInstanceOf[List[XInt]].toArray
-  }
-
-  class ShapeDim2[I <: XInt, J <: XInt, K](t: Tuple2[I, J]) extends ShapeDim[I, J, K] {
-    def rawShape: Array[XInt] = t.productIterator.toList.asInstanceOf[List[XInt]].toArray
-  }
-
-  class ShapeDim1[I <: XInt, J, K](t: I) extends ShapeDim[I, J, K] {
-    def rawShape: Array[XInt] = Array(t)
-  }
-
-  type ShapedTensor[T, I, J, K, S <: ShapeDim[I, J, K]] = Tuple2[Array[T], S]
-
-  type SimpleShapedTensor[T] = ShapedTensor[T, _, _, _, ShapeDim[_, _, _]]
 
   trait Dim
 
-  sealed trait Axes
 
-  sealed trait Scalar                                    extends Axes
-  sealed trait Vec[T <: Dim]                             extends Axes
-  sealed trait Mat[T <: Dim, U <: Dim]                   extends Axes
-  sealed trait Tuple3OfDim[T <: Dim, U <: Dim, V <: Dim] extends Axes
+  sealed trait Axes {
+    def rawShape: Array[XInt]
+  }
 
-  type TypesafeTensor[T, A <: Axes] = SimpleShapedTensor[T]
+  class Scalar                                    extends Axes {
+    def rawShape: Array[XInt] = Array()
+  }
+  class Vec[I <: XInt, T <: Dim](implicit i: ValueOf[I])                        extends Axes {
+    def rawShape: Array[XInt] = Array(i.value)
+  }
+  class Mat[I <: XInt, T <: Dim, J <: XInt, U <: Dim](implicit i: ValueOf[I], j: ValueOf[J])                   extends Axes{
+    def rawShape: Array[XInt] = Array(i.value, j.value) 
+  }
+  class Tuple3OfDim[I <: XInt, T <: Dim, J <: XInt, U <: Dim, K <: XInt, V <: Dim]
+    (implicit i: ValueOf[I], j: ValueOf[J], k: ValueOf[K]) extends Axes{
+    def rawShape: Array[XInt] = Array(i.value, j.value, k.value)
+  }
+
+  object AxesFactory {
+    def getAxes[T](t: Array[XInt]) = {
+      if (t.length == 3) { 
+        val t0 = t(0)
+        val t1 = t(1)
+        val t2 = t(2)
+        new Tuple3OfDim[t0.type, Dim, t1.type, Dim, t2.type, Dim]
+      }
+      else if (t.length == 1) {
+        val t0 = t(0)
+        new Vec[t0.type, Dim]
+      }
+      else if (t.length == 0) new Scalar
+      else {
+        val t0 = t(0)
+        val t1 = t(1)
+        new Mat[t0.type, Dim, t1.type, Dim]
+      }
+    }
+  }
+
+  //TODO: up to 5-d
+  type TypesafeTensor[T, A <: Axes] = Tuple2[Array[T], A]
 
   type Tensor[T] = TypesafeTensor[T, Axes]
 

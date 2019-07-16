@@ -34,7 +34,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     )
   )
   .jvmSettings(
-    scalaVersion := scala212Version,
+    scalaVersion := scala213Version,
     crossScalaVersions := Seq(
       dottyVersion,
       scala212Version,
@@ -44,7 +44,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     publishArtifact in (Compile, packageDoc) := false
   )
   .jsSettings(
-    scalaVersion := scala212Version,
+    scalaVersion := scala213Version,
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
   )
   .nativeSettings(
@@ -62,7 +62,7 @@ lazy val programGenerator = (crossProject(JSPlatform, JVMPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala-program-generator",
-    scalaVersion := scala212Version,
+    scalaVersion := scala213Version,
     mainClass in (Compile, run) := Some(
       "org.emergentorder.onnx.ONNXProgramGenerator"
     ),
@@ -93,7 +93,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala-backends",
-    scalaVersion := scala212Version,
+    scalaVersion := scala213Version,
     libraryDependencies ++= Seq(
       "org.bytedeco" % "ngraph-platform" % "0.22.0-1.5.1"
     ),
@@ -116,7 +116,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala",
-    scalaVersion := scala212Version,
+    scalaVersion := scala213Version,
     wartremoverErrors ++= Warts.allBut(Wart.DefaultArguments, Wart.Nothing),
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
@@ -191,7 +191,7 @@ lazy val zio = (crossProject(JVMPlatform, JSPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala-zio",
-    scalaVersion := scala212Version,
+    scalaVersion := scala213Version,
     crossScalaVersions := Seq(
       scala212Version,
       scala211Version,

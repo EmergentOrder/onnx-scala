@@ -282,14 +282,14 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
 object ZIONGraphMain extends App {
   val dummyArraySize = 8000000
   val input = Task {
-    val tens = (Seq.fill(dummyArraySize)(130874L).toArray, ShapeDimFactory.getShapeDim(Array(dummyArraySize).map(z => z: XInt)))
-    //val tens = (Array(130874L, 180558L), ShapeDimFactory.getShapeDim(Array(2).map(z => z: XInt)))
+    val tens = (Seq.fill(dummyArraySize)(130874L).toArray, AxesFactory.getAxes(Array(dummyArraySize).map(z => z: XInt)))
+    //val tens = (Array(130874L, 180558L), AxesFactory.getAxes(Array(2).map(z => z: XInt)))
 
     tens
   }
   val input2 = Task {
-    (Seq.fill(dummyArraySize)(10626847L).toArray, ShapeDimFactory.getShapeDim(Array(dummyArraySize).map(z => z: XInt)))
-    //(Array(10626847L, 8008064L), ShapeDimFactory.getShapeDim(Array(2).map(z => z: XInt)))
+    (Seq.fill(dummyArraySize)(10626847L).toArray, AxesFactory.getAxes(Array(dummyArraySize).map(z => z: XInt)))
+    //(Array(10626847L, 8008064L), AxesFactory.getAxes(Array(2).map(z => z: XInt)))
   }
   val byteArray = Streamable.bytes(
     getClass.getResourceAsStream("/" + "NCF.onnx")

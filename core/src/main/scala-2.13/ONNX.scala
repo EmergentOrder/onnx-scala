@@ -63,10 +63,10 @@ package object onnx {
   type Tensor[T] = TypesafeTensor[T, Axes]
 
   object TensorFactory {
-  def getTensor[T](data: Array[T], t: Array[XInt]): Tensor[T] = {
-    require(data.size == t.foldLeft(1)(_ * _))
-    (data, AxesFactory.getAxes(t))
-  }
+    def getTensor[T](data: Array[T], t: Array[XInt]): Tensor[T] = {
+      require(data.size == t.foldLeft(1)(_ * _))
+      (data, AxesFactory.getAxes(t))
+    }
   }
 
   trait Operator

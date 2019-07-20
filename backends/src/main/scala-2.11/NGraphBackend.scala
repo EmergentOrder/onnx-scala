@@ -781,15 +781,14 @@ val ngraphBackend = Backend.create("CPU")
     tensVec.get(0).read(fp, 0, arraySize * 4)
 
     val fb = fp.asByteBuffer.asFloatBuffer
-    val fa = new Array[T3](arraySize.toInt)
-    (0 until fb.capacity).map { x =>
-      fa.update(x, fb.get(x).asInstanceOf[T3]) //unsafe : asInstanceOf
-    }
+    val fa = (0 until fb.capacity).map { x =>
+      fb.get(x).asInstanceOf[T3] //unsafe : asInstanceOf
+    }.toArray
 
-    val shapeArray = new Array[Int](outputShape.size.toInt)
-    (0 until outputShape.size.toInt).map { x =>
-      shapeArray.update(x, outputShape.get(x).toInt)
-    }
+    val shapeArray = (0 until outputShape.size.toInt).map { x =>
+      outputShape.get(x).toInt
+    }.toArray
+
 
     val result: Tensor[T3]= (fa, shapeArray)
 

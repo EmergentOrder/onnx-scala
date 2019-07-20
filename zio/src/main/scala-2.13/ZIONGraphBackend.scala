@@ -280,15 +280,15 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
 }
 
 object ZIONGraphMain extends App {
-  val dummyArraySize = 8000000
+  val dummyArraySize = 80
   val input = Task {
-    val tens = (Seq.fill(dummyArraySize)(130874L).toArray, AxesFactory.getAxes(Array(dummyArraySize).map(z => z: XInt)))
+    val tens = TensorFactory.getTensor(Seq.fill(dummyArraySize)(130874L).toArray, Array(dummyArraySize).map(z => z: XInt)) 
     //val tens = (Array(130874L, 180558L), AxesFactory.getAxes(Array(2).map(z => z: XInt)))
 
     tens
   }
   val input2 = Task {
-    (Seq.fill(dummyArraySize)(10626847L).toArray, AxesFactory.getAxes(Array(dummyArraySize).map(z => z: XInt)))
+    TensorFactory.getTensor(Seq.fill(dummyArraySize)(10626847L).toArray, Array(dummyArraySize).map(z => z: XInt)) 
     //(Array(10626847L, 8008064L), AxesFactory.getAxes(Array(2).map(z => z: XInt)))
   }
   val byteArray = Streamable.bytes(
@@ -314,7 +314,7 @@ object ZIONGraphMain extends App {
   val itemIdsMap = getIdMap(itemIdMapFilename)
 
 
-  def program = (new NCFZIO(byteArray, userIdsMap, itemIdsMap)).fastProgram(input, input2)
+  def program = (new NCFZIO(byteArray, userIdsMap, itemIdsMap)).program(input, input2)
 
   val runtime = new DefaultRuntime {}
 

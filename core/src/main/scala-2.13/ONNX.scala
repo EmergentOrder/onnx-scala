@@ -62,6 +62,14 @@ package object onnx {
 
   type Tensor[T] = TypesafeTensor[T, Axes]
 
+  //TODO: Make new tensors exclusive to here
+  object TensorFactory {
+    def getTensor[T](data: Array[T], t: Array[XInt]): Tensor[T] = {
+      require(data.size == t.foldLeft(1)(_ * _))
+      (data, AxesFactory.getAxes(t))
+    }
+  }
+
   trait Operator
   trait Graph
 
@@ -884,6 +892,7 @@ package object onnx {
   }
   trait Gemm extends Operator {
 
+    //TODO: test TypesafeTensor in ONNX API
     def Gemm1[@sp T: Numeric: ClassTag](
         name: String,
         alpha: Option[(Float)] = None,

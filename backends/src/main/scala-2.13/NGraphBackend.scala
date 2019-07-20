@@ -79,7 +79,7 @@ val ngraphBackend = Backend.create("CPU")
   ): Tensor[T] = {
     val params = paramsMap.get(name)
     params match {
-      case Some(x) => TensorFactory.getTensor(x._2, x._3.map(z => z: XInt)) 
+      case Some(x) => (x._2, AxesFactory.getAxes(x._3.map(z => z: XInt)))
       case None =>
         throw new Exception("No params found for param name: " + name)
     }
@@ -791,7 +791,7 @@ val ngraphBackend = Backend.create("CPU")
       shapeArray.update(x, outputShape.get(x).toInt)
     }
 
-    val result: Tensor[T3]= TensorFactory.getTensor(fa, shapeArray.map(z => z: XInt))
+    val result: Tensor[T3]= (fa, AxesFactory.getAxes(shapeArray.map(z => z: XInt)))
 
     (result)
   }

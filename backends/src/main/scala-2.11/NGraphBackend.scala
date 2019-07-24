@@ -853,7 +853,7 @@ val ngraphBackend = Backend.create("CPU")
       executable.call(outputVector, inputVector)
       val after = System.nanoTime
  
-      println("Elapsed per Op: " + "  : " + (after - before))
+//      println("Elapsed per Op: " + "  : " + (after - before))
     }
 
 
@@ -871,7 +871,7 @@ val ngraphBackend = Backend.create("CPU")
       B: Option[Tensor[T1]],
       C: Option[Tensor[T2]]): (Tensor[T3]) = {
       val opModel = onnxHelper.model
-      println(opModel.graph.input(0).name.getString)
+      //println(opModel.graph.input(0).name.getString)
       opFromModel[T, T1, T2, T3](opModel, A, B, C)
     }
 

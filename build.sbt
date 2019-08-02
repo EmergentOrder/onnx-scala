@@ -1,12 +1,12 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
-val dottyVersion = "0.16.0-RC3"
+val dottyVersion = "0.17.0-RC1"
 val scala211Version = "2.11.12"
 val scala212Version = "2.12.8"
 val scala213Version = "2.13.0"
 val spireVersion = "0.17.0-M1"
 val zioVersion = "1.0.0-RC10-1"
 val scalametaVersion = "4.2.0"
-val onnxJavaCPPPresetVersion = "1.5.0-1.5.1"
+val onnxJavaCPPPresetVersion = "1.5.0-1.5.2-SNAPSHOT"
 scalaVersion := scala212Version
 
 //TODO: Replace wartremover with scalafix
@@ -16,7 +16,7 @@ lazy val commonSettings = Seq(
   organization := "org.emergentorder.onnx",
   version := "1.5.0-0.1.0-SNAPSHOT",
   resolvers += Resolver.mavenLocal,
-  //resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
+  resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
   scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
   autoCompilerPlugins := true
@@ -95,7 +95,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
     name := "onnx-scala-backends",
     scalaVersion := scala213Version,
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "ngraph-platform" % "0.22.0-1.5.1"
+      "org.bytedeco" % "ngraph-platform" % "0.24.0-1.5.2-SNAPSHOT"
     ),
     publishArtifact in (Compile, packageDoc) := false
   )

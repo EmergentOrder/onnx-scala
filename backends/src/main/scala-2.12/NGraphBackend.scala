@@ -871,6 +871,15 @@ val ngraphBackend = Backend.create("CPU")
       B: Option[Tensor[T1]],
       C: Option[Tensor[T2]]): (Tensor[T3]) = {
       val opModel = onnxHelper.model
+      //FIXME: Hardcoding the output size to match input size
+      val aSize = A.map(x => x._2(0)) match {
+        case Some(y) => y.toLong
+        case None => 0l
+      }
+      opModel.graph.input(0).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
+      opModel.graph.input(1).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
+      opModel.graph.output(0).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
+
       //println(opModel.graph.input(0).name.getString)
       opFromModel[T, T1, T2, T3](opModel, A, B, C)
     }

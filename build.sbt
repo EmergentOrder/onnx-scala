@@ -100,7 +100,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
     publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(
-    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version)
+    crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
   )
   .jsSettings(
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)

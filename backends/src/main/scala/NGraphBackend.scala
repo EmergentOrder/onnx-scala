@@ -653,7 +653,7 @@ val ngraphBackend = Backend.create("CPU")
 
           val dims = tens._2
           inputValueInfo.`type`.tensor_type.mutable_shape
-          dims.rawShape.foreach { x =>
+          dims.foreach { x =>
             val inputDim = inputValueInfo.`type`.tensor_type.shape.add_dim
 
 //              inputDim.set_dim_param("NAME?")
@@ -734,22 +734,15 @@ val ngraphBackend = Backend.create("CPU")
     opFromModel[T, T1, T2, T3](opModel, A, B, C)
     }
 
-    def tensorToPointerAndType[T: ClassTag](tens: Option[Tensor[T]]): (Pointer, org.bytedeco.ngraph.Type) = tens.map {
-      case (x, y) => (x, y.rawShape)
-    } match {
-      case Some((data: Array[Int], shape: Array[XInt])) => {
-
-        (new IntPointer(data.asInstanceOf[Array[Int]]: _*), i32)
-      }
-
-      case Some((data: Array[Long], shape: Array[XInt])) => {
-
-        (new LongPointer(data.asInstanceOf[Array[Long]]: _*), i64)
-      }
-
-      case Some((data: Array[Float], shape: Array[XInt])) => {
-
-        (new FloatPointer(data.asInstanceOf[Array[Float]]: _*), f32)
+    def tensorToPointerAndType[T: ClassTag](tens: Option[Tensor[T]]): (Pointer, org.bytedeco.ngraph.Type) = tens match {
+      case Some(tensor: Tensor[T]) => {
+        val data = tensor._1
+        data match {
+          case dat: Array[Int] => (new IntPointer(dat.asInstanceOf[Array[Int]]: _*), i32)
+          case dat: Array[Long] => (new LongPointer(dat.asInstanceOf[Array[Long]]: _*), i64)
+          case dat: Array[Float] => (new FloatPointer(dat.asInstanceOf[Array[Float]]: _*), f32)
+          
+        }
       }
       case None => (new IntPointer, f32)
     }
@@ -758,9 +751,9 @@ val ngraphBackend = Backend.create("CPU")
     def tensorToInputShape[T: ClassTag](tens: Option[Tensor[T]]): org.bytedeco.ngraph.Shape = tens match {
       case Some(tens) => {
         val dims = tens._2
-        val s    = new org.bytedeco.ngraph.Shape(tens._2.rawShape.size)
-        s.resize(tens._2.rawShape.size)
-        val longShape = tens._2.rawShape.map { x =>
+        val s    = new org.bytedeco.ngraph.Shape(tens._2.size)
+        s.resize(tens._2.size)
+        val longShape = tens._2.map { x =>
           x.toLong
         }
         s.put(longShape: _*)
@@ -871,7 +864,7 @@ val ngraphBackend = Backend.create("CPU")
       C: Option[Tensor[T2]]) = {
       val opModel = onnxHelper.model
       //FIXME: Hardcoding the output size to match input size
-      val aSize = A.map(x => x._2.rawShape(0)) match {
+      val aSize = A.map(x => x._2(0)) match {
         case Some(y) => y.toLong
         case None => 0l
       }

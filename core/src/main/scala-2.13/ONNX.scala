@@ -58,14 +58,14 @@ package object onnx {
   }
 
   //TODO: up to 5-d
-  type TypesafeTensor[T, A <: Axes] = Tuple2[Array[T], A]
+  type TypesafeTensor[T, A <: Axes] = Tuple3[Array[T], Array[XInt], A]
 
   type Tensor[T] = TypesafeTensor[T, Axes]
 
   object TensorFactory {
     def getTensor[T](data: Array[T], t: Array[XInt]): Tensor[T] = {
       require(data.size == t.foldLeft(1)(_ * _))
-      (data, AxesFactory.getAxes(t))
+      (data, t, AxesFactory.getAxes(t))
     }
   }
 

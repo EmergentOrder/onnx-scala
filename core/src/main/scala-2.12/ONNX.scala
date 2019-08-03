@@ -25,14 +25,14 @@ package object onnx {
   sealed trait Mat[T <: Dim, U <: Dim]                   extends Axes
   sealed trait Tuple3OfDim[T <: Dim, U <: Dim, V <: Dim] extends Axes
 
-  type TypesafeTensor[T, A <: Axes] = Tuple2[Array[T], Array[XInt]]
+  type TypesafeTensor[T, A <: Axes] = Tuple2[Array[T], Array[Int]]
 
   //TODO: Put name, Scala ModelProto into tensor
   //TODO: Use PBDirect or ScalaPB generated case classes instead of ONNX JavaCPP Protos everywhere (will allow JS interop)
   type Tensor[T] = TypesafeTensor[T, Axes]
 
   object TensorFactory {
-    def getTensor[T](data: Array[T], t: Array[XInt]): Tensor[T] = {
+    def getTensor[T](data: Array[T], t: Array[Int]): Tensor[T] = {
       require(data.size == t.foldLeft(1)(_ * _))
       (data, t)
     }

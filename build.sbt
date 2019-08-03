@@ -9,8 +9,6 @@ val scalametaVersion = "4.2.0"
 val onnxJavaCPPPresetVersion = "1.5.0-1.5.2-SNAPSHOT"
 scalaVersion := scala212Version
 
-//TODO: Replace wartremover with scalafix
-
 lazy val commonSettings = Seq(
   scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
@@ -18,13 +16,12 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
-  scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
+  scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-Ywarn-unused", "-Yrangepos"),
   autoCompilerPlugins := true
 )
 
 lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure) in file("common"))
-  .disablePlugins(wartremover.WartRemover)
   .settings(commonSettings, name := "onnx-scala-common",
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
@@ -58,7 +55,6 @@ lazy val commonJS = common.js
 lazy val programGenerator = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("programGenerator"))
   .dependsOn(backends)
-  .disablePlugins(wartremover.WartRemover)
   .settings(
     commonSettings,
     name := "onnx-scala-program-generator",
@@ -89,7 +85,6 @@ lazy val programGenerator = (crossProject(JSPlatform, JVMPlatform)
 lazy val backends = (crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure) in file("backends"))
   .dependsOn(core)
-  .disablePlugins(wartremover.WartRemover)
   .settings(
     commonSettings,
     name := "onnx-scala-backends",
@@ -112,12 +107,10 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
 lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("core"))
   .dependsOn(common)
-  .disablePlugins(wartremover.WartRemover)
   .settings(
     commonSettings,
     name := "onnx-scala",
     scalaVersion := scala213Version,
-    wartremoverErrors ++= Warts.allBut(Wart.DefaultArguments, Wart.Nothing),
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
       case Some((0, n)) => ("ONNXHelper.scala")
@@ -186,7 +179,6 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
 lazy val zio = (crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure) in file("zio"))
   .dependsOn(backends)
-  .disablePlugins(wartremover.WartRemover)
   .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
   .settings(
     commonSettings,

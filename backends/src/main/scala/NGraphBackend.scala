@@ -612,7 +612,7 @@ val ngraphBackend = Backend.create("CPU")
     }
 
     //TODO: Don't take tensor here
-    def addInput[A](input: Option[Tensor[A]], inputName: String) {
+    def addInput[A](input: Option[Tensor[A]], inputName: String): Unit = {
 
       input match {
         case Some(tens) => {
@@ -633,7 +633,7 @@ val ngraphBackend = Backend.create("CPU")
     return node
       }
 
-  def addInputToGraph[A](input: Option[Tensor[A]], inputName: String, graph: GraphProto) {
+  def addInputToGraph[A](input: Option[Tensor[A]], inputName: String, graph: GraphProto): Unit = {
 
       input match {
         case Some(tens) => {

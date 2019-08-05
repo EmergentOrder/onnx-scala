@@ -314,7 +314,7 @@ object ZIONGraphMain extends App {
   val itemIdsMap = getIdMap(itemIdMapFilename)
 
 
-  def program = (new NCFZIO(byteArray, userIdsMap, itemIdsMap)).fastProgram(input, input2)
+  def program = (new NCFZIO(byteArray, userIdsMap, itemIdsMap)).fullNCF(input, input2)
 
   val runtime = new DefaultRuntime {}
 

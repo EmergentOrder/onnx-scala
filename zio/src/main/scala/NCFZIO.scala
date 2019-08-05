@@ -26,7 +26,7 @@ class NCFZIO(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Ma
   val SigmoidZIO: SigmoidZIO    = new ONNXNGraphHandlers(onnxHelper)
   val dataSource: DataSourceZIO = new ONNXNGraphHandlers(onnxHelper) 
   val fullNgraphHandler = new ONNXNGraphHandlers(onnxHelper)
-  def fastProgram(
+  def fullNCF(
       inputDataactual_input_1: Task[Tensor[Long]],
       inputDatalearned_0: Task[Tensor[Long]]
   ): Task[Tensor[Float]] =
@@ -38,7 +38,7 @@ class NCFZIO(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Ma
       }       
     } yield (nodeFullOutput)
 
-  def program(
+  def fineNCF(
       inputDataactual_input_1: Task[Tensor[Long]],
       inputDatalearned_0: Task[Tensor[Long]]
   ): Task[Tensor[Float]] =

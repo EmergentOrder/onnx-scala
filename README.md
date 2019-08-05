@@ -133,7 +133,33 @@ The resulting generated program appears as `programGenerator/src/main/scala/gene
 
 ## Program Execution
 
-The most extensive working example at the moment is `zio/src/main/scala/NCFZIO.scala`, an implementation of Neural Collaborative Filtering.
+There are 3 execution modes:
+
+#### Full model / Black-box execution
+In this mode we load the provided ONNX model file and pass it as-is to the underlying ONNX backend.
+The model is represented as a Scala function with appropriately typed inputs and outputs.
+Although we also generate the ONNX-Scala version of the program for type-checking and readability reasons, in the live code path the model internals are invisible to Scala.
+This is the most performant execution mode, and is recommended in cases where static, pre-defined graphs are sufficient.
+
+#### Fine-grained mode
+In this mode, each ONNX operation is executed on the underyling backend individually. 
+As a result, you can write your own models from scratch in Scala using ONNX-Scala operations, injecting parameters from outside sources as need be.
+You can also generate an ONNX-Scala program from an ONNX model file and then customize it as you see fit.
+
+Type-checking is done at the operation level on inputs and outputs for data types, with support for type-checking over axis labels and tensor shapes coming. 
+This allows for dynamic graph structure, in which the execution itself defines the graph, similar to PyTorch and Tensorflow Eager.
+The trade-off made for this flexibility is that the underlying ONNX backend can no longer optimize the full graph, and the boundary-crossing at each operation results in additional overhead.
+
+#### Tracing mode
+In this mode, we construct the ONNX model to be executed on the fly, in memory and then execute it all at once on the backend.
+We thus recover some of the performance we sacrificed in fine-grained mode, at the cost of losing support for dynamic graph structure (because we don't get outputs for individual ops).
+This mode will allow for export of your from-scratch or generated-but-customized ONNX models.
+This mode is a work-in-progress.
+
+### Example execution
+The most extensive working example at the moment is `zio/src/main/scala/NCFZIO.scala`, an implementation of Neural Collaborative Filtering, although you currently need to provide your own model file to load params from at `zio/.jvm/src/main/resources/NCF.onnx`. 
+
+This example provides full model execution via the `fullNCF` method and fine-grained execution via the `fineNCF` method.
 
 To run it, use: 
 ```

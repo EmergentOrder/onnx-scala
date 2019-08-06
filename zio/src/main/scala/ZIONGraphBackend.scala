@@ -280,17 +280,8 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
 }
 
 object ZIONGraphMain extends App {
-  val dummyArraySize = 80000
-  val input = Task {
-   val tens = TensorFactory.getTensor(Seq.fill(dummyArraySize)(130874L).toArray, Array(dummyArraySize))
-    //val tens = (Array(130874L, 180558L), AxesFactory.getAxes(Array(2).map(z => z: XInt)))
+  val dummyArraySize = 1  //2000000
 
-    tens
-  }
-  val input2 = Task {
-    TensorFactory.getTensor(Seq.fill(dummyArraySize)(10626847L).toArray, Array(dummyArraySize))
-    //(Array(10626847L, 8008064L), AxesFactory.getAxes(Array(2).map(z => z: XInt)))
-  }
   val byteArray = Streamable.bytes(
     getClass.getResourceAsStream("/" + "NCF.onnx")
   ) // JAVA 9+ only : .readAllBytes()
@@ -313,6 +304,18 @@ object ZIONGraphMain extends App {
   val userIdsMap = getIdMap(userIdMapFilename)
   val itemIdsMap = getIdMap(itemIdMapFilename)
 
+  val userIds = userIdsMap.keys.toArray
+  val itemIds = itemIdsMap.keys.toArray
+  def getRandomId(arr: Array[Long]) = arr(Random.nextInt(arr.length))
+
+  val input = Task {
+    val tens = TensorFactory.getTensor((0 until dummyArraySize).toArray.map(x => getRandomId(userIds)), Array(dummyArraySize))
+    tens
+  }
+  val input2 = Task {
+    val tens = TensorFactory.getTensor((0 until dummyArraySize).toArray.map(x => getRandomId(itemIds)), Array(dummyArraySize))
+    tens
+  }
 
   def program = (new NCFZIO(byteArray, userIdsMap, itemIdsMap)).fullNCF(input, input2)
 
@@ -325,7 +328,7 @@ object ZIONGraphMain extends App {
 
   println("Output size: " + output2._1.size)
   println("Output 0: " + output2._1(0))
-  println("Output 1: " + output2._1(79999)) //TODO: Investigate output flipping here, possibly due to race
+//  println("Output 1: " + output2._1(79999)) //TODO: Investigate output flipping here, possibly due to race
 //   println("Output 2: " + output2._1(2))
 //   println("Output 3: " + output2._1(3))
 //   println("Output 4: " + output2._1(4))

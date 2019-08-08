@@ -39,11 +39,11 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
   def fullModel[@sp T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag](
       A: Option[Tensor[T]],
       B: Option[Tensor[T1]],
-      C: Option[Tensor[T2]])
-     : (Tensor[T3]) = {
-       ngraphBackend.fullModel[T, T1, T2, T3](A,B,C)
-     }
- 
+      C: Option[Tensor[T2]]
+  ): (Tensor[T3]) = {
+    ngraphBackend.fullModel[T, T1, T2, T3](A, B, C)
+  }
+
   def getParamsZIO[T: Numeric: ClassTag](name: String)(
       implicit ev: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[
         Float
@@ -280,7 +280,7 @@ class ONNXNGraphHandlers(onnxHelper: ONNXHelper)
 }
 
 object ZIONGraphMain extends App {
-  val dummyArraySize = 1  //2000000
+  val dummyArraySize = 1 //2000000
 
   val byteArray = Streamable.bytes(
     getClass.getResourceAsStream("/" + "NCF.onnx")
@@ -304,16 +304,22 @@ object ZIONGraphMain extends App {
   val userIdsMap = getIdMap(userIdMapFilename)
   val itemIdsMap = getIdMap(itemIdMapFilename)
 
-  val userIds = userIdsMap.keys.toArray
-  val itemIds = itemIdsMap.keys.toArray
+  val userIds                       = userIdsMap.keys.toArray
+  val itemIds                       = itemIdsMap.keys.toArray
   def getRandomId(arr: Array[Long]) = arr(Random.nextInt(arr.length))
 
   val input = Task {
-    val tens = TensorFactory.getTensor((0 until dummyArraySize).toArray.map(x => getRandomId(userIds)), Array(dummyArraySize))
+    val tens = TensorFactory.getTensor(
+      (0 until dummyArraySize).toArray.map(x => getRandomId(userIds)),
+      Array(dummyArraySize)
+    )
     tens
   }
   val input2 = Task {
-    val tens = TensorFactory.getTensor((0 until dummyArraySize).toArray.map(x => getRandomId(itemIds)), Array(dummyArraySize))
+    val tens = TensorFactory.getTensor(
+      (0 until dummyArraySize).toArray.map(x => getRandomId(itemIds)),
+      Array(dummyArraySize)
+    )
     tens
   }
 

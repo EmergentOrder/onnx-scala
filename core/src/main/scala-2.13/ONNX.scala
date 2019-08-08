@@ -17,38 +17,39 @@ package object onnx {
 
   trait Dim
 
-
   sealed trait Axes {
     def rawShape: Array[XInt]
   }
 
-  class Scalar                                    extends Axes {
+  class Scalar extends Axes {
     def rawShape: Array[XInt] = Array()
   }
-  class Vec[I <: XInt, T <: Dim](implicit i: ValueOf[I])                        extends Axes {
+  class Vec[I <: XInt, T <: Dim](implicit i: ValueOf[I]) extends Axes {
     def rawShape: Array[XInt] = Array(i.value)
   }
-  class Mat[I <: XInt, T <: Dim, J <: XInt, U <: Dim](implicit i: ValueOf[I], j: ValueOf[J])                   extends Axes{
-    def rawShape: Array[XInt] = Array(i.value, j.value) 
+  class Mat[I <: XInt, T <: Dim, J <: XInt, U <: Dim](implicit i: ValueOf[I], j: ValueOf[J])
+      extends Axes {
+    def rawShape: Array[XInt] = Array(i.value, j.value)
   }
-  class Tuple3OfDim[I <: XInt, T <: Dim, J <: XInt, U <: Dim, K <: XInt, V <: Dim]
-    (implicit i: ValueOf[I], j: ValueOf[J], k: ValueOf[K]) extends Axes{
+  class Tuple3OfDim[I <: XInt, T <: Dim, J <: XInt, U <: Dim, K <: XInt, V <: Dim](
+      implicit i: ValueOf[I],
+      j: ValueOf[J],
+      k: ValueOf[K]
+  ) extends Axes {
     def rawShape: Array[XInt] = Array(i.value, j.value, k.value)
   }
 
   object AxesFactory {
     def getAxes[T](t: Array[XInt]) = {
-      if (t.length == 3) { 
+      if (t.length == 3) {
         val t0 = t(0)
         val t1 = t(1)
         val t2 = t(2)
         new Tuple3OfDim[t0.type, Dim, t1.type, Dim, t2.type, Dim]
-      }
-      else if (t.length == 1) {
+      } else if (t.length == 1) {
         val t0 = t(0)
         new Vec[t0.type, Dim]
-      }
-      else if (t.length == 0) new Scalar
+      } else if (t.length == 0) new Scalar
       else {
         val t0 = t(0)
         val t1 = t(1)

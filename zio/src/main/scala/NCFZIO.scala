@@ -24,18 +24,23 @@ class NCFZIO(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Ma
   val GemmZIO: GemmZIO          = new ONNXNGraphHandlers(onnxHelper)
   val ReluZIO: ReluZIO          = new ONNXNGraphHandlers(onnxHelper)
   val SigmoidZIO: SigmoidZIO    = new ONNXNGraphHandlers(onnxHelper)
-  val dataSource: DataSourceZIO = new ONNXNGraphHandlers(onnxHelper) 
-  val fullNgraphHandler = new ONNXNGraphHandlers(onnxHelper)
+  val dataSource: DataSourceZIO = new ONNXNGraphHandlers(onnxHelper)
+  val fullNgraphHandler         = new ONNXNGraphHandlers(onnxHelper)
   def fullNCF(
       inputDataactual_input_1: Task[Tensor[Long]],
       inputDatalearned_0: Task[Tensor[Long]]
   ): Task[Tensor[Float]] =
     for {
-      nodeactual_input_1 <- inputDataactual_input_1.map(x => TensorFactory.getTensor(x._1.map(y => userIdsMap(y)), x._2))
-      nodelearned_0      <- inputDatalearned_0.map(x => TensorFactory.getTensor(x._1.map(y => itemIdsMap(y)), x._2))
-      nodeFullOutput <- Task{
-      (fullNgraphHandler.fullModel[Long, Long, Long, Float](Some(nodeactual_input_1), Some(nodelearned_0), None))
-      }       
+      nodeactual_input_1 <- inputDataactual_input_1.map(
+        x => TensorFactory.getTensor(x._1.map(y => userIdsMap(y)), x._2)
+      )
+      nodelearned_0 <- inputDatalearned_0.map(
+        x => TensorFactory.getTensor(x._1.map(y => itemIdsMap(y)), x._2)
+      )
+      nodeFullOutput <- Task {
+        (fullNgraphHandler
+          .fullModel[Long, Long, Long, Float](Some(nodeactual_input_1), Some(nodelearned_0), None))
+      }
     } yield (nodeFullOutput)
 
   def fineNCF(
@@ -43,8 +48,12 @@ class NCFZIO(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Ma
       inputDatalearned_0: Task[Tensor[Long]]
   ): Task[Tensor[Float]] =
     for {
-      nodeactual_input_1 <- inputDataactual_input_1.map(x => TensorFactory.getTensor(x._1.map(y => userIdsMap(y)), x._2))
-      nodelearned_0      <- inputDatalearned_0.map(x => TensorFactory.getTensor(x._1.map(y => itemIdsMap(y)), x._2))
+      nodeactual_input_1 <- inputDataactual_input_1.map(
+        x => TensorFactory.getTensor(x._1.map(y => userIdsMap(y)), x._2)
+      )
+      nodelearned_0 <- inputDatalearned_0.map(
+        x => TensorFactory.getTensor(x._1.map(y => itemIdsMap(y)), x._2)
+      )
       nodeaffine_outputbias <- dataSource.getParamsZIO[Float](
         "affine_output.bias"
       )

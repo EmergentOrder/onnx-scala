@@ -37,12 +37,11 @@ object ONNXProgramGenerator {
       def ===(other: A): Boolean = self == other
     }
 
-    val fileName   = args(0)
-    
+    val fileName = args(0)
+
     val byteArray = Streamable.bytes(
       getClass.getResourceAsStream("/" + fileName)
     ) // JAVA 9+ only : .readAllBytes()
-
 
     val onnxHelper = new ONNXHelper(byteArray)
 

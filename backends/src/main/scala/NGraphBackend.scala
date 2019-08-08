@@ -33,8 +33,8 @@ import org.bytedeco.ngraph.global.ngraph.i32
 import org.bytedeco.onnx.global.onnx.check_model
 
 //TODO: Extract ModelProto modifications into generic layer, then do each layer-wise
-// op in a lazy fashion, while doing the same for generating a single overall ModelProto, via ModelProto.MergeFrom. 
-// Use one path for speed and dynamic graph tracing at runtime (the default), the other for sanity/type/shape/AxisType/control flow checking at compile time 
+// op in a lazy fashion, while doing the same for generating a single overall ModelProto, via ModelProto.MergeFrom.
+// Use one path for speed and dynamic graph tracing at runtime (the default), the other for sanity/type/shape/AxisType/control flow checking at compile time
 //TODO: ONNX-JS backend for both JS and JVM
 //TODO: ONNX Runtime backend for JVM (and Native?)
 //TODO: Find and squash memory leaks
@@ -65,7 +65,7 @@ class NGraphBackend(onnxHelper: ONNXHelper)
     with AveragePool
     with Reshape {
 //with DataSource
-val ngraphBackend = Backend.create("CPU")
+  val ngraphBackend = Backend.create("CPU")
 
   def paramsMap[T: spire.math.Numeric: ClassTag] =
     onnxHelper.params
@@ -590,7 +590,7 @@ val ngraphBackend = Backend.create("CPU")
   //       Float] TypeOr Complex[Double])#check[T])
       : NodeProto = {
     val node = (new NodeProto).New()
-  
+
     node.set_name(name)
     node.set_op_type(opName)
     node.add_output(outName)
@@ -623,7 +623,6 @@ val ngraphBackend = Backend.create("CPU")
 
     }
 
-
     addInput(A, aName)
     addInput(B, bName)
     addInput(C, cName)
@@ -631,43 +630,41 @@ val ngraphBackend = Backend.create("CPU")
     handleAttrs
 
     return node
-      }
+  }
 
   def addInputToGraph[A](input: Option[Tensor[A]], inputName: String, graph: GraphProto): Unit = {
 
-      input match {
-        case Some(tens) => {
+    input match {
+      case Some(tens) => {
 
-          val elemType = tens._1 match {
-            case f: Array[Float] => 1
-            case i: Array[Int]   => 6
-            case l: Array[Long]  => 7
-          }
+        val elemType = tens._1 match {
+          case f: Array[Float] => 1
+          case i: Array[Int]   => 6
+          case l: Array[Long]  => 7
+        }
 
-          val inputValueInfo = graph.add_input
+        val inputValueInfo = graph.add_input
 
-          inputValueInfo.set_name(inputName)
-          inputValueInfo.mutable_type
-          inputValueInfo.`type`.mutable_tensor_type
-          inputValueInfo.`type`.tensor_type.set_elem_type(elemType)
+        inputValueInfo.set_name(inputName)
+        inputValueInfo.mutable_type
+        inputValueInfo.`type`.mutable_tensor_type
+        inputValueInfo.`type`.tensor_type.set_elem_type(elemType)
 
-          val dims = tens._2
-          inputValueInfo.`type`.tensor_type.mutable_shape
-          dims.foreach { x =>
-            val inputDim = inputValueInfo.`type`.tensor_type.shape.add_dim
+        val dims = tens._2
+        inputValueInfo.`type`.tensor_type.mutable_shape
+        dims.foreach { x =>
+          val inputDim = inputValueInfo.`type`.tensor_type.shape.add_dim
 
 //              inputDim.set_dim_param("NAME?")
-            inputDim.set_dim_value(x)
+          inputDim.set_dim_value(x)
 
-          }
         }
-        case None =>
       }
-
+      case None =>
     }
 
+  }
 
-      
   def trinaryOpModel[@sp T: ClassTag, T1: ClassTag, T2: ClassTag](
       name: String,
       opName: String,
@@ -679,27 +676,25 @@ val ngraphBackend = Backend.create("CPU")
       cName: String,
       outName: String,
       attrs: Map[String, Any]
-    ): (ModelProto) = {
+  ): (ModelProto) = {
 //TODO: Refactor op method sigs to return this
-  
 
     val model = (new ModelProto).New()
-    val graph = new org.bytedeco.onnx.GraphProto  
+    val graph = new org.bytedeco.onnx.GraphProto
     model.set_producer_name("ONNX-Scala")
     graph.set_name(name)
- 
+
     //TODO: pass real names
     val origNode = trinaryOpNode(name, opName, A, aName, B, bName, C, cName, outName, attrs)
 
-    val node  = graph.add_node
+    val node = graph.add_node
     node.MergeFrom(origNode)
 
-      
     model.set_allocated_graph(graph)
     model.set_ir_version(3)
 
     model.add_opset_import
-    model.opset_import(0).set_version(8) 
+    model.opset_import(0).set_version(8)
 
     val outputValueInfo = graph.add_output
 
@@ -713,42 +708,43 @@ val ngraphBackend = Backend.create("CPU")
     addInputToGraph(B, bName, graph)
     addInputToGraph(C, cName, graph)
 
-    //TODO: ensure the outer model is the last merged 
+    //TODO: ensure the outer model is the last merged
     (model)
-    }
-   
+  }
 
   def trinaryOp[@sp T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag](
       name: String,
       opName: String,
       A: Option[Tensor[T]],
-  //    aName: String,
+      //    aName: String,
       B: Option[Tensor[T1]],
-  //    bName: String,
+      //    bName: String,
       C: Option[Tensor[T2]],
-  //    cName: String,
-  //    outName: String,
+      //    cName: String,
+      //    outName: String,
       attrs: Map[String, Any]
-    ) = {
+  ) = {
     val opModel = trinaryOpModel(name, opName, A, "aName", B, "bName", C, "cName", "outName", attrs)
     opFromModel[T, T1, T2, T3](opModel, A, B, C)
-    }
+  }
 
-    def tensorToPointerAndType[T: ClassTag](tens: Option[Tensor[T]]): (Pointer, org.bytedeco.ngraph.Type) = tens match {
-      case Some(tensor: Tensor[T]) => {
-        val data = tensor._1
-        data match {
-          case dat: Array[Int] => (new IntPointer(dat.asInstanceOf[Array[Int]]: _*), i32)
-          case dat: Array[Long] => (new LongPointer(dat.asInstanceOf[Array[Long]]: _*), i64)
-          case dat: Array[Float] => (new FloatPointer(dat.asInstanceOf[Array[Float]]: _*), f32)
-          
-        }
+  def tensorToPointerAndType[T: ClassTag](
+      tens: Option[Tensor[T]]
+  ): (Pointer, org.bytedeco.ngraph.Type) = tens match {
+    case Some(tensor: Tensor[T]) => {
+      val data = tensor._1
+      data match {
+        case dat: Array[Int]   => (new IntPointer(dat.asInstanceOf[Array[Int]]: _*), i32)
+        case dat: Array[Long]  => (new LongPointer(dat.asInstanceOf[Array[Long]]: _*), i64)
+        case dat: Array[Float] => (new FloatPointer(dat.asInstanceOf[Array[Float]]: _*), f32)
+
       }
-      case None => (new IntPointer, f32)
     }
+    case None => (new IntPointer, f32)
+  }
 
-    
-    def tensorToInputShape[T: ClassTag](tens: Option[Tensor[T]]): org.bytedeco.ngraph.Shape = tens match {
+  def tensorToInputShape[T: ClassTag](tens: Option[Tensor[T]]): org.bytedeco.ngraph.Shape =
+    tens match {
       case Some(tens) => {
         val dims = tens._2
         val s    = new org.bytedeco.ngraph.Shape(tens._2.size)
@@ -763,7 +759,10 @@ val ngraphBackend = Backend.create("CPU")
 
     }
 
-  def tensorVectorToOutputTensor[T3: ClassTag](tensVec: org.bytedeco.ngraph.TensorVector, outputShape: org.bytedeco.ngraph.Shape) = {
+  def tensorVectorToOutputTensor[T3: ClassTag](
+      tensVec: org.bytedeco.ngraph.TensorVector,
+      outputShape: org.bytedeco.ngraph.Shape
+  ) = {
     val arraySize = (0 until outputShape.size.toInt)
       .map { x =>
         outputShape.get(x).toInt
@@ -782,33 +781,34 @@ val ngraphBackend = Backend.create("CPU")
       outputShape.get(x).toInt
     }.toArray
 
-    val result: Tensor[T3]= TensorFactory.getTensor(fa, shapeArray.map(z => z: XInt))
+    val result: Tensor[T3] = TensorFactory.getTensor(fa, shapeArray.map(z => z: XInt))
 
     (result)
   }
 
   def opFromModel[@sp T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag](
-    opModel: ModelProto,
-    A: Option[Tensor[T]],
-    B: Option[Tensor[T1]],
-    C: Option[Tensor[T2]]): (Tensor[T3]) = {
+      opModel: ModelProto,
+      A: Option[Tensor[T]],
+      B: Option[Tensor[T1]],
+      C: Option[Tensor[T2]]
+  ): (Tensor[T3]) = {
     val modelString = opModel.SerializeAsString
 
     //println(modelString.getString)
     //TODO: Pull this as far forward as possible
     val ngraphFunc = import_onnx_model(modelString)
 
-    val inputShape: org.bytedeco.ngraph.Shape = tensorToInputShape(A)
+    val inputShape: org.bytedeco.ngraph.Shape       = tensorToInputShape(A)
     val secondInputShape: org.bytedeco.ngraph.Shape = tensorToInputShape(B)
-    val thirdInputShape: org.bytedeco.ngraph.Shape = tensorToInputShape(C)
+    val thirdInputShape: org.bytedeco.ngraph.Shape  = tensorToInputShape(C)
 
-    val outputShape = ngraphFunc.get_output_shape(0)
-    val outputType = ngraphFunc.get_output_element_type(0)
+    val outputShape                                    = ngraphFunc.get_output_shape(0)
+    val outputType                                     = ngraphFunc.get_output_element_type(0)
     val inputTens: (Pointer, org.bytedeco.ngraph.Type) = tensorToPointerAndType(A)
 
     val secondInputTens: (Pointer, org.bytedeco.ngraph.Type) = tensorToPointerAndType(B)
 
-    val thirdInputTens: (Pointer, org.bytedeco.ngraph.Type) = tensorToPointerAndType(C) 
+    val thirdInputTens: (Pointer, org.bytedeco.ngraph.Type) = tensorToPointerAndType(C)
 
     val input  = ngraphBackend.create_tensor(inputTens._2, inputShape, inputTens._1)
     val output = ngraphBackend.create_tensor(outputType, outputShape)
@@ -844,37 +844,35 @@ val ngraphBackend = Backend.create("CPU")
       val before = System.nanoTime
       executable.call(outputVector, inputVector)
       val after = System.nanoTime
- 
+
 //      println("Elapsed per Op: " + "  : " + (after - before))
     }
-
 
     t
 
     //convert result to onnx-scala Tensor
 
-
     (tensorVectorToOutputTensor(outputVector, outputShape))
   }
 
- 
   def fullModel[@sp T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag](
       A: Option[Tensor[T]],
       B: Option[Tensor[T1]],
-      C: Option[Tensor[T2]]) = {
-      val opModel = onnxHelper.model
-      //FIXME: Hardcoding the output size to match input size
-      val aSize = A.map(x => x._2(0)) match {
-        case Some(y) => y.toLong
-        case None => 0l
-      }
-      opModel.graph.input(0).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
-      opModel.graph.input(1).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
-      opModel.graph.output(0).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
-
-      //println(opModel.graph.input(0).name.getString)
-      opFromModel[T, T1, T2, T3](opModel, A, B, C)
+      C: Option[Tensor[T2]]
+  ) = {
+    val opModel = onnxHelper.model
+    //FIXME: Hardcoding the output size to match input size
+    val aSize = A.map(x => x._2(0)) match {
+      case Some(y) => y.toLong
+      case None    => 0L
     }
+    opModel.graph.input(0).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
+    opModel.graph.input(1).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
+    opModel.graph.output(0).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
+
+    //println(opModel.graph.input(0).name.getString)
+    opFromModel[T, T1, T2, T3](opModel, A, B, C)
+  }
 
   def MaxPool1[@sp T: Numeric: ClassTag](
       name: String,

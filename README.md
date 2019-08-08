@@ -4,7 +4,27 @@ This project provides:
 
 A) a complete, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep learning and classical machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++) via the JavaCPP Preset for ONNX.
 
-This API is expressed via traits, with version-named methods. For example, Abs, the absolute value operator (defined in operator sets 1 and 6):
+This API is expressed via traits, with version-named methods. For example, Abs, the absolute value operator (defined in operator sets 1 and 6), in Dotty:
+
+```scala
+trait Abs extends Operator {
+
+  def Abs1[@sp T <: (Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double):Numeric:ClassTag](
+      name: String,
+      consumed_inputs : Option[(Array[Int])] = None,
+      X: Option[Tensor[T]])
+    : (Tensor[T])
+
+
+  def Abs6[@sp T <: (Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double):Numeric:ClassTag](
+      name: String,
+      X: Option[Tensor[T]])
+    : (Tensor[T])
+
+}
+```
+
+and in Scala 2.X :
 
 ```scala
 trait Abs extends Operator {
@@ -17,7 +37,9 @@ trait Abs extends Operator {
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
     ): (Tensor[T])
 
-    def Abs6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
+    def Abs6[@sp T: Numeric: ClassTag](
+        name: String,
+        X: Option[Tensor[T]])(
         implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
     ): (Tensor[T])
 

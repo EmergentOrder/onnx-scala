@@ -89,13 +89,13 @@ package object onnx {
         consumed_inputs: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
 
     def Abs6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -125,7 +125,7 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -137,13 +137,13 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
 
     def Add7[@sp T: Numeric: ClassTag](name: String, A: Option[Tensor[T]], B: Option[Tensor[T]])(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -348,10 +348,10 @@ package object onnx {
         to: Option[(String)],
         input: Option[Tensor[T1]]
     )(
-        implicit evT1: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr String)#check[
+        implicit evT1: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr String)#check[
           T1
         ],
-        evT2: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr String)#check[
+        evT2: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr String)#check[
           T2
         ]
     ): (Tensor[T2])
@@ -361,10 +361,10 @@ package object onnx {
         to: Option[(Int)],
         input: Option[Tensor[T1]]
     )(
-        implicit evT1: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr String)#check[
+        implicit evT1: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr String)#check[
           T1
         ],
-        evT2: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr String)#check[
+        evT2: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr String)#check[
           T2
         ]
     ): (Tensor[T2])
@@ -374,10 +374,10 @@ package object onnx {
         to: Option[(Int)],
         input: Option[Tensor[T1]]
     )(
-        implicit evT1: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr String)#check[
+        implicit evT1: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr String)#check[
           T1
         ],
-        evT2: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr String)#check[
+        evT2: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Boolean TypeOr String)#check[
           T2
         ]
     ): (Tensor[T2])
@@ -465,7 +465,7 @@ package object onnx {
         axis: Option[(Int)],
         inputs: Seq[Option[Tensor[T]]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
     ): (Tensor[T])
@@ -474,13 +474,13 @@ package object onnx {
   trait Constant extends Operator {
 
     def Constant1[@sp T: Numeric: ClassTag](name: String, value: Option[(Tensor[T])])(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
     ): (Tensor[T])
 
     def Constant9[@sp T: Numeric: ClassTag](name: String, value: Option[(Tensor[T])])(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
     ): (Tensor[T])
@@ -622,7 +622,7 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -634,13 +634,13 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
 
     def Div7[@sp T: Numeric: ClassTag](name: String, A: Option[Tensor[T]], B: Option[Tensor[T]])(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -783,7 +783,7 @@ package object onnx {
         axis: Option[(Int)] = None,
         input: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
     ): (Tensor[T])
@@ -793,7 +793,7 @@ package object onnx {
         axis: Option[(Int)] = None,
         input: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
     ): (Tensor[T])
@@ -904,7 +904,7 @@ package object onnx {
         B: Option[Tensor[T]],
         C: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -920,7 +920,7 @@ package object onnx {
         B: Option[Tensor[T]],
         C: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -935,7 +935,7 @@ package object onnx {
         B: Option[Tensor[T]],
         C: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -950,7 +950,7 @@ package object onnx {
         B: Option[Tensor[T]],
         C: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -994,7 +994,7 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long)#check[
           T
         ],
         evT1: (UNil TypeOr Boolean)#check[T1]
@@ -1005,7 +1005,7 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long)#check[
           T
         ],
         evT1: (UNil TypeOr Boolean)#check[T1]
@@ -1016,7 +1016,7 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long)#check[
           T
         ],
         evT1: (UNil TypeOr Boolean)#check[T1]
@@ -1199,10 +1199,8 @@ package object onnx {
         default_string: Option[(String)] = None,
         X: Option[Tensor[T1]]
     )(
-        implicit evT1: (UNil TypeOr String TypeOr Long TypeOr String TypeOr Long TypeOr Float)#check[
-          T1
-        ],
-        evT2: (UNil TypeOr String TypeOr Long TypeOr String TypeOr Long TypeOr Float)#check[T2]
+        implicit evT1: (UNil TypeOr String TypeOr Long TypeOr Float)#check[T1],
+        evT2: (UNil TypeOr String TypeOr Long TypeOr Float)#check[T2]
     ): (Tensor[T2])
 
     def LabelEncoder2[@sp T1: Numeric: ClassTag, @sp T2: Numeric: ClassTag](
@@ -1218,10 +1216,8 @@ package object onnx {
         values_strings: Option[(Array[String])] = None,
         X: Option[Tensor[T1]]
     )(
-        implicit evT1: (UNil TypeOr String TypeOr Long TypeOr String TypeOr Long TypeOr Float)#check[
-          T1
-        ],
-        evT2: (UNil TypeOr String TypeOr Long TypeOr String TypeOr Long TypeOr Float)#check[T2]
+        implicit evT1: (UNil TypeOr String TypeOr Long TypeOr Float)#check[T1],
+        evT2: (UNil TypeOr String TypeOr Long TypeOr Float)#check[T2]
     ): (Tensor[T2])
 
   }
@@ -1250,7 +1246,7 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long)#check[
           T
         ],
         evT1: (UNil TypeOr Boolean)#check[T1]
@@ -1261,7 +1257,7 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long)#check[
           T
         ],
         evT1: (UNil TypeOr Boolean)#check[T1]
@@ -1272,7 +1268,7 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long)#check[
           T
         ],
         evT1: (UNil TypeOr Boolean)#check[T1]
@@ -1385,13 +1381,13 @@ package object onnx {
   trait MatMul extends Operator {
 
     def MatMul1[@sp T: Numeric: ClassTag](name: String, A: Option[Tensor[T]], B: Option[Tensor[T]])(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
 
     def MatMul9[@sp T: Numeric: ClassTag](name: String, A: Option[Tensor[T]], B: Option[Tensor[T]])(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -1549,7 +1545,7 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -1561,13 +1557,13 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
 
     def Mul7[@sp T: Numeric: ClassTag](name: String, A: Option[Tensor[T]], B: Option[Tensor[T]])(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -1594,13 +1590,13 @@ package object onnx {
         consumed_inputs: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float TypeOr Int TypeOr Byte TypeOr Short TypeOr Long TypeOr Float16 TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Int TypeOr Byte TypeOr Short TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
 
     def Neg6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float TypeOr Int TypeOr Byte TypeOr Short TypeOr Long TypeOr Float16 TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Int TypeOr Byte TypeOr Short TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -1710,7 +1706,7 @@ package object onnx {
         X: Option[Tensor[T]],
         slope: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -1720,7 +1716,7 @@ package object onnx {
         X: Option[Tensor[T]],
         slope: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -1730,7 +1726,7 @@ package object onnx {
         X: Option[Tensor[T]],
         slope: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -1740,7 +1736,7 @@ package object onnx {
         X: Option[Tensor[T]],
         slope: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -2122,7 +2118,7 @@ package object onnx {
         shape: Option[(Array[Int])] = None,
         data: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
     ): (Tensor[T])
@@ -2132,7 +2128,7 @@ package object onnx {
         data: Option[Tensor[T]],
         shape: Option[Tensor[Long]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
     ): (Tensor[T])
@@ -2439,7 +2435,7 @@ package object onnx {
         input: Option[Tensor[T]],
         split: Option[Tensor[T]] = None
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
     ): (Tensor[T])
@@ -2450,7 +2446,7 @@ package object onnx {
         splitAttr: Option[(Array[Int])] = None,
         input: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
     ): (Tensor[T])
@@ -2504,7 +2500,7 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -2516,13 +2512,13 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
 
     def Sub7[@sp T: Numeric: ClassTag](name: String, A: Option[Tensor[T]], B: Option[Tensor[T]])(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
           T
         ]
     ): (Tensor[T])
@@ -2596,7 +2592,7 @@ package object onnx {
         tiles: Option[Tensor[T]],
         axis: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
     ): (Tensor[T])
@@ -2606,7 +2602,7 @@ package object onnx {
         input: Option[Tensor[T]],
         repeats: Option[Tensor[T1]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr String TypeOr Boolean TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T],
         evT1: (UNil TypeOr Long)#check[T1]
@@ -2726,7 +2722,7 @@ package object onnx {
         width_scaleAttr: Option[(Float)],
         X: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
+        implicit evT: (UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr String TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
     ): (Tensor[T])
@@ -2737,7 +2733,7 @@ package object onnx {
         scaleAttrs: Option[(Array[Float])],
         X: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
+        implicit evT: (UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr String TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
     ): (Tensor[T])
@@ -2748,7 +2744,7 @@ package object onnx {
         X: Option[Tensor[T]],
         scales: Option[Tensor[Float]]
     )(
-        implicit evT: (UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
+        implicit evT: (UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr String TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
     ): (Tensor[T])
@@ -2759,7 +2755,7 @@ package object onnx {
         X: Option[Tensor[T]],
         scales: Option[Tensor[Float]]
     )(
-        implicit evT: (UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
+        implicit evT: (UNil TypeOr Boolean TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr String TypeOr Complex[
           Float
         ] TypeOr Complex[Double])#check[T]
     ): (Tensor[T])

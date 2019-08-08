@@ -9,14 +9,14 @@ This API is expressed via traits, with version-named methods. For example, Abs, 
 ```scala
 trait Abs extends Operator {
 
-  def Abs1[@sp T <: (Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double):Numeric:ClassTag](
+  def Abs1[@sp T <: (Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long):Numeric:ClassTag](
       name: String,
       consumed_inputs : Option[(Array[Int])] = None,
       X: Option[Tensor[T]])
     : (Tensor[T])
 
 
-  def Abs6[@sp T <: (Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double):Numeric:ClassTag](
+  def Abs6[@sp T <: (Float16 | Float | Double | UByte | UShort | UInt | ULong | Byte | Short | Int | Long):Numeric:ClassTag](
       name: String,
       X: Option[Tensor[T]])
     : (Tensor[T])
@@ -34,13 +34,13 @@ trait Abs extends Operator {
         consumed_inputs: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
     )(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long)#check[T]
     ): (Tensor[T])
 
     def Abs6[@sp T: Numeric: ClassTag](
         name: String,
         X: Option[Tensor[T]])(
-        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+        implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long)#check[T]
     ): (Tensor[T])
 
   }

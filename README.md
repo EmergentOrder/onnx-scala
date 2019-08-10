@@ -1,4 +1,4 @@
-![ONNX-Scala Logo](https://github.com/EmergentOrder/onnx-scala/blob/master/Logotype-500px.png)
+<p align="center"><img src="Logotype-500px.png" /></p>
 
 --------------------------------------------------------------------------------
 

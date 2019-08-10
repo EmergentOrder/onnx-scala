@@ -1,4 +1,6 @@
-# ONNX-Scala
+![ONNX-Scala Logo](https://github.com/EmergentOrder/onnx-scala/blob/master/Logotype-500px.png)
+
+--------------------------------------------------------------------------------
 
 This project provides:
 

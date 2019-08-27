@@ -37,10 +37,9 @@ import org.bytedeco.onnx.global.onnx.check_model
 // Use one path for speed and dynamic graph tracing at runtime (the default), the other for sanity/type/shape/AxisType/control flow checking at compile time
 //TODO: ONNX-JS backend for both JS and JVM
 //TODO: ONNX Runtime backend for JVM (and Native?)
-//TODO: Find and squash memory leaks
-class NGraphBackend(onnxHelper: ONNXHelper)
+class NGraphBackend(onnxBytes: Array[Byte])
     extends Add
-    with DataSource
+//    with DataSource
     with Constant
     with ArgMin
     with ArgMax
@@ -63,10 +62,13 @@ class NGraphBackend(onnxHelper: ONNXHelper)
     with Concat
     with Dropout
     with AveragePool
-    with Reshape {
+    with Reshape
+    with AutoCloseable{
 //with DataSource
-  val ngraphBackend = Backend.create("CPU")
+  val scope = new PointerScope()
 
+  val ngraphBackend = Backend.create("CPU")
+/*
   def paramsMap[T: spire.math.Numeric: ClassTag] =
     onnxHelper.params
       .map(x => x._1 -> (x._2, x._3.asInstanceOf[Array[T]], x._4))
@@ -84,7 +86,7 @@ class NGraphBackend(onnxHelper: ONNXHelper)
         throw new Exception("No params found for param name: " + name)
     }
   }
-
+*/
   def Abs1[@sp T: Numeric: ClassTag](
       name: String,
       consumed_inputs: Option[(Array[Int])] = None,
@@ -679,6 +681,7 @@ class NGraphBackend(onnxHelper: ONNXHelper)
   ): (ModelProto) = {
 //TODO: Refactor op method sigs to return this
 
+    //TODO: Fix ModelProto leaking memory here
     val model = (new ModelProto).New()
     val graph = new org.bytedeco.onnx.GraphProto
     model.set_producer_name("ONNX-Scala")
@@ -690,6 +693,7 @@ class NGraphBackend(onnxHelper: ONNXHelper)
     val node = graph.add_node
     node.MergeFrom(origNode)
 
+    origNode.close
     model.set_allocated_graph(graph)
     model.set_ir_version(3)
 
@@ -783,6 +787,8 @@ class NGraphBackend(onnxHelper: ONNXHelper)
 
     val result: Tensor[T3] = TensorFactory.getTensor(fa, shapeArray.map(z => z: XInt))
 
+    tensVec.close
+    outputShape.close
     (result)
   }
 
@@ -792,11 +798,34 @@ class NGraphBackend(onnxHelper: ONNXHelper)
       B: Option[Tensor[T1]],
       C: Option[Tensor[T2]]
   ): (Tensor[T3]) = {
+    val scope = new PointerScope()
+
+    //println(Pointer.totalBytes)
     val modelString = opModel.SerializeAsString
+    opModel.close
+    val modelStringBytes = modelString.getStringBytes
+    modelString.close
+
+    //println(Pointer.totalBytes)
+    val result:Tensor[T3] = opFromByteArray(modelStringBytes, A, B, C)
+    scope.close
+    result
+  }
+
+    
+  def opFromByteArray[@sp T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag](
+      opModel: Array[Byte],
+      A: Option[Tensor[T]],
+      B: Option[Tensor[T1]],
+      C: Option[Tensor[T2]]
+  ): (Tensor[T3]) = {
+    val scope = new PointerScope()
 
     //println(modelString.getString)
     //TODO: Pull this as far forward as possible
+    val modelString = new BytePointer(opModel: _*)
     val ngraphFunc = import_onnx_model(modelString)
+    modelString.close
 
     val inputShape: org.bytedeco.ngraph.Shape       = tensorToInputShape(A)
     val secondInputShape: org.bytedeco.ngraph.Shape = tensorToInputShape(B)
@@ -833,6 +862,7 @@ class NGraphBackend(onnxHelper: ONNXHelper)
       case None => new org.bytedeco.ngraph.TensorVector(input)
     }
 
+
     val outputVector = new org.bytedeco.ngraph.TensorVector(output)
 
     //println(outputShape)
@@ -845,14 +875,37 @@ class NGraphBackend(onnxHelper: ONNXHelper)
       executable.call(outputVector, inputVector)
       val after = System.nanoTime
 
+      executable.close
 //      println("Elapsed per Op: " + "  : " + (after - before))
     }
 
     t
 
+    ngraphFunc.close
+    modelString.close
+    executable.close
     //convert result to onnx-scala Tensor
 
-    (tensorVectorToOutputTensor(outputVector, outputShape))
+    val result:Tensor[T3] = tensorVectorToOutputTensor(outputVector, outputShape)
+
+    inputShape.close
+    secondInputShape.close
+    thirdInputShape.close
+    outputType.close
+    inputTens._1.close
+    inputTens._2.close
+    secondInputTens._1.close
+    secondInputTens._2.close
+    thirdInputTens._1.close
+    thirdInputTens._2.close
+   
+    input.close
+    inputVector.close
+    output.close
+    outputVector.close
+    outputShape.close
+    scope.close
+    (result)
   }
 
   def fullModel[@sp T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag](
@@ -860,7 +913,30 @@ class NGraphBackend(onnxHelper: ONNXHelper)
       B: Option[Tensor[T1]],
       C: Option[Tensor[T2]]
   ) = {
-    val opModel = onnxHelper.model
+
+    //println(Pointer.totalBytes)
+//    val scope = new PointerScope()
+
+    val byteArray = onnxBytes
+    /*
+    val opModel = {
+    val mod = (new ModelProto)
+    val r = mod.New()
+    val bytes = new BytePointer(byteArray: _*)
+
+    ParseProtoFromBytes(
+      r,
+      bytes,
+      byteArray.length.toLong
+    )
+    bytes.close
+    mod.close
+    r
+    }
+
+    //opModel.Clear()
+    println(Pointer.totalBytes) 
+    
     //FIXME: Hardcoding the output size to match input size
     val aSize = A.map(x => x._2(0)) match {
       case Some(y) => y.toLong
@@ -869,9 +945,14 @@ class NGraphBackend(onnxHelper: ONNXHelper)
     opModel.graph.input(0).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
     opModel.graph.input(1).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
     opModel.graph.output(0).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
-
+    
+    */
     //println(opModel.graph.input(0).name.getString)
-    opFromModel[T, T1, T2, T3](opModel, A, B, C)
+    val result = opFromByteArray[T, T1, T2, T3](byteArray, A, B, C)
+    //opModel.close
+//    scope.close
+    //println(Pointer.totalBytes)
+    result
   }
 
   def MaxPool1[@sp T: Numeric: ClassTag](
@@ -1029,4 +1110,8 @@ class NGraphBackend(onnxHelper: ONNXHelper)
     trinaryOp(name, "Reshape", data, None, None, map)
   }
 
+  override def close(): Unit = {
+    ngraphBackend.close
+    scope.close
+  }
 }

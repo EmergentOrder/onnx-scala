@@ -28,6 +28,8 @@ import spire.math.Number
 import scala.reflect.io.Streamable
 import scala.reflect.ClassTag
 
+//TODO: Use Squid to clean up / improve this
+
 //TODO: de-tuple on the left hand side when there are multiple outputs . should also solved the other output TODOs
 object ONNXProgramGenerator {
   def main(args: Array[String]): Unit = {

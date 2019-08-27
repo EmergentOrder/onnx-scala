@@ -5,7 +5,7 @@ val scala212Version = "2.12.9"
 val scala213Version = "2.13.0"
 val spireVersion = "0.17.0-M1"
 val zioVersion = "1.0.0-RC11-1"
-val scalametaVersion = "4.2.0"
+val scalametaVersion = "4.2.3"
 val onnxJavaCPPPresetVersion = "1.5.0-1.5.2-SNAPSHOT"
 scalaVersion := scala212Version
 
@@ -90,7 +90,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
     name := "onnx-scala-backends",
     scalaVersion := scala213Version,
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "ngraph-platform" % "0.24.0-1.5.2-SNAPSHOT"
+      "org.bytedeco" % "ngraph-platform" % "0.25.0-1.5.2-SNAPSHOT"
     ),
     publishArtifact in (Compile, packageDoc) := false
   )

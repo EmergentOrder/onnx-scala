@@ -29,19 +29,22 @@ import org.bytedeco.javacpp._
 import org.bytedeco.onnx._
 import org.bytedeco.onnx.global.onnx._
 
-class ONNXHelper(byteArray: Array[Byte]) {
+class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
-  val loaded =
-    org.bytedeco.javacpp.Loader.load(classOf[org.bytedeco.onnx.global.onnx])
+  val scope = new PointerScope()
+//  val loaded =
+//    org.bytedeco.javacpp.Loader.load(classOf[org.bytedeco.onnx.global.onnx])
 
-  val model = {
+ // println(Pointer.physicalBytes)
+  lazy val model = {
     val r = (new ModelProto).New()
-
+    val bytes = new BytePointer(byteArray: _*)
     ParseProtoFromBytes(
       r,
-      new BytePointer(byteArray: _*),
+      bytes,
       byteArray.length.toLong
     )
+    bytes.close
     r
   }
 
@@ -88,6 +91,8 @@ class ONNXHelper(byteArray: Array[Byte]) {
   }
 
   def onnxTensorProtoToArray(tensorProto: TensorProto) = {
+    
+    val scope = new PointerScope()
 
     val onnxDataType = tensorProto.data_type
     val dimsCount    = tensorProto.dims_size
@@ -120,6 +125,9 @@ class ONNXHelper(byteArray: Array[Byte]) {
         arrX.toArray
       }
     }
+    rawData.close
+    tensorProto.close
+    scope.close
     array
   }
 
@@ -205,7 +213,7 @@ class ONNXHelper(byteArray: Array[Byte]) {
   private val initializer =
     (0 until initializerCount).map(x => graph.initializer(x)).toList
 
-  val params =
+  lazy val params =
     initializer.map { x =>
       val dimsCount      = x.dims_size
       val dimsList       = (0 until dimsCount.toInt).map(y => x.dims(y)).toList
@@ -215,7 +223,7 @@ class ONNXHelper(byteArray: Array[Byte]) {
       (name, tensorElemType, arrX, dimsList.map(y => y.toInt).toArray)
     }
 
-  val nodes = {
+  lazy val nodes = {
     val someNodes = input.map { x =>
       val name = x.name.getString
       if (params exists (_._1.equals(name)))
@@ -225,14 +233,14 @@ class ONNXHelper(byteArray: Array[Byte]) {
     someNodes
   }
 
-  val outputs = {
+  lazy val outputs = {
     val outputArray = globalOutput.toArray
     outputArray
       .map(x => x.name.getString.replaceAll("-", "_").replaceAll("/", "_"))
       .filter(x => nodes.contains("output_" + x))
   }
 
-  val graphInputs = {
+  lazy val graphInputs = {
     val inputCount = graph.input_size.toInt
     val input      = (0 until inputCount).map(y => graph.input(y)).toList
     input.toArray
@@ -248,7 +256,7 @@ class ONNXHelper(byteArray: Array[Byte]) {
       .filter(z => !(params exists (_._1.equals(z._1))))
   }
 
-  val graphOutputs = {
+  lazy val graphOutputs = {
     val outputCount = graph.output_size.toInt
     val output      = (0 until outputCount).map(y => graph.output(y)).toList
     output.toArray
@@ -263,6 +271,11 @@ class ONNXHelper(byteArray: Array[Byte]) {
           )
       )
       .filter(z => !(params exists (_._1.equals(z._1))))
+  }
+
+  override def close(): Unit = {
+    model.close
+    scope.close
   }
 
 }

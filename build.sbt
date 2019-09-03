@@ -95,7 +95,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
     publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(
-    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version)
+    crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
   )
   .jsSettings(
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
@@ -117,8 +117,6 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
       case _ => ""
       }
     )
-  )
-  .jvmSettings(
   )
   .jvmSettings(
     crossScalaVersions := Seq(
@@ -184,12 +182,6 @@ lazy val zio = (crossProject(JVMPlatform, JSPlatform)
     commonSettings,
     name := "onnx-scala-zio",
     scalaVersion := scala213Version,
-    crossScalaVersions := Seq(
-      dottyVersion,
-      scala212Version,
-      scala211Version,
-      scala213Version
-    ),
     publishArtifact in (Compile, packageDoc) := false,
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {
@@ -203,4 +195,10 @@ lazy val zio = (crossProject(JVMPlatform, JSPlatform)
           "dev.zio" %% "zio" % zioVersion
         )
     })
+  )
+  .jvmSettings(
+    crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
   )

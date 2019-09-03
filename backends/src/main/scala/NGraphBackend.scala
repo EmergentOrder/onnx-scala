@@ -17,7 +17,6 @@ import spire.math.ULong
 import spire.math.Complex
 
 import org.emergentorder.onnx._
-import org.emergentorder.union.UnionType._
 import org.bytedeco.javacpp._;
 import org.bytedeco.onnx.ModelProto;
 import org.bytedeco.onnx.global.onnx.ParseProtoFromBytes;
@@ -49,8 +48,6 @@ class NGraphBackend(onnxBytes: Array[Byte])
     with Softmax
     with Max
     with Min
-    with Less
-    with Greater
     with Abs
     with Conv
     with Sigmoid
@@ -63,12 +60,12 @@ class NGraphBackend(onnxBytes: Array[Byte])
     with Dropout
     with AveragePool
     with Reshape
-    with AutoCloseable{
+    with AutoCloseable {
 //with DataSource
   val scope = new PointerScope()
 
   val ngraphBackend = Backend.create("CPU")
-/*
+  /*
   def paramsMap[T: spire.math.Numeric: ClassTag] =
     onnxHelper.params
       .map(x => x._1 -> (x._2, x._3.asInstanceOf[Array[T]], x._4))
@@ -86,20 +83,26 @@ class NGraphBackend(onnxBytes: Array[Byte])
         throw new Exception("No params found for param name: " + name)
     }
   }
-*/
+   */
   def Abs1[@sp T: Numeric: ClassTag](
       name: String,
       consumed_inputs: Option[(Array[Int])] = None,
       X: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+          Short
+        ]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): (Tensor[T]) = ???
 
   def Abs6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+          Short
+        ]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): (Tensor[T]) = {
     (trinaryOpNoAttrs(name, "Abs", X, None, None))
@@ -113,8 +116,9 @@ class NGraphBackend(onnxBytes: Array[Byte])
       A: Option[Tensor[T]],
       B: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): (Tensor[T]) = ???
 
@@ -125,8 +129,9 @@ class NGraphBackend(onnxBytes: Array[Byte])
       A: Option[Tensor[T]],
       B: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): (Tensor[T]) = ???
 
@@ -135,8 +140,9 @@ class NGraphBackend(onnxBytes: Array[Byte])
       A: Option[Tensor[T]],
       B: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): (Tensor[T]) = {
     (trinaryOpNoAttrs(name, "Add", A, B, None))
@@ -148,9 +154,9 @@ class NGraphBackend(onnxBytes: Array[Byte])
       keepdims: Option[(Int)] = None,
       data: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
-      ]
+      implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+        Int
+      ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[Long]) = {
     val map: Map[String, Any] = Map("axis" -> axis, "keepdims" -> keepdims)
     // (trinaryOp(name, "ArgMax", data, None, None, map))
@@ -163,9 +169,9 @@ class NGraphBackend(onnxBytes: Array[Byte])
       keepdims: Option[(Int)] = None,
       data: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
-      ]
+      implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+        Int
+      ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[Long]) = {
     val map: Map[String, Any] = Map("axis" -> axis, "keepdims" -> keepdims)
     //(trinaryOp(name, "ArgMin", data, None, None, map))
@@ -176,18 +182,24 @@ class NGraphBackend(onnxBytes: Array[Byte])
       name: String,
       value: Option[(Tensor[T])]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
-        Float
-      ] TypeOr Complex[Double])#check[T]
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+          Short
+        ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+      ]
   ): (Tensor[T]) = ???
 
   def Constant9[@sp T: Numeric: ClassTag](
       name: String,
       value: Option[(Tensor[T])]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
-        Float
-      ] TypeOr Complex[Double])#check[T]
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+          Short
+        ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+      ]
   ): (Tensor[T]) = {
     (trinaryOpNoAttrs(name, "Constant", value, None, None))
   }
@@ -199,8 +211,8 @@ class NGraphBackend(onnxBytes: Array[Byte])
       A: Option[Tensor[T]],
       B: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Boolean TypeOr Int TypeOr Long)#check[T],
-      evT1: (UNil TypeOr Boolean)#check[T1]
+      implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UNil]#create],
+      evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
   ): (Tensor[T1]) = ???
 
   def Equal7[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
@@ -208,8 +220,8 @@ class NGraphBackend(onnxBytes: Array[Byte])
       A: Option[Tensor[T]],
       B: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Boolean TypeOr Int TypeOr Long)#check[T],
-      evT1: (UNil TypeOr Boolean)#check[T1]
+      implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UNil]#create],
+      evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
   ): (Tensor[T1]) = {
     //(trinaryOpNoAttrs(name, "Equal", A, B, None))
     ???
@@ -219,85 +231,9 @@ class NGraphBackend(onnxBytes: Array[Byte])
       name: String,
       X: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = {
     (trinaryOpNoAttrs(name, "GlobalAveragePool", X, None, None))
-  }
-
-  def Greater1[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)] = None,
-      broadcast: Option[(Int)] = None,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
-      ],
-      evT1: (UNil TypeOr Boolean)#check[T1]
-  ): (Tensor[T1]) = ???
-
-  def Greater7[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
-      name: String,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
-      ],
-      evT1: (UNil TypeOr Boolean)#check[T1]
-  ): (Tensor[T1]) = ???
-
-  def Greater9[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
-      name: String,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
-      ],
-      evT1: (UNil TypeOr Boolean)#check[T1]
-  ): (Tensor[T1]) = {
-    //(trinaryOpNoAttrs(name, "Greater", A, B, None))
-    ???
-  }
-
-  def Less1[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)] = None,
-      broadcast: Option[(Int)] = None,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
-      ],
-      evT1: (UNil TypeOr Boolean)#check[T1]
-  ): (Tensor[T1]) = ???
-
-  def Less7[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
-      name: String,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
-      ],
-      evT1: (UNil TypeOr Boolean)#check[T1]
-  ): (Tensor[T1]) = ???
-
-  def Less9[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
-      name: String,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
-      ],
-      evT1: (UNil TypeOr Boolean)#check[T1]
-  ): (Tensor[T1]) = {
-    //(trinaryOpNoAttrs(name, "Less", A, B, None))
-    ???
   }
 
   def Log1[@sp T: Numeric: ClassTag](
@@ -305,11 +241,11 @@ class NGraphBackend(onnxBytes: Array[Byte])
       consumed_inputs: Option[(Array[Int])] = None,
       input: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = ???
 
   def Log6[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = {
     (trinaryOpNoAttrs(name, "Log", input, None, None))
   }
@@ -318,14 +254,14 @@ class NGraphBackend(onnxBytes: Array[Byte])
       name: String,
       data_0: Seq[Option[Tensor[T]]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = ???
 
   def Max8[@sp T: Numeric: ClassTag](
       name: String,
       data_0: Seq[Option[Tensor[T]]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = {
     ???
     //(trinaryOpNoAttrs(name, "Max", data_0, None, None))
@@ -335,14 +271,14 @@ class NGraphBackend(onnxBytes: Array[Byte])
       name: String,
       data_0: Seq[Option[Tensor[T]]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = ???
 
   def Min8[@sp T: Numeric: ClassTag](
       name: String,
       data_0: Seq[Option[Tensor[T]]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = {
     //(trinaryOpNoAttrs(name, "Min", data_0, None, None))
     ???
@@ -353,7 +289,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       axis: Option[(Int)] = None,
       input: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = {
     val map: Map[String, Any] = Map("axis" -> axis)
     (trinaryOp(name, "Softmax", input, None, None, map))
@@ -367,8 +303,9 @@ class NGraphBackend(onnxBytes: Array[Byte])
       A: Option[Tensor[T]],
       B: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): (Tensor[T]) = ???
 
@@ -379,8 +316,9 @@ class NGraphBackend(onnxBytes: Array[Byte])
       A: Option[Tensor[T]],
       B: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): (Tensor[T]) = ???
 
@@ -389,8 +327,9 @@ class NGraphBackend(onnxBytes: Array[Byte])
       A: Option[Tensor[T]],
       B: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): (Tensor[T]) = {
     (trinaryOpNoAttrs(name, "Mul", A, B, None))
@@ -401,11 +340,11 @@ class NGraphBackend(onnxBytes: Array[Byte])
       consumed_inputs: Option[(Array[Int])] = None,
       X: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = ???
 
   def Sigmoid6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = {
     (trinaryOpNoAttrs(name, "Sigmoid", X, None, None))
   }
@@ -420,8 +359,9 @@ class NGraphBackend(onnxBytes: Array[Byte])
       B: Option[Tensor[T]],
       C: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): (Tensor[T]) = ???
 
@@ -436,8 +376,9 @@ class NGraphBackend(onnxBytes: Array[Byte])
       B: Option[Tensor[T]],
       C: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): (Tensor[T]) = ???
 
@@ -451,8 +392,9 @@ class NGraphBackend(onnxBytes: Array[Byte])
       B: Option[Tensor[T]],
       C: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): (Tensor[T]) = ???
 
@@ -466,8 +408,9 @@ class NGraphBackend(onnxBytes: Array[Byte])
       B: Option[Tensor[T]],
       C: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): (Tensor[T]) = {
     val map: Map[String, Any] = Map(
@@ -485,10 +428,12 @@ class NGraphBackend(onnxBytes: Array[Byte])
       data: Option[Tensor[T]],
       indices: Option[Tensor[Tind]]
   )(
-      implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
-        Float
-      ] TypeOr Complex[Double])#check[T],
-      evTind: (UNil TypeOr Int TypeOr Long)#check[Tind]
+      implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+        Int
+      ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+        Complex[Double]
+      ]#or[UNil]#create],
+      evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
   ): (Tensor[T]) = {
     (trinaryOpNoAttrs(name, "Gather", data, indices, None: Option[Tensor[T]]))
   }
@@ -505,7 +450,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       W: Option[Tensor[T]],
       B: Option[Tensor[T]] = None
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = {
 
     val map: Map[String, Any] = Map(
@@ -536,7 +481,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       ratio: Option[(Float)],
       data: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T], Tensor[T]) = {
     val map: Map[String, Any] = Map("ratio" -> ratio)
     (trinaryOp(name, "Dropout", data, None, None, map), null) //TODO: optional output
@@ -547,8 +492,8 @@ class NGraphBackend(onnxBytes: Array[Byte])
       ratio: Option[(Float)] = None,
       data: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
-      evT1: (UNil TypeOr Boolean)#check[T1]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+      evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
   ): (Tensor[T], Tensor[T1]) = ???
 
   def Relu1[@sp T: Numeric: ClassTag](
@@ -557,11 +502,11 @@ class NGraphBackend(onnxBytes: Array[Byte])
       ,
       X: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = ???
 
   def Relu6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = {
     trinaryOpNoAttrs(name, "Relu", X, None, None)
   }
@@ -807,12 +752,11 @@ class NGraphBackend(onnxBytes: Array[Byte])
     modelString.close
 
     //println(Pointer.totalBytes)
-    val result:Tensor[T3] = opFromByteArray(modelStringBytes, A, B, C)
+    val result: Tensor[T3] = opFromByteArray(modelStringBytes, A, B, C)
     scope.close
     result
   }
 
-    
   def opFromByteArray[@sp T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag](
       opModel: Array[Byte],
       A: Option[Tensor[T]],
@@ -824,7 +768,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
     //println(modelString.getString)
     //TODO: Pull this as far forward as possible
     val modelString = new BytePointer(opModel: _*)
-    val ngraphFunc = import_onnx_model(modelString)
+    val ngraphFunc  = import_onnx_model(modelString)
     modelString.close
 
     val inputShape: org.bytedeco.ngraph.Shape       = tensorToInputShape(A)
@@ -862,7 +806,6 @@ class NGraphBackend(onnxBytes: Array[Byte])
       case None => new org.bytedeco.ngraph.TensorVector(input)
     }
 
-
     val outputVector = new org.bytedeco.ngraph.TensorVector(output)
 
     //println(outputShape)
@@ -886,7 +829,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
     executable.close
     //convert result to onnx-scala Tensor
 
-    val result:Tensor[T3] = tensorVectorToOutputTensor(outputVector, outputShape)
+    val result: Tensor[T3] = tensorVectorToOutputTensor(outputVector, outputShape)
 
     inputShape.close
     secondInputShape.close
@@ -898,7 +841,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
     secondInputTens._2.close
     thirdInputTens._1.close
     thirdInputTens._2.close
-   
+
     input.close
     inputVector.close
     output.close
@@ -935,8 +878,8 @@ class NGraphBackend(onnxBytes: Array[Byte])
     }
 
     //opModel.Clear()
-    println(Pointer.totalBytes) 
-    
+    println(Pointer.totalBytes)
+
     //FIXME: Hardcoding the output size to match input size
     val aSize = A.map(x => x._2(0)) match {
       case Some(y) => y.toLong
@@ -945,8 +888,8 @@ class NGraphBackend(onnxBytes: Array[Byte])
     opModel.graph.input(0).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
     opModel.graph.input(1).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
     opModel.graph.output(0).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
-    
-    */
+
+     */
     //println(opModel.graph.input(0).name.getString)
     val result = opFromByteArray[T, T1, T2, T3](byteArray, A, B, C)
     //opModel.close
@@ -963,7 +906,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       strides: Option[(Array[Int])] = None,
       X: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = ???
 
   def MaxPool8[@sp T: Numeric: ClassTag, @sp I: Numeric: ClassTag](
@@ -975,8 +918,8 @@ class NGraphBackend(onnxBytes: Array[Byte])
       strides: Option[(Array[Int])] = None,
       X: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
-      evI: (UNil TypeOr Long)#check[I]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+      evI: Contains[I, Union[Long]#or[UNil]#create]
   ): (Tensor[T], Tensor[I]) = {
     val map: Map[String, Any] = Map(
       "auto_pad"      -> auto_pad,
@@ -1000,8 +943,8 @@ class NGraphBackend(onnxBytes: Array[Byte])
       strides: Option[(Array[Int])] = None,
       X: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
-      evI: (UNil TypeOr Long)#check[I]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+      evI: Contains[I, Union[Long]#or[UNil]#create]
   ): (Tensor[T], Tensor[I]) = ???
 
   def Concat4[@sp T: Numeric: ClassTag](
@@ -1009,9 +952,12 @@ class NGraphBackend(onnxBytes: Array[Byte])
       axis: Option[(Int)],
       inputs: Seq[Option[Tensor[T]]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
-        Float
-      ] TypeOr Complex[Double])#check[T]
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+          Short
+        ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+      ]
   ): (Tensor[T]) = {
     val map: Map[String, Any] = Map("axis" -> axis)
     val X                     = inputs(0)
@@ -1028,7 +974,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       ratio: Option[(Float)] = None,
       data: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T], Tensor[T]) = ???
 
   def Dropout6[@sp T: Numeric: ClassTag](
@@ -1037,7 +983,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       ratio: Option[(Float)] = None,
       data: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T], Tensor[T]) = ???
 
   def AveragePool1[@sp T: Numeric: ClassTag](
@@ -1048,7 +994,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       strides: Option[(Array[Int])] = None,
       X: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = ???
 
   def AveragePool7[@sp T: Numeric: ClassTag](
@@ -1060,7 +1006,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       strides: Option[(Array[Int])] = None,
       X: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = {
     val map: Map[String, Any] = Map(
       "auto_pad"          -> auto_pad,
@@ -1083,7 +1029,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       strides: Option[(Array[Int])] = None,
       X: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = ???
 
   def Reshape1[@sp T: Numeric: ClassTag](
@@ -1092,9 +1038,12 @@ class NGraphBackend(onnxBytes: Array[Byte])
       shape: Option[(Array[Int])] = None,
       data: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
-        Float
-      ] TypeOr Complex[Double])#check[T]
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+          Short
+        ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+      ]
   ): (Tensor[T]) = ???
 
   def Reshape5[@sp T: Numeric: ClassTag](
@@ -1102,9 +1051,12 @@ class NGraphBackend(onnxBytes: Array[Byte])
       data: Option[Tensor[T]],
       shape: Option[Tensor[Long]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
-        Float
-      ] TypeOr Complex[Double])#check[T]
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+          Short
+        ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+      ]
   ): (Tensor[T]) = {
     val map: Map[String, Any] = Map("shape" -> shape)
     trinaryOp(name, "Reshape", data, None, None, map)

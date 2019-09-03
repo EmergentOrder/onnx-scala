@@ -35,9 +35,9 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 //  val loaded =
 //    org.bytedeco.javacpp.Loader.load(classOf[org.bytedeco.onnx.global.onnx])
 
- // println(Pointer.physicalBytes)
+  // println(Pointer.physicalBytes)
   lazy val model = {
-    val r = (new ModelProto).New()
+    val r     = (new ModelProto).New()
     val bytes = new BytePointer(byteArray: _*)
     ParseProtoFromBytes(
       r,
@@ -91,7 +91,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
   }
 
   def onnxTensorProtoToArray(tensorProto: TensorProto) = {
-    
+
     val scope = new PointerScope()
 
     val onnxDataType = tensorProto.data_type

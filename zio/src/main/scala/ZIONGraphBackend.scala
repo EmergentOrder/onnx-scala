@@ -15,14 +15,13 @@ import spire.math.ULong
 import spire.math.Complex
 
 import zio.Task
-import zio.UIO 
+import zio.UIO
 import zio.Managed
 import zio.DefaultRuntime
 
 import org.bytedeco.javacpp._
 import org.emergentorder.onnx._
 import org.emergentorder.onnxZIO._
-import org.emergentorder.union.UnionType._
 
 import org.emergentorder.onnx.backends._
 
@@ -35,8 +34,8 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
     with ConcatZIO
     with DropoutZIO
 //    with DataSourceZIO
-    with AutoCloseable{
-  val scope = new PointerScope()
+    with AutoCloseable {
+  val scope         = new PointerScope()
   val ngraphBackend = new NGraphBackend(onnxBytes)
 
   def fullModel[@sp T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag](
@@ -58,11 +57,14 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
     }
 
   }
-*/
+   */
   def getAttributesZIO[T: Numeric: ClassTag](name: String)(
-      implicit ev: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[
-        Float
-      ] TypeOr Complex[Double])#check[T]
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+          Short
+        ]#or[Int]#or[Long]#or[UNil]#create
+      ]
   ): Task[Tensor[T]] = ???
 
   override def Relu1ZIO[@sp T: Numeric: ClassTag](
@@ -70,7 +72,7 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
       consumed_inputs: Option[(Array[Int])],
       X: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): Task[(Tensor[T])] = Task {
     ngraphBackend.Relu1(name, consumed_inputs, X)
   }
@@ -81,7 +83,7 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
   )
   //(
   (
-      implicit ev: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): Task[(Tensor[T])] = {
     Task {
       ngraphBackend.Relu6[T](name, X)
@@ -95,7 +97,7 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
       ratio: Option[(Float)] = None,
       data: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): Task[(Tensor[T], Tensor[T])] = ???
 
   def Dropout6ZIO[@sp T: Numeric: ClassTag](
@@ -104,7 +106,7 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
       ratio: Option[(Float)] = None,
       data: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): Task[(Tensor[T], Tensor[T])] = ???
 
   def Dropout10ZIO[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
@@ -112,8 +114,8 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
       ratio: Option[(Float)] = None,
       data: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T],
-      evT1: (UNil TypeOr Boolean)#check[T1]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+      evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
   ): Task[(Tensor[T], Tensor[T1])] = ???
 
   override def Dropout7ZIO[@sp T: Numeric: ClassTag](
@@ -121,7 +123,7 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
       ratio: Option[(Float)] = None,
       data: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): Task[(Tensor[T], Tensor[T])] =
     Task {
       ngraphBackend.Dropout7[T](name, None, data)
@@ -136,10 +138,12 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
       data: Option[Tensor[T]],
       indices: Option[Tensor[Tind]]
   )(
-      implicit evT: (UNil TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
-        Float
-      ] TypeOr Complex[Double])#check[T],
-      evTind: (UNil TypeOr Int TypeOr Long)#check[Tind]
+      implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+        Int
+      ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+        Complex[Double]
+      ]#or[UNil]#create],
+      evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
   ): Task[(Tensor[T])] =
     Task {
       ngraphBackend.Gather1[T, Tind](name, axis, data, indices)
@@ -153,8 +157,9 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
       A: Option[Tensor[T]],
       B: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): Task[(Tensor[T])] = ???
 
@@ -165,8 +170,9 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
       A: Option[Tensor[T]],
       B: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): Task[(Tensor[T])] = ???
 
@@ -175,8 +181,9 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
       A: Option[Tensor[T]],
       B: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): Task[(Tensor[T])] =
     Task {
@@ -194,8 +201,9 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
       B: Option[Tensor[T]],
       C: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): Task[(Tensor[T])] = ???
 
@@ -210,8 +218,9 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
       B: Option[Tensor[T]],
       C: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): Task[(Tensor[T])] = ???
 
@@ -225,8 +234,9 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
       B: Option[Tensor[T]],
       C: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): Task[(Tensor[T])] = ???
 
@@ -240,8 +250,9 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
       B: Option[Tensor[T]],
       C: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Float16 TypeOr Float TypeOr Double TypeOr UInt TypeOr ULong TypeOr Int TypeOr Long)#check[
-        T
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): Task[(Tensor[T])] =
     Task {
@@ -253,14 +264,14 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
       consumed_inputs: Option[(Array[Int])] = None,
       X: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): Task[(Tensor[T])] = ???
 
   override def Sigmoid6ZIO[@sp T: Numeric: ClassTag](
       name: String,
       X: Option[Tensor[T]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): Task[(Tensor[T])] =
     Task {
       ngraphBackend.Sigmoid6[T](name, X)
@@ -271,9 +282,11 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
       axis: Option[(Int)],
       inputs: Seq[Option[Tensor[T]]]
   )(
-      implicit evT: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
-        Float
-      ] TypeOr Complex[Double])#check[T]
+      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[
+        ULong
+      ]#or[Byte]#or[Short]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[
+        Double
+      ]]#or[UNil]#create]
   ): Task[(Tensor[T])] = {
 
     Task {
@@ -290,7 +303,7 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
 
 object ZIONGraphMain extends App {
 
-  val scope = new PointerScope()
+  val scope          = new PointerScope()
   val dummyArraySize = 2000000
 
   val byteStream = getClass.getResourceAsStream("/" + "NCF.onnx")
@@ -302,7 +315,7 @@ object ZIONGraphMain extends App {
   byteStream.close
   def getIdMap(idMapFilename: String) = {
 
-    val mapStream = getClass.getResourceAsStream("/" + idMapFilename)
+    val mapStream    = getClass.getResourceAsStream("/" + idMapFilename)
     val idsMapSource = Source.fromInputStream(mapStream)
 
     val result = idsMapSource.getLines.toList
@@ -344,34 +357,31 @@ object ZIONGraphMain extends App {
 //  val scope = new PointerScope()
 //  val finalizer = UIO.effectTotal(scope.close)
   val ncfZIO = new NCFZIO(byteArray, userIdsMap, itemIdsMap)
-  
+
 //  def program = ncfZIO.fullNCF(input, input2)
   //val scope = Task(new PointerScope())
   //def close(scope: PointerScope) = UIO.effectTotal(scope.close)
   //val scopedProgram = scope.bracket(close(_)) { scope =>
   //  program
- // }
+  // }
   val runtime = new DefaultRuntime {}
-
-
 
 //  val scope = new PointerScope()
   val before  = System.nanoTime
   val output2 = runtime.unsafeRun(ncfZIO.fullNCF(input, input2))
-  
-  val after   = System.nanoTime
+
+  val after = System.nanoTime
   println("Elapsed: " + (after - before))
   //scope.close
   ncfZIO.close
- 
 
   //Pointer.close
 //  System.gc()
 //  Pointer.deallocateReferences()
   println(Pointer.totalBytes)
   println(Pointer.physicalBytes)
- // scope.close
- // scope.close
+  // scope.close
+  // scope.close
   println(Pointer.maxPhysicalBytes)
   println("Output size: " + output2._1.size)
   println("Output 0: " + output2._1(0))
@@ -379,6 +389,5 @@ object ZIONGraphMain extends App {
 //   println("Output 2: " + output2._1(2))
 //   println("Output 3: " + output2._1(3))
 //   println("Output 4: " + output2._1(4))
-
 
 }

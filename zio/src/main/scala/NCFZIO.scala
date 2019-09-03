@@ -2,7 +2,6 @@ package org.emergentorder.onnxZIO
 
 import zio.Task
 import org.emergentorder.onnx._
-import org.emergentorder.union.UnionType._
 import scala.reflect.ClassTag
 import spire.implicits._
 import spire.math.UByte
@@ -17,11 +16,12 @@ import org.bytedeco.javacpp.PointerScope
 import org.bytedeco.javacpp.Pointer
 
 //TODO: Add changes to generator; Generate both full model and layerwise programs each time
-class NCFZIO(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[Long, Long]) extends AutoCloseable {
+class NCFZIO(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[Long, Long])
+    extends AutoCloseable {
 
-  val scope = new PointerScope()
-  val fullNgraphHandler         = new ONNXNGraphHandlers(byteArray)
-  
+  val scope             = new PointerScope()
+  val fullNgraphHandler = new ONNXNGraphHandlers(byteArray)
+
   def fullNCF(
       inputDataactual_input_1: Task[Tensor[Long]],
       inputDatalearned_0: Task[Tensor[Long]]
@@ -45,7 +45,7 @@ class NCFZIO(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Ma
   }
 
   override def close(): Unit = {
-      fullNgraphHandler.close
-      scope.close
-    }
+    fullNgraphHandler.close
+    scope.close
+  }
 }

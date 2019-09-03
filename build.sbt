@@ -1,12 +1,12 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
-val dottyVersion = "0.18.1-RC1"
+val dottyVersion = "0.17.0"
 val scala211Version = "2.11.12"
 val scala212Version = "2.12.9"
-val scala213Version = "2.13.0"
+val scala213Version = "2.13.0" //Coming soon: 2.13.1
 val spireVersion = "0.17.0-M1"
-val zioVersion = "1.0.0-RC12"
+val zioVersion = "1.0.0-RC12-1"
 val scalametaVersion = "4.2.3"
-val onnxJavaCPPPresetVersion = "1.5.0-1.5.2-SNAPSHOT"
+val onnxJavaCPPPresetVersion = "1.5.0-1.5.1"
 scalaVersion := scala212Version
 
 lazy val commonSettings = Seq(
@@ -90,12 +90,12 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
     name := "onnx-scala-backends",
     scalaVersion := scala213Version,
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "ngraph-platform" % "0.25.0-1.5.2-SNAPSHOT"
+      "org.bytedeco" % "ngraph-platform" % "0.22.0-1.5.1"
     ),
     publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(
-    crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
+    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version)
   )
   .jsSettings(
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
@@ -185,6 +185,7 @@ lazy val zio = (crossProject(JVMPlatform, JSPlatform)
     name := "onnx-scala-zio",
     scalaVersion := scala213Version,
     crossScalaVersions := Seq(
+      dottyVersion,
       scala212Version,
       scala211Version,
       scala213Version

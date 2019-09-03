@@ -2,7 +2,6 @@ package org.emergentorder.onnxZIO
 
 import zio.Task
 import org.emergentorder.onnx._
-import org.emergentorder.union.UnionType._
 import scala.reflect.ClassTag
 import spire.implicits._
 import spire.math.UByte
@@ -15,7 +14,11 @@ import scala.io.Source
 import scala.reflect.io.Streamable
 
 //TODO: Add changes to generator; Generate both full model and layerwise programs each time
-class NCFZIOFineGrained(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[Long, Long]) {
+class NCFZIOFineGrained(
+    byteArray: Array[Byte],
+    userIdsMap: Map[Long, Long],
+    itemIdsMap: Map[Long, Long]
+) {
 
   val GatherZIO: GatherZIO      = new ONNXNGraphHandlers(byteArray)
   val ConcatZIO: ConcatZIO      = new ONNXNGraphHandlers(byteArray)
@@ -23,7 +26,7 @@ class NCFZIOFineGrained(byteArray: Array[Byte], userIdsMap: Map[Long, Long], ite
   val GemmZIO: GemmZIO          = new ONNXNGraphHandlers(byteArray)
   val ReluZIO: ReluZIO          = new ONNXNGraphHandlers(byteArray)
   val SigmoidZIO: SigmoidZIO    = new ONNXNGraphHandlers(byteArray)
-  val dataSource: DataSourceZIO = ??? //TODO: Inject 
+  val dataSource: DataSourceZIO = ??? //TODO: Inject
 
   def fineNCF(
       inputDataactual_input_1: Task[Tensor[Long]],

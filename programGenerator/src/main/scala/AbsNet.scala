@@ -1,9 +1,10 @@
 package org.emergentorder.onnx
 
-import org.emergentorder.union.UnionType._
 import scala.reflect.ClassTag
 import spire.implicits._
 import spire.math.UByte
+import spire.math.UInt
+import spire.math.ULong
 import spire.math.UShort
 import spire.math.Complex
 import spire.algebra.Field
@@ -14,8 +15,17 @@ trait AbsNet {
   val dataSource: DataSource
   val Abs: Abs
   def program[
-      T: (UNil TypeOr Float16 TypeOr Float TypeOr Double)#check: Numeric: ClassTag
-  ](inputData: Tensor[T]): List[Tensor[T]] = {
+      T: Numeric: ClassTag
+  ]
+  (inputData: Tensor[T])
+  (
+        implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+            Short
+          ]#or[Int]#or[Long]#or[UNil]#create
+        ]
+    ): List[Tensor[T]] = {
     for {
       nodedata <- List(inputData)
       nodeabs <- List(

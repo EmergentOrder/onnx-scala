@@ -63,7 +63,7 @@ object ONNXProgramGenerator {
       )
       .toMap
 
-    val useZIO            = true
+    val useZIO            = false
     val useDotty          = false
     val unionTypeOperator = (if (useDotty) " | " else " TypeOr ")
 
@@ -74,7 +74,7 @@ object ONNXProgramGenerator {
                                                                     "ZIO"
                                                                   else "")
     val path = Paths.get(
-      "programGenerator/src/main/scala/generatedprograms/" + programName + ".scala"
+      "programGenerator/src/gen/scala/" + programName + ".scala"
     );
 
     //TODO: Be explicit about model version, metadata

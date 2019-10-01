@@ -117,13 +117,13 @@ to build against all of Scala 2.11, 2.12, 2.13 and Dotty/3.0, where possible.
 Then you can add this to your project's build.sbt 
 
 ```scala
-libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala" % "1.5.0-0.1.0-SNAPSHOT"
+libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala" % "1.6.0-0.1.0-SNAPSHOT"
 ```
 
 or 
 
 ```scala
-libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala-zio" % "1.5.0-0.1.0-SNAPSHOT"
+libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala-zio" % "1.6.0-0.1.0-SNAPSHOT"
 ``` 
 
 and build away with the traits provided. Backend implementation (and other) PRs welcome!
@@ -140,7 +140,7 @@ export SBT_OPTS="-XX:+CMSClassUnloadingEnabled -Xmx28G -Xss8M -XX:MaxMetaspaceSi
 
 either each time in the terminal, or in your `~/.bashrc` file or equivalent, or you will encounter errors.
 
-Now, get `squeezenet.onnx` [here](https://s3.amazonaws.com/download.onnx/models/opset_8/squeezenet.tar.gz) (rename `model.onnx` from inside the tar.gz). This model and more can be found in the [ONNX Model Zoo](https://github.com/onnx/models).
+Now, get `squeezenet.onnx` [here](https://s3.amazonaws.com/download.onnx/models/opset_8/squeezenet.tar.gz) (rename `model.onnx` from inside the tar.gz and move it to: `programGenerator/.jvm/src/main/resources/`). This model and more can be found in the [ONNX Model Zoo](https://github.com/onnx/models).
 
 Then:
 
@@ -148,7 +148,7 @@ Then:
 sbt "project programGeneratorJVM" "run squeezenet.onnx"
 ```
 
-The resulting generated program appears as `programGenerator/src/main/scala/generatedprograms/Squeezenet.scala` and you can run `sbt compile` to confirm that the generated code compiles.
+The resulting generated program appears as `programGenerator/src/gen/scala/Squeezenet.scala` and you can run `sbt compile` to confirm that the generated code compiles.
 
 ## Program Execution
 
@@ -178,7 +178,7 @@ This mode is a work-in-progress.
 ### Example execution
 The most extensive working example at the moment is `zio/src/main/scala/NCFZIO.scala`, an implementation of Neural Collaborative Filtering, although you currently need to provide your own model file to load params from at `zio/.jvm/src/main/resources/NCF.onnx`. 
 
-This example provides full model execution via the `fullNCF` method and fine-grained execution via the `fineNCF` method.
+This example provides full model execution via the `fullNCF` method, while an example of fine-grained execution can be found at `zio/src/main/scala/NCFZIOFine.scala` in the `fineNCF` method.
 
 To run it, use: 
 ```
@@ -197,14 +197,14 @@ To take advantage of union types to express type constraints, a Dotty (Scala 3) 
 
 The ZIO variant is not yet available for Dotty.
 
-Currently at ONNX 1.5.0.
+Currently at ONNX 1.6.0.
 
 
 ### Built With
 
 #### Core
 
-* [ONNX via JavaCPP Preset for ONNX 1.5.0](https://github.com/bytedeco/javacpp-presets/tree/master/onnx) - Open Neural Network Exchange / The missing bridge between Java and native C++ libraries (For access to Protobuf definitions and operator schemas)
+* [ONNX via JavaCPP Preset for ONNX 1.6.0](https://github.com/bytedeco/javacpp-presets/tree/master/onnx) - Open Neural Network Exchange / The missing bridge between Java and native C++ libraries (For access to Protobuf definitions and operator schemas)
 
 * [Spire](https://github.com/non/spire) - Typelevel project enabling generic numeric programming (For support for unsigned ints, complex numbers, the Numeric type class and type specialization to avoid boxing overhead)
 

@@ -10,6 +10,7 @@ import spire.math.Complex
 import spire.algebra.Field
 import spire.math.Numeric
 import scala.language.higherKinds
+import org.emergentorder.union._
 
 trait AbsNet {
   val dataSource: DataSource

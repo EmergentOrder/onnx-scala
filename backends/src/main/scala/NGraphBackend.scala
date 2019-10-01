@@ -17,6 +17,7 @@ import spire.math.ULong
 import spire.math.Complex
 
 import org.emergentorder.onnx._
+import org.emergentorder.union._
 import org.bytedeco.javacpp._;
 import org.bytedeco.onnx.ModelProto;
 import org.bytedeco.onnx.global.onnx.ParseProtoFromBytes;

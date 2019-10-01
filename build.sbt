@@ -6,13 +6,13 @@ val scala213Version = "2.13.1"
 val spireVersion = "0.17.0-M1"
 val zioVersion = "1.0.0-RC13"
 val scalametaVersion = "4.2.3"
-val onnxJavaCPPPresetVersion = "1.5.0-1.5.1"
+val onnxJavaCPPPresetVersion = "1.6.0-1.5.2-SNAPSHOT"
 scalaVersion := scala212Version
 
 lazy val commonSettings = Seq(
   scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
-  version := "1.5.0-0.1.0-SNAPSHOT",
+  version := "1.6.0-0.1.0-SNAPSHOT",
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
@@ -31,7 +31,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     )
   )
   .jvmSettings(
-    scalaVersion := scala213Version,
+//    scalaVersion := scala213Version,
     crossScalaVersions := Seq(
       dottyVersion,
       scala212Version,
@@ -41,7 +41,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
     publishArtifact in (Compile, packageDoc) := false
   )
   .jsSettings(
-    scalaVersion := scala213Version,
+//    scalaVersion := scala213Version,
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
   )
   .nativeSettings(
@@ -58,7 +58,7 @@ lazy val programGenerator = (crossProject(JSPlatform, JVMPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala-program-generator",
-    scalaVersion := scala213Version,
+//    scalaVersion := scala213Version,
     mainClass in (Compile, run) := Some(
       "org.emergentorder.onnx.ONNXProgramGenerator"
     ),
@@ -88,9 +88,9 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala-backends",
-    scalaVersion := scala213Version,
+//    scalaVersion := scala213Version,
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "ngraph-platform" % "0.22.0-1.5.1"
+      "org.bytedeco" % "ngraph-platform" % "0.25.0-1.5.2-SNAPSHOT"
     ),
     publishArtifact in (Compile, packageDoc) := false
   )
@@ -110,7 +110,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala",
-    scalaVersion := scala213Version,
+//    scalaVersion := scala213Version,
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
       case Some((0, n)) => ("ONNXHelper.scala")
@@ -181,7 +181,7 @@ lazy val zio = (crossProject(JVMPlatform, JSPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala-zio",
-    scalaVersion := scala213Version,
+//    scalaVersion := scala213Version,
     publishArtifact in (Compile, packageDoc) := false,
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {

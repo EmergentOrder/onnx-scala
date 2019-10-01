@@ -11,21 +11,9 @@ import spire.math.Numeric
 import spire.implicits._
 import spire.algebra.Field
 import scala.reflect.ClassTag
+import org.emergentorder.union._
+
 package object onnx {
-
-  type ![A]  = A => Nothing
-  type !![A] = ![![A]]
-
-  trait Disjunction[T] {
-    type or[S]  = Disjunction[T with ![S]]
-    type create = ![T]
-  }
-
-  type Union[T] = {
-    type or[S] = Disjunction[![T]]#or[S]
-  }
-
-  type Contains[S, T] = !![S] <:< T
 
   type UNil
 

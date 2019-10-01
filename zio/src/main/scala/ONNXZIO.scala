@@ -13,6 +13,8 @@ import spire.implicits._
 import spire.algebra.Field
 import scala.reflect.ClassTag
 import onnx._
+import org.emergentorder.union._
+
 package object onnxZIO {
   trait DataSourceZIO {
     def getParamsZIO[T: Numeric: ClassTag](name: String): Task[Tensor[T]]

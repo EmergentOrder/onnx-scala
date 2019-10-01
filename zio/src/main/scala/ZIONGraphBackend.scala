@@ -22,7 +22,7 @@ import zio.DefaultRuntime
 import org.bytedeco.javacpp._
 import org.emergentorder.onnx._
 import org.emergentorder.onnxZIO._
-
+import org.emergentorder.union._
 import org.emergentorder.onnx.backends._
 
 class ONNXNGraphHandlers(onnxBytes: Array[Byte])

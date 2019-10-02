@@ -46,8 +46,7 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
     ngraphBackend.fullModel[T, T1, T2, T3](A, B, C)
   }
 
-  def getParamsZIO[T: Numeric: ClassTag](name: String): Task[Tensor[T]] = 
-      {
+  def getParamsZIO[T: Numeric: ClassTag](name: String): Task[Tensor[T]] = {
     Task {
       ngraphBackend.getParams(name)
     }
@@ -336,7 +335,7 @@ object ZIONGraphMain extends App {
 
   val userIds                       = userIdsMap.keys.toArray
   val itemIds                       = itemIdsMap.keys.toArray
-  val rand = new Random(42)
+  val rand                          = new Random(42)
   def getRandomId(arr: Array[Long]) = arr(rand.nextInt(arr.length))
 
   val input = Task {

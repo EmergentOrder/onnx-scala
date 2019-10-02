@@ -191,7 +191,8 @@ Automatic differentiation to enable training is under consideration (ONNX does n
 
 Balancing the interests of minimal imposition of dependencies with purely functional programming, ONNX-Scala comes in two flavors: Vanilla and ZIO-infused.
 
-ONNX-Scala is cross-built against Scala JVM (for Scala 2.11, 2.12 and 2.13) , Scala.js / JavaScript (for Scala 2.11, 2.12 and 2.13) and Scala Native (for Scala 2.11).
+The ONNX-Scala core API is cross-built against Scala JVM (for Scala 2.11, 2.12 and 2.13) , Scala.js / JavaScript (for Scala 2.11, 2.12 and 2.13) and Scala Native (for Scala 2.11). 
+The Scala Native build will fail unless you apply this [PR](https://github.com/scala-native/scala-native/pull/1641).
 
 To take advantage of union types to express type constraints, a Dotty (Scala 3) build is available. The Dotty build does not support Scala.js or Scala Native.
 

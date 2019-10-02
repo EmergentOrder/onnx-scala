@@ -41,7 +41,6 @@ package object onnx {
     }
   }
 
-
   trait Operator
   trait Graph
   trait DataSource {
@@ -2086,9 +2085,12 @@ package object onnx {
         depth: Option[Tensor[T2]],
         values: Option[Tensor[T3]]
     )(
-        implicit evT1: Contains[T1, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-          Int
-        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
+        implicit evT1: Contains[
+          T1,
+          Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+            Int
+          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+        ],
         evT2: Contains[T2, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
           Long
         ]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
@@ -2106,9 +2108,12 @@ package object onnx {
         depth: Option[Tensor[T2]],
         values: Option[Tensor[T3]]
     )(
-        implicit evT1: Contains[T1, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-          Int
-        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
+        implicit evT1: Contains[
+          T1,
+          Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+            Int
+          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+        ],
         evT2: Contains[T2, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
           Long
         ]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
@@ -2402,11 +2407,14 @@ package object onnx {
         seed: Option[(Float)] = None,
         input: Option[Tensor[T1]]
     )(
-        implicit evT1: Contains[T1, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-          Int
-        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
-          Complex[Double]
-        ]#or[UNil]#create],
+        implicit evT1: Contains[
+          T1,
+          Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+            Int
+          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+            Complex[Double]
+          ]#or[UNil]#create
+        ],
         evT2: Contains[T2, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T2])
 
@@ -2433,11 +2441,14 @@ package object onnx {
         seed: Option[(Float)] = None,
         input: Option[Tensor[T1]]
     )(
-        implicit evT1: Contains[T1, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-          Int
-        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
-          Complex[Double]
-        ]#or[UNil]#create],
+        implicit evT1: Contains[
+          T1,
+          Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+            Int
+          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+            Complex[Double]
+          ]#or[UNil]#create
+        ],
         evT2: Contains[T2, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T2])
 
@@ -2807,11 +2818,14 @@ package object onnx {
         scales: Option[Tensor[Float]],
         sizes: Option[Tensor[Long]] = None
     )(
-        implicit evT1: Contains[T1, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-          Int
-        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
-          Complex[Double]
-        ]#or[UNil]#create],
+        implicit evT1: Contains[
+          T1,
+          Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+            Int
+          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+            Complex[Double]
+          ]#or[UNil]#create
+        ],
         evT2: Contains[T2, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T1])
 

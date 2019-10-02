@@ -25,7 +25,7 @@ class NCFZIOFineGrained(
   val GemmZIO: GemmZIO          = new ONNXNGraphHandlers(byteArray)
   val ReluZIO: ReluZIO          = new ONNXNGraphHandlers(byteArray)
   val SigmoidZIO: SigmoidZIO    = new ONNXNGraphHandlers(byteArray)
-  val dataSource: DataSourceZIO = new ONNXNGraphHandlers(byteArray)   
+  val dataSource: DataSourceZIO = new ONNXNGraphHandlers(byteArray)
 
   def fineNCF(
       inputDataactual_input_1: Task[Tensor[Long]],

@@ -223,7 +223,7 @@ Currently at ONNX 1.6.0.
 
 #### Backend
 
-* [nGraph via JavaCPP Preset for nGraph 0.22.0](https://github.com/bytedeco/javacpp-presets/tree/master/ngraph) - nGraph is an open source C++ library, compiler and runtime for Deep Learning frameworks / The missing bridge between Java and native C++ libraries (For access to Protobuf definitions and operator schemas)
+* [nGraph via JavaCPP Preset for nGraph 0.22.0](https://github.com/bytedeco/javacpp-presets/tree/master/ngraph) - nGraph is an open source C++ library, compiler and runtime for Deep Learning frameworks / The missing bridge between Java and native C++ libraries
 
 
 ### Inspiration

@@ -32,11 +32,12 @@ import org.bytedeco.ngraph.global.ngraph.i64
 import org.bytedeco.ngraph.global.ngraph.i32
 import org.bytedeco.onnx.global.onnx.check_model
 
-//TODO: Extract ModelProto modifications into generic layer, then do each layer-wise
+//TODEFER: Tracing Mode: Extract ModelProto modifications into generic layer, then do each layer-wise
 // op in a lazy fashion, while doing the same for generating a single overall ModelProto, via ModelProto.MergeFrom.
+// Between fine and full modes:
 // Use one path for speed and dynamic graph tracing at runtime (the default), the other for sanity/type/shape/AxisType/control flow checking at compile time
-//TODO: ONNX-JS backend for both JS and JVM
-//TODO: ONNX Runtime backend for JVM (and Native?)
+//TODEFER: ONNX-JS backend for both JS and JVM
+//TODEFER: ONNX Runtime backend for JVM (and Native?)
 class NGraphBackend(onnxBytes: Array[Byte])
     extends Add
     with DataSource
@@ -724,9 +725,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       outName: String,
       attrs: Map[String, Any]
   ): (ModelProto) = {
-//TODO: Refactor op method sigs to return this
 
-    //TODO: Fix ModelProto leaking memory here
     val model = (new ModelProto).New()
     val graph = new org.bytedeco.onnx.GraphProto
     model.set_producer_name("ONNX-Scala")
@@ -757,7 +756,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
     addInputToGraph(B, bName, graph)
     addInputToGraph(C, cName, graph)
 
-    //TODO: ensure the outer model is the last merged
+    //TODEFER: Merge models, ensuring the outer model is the last merged
     (model)
   }
 
@@ -864,9 +863,6 @@ class NGraphBackend(onnxBytes: Array[Byte])
       C: Option[Tensor[T2]]
   ): (Tensor[T3]) = {
     val scope = new PointerScope()
-
-    //println(modelString.getString)
-    //TODO: Pull this as far forward as possible
     val modelString = new BytePointer(opModel: _*)
     val ngraphFunc  = import_onnx_model(modelString)
     modelString.close

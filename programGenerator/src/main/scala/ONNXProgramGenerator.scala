@@ -25,11 +25,9 @@ import collection.JavaConverters._
 
 import scala.reflect.io.Streamable
 
-//TODO ASAP: Fix references to UnionTypes and  ONNXHelper init in generated programs
+//TODEFER: Use Squid to clean up / improve this
 
-//TODO: Use Squid to clean up / improve this
-
-//TODO: de-tuple on the left hand side when there are multiple outputs . should also solved the other output TODOs
+//TODEFER: de-tuple on the left hand side when there are multiple outputs . should also solve the other output TODOs
 object ONNXProgramGenerator {
   def main(args: Array[String]): Unit = {
 
@@ -65,8 +63,8 @@ object ONNXProgramGenerator {
     val useZIO   = false
     val useDotty = false
 
-    //TODO: Fix output for the benchmark models shown here: https://github.com/onnx/backend-scoreboard
-    //TODO: run time benchmarks on the same models
+    //TODO: Test outputs for the benchmark models shown here: https://github.com/onnx/backend-scoreboard
+    //TODEFER: run time benchmarks on the same models
 
     val programName = fileName.stripSuffix(".onnx").capitalize + (if (useZIO)
                                                                     "ZIO"
@@ -75,7 +73,7 @@ object ONNXProgramGenerator {
       "programGenerator/src/main/scala/gen/" + programName + ".scala"
     );
 
-    //TODO: Be explicit about model version, metadata
+    //TODEFER: Be explicit about model version, metadata
     //Notes, from the standard:
     //"Each model MUST explicitly name the operator sets that it relies on for its functionality."
     //"An implementation must support all operators in the set or reject the model" - This can happen at runtime via ZIOstyle implicits, possibly mixing backends
@@ -330,7 +328,7 @@ object ONNXProgramGenerator {
                                                                       else
                                                                         "List(") + opName + (if (useZIO)
                                                                                                "ZIO"
-                                                                                             else //TODO: Tell the compiler when one of the type params in an output type
+                                                                                             else //TODO: Tell the compiler when one of the type params is an output type
                                                                                                "") + "." + opName + sinceVersion + (if (useZIO)
                                                                                                                                       "ZIO"
                                                                                                                                     else

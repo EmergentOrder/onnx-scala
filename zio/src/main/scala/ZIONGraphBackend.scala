@@ -33,7 +33,7 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
     with ReluZIO
     with ConcatZIO
     with DropoutZIO
-//    with DataSourceZIO
+    with DataSourceZIO
     with AutoCloseable {
   val scope         = new PointerScope()
   val ngraphBackend = new NGraphBackend(onnxBytes)
@@ -46,18 +46,14 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
     ngraphBackend.fullModel[T, T1, T2, T3](A, B, C)
   }
 
-  /*
-  def getParamsZIO[T: Numeric: ClassTag](name: String)(
-      implicit ev: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[
-        Float
-      ] TypeOr Complex[Double])#check[T]
-  ): Task[Tensor[T]] = {
+  def getParamsZIO[T: Numeric: ClassTag](name: String): Task[Tensor[T]] = 
+      {
     Task {
       ngraphBackend.getParams(name)
     }
 
   }
-   */
+
   def getAttributesZIO[T: Numeric: ClassTag](name: String)(
       implicit evT: Contains[
         T,
@@ -340,7 +336,8 @@ object ZIONGraphMain extends App {
 
   val userIds                       = userIdsMap.keys.toArray
   val itemIds                       = itemIdsMap.keys.toArray
-  def getRandomId(arr: Array[Long]) = arr(Random.nextInt(arr.length))
+  val rand = new Random(42)
+  def getRandomId(arr: Array[Long]) = arr(rand.nextInt(arr.length))
 
   val input = Task {
     val tens = TensorFactory.getTensor(
@@ -388,7 +385,7 @@ object ZIONGraphMain extends App {
   println(Pointer.maxPhysicalBytes)
   println("Output size: " + output2._1.size)
   println("Output 0: " + output2._1(0))
-  println("Output 1: " + output2._1(7999)) //TODO: Investigate output flipping here, possibly due to race
+  println("Output 1: " + output2._1(7999))
 //   println("Output 2: " + output2._1(2))
 //   println("Output 3: " + output2._1(3))
 //   println("Output 4: " + output2._1(4))

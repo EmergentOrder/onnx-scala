@@ -15,7 +15,7 @@ import scala.reflect.io.Streamable
 import org.bytedeco.javacpp.PointerScope
 import org.bytedeco.javacpp.Pointer
 
-//TODO: Add changes to generator; Generate both full model and layerwise programs each time
+//TODO: Generate full model as well as layerwise
 class NCFZIO(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[Long, Long])
     extends AutoCloseable {
 

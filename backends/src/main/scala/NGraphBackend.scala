@@ -162,6 +162,17 @@ class NGraphBackend(onnxBytes: Array[Byte])
     ???
   }
 
+  def ArgMax11[@sp T: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        keepdims: Option[(Int)] = None,
+        data: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    ): (Tensor[Long]) = ???
+
   def ArgMin1[@sp T: Numeric: ClassTag](
       name: String,
       axis: Option[(Int)] = None,
@@ -176,6 +187,17 @@ class NGraphBackend(onnxBytes: Array[Byte])
     //(trinaryOp(name, "ArgMin", data, None, None, map))
     ???
   }
+
+  def ArgMin11[@sp T: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        keepdims: Option[(Int)] = None,
+        data: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    ): (Tensor[Long]) = ???
 
   def Constant1[@sp T: Numeric: ClassTag](
       name: String,
@@ -203,28 +225,57 @@ class NGraphBackend(onnxBytes: Array[Byte])
     (trinaryOpNoAttrs(name, "Constant", value, None, None))
   }
 
-  def Equal1[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)],
-      broadcast: Option[(Int)],
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UNil]#create],
-      evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
-  ): (Tensor[T1]) = ???
+  def Constant11[@sp T: Numeric: ClassTag](
+        name: String,
+        sparse_value: Option[(SparseTensor[T])] = None,
+        value: Option[(Tensor[T])] = None
+    )(
+        implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+            Short
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+        ]
+    ): (Tensor[T]) = ???
 
-  def Equal7[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
-      name: String,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UNil]#create],
-      evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
-  ): (Tensor[T1]) = {
+
+    def Equal1[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        broadcast: Option[(Int)] = None,
+        A: Option[Tensor[T]],
+        B: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
+          ULong
+        ]#or[Byte]#or[Short]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
+        evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
+    ): (Tensor[T1]) = ???
+
+    def Equal7[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
+        name: String,
+        A: Option[Tensor[T]],
+        B: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
+          ULong
+        ]#or[Byte]#or[Short]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
+        evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
+    ): (Tensor[T1]) = {
     //(trinaryOpNoAttrs(name, "Equal", A, B, None))
     ???
   }
+  
+  def Equal11[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
+        name: String,
+        A: Option[Tensor[T]],
+        B: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
+          ULong
+        ]#or[Byte]#or[Short]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
+        evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
+    ): (Tensor[T1]) = ???
 
   def GlobalAveragePool1[@sp T: Numeric: ClassTag](
       name: String,
@@ -293,6 +344,13 @@ class NGraphBackend(onnxBytes: Array[Byte])
     val map: Map[String, Any] = Map("axis" -> axis)
     (trinaryOp(name, "Softmax", input, None, None, map))
   }
+
+  def Softmax11[@sp T: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        input: Option[Tensor[T]]
+    )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T]) = ???
+
 
   def Mul1[@sp T: Numeric: ClassTag](
       name: String,
@@ -421,6 +479,22 @@ class NGraphBackend(onnxBytes: Array[Byte])
     (trinaryOp(name, "Gemm", A, B, C, map))
   }
 
+  def Gemm11[@sp T: Numeric: ClassTag](
+        name: String,
+        alpha: Option[(Float)] = None,
+        beta: Option[(Float)] = None,
+        transA: Option[(Int)] = None,
+        transB: Option[(Int)] = None,
+        A: Option[Tensor[T]],
+        B: Option[Tensor[T]],
+        C: Option[Tensor[T]] = None
+    )(
+        implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
+        ]
+    ): (Tensor[T]) = ???
+
   def Gather1[@sp T: Numeric: ClassTag, @sp Tind: Numeric: ClassTag](
       name: String,
       axis: Option[(Int)],
@@ -436,6 +510,20 @@ class NGraphBackend(onnxBytes: Array[Byte])
   ): (Tensor[T]) = {
     (trinaryOpNoAttrs(name, "Gather", data, indices, None: Option[Tensor[T]]))
   }
+
+    def Gather11[@sp T: Numeric: ClassTag, @sp Tind: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        data: Option[Tensor[T]],
+        indices: Option[Tensor[Tind]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create],
+        evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
+    ): (Tensor[T]) = ???
 
   def Conv1[@sp T: Numeric: ClassTag](
       name: String,
@@ -463,6 +551,19 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
     trinaryOp(name, "Conv", X, W, B, map)
   }
+
+    def Conv11[@sp T: Numeric: ClassTag](
+        name: String,
+        auto_pad: Option[(String)] = None,
+        dilations: Option[(Array[Int])] = None,
+        group: Option[(Int)] = None,
+        kernel_shape: Option[(Array[Int])] = None,
+        pads: Option[(Array[Int])] = None,
+        strides: Option[(Array[Int])] = None,
+        X: Option[Tensor[T]],
+        W: Option[Tensor[T]],
+        B: Option[Tensor[T]] = None
+    )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T]) = ???
 
   /*
     val inputs: Seq[String] = node.input
@@ -946,6 +1047,22 @@ class NGraphBackend(onnxBytes: Array[Byte])
       evI: Contains[I, Union[Long]#or[UNil]#create]
   ): (Tensor[T], Tensor[I]) = ???
 
+  def MaxPool11[@sp T: Numeric: ClassTag, @sp I: Numeric: ClassTag](
+        name: String,
+        auto_pad: Option[(String)] = None,
+        ceil_mode: Option[(Int)] = None,
+        dilations: Option[(Array[Int])] = None,
+        kernel_shape: Option[(Array[Int])],
+        pads: Option[(Array[Int])] = None,
+        storage_order: Option[(Int)] = None,
+        strides: Option[(Array[Int])] = None,
+        X: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+        evI: Contains[I, Union[Long]#or[UNil]#create]
+    ): (Tensor[T], Tensor[I]) = ???
+
+
   def Concat4[@sp T: Numeric: ClassTag](
       name: String,
       axis: Option[(Int)],
@@ -1030,6 +1147,17 @@ class NGraphBackend(onnxBytes: Array[Byte])
   )(
       implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = ???
+
+  def AveragePool11[@sp T: Numeric: ClassTag](
+        name: String,
+        auto_pad: Option[(String)] = None,
+        ceil_mode: Option[(Int)] = None,
+        count_include_pad: Option[(Int)] = None,
+        kernel_shape: Option[(Array[Int])],
+        pads: Option[(Array[Int])] = None,
+        strides: Option[(Array[Int])] = None,
+        X: Option[Tensor[T]]
+    )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T]) = ???
 
   def Reshape1[@sp T: Numeric: ClassTag](
       name: String,

@@ -113,8 +113,8 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
 //    scalaVersion := scala213Version,
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((0, n)) => ("ONNXHelper.scala")
-      case _ => ""
+      case Some((2, 13)) => ("ONNX.scala")
+      case _ => "ONNX213.scala"
       }
     )
   )

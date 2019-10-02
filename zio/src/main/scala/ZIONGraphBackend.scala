@@ -282,11 +282,14 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
       axis: Option[(Int)],
       inputs: Seq[Option[Tensor[T]]]
   )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[
-        ULong
-      ]#or[Byte]#or[Short]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[
-        Double
-      ]]#or[UNil]#create]
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[
+          ULong
+        ]#or[Byte]#or[Short]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[
+          Double
+        ]]#or[UNil]#create
+      ]
   ): Task[(Tensor[T])] = {
 
     Task {

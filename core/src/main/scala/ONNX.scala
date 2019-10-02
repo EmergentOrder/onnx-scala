@@ -28,7 +28,8 @@ package object onnx {
 
   type TypesafeTensor[T, A <: Axes] = Tuple2[Array[T], Array[Int]]
 
-  type Tensor[T] = TypesafeTensor[T, Axes]
+  type Tensor[T]       = TypesafeTensor[T, Axes]
+  type SparseTensor[T] = Tensor[T]
 
   //TODO: Add these to generator
   type XInt = Int with Singleton
@@ -39,6 +40,7 @@ package object onnx {
       (data, t)
     }
   }
+
 
   trait Operator
   trait Graph
@@ -157,10 +159,32 @@ package object onnx {
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[Long])
 
+    def ArgMax11[@sp T: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        keepdims: Option[(Int)] = None,
+        data: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    ): (Tensor[Long])
+
   }
   trait ArgMin extends Operator {
 
     def ArgMin1[@sp T: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        keepdims: Option[(Int)] = None,
+        data: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    ): (Tensor[Long])
+
+    def ArgMin11[@sp T: Numeric: ClassTag](
         name: String,
         axis: Option[(Int)] = None,
         keepdims: Option[(Int)] = None,
@@ -246,6 +270,17 @@ package object onnx {
         X: Option[Tensor[T]]
     )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
 
+    def AveragePool11[@sp T: Numeric: ClassTag](
+        name: String,
+        auto_pad: Option[(String)] = None,
+        ceil_mode: Option[(Int)] = None,
+        count_include_pad: Option[(Int)] = None,
+        kernel_shape: Option[(Array[Int])],
+        pads: Option[(Array[Int])] = None,
+        strides: Option[(Array[Int])] = None,
+        X: Option[Tensor[T]]
+    )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
+
   }
   trait BatchNormalization extends Operator {
 
@@ -316,6 +351,18 @@ package object onnx {
         X: Option[Tensor[T]]
     )(
         implicit evT: Contains[T, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create]
+    ): (Tensor[T])
+
+  }
+  trait BitShift extends Operator {
+
+    def BitShift11[@sp T: Numeric: ClassTag](
+        name: String,
+        direction: Option[(String)],
+        X: Option[Tensor[T]],
+        Y: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[UNil]#create]
     ): (Tensor[T])
 
   }
@@ -438,10 +485,31 @@ package object onnx {
         input: Option[Tensor[T]]
     )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
 
+    def Clip11[@sp T: Numeric: ClassTag](
+        name: String,
+        input: Option[Tensor[T]],
+        min: Option[Tensor[T]] = None,
+        max: Option[Tensor[T]] = None
+    )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
+
   }
   trait Compress extends Operator {
 
     def Compress9[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        input: Option[Tensor[T]],
+        condition: Option[Tensor[T1]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create],
+        evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
+    ): (Tensor[T])
+
+    def Compress11[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
         axis: Option[(Int)] = None,
         input: Option[Tensor[T]],
@@ -472,6 +540,34 @@ package object onnx {
     ): (Tensor[T])
 
   }
+  trait ConcatFromSequence extends Operator {
+
+    def ConcatFromSequence11[@sp S: Numeric: ClassTag, @sp T: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)],
+        new_axis: Option[(Int)] = None,
+        input_sequence: Option[S]
+    )(
+        implicit evS: Contains[
+          S,
+          Union[Seq[Tensor[UByte]]]#or[Seq[Tensor[UShort]]]#or[Seq[Tensor[UInt]]]#or[Seq[Tensor[
+            ULong
+          ]]]#or[Seq[Tensor[Byte]]]#or[Seq[Tensor[Short]]]#or[Seq[Tensor[Int]]]#or[Seq[
+            Tensor[Long]
+          ]]#or[Seq[Tensor[Float16]]]#or[Seq[Tensor[Float]]]#or[Seq[Tensor[Double]]]#or[Seq[
+            Tensor[String]
+          ]]#or[Seq[Tensor[Boolean]]]#or[Seq[Tensor[Complex[Float]]]]#or[Seq[
+            Tensor[Complex[Double]]
+          ]]#or[UNil]#create
+        ],
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
+          Long
+        ]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[
+          Double
+        ]]#or[UNil]#create]
+    ): (Tensor[T])
+
+  }
   trait Constant extends Operator {
 
     def Constant1[@sp T: Numeric: ClassTag](name: String, value: Option[(Tensor[T])])(
@@ -484,6 +580,19 @@ package object onnx {
     ): (Tensor[T])
 
     def Constant9[@sp T: Numeric: ClassTag](name: String, value: Option[(Tensor[T])])(
+        implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+            Short
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+        ]
+    ): (Tensor[T])
+
+    def Constant11[@sp T: Numeric: ClassTag](
+        name: String,
+        sparse_value: Option[(SparseTensor[T])] = None,
+        value: Option[(Tensor[T])] = None
+    )(
         implicit evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
@@ -513,6 +622,19 @@ package object onnx {
   trait Conv extends Operator {
 
     def Conv1[@sp T: Numeric: ClassTag](
+        name: String,
+        auto_pad: Option[(String)] = None,
+        dilations: Option[(Array[Int])] = None,
+        group: Option[(Int)] = None,
+        kernel_shape: Option[(Array[Int])] = None,
+        pads: Option[(Array[Int])] = None,
+        strides: Option[(Array[Int])] = None,
+        X: Option[Tensor[T]],
+        W: Option[Tensor[T]],
+        B: Option[Tensor[T]] = None
+    )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
+
+    def Conv11[@sp T: Numeric: ClassTag](
         name: String,
         auto_pad: Option[(String)] = None,
         dilations: Option[(Array[Int])] = None,
@@ -568,6 +690,21 @@ package object onnx {
         B: Option[Tensor[T]] = None
     )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
 
+    def ConvTranspose11[@sp T: Numeric: ClassTag](
+        name: String,
+        auto_pad: Option[(String)] = None,
+        dilations: Option[(Array[Int])] = None,
+        group: Option[(Int)] = None,
+        kernel_shape: Option[(Array[Int])] = None,
+        output_padding: Option[(Array[Int])] = None,
+        output_shape: Option[(Array[Int])] = None,
+        pads: Option[(Array[Int])] = None,
+        strides: Option[(Array[Int])] = None,
+        X: Option[Tensor[T]],
+        W: Option[Tensor[T]],
+        B: Option[Tensor[T]] = None
+    )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
+
   }
   trait Cos extends Operator {
 
@@ -583,11 +720,41 @@ package object onnx {
     ): (Tensor[T])
 
   }
+  trait CumSum extends Operator {
+
+    def CumSum11[@sp T: Numeric: ClassTag, @sp T2: Numeric: ClassTag](
+        name: String,
+        exclusive: Option[(Int)] = None,
+        reverse: Option[(Int)] = None,
+        x: Option[Tensor[T]],
+        axis: Option[Tensor[T2]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float]#or[Double]#or[UNil]#create
+        ],
+        evT2: Contains[T2, Union[Int]#or[Long]#or[UNil]#create]
+    ): (Tensor[T])
+
+  }
   trait DepthToSpace extends Operator {
 
     def DepthToSpace1[@sp T: Numeric: ClassTag](
         name: String,
         blocksize: Option[(Int)],
+        input: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create]
+    ): (Tensor[T])
+
+    def DepthToSpace11[@sp T: Numeric: ClassTag](
+        name: String,
+        blocksize: Option[(Int)],
+        mode: Option[(String)] = None,
         input: Option[Tensor[T]]
     )(
         implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
@@ -606,6 +773,13 @@ package object onnx {
         x_scale: Option[Tensor[Float]],
         x_zero_point: Option[Tensor[T]] = None
     )(implicit evT: Contains[T, Union[Byte]#or[UByte]#or[Int]#or[UNil]#create]): (Tensor[Float])
+
+  }
+  trait Det extends Operator {
+
+    def Det11[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
+        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    ): (Tensor[T])
 
   }
   trait DictVectorizer extends Operator {
@@ -700,6 +874,17 @@ package object onnx {
     ): (Tensor[T], Tensor[T1])
 
   }
+  trait DynamicQuantizeLinear extends Operator {
+
+    def DynamicQuantizeLinear11[@sp T1: Numeric: ClassTag, @sp T2: Numeric: ClassTag](
+        name: String,
+        x: Option[Tensor[T1]]
+    )(
+        implicit evT1: Contains[T1, Union[Float]#or[UNil]#create],
+        evT2: Contains[T2, Union[UByte]#or[UNil]#create]
+    ): (Tensor[T2], Tensor[Float], Tensor[T2])
+
+  }
   trait Elu extends Operator {
 
     def Elu1[@sp T: Numeric: ClassTag](
@@ -725,7 +910,9 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
     )(
-        implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UNil]#create],
+        implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
+          ULong
+        ]#or[Byte]#or[Short]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
     ): (Tensor[T1])
 
@@ -734,7 +921,20 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
     )(
-        implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UNil]#create],
+        implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
+          ULong
+        ]#or[Byte]#or[Short]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
+        evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
+    ): (Tensor[T1])
+
+    def Equal11[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
+        name: String,
+        A: Option[Tensor[T]],
+        B: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
+          ULong
+        ]#or[Byte]#or[Short]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
     ): (Tensor[T1])
 
@@ -815,6 +1015,19 @@ package object onnx {
     ): (Tensor[T])
 
     def Flatten9[@sp T: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        input: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+            Short
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+        ]
+    ): (Tensor[T])
+
+    def Flatten11[@sp T: Numeric: ClassTag](
         name: String,
         axis: Option[(Int)] = None,
         input: Option[Tensor[T]]
@@ -921,6 +1134,52 @@ package object onnx {
         evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
     ): (Tensor[T])
 
+    def Gather11[@sp T: Numeric: ClassTag, @sp Tind: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        data: Option[Tensor[T]],
+        indices: Option[Tensor[Tind]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create],
+        evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
+    ): (Tensor[T])
+
+  }
+  trait GatherElements extends Operator {
+
+    def GatherElements11[@sp T: Numeric: ClassTag, @sp Tind: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        data: Option[Tensor[T]],
+        indices: Option[Tensor[Tind]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create],
+        evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
+    ): (Tensor[T])
+
+  }
+  trait GatherND extends Operator {
+
+    def GatherND11[@sp T: Numeric: ClassTag](
+        name: String,
+        data: Option[Tensor[T]],
+        indices: Option[Tensor[Long]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create]
+    ): (Tensor[T])
+
   }
   trait Gemm extends Operator {
 
@@ -983,6 +1242,22 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]],
         C: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
+        ]
+    ): (Tensor[T])
+
+    def Gemm11[@sp T: Numeric: ClassTag](
+        name: String,
+        alpha: Option[(Float)] = None,
+        beta: Option[(Float)] = None,
+        transA: Option[(Int)] = None,
+        transB: Option[(Int)] = None,
+        A: Option[Tensor[T]],
+        B: Option[Tensor[T]],
+        C: Option[Tensor[T]] = None
     )(
         implicit evT: Contains[
           T,
@@ -1093,6 +1368,12 @@ package object onnx {
         input: Option[Tensor[T]]
     )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
 
+    def Hardmax11[@sp T: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        input: Option[Tensor[T]]
+    )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
+
   }
   trait Identity extends Operator {
 
@@ -1108,6 +1389,20 @@ package object onnx {
   trait If extends Operator {
 
     def If1[@sp B: Numeric: ClassTag, @sp V: Numeric: ClassTag](
+        name: String,
+        else_branch: Option[(Graph)],
+        then_branch: Option[(Graph)],
+        cond: Option[Tensor[B]]
+    )(
+        implicit evB: Contains[B, Union[Boolean]#or[UNil]#create],
+        evV: Contains[V, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
+          Long
+        ]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[
+          Double
+        ]]#or[UNil]#create]
+    ): (Tensor[V])
+
+    def If11[@sp B: Numeric: ClassTag, @sp V: Numeric: ClassTag](
         name: String,
         else_branch: Option[(Graph)],
         then_branch: Option[(Graph)],
@@ -1386,10 +1681,32 @@ package object onnx {
         input: Option[Tensor[T]]
     )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
 
+    def LogSoftmax11[@sp T: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        input: Option[Tensor[T]]
+    )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
+
   }
   trait Loop extends Operator {
 
     def Loop1[@sp I: Numeric: ClassTag, @sp B: Numeric: ClassTag, @sp V: Numeric: ClassTag](
+        name: String,
+        body: Option[(Graph)],
+        M: Option[Tensor[I]] = None,
+        cond: Option[Tensor[B]] = None,
+        v_initial: Seq[Option[Tensor[V]]]
+    )(
+        implicit evI: Contains[I, Union[Long]#or[UNil]#create],
+        evB: Contains[B, Union[Boolean]#or[UNil]#create],
+        evV: Contains[V, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
+          Long
+        ]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[
+          Double
+        ]]#or[UNil]#create]
+    ): (Tensor[V])
+
+    def Loop11[@sp I: Numeric: ClassTag, @sp B: Numeric: ClassTag, @sp V: Numeric: ClassTag](
         name: String,
         body: Option[(Graph)],
         M: Option[Tensor[I]] = None,
@@ -1429,6 +1746,16 @@ package object onnx {
     )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
 
     def LpPool2[@sp T: Numeric: ClassTag](
+        name: String,
+        auto_pad: Option[(String)] = None,
+        kernel_shape: Option[(Array[Int])],
+        p: Option[(Int)] = None,
+        pads: Option[(Array[Int])] = None,
+        strides: Option[(Array[Int])] = None,
+        X: Option[Tensor[T]]
+    )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
+
+    def LpPool11[@sp T: Numeric: ClassTag](
         name: String,
         auto_pad: Option[(String)] = None,
         kernel_shape: Option[(Array[Int])],
@@ -1525,6 +1852,21 @@ package object onnx {
         evI: Contains[I, Union[Long]#or[UNil]#create]
     ): (Tensor[T], Tensor[I])
 
+    def MaxPool11[@sp T: Numeric: ClassTag, @sp I: Numeric: ClassTag](
+        name: String,
+        auto_pad: Option[(String)] = None,
+        ceil_mode: Option[(Int)] = None,
+        dilations: Option[(Array[Int])] = None,
+        kernel_shape: Option[(Array[Int])],
+        pads: Option[(Array[Int])] = None,
+        storage_order: Option[(Int)] = None,
+        strides: Option[(Array[Int])] = None,
+        X: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+        evI: Contains[I, Union[Long]#or[UNil]#create]
+    ): (Tensor[T], Tensor[I])
+
   }
   trait MaxRoiPool extends Operator {
 
@@ -1540,6 +1882,19 @@ package object onnx {
   trait MaxUnpool extends Operator {
 
     def MaxUnpool9[@sp T1: Numeric: ClassTag, @sp T2: Numeric: ClassTag](
+        name: String,
+        kernel_shape: Option[(Array[Int])],
+        pads: Option[(Array[Int])] = None,
+        strides: Option[(Array[Int])] = None,
+        X: Option[Tensor[T1]],
+        I: Option[Tensor[T2]],
+        output_shapeInput: Option[Tensor[T2]] = None
+    )(
+        implicit evT1: Contains[T1, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+        evT2: Contains[T2, Union[Long]#or[UNil]#create]
+    ): (Tensor[T1])
+
+    def MaxUnpool11[@sp T1: Numeric: ClassTag, @sp T2: Numeric: ClassTag](
         name: String,
         kernel_shape: Option[(Array[Int])],
         pads: Option[(Array[Int])] = None,
@@ -1682,6 +2037,16 @@ package object onnx {
         score_threshold: Option[Tensor[Float]] = None
     ): (Tensor[Long])
 
+    def NonMaxSuppression11(
+        name: String,
+        center_point_box: Option[(Int)] = None,
+        boxes: Option[Tensor[Float]],
+        scores: Option[Tensor[Float]],
+        max_output_boxes_per_class: Option[Tensor[Long]] = None,
+        iou_threshold: Option[Tensor[Float]] = None,
+        score_threshold: Option[Tensor[Float]] = None
+    ): (Tensor[Long])
+
   }
   trait NonZero extends Operator {
 
@@ -1721,12 +2086,29 @@ package object onnx {
         depth: Option[Tensor[T2]],
         values: Option[Tensor[T3]]
     )(
-        implicit evT1: Contains[
-          T1,
-          Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-            Int
-          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
-        ],
+        implicit evT1: Contains[T1, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
+        evT2: Contains[T2, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
+          Long
+        ]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
+        evT3: Contains[T3, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
+          Long
+        ]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[
+          Double
+        ]]#or[UNil]#create]
+    ): (Tensor[T3])
+
+    def OneHot11[@sp T1: Numeric: ClassTag, @sp T2: Numeric: ClassTag, @sp T3: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        indices: Option[Tensor[T1]],
+        depth: Option[Tensor[T2]],
+        values: Option[Tensor[T3]]
+    )(
+        implicit evT1: Contains[T1, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT2: Contains[T2, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
           Long
         ]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
@@ -1833,7 +2215,14 @@ package object onnx {
         paddings: Option[(Array[Int])],
         value: Option[(Float)] = None,
         data: Option[Tensor[T]]
-    )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
+    )(
+        implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+            Short
+          ]#or[Int]#or[Long]#or[UNil]#create
+        ]
+    ): (Tensor[T])
 
     def Pad2[@sp T: Numeric: ClassTag](
         name: String,
@@ -1841,7 +2230,29 @@ package object onnx {
         pads: Option[(Array[Int])],
         value: Option[(Float)] = None,
         data: Option[Tensor[T]]
-    )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
+    )(
+        implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+            Short
+          ]#or[Int]#or[Long]#or[UNil]#create
+        ]
+    ): (Tensor[T])
+
+    def Pad11[@sp T: Numeric: ClassTag](
+        name: String,
+        mode: Option[(String)] = None,
+        data: Option[Tensor[T]],
+        pads: Option[Tensor[Long]],
+        constant_value: Option[Tensor[T]] = None
+    )(
+        implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+            Short
+          ]#or[Int]#or[Long]#or[UNil]#create
+        ]
+    ): (Tensor[T])
 
   }
   trait Pow extends Operator {
@@ -1991,14 +2402,11 @@ package object onnx {
         seed: Option[(Float)] = None,
         input: Option[Tensor[T1]]
     )(
-        implicit evT1: Contains[
-          T1,
-          Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-            Int
-          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
-            Complex[Double]
-          ]#or[UNil]#create
-        ],
+        implicit evT1: Contains[T1, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create],
         evT2: Contains[T2, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T2])
 
@@ -2025,16 +2433,24 @@ package object onnx {
         seed: Option[(Float)] = None,
         input: Option[Tensor[T1]]
     )(
-        implicit evT1: Contains[
-          T1,
-          Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-            Int
-          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
-            Complex[Double]
-          ]#or[UNil]#create
-        ],
+        implicit evT1: Contains[T1, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create],
         evT2: Contains[T2, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T2])
+
+  }
+  trait Range extends Operator {
+
+    def Range11[@sp T: Numeric: ClassTag](
+        name: String,
+        start: Option[Tensor[T]],
+        limit: Option[Tensor[T]],
+        delta: Option[Tensor[T]]
+    )(implicit evT: Contains[T, Union[Float]#or[Double]#or[Short]#or[Int]#or[Long]#or[UNil]#create])
+        : (Tensor[T])
 
   }
   trait Reciprocal extends Operator {
@@ -2064,10 +2480,34 @@ package object onnx {
         ]
     ): (Tensor[T])
 
+    def ReduceL111[@sp T: Numeric: ClassTag](
+        name: String,
+        axes: Option[(Array[Int])] = None,
+        keepdims: Option[(Int)] = None,
+        data: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+        ]
+    ): (Tensor[T])
+
   }
   trait ReduceL2 extends Operator {
 
     def ReduceL21[@sp T: Numeric: ClassTag](
+        name: String,
+        axes: Option[(Array[Int])] = None,
+        keepdims: Option[(Int)] = None,
+        data: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+        ]
+    ): (Tensor[T])
+
+    def ReduceL211[@sp T: Numeric: ClassTag](
         name: String,
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
@@ -2094,10 +2534,34 @@ package object onnx {
         ]
     ): (Tensor[T])
 
+    def ReduceLogSum11[@sp T: Numeric: ClassTag](
+        name: String,
+        axes: Option[(Array[Int])] = None,
+        keepdims: Option[(Int)] = None,
+        data: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+        ]
+    ): (Tensor[T])
+
   }
   trait ReduceLogSumExp extends Operator {
 
     def ReduceLogSumExp1[@sp T: Numeric: ClassTag](
+        name: String,
+        axes: Option[(Array[Int])] = None,
+        keepdims: Option[(Int)] = None,
+        data: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+        ]
+    ): (Tensor[T])
+
+    def ReduceLogSumExp11[@sp T: Numeric: ClassTag](
         name: String,
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
@@ -2124,10 +2588,34 @@ package object onnx {
         ]
     ): (Tensor[T])
 
+    def ReduceMax11[@sp T: Numeric: ClassTag](
+        name: String,
+        axes: Option[(Array[Int])] = None,
+        keepdims: Option[(Int)] = None,
+        data: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+        ]
+    ): (Tensor[T])
+
   }
   trait ReduceMean extends Operator {
 
     def ReduceMean1[@sp T: Numeric: ClassTag](
+        name: String,
+        axes: Option[(Array[Int])] = None,
+        keepdims: Option[(Int)] = None,
+        data: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+        ]
+    ): (Tensor[T])
+
+    def ReduceMean11[@sp T: Numeric: ClassTag](
         name: String,
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
@@ -2154,10 +2642,34 @@ package object onnx {
         ]
     ): (Tensor[T])
 
+    def ReduceMin11[@sp T: Numeric: ClassTag](
+        name: String,
+        axes: Option[(Array[Int])] = None,
+        keepdims: Option[(Int)] = None,
+        data: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+        ]
+    ): (Tensor[T])
+
   }
   trait ReduceProd extends Operator {
 
     def ReduceProd1[@sp T: Numeric: ClassTag](
+        name: String,
+        axes: Option[(Array[Int])] = None,
+        keepdims: Option[(Int)] = None,
+        data: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+        ]
+    ): (Tensor[T])
+
+    def ReduceProd11[@sp T: Numeric: ClassTag](
         name: String,
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
@@ -2184,10 +2696,34 @@ package object onnx {
         ]
     ): (Tensor[T])
 
+    def ReduceSum11[@sp T: Numeric: ClassTag](
+        name: String,
+        axes: Option[(Array[Int])] = None,
+        keepdims: Option[(Int)] = None,
+        data: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+        ]
+    ): (Tensor[T])
+
   }
   trait ReduceSumSquare extends Operator {
 
     def ReduceSumSquare1[@sp T: Numeric: ClassTag](
+        name: String,
+        axes: Option[(Array[Int])] = None,
+        keepdims: Option[(Int)] = None,
+        data: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+        ]
+    ): (Tensor[T])
+
+    def ReduceSumSquare11[@sp T: Numeric: ClassTag](
         name: String,
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
@@ -2258,6 +2794,27 @@ package object onnx {
         ]#or[UNil]#create]
     ): (Tensor[T])
 
+    def Resize11[@sp T1: Numeric: ClassTag, @sp T2: Numeric: ClassTag](
+        name: String,
+        coordinate_transformation_mode: Option[(String)] = None,
+        cubic_coeff_a: Option[(Float)] = None,
+        exclude_outside: Option[(Int)] = None,
+        extrapolation_value: Option[(Float)] = None,
+        mode: Option[(String)] = None,
+        nearest_mode: Option[(String)] = None,
+        X: Option[Tensor[T1]],
+        roi: Option[Tensor[T2]],
+        scales: Option[Tensor[Float]],
+        sizes: Option[Tensor[Long]] = None
+    )(
+        implicit evT1: Contains[T1, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create],
+        evT2: Contains[T2, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    ): (Tensor[T1])
+
   }
   trait ReverseSequence extends Operator {
 
@@ -2292,6 +2849,13 @@ package object onnx {
         implicit evT1: Contains[T1, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT2: Contains[T2, Union[Long]#or[UNil]#create]
     ): (Tensor[T1])
+
+  }
+  trait Round extends Operator {
+
+    def Round11[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
+        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    ): (Tensor[T])
 
   }
   trait SVMClassifier extends Operator {
@@ -2365,6 +2929,23 @@ package object onnx {
         ]#or[UNil]#create]
     ): (Tensor[V])
 
+    def Scan11[@sp V: Numeric: ClassTag](
+        name: String,
+        body: Option[(Graph)],
+        num_scan_inputs: Option[(Int)],
+        scan_input_axes: Option[(Array[Int])] = None,
+        scan_input_directions: Option[(Array[Int])] = None,
+        scan_output_axes: Option[(Array[Int])] = None,
+        scan_output_directions: Option[(Array[Int])] = None,
+        initial_state_and_scan_inputs: Seq[Option[Tensor[V]]]
+    )(
+        implicit evV: Contains[V, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create]
+    ): (Tensor[V])
+
   }
   trait Scatter extends Operator {
 
@@ -2381,6 +2962,55 @@ package object onnx {
           Complex[Double]
         ]#or[UNil]#create],
         evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
+    ): (Tensor[T])
+
+    def Scatter11[@sp T: Numeric: ClassTag, @sp Tind: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        data: Option[Tensor[T]],
+        indices: Option[Tensor[Tind]],
+        updates: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create],
+        evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
+    ): (Tensor[T])
+
+  }
+  trait ScatterElements extends Operator {
+
+    def ScatterElements11[@sp T: Numeric: ClassTag, @sp Tind: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        data: Option[Tensor[T]],
+        indices: Option[Tensor[Tind]],
+        updates: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create],
+        evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
+    ): (Tensor[T])
+
+  }
+  trait ScatterND extends Operator {
+
+    def ScatterND11[@sp T: Numeric: ClassTag](
+        name: String,
+        data: Option[Tensor[T]],
+        indices: Option[Tensor[Long]],
+        updates: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create]
     ): (Tensor[T])
 
   }
@@ -2400,6 +3030,156 @@ package object onnx {
         gamma: Option[(Float)] = None,
         X: Option[Tensor[T]]
     )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
+
+  }
+  trait SequenceAt extends Operator {
+
+    def SequenceAt11[@sp S: Numeric: ClassTag, @sp I: Numeric: ClassTag, @sp T: Numeric: ClassTag](
+        name: String,
+        input_sequence: Option[S],
+        position: Option[Tensor[I]]
+    )(
+        implicit evS: Contains[
+          S,
+          Union[Seq[Tensor[UByte]]]#or[Seq[Tensor[UShort]]]#or[Seq[Tensor[UInt]]]#or[Seq[Tensor[
+            ULong
+          ]]]#or[Seq[Tensor[Byte]]]#or[Seq[Tensor[Short]]]#or[Seq[Tensor[Int]]]#or[Seq[
+            Tensor[Long]
+          ]]#or[Seq[Tensor[Float16]]]#or[Seq[Tensor[Float]]]#or[Seq[Tensor[Double]]]#or[Seq[
+            Tensor[String]
+          ]]#or[Seq[Tensor[Boolean]]]#or[Seq[Tensor[Complex[Float]]]]#or[Seq[
+            Tensor[Complex[Double]]
+          ]]#or[UNil]#create
+        ],
+        evI: Contains[I, Union[Int]#or[Long]#or[UNil]#create],
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
+          Long
+        ]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[
+          Double
+        ]]#or[UNil]#create]
+    ): (Tensor[T])
+
+  }
+  trait SequenceConstruct extends Operator {
+
+    def SequenceConstruct11[@sp T: Numeric: ClassTag, @sp S: Numeric: ClassTag](
+        name: String,
+        inputs: Seq[Option[Tensor[T]]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create],
+        evS: Contains[
+          S,
+          Union[Seq[Tensor[UByte]]]#or[Seq[Tensor[UShort]]]#or[Seq[Tensor[UInt]]]#or[Seq[Tensor[
+            ULong
+          ]]]#or[Seq[Tensor[Byte]]]#or[Seq[Tensor[Short]]]#or[Seq[Tensor[Int]]]#or[Seq[
+            Tensor[Long]
+          ]]#or[Seq[Tensor[Float16]]]#or[Seq[Tensor[Float]]]#or[Seq[Tensor[Double]]]#or[Seq[
+            Tensor[String]
+          ]]#or[Seq[Tensor[Boolean]]]#or[Seq[Tensor[Complex[Float]]]]#or[Seq[
+            Tensor[Complex[Double]]
+          ]]#or[UNil]#create
+        ]
+    ): (S)
+
+  }
+  trait SequenceEmpty extends Operator {
+
+    def SequenceEmpty11[@sp S: Numeric: ClassTag](name: String, dtype: Option[(Int)] = None)(
+        implicit evS: Contains[
+          S,
+          Union[Seq[Tensor[UByte]]]#or[Seq[Tensor[UShort]]]#or[Seq[Tensor[UInt]]]#or[Seq[Tensor[
+            ULong
+          ]]]#or[Seq[Tensor[Byte]]]#or[Seq[Tensor[Short]]]#or[Seq[Tensor[Int]]]#or[Seq[
+            Tensor[Long]
+          ]]#or[Seq[Tensor[Float16]]]#or[Seq[Tensor[Float]]]#or[Seq[Tensor[Double]]]#or[Seq[
+            Tensor[String]
+          ]]#or[Seq[Tensor[Boolean]]]#or[Seq[Tensor[Complex[Float]]]]#or[Seq[
+            Tensor[Complex[Double]]
+          ]]#or[UNil]#create
+        ]
+    ): (S)
+
+  }
+  trait SequenceErase extends Operator {
+
+    def SequenceErase11[@sp S: Numeric: ClassTag, @sp I: Numeric: ClassTag](
+        name: String,
+        input_sequence: Option[S],
+        position: Option[Tensor[I]] = None
+    )(
+        implicit evS: Contains[
+          S,
+          Union[Seq[Tensor[UByte]]]#or[Seq[Tensor[UShort]]]#or[Seq[Tensor[UInt]]]#or[Seq[Tensor[
+            ULong
+          ]]]#or[Seq[Tensor[Byte]]]#or[Seq[Tensor[Short]]]#or[Seq[Tensor[Int]]]#or[Seq[
+            Tensor[Long]
+          ]]#or[Seq[Tensor[Float16]]]#or[Seq[Tensor[Float]]]#or[Seq[Tensor[Double]]]#or[Seq[
+            Tensor[String]
+          ]]#or[Seq[Tensor[Boolean]]]#or[Seq[Tensor[Complex[Float]]]]#or[Seq[
+            Tensor[Complex[Double]]
+          ]]#or[UNil]#create
+        ],
+        evI: Contains[I, Union[Int]#or[Long]#or[UNil]#create]
+    ): (S)
+
+  }
+  trait SequenceInsert extends Operator {
+
+    def SequenceInsert11[
+        @sp S: Numeric: ClassTag,
+        @sp T: Numeric: ClassTag,
+        @sp I: Numeric: ClassTag
+    ](
+        name: String,
+        input_sequence: Option[S],
+        tensor: Option[Tensor[T]],
+        position: Option[Tensor[I]] = None
+    )(
+        implicit evS: Contains[
+          S,
+          Union[Seq[Tensor[UByte]]]#or[Seq[Tensor[UShort]]]#or[Seq[Tensor[UInt]]]#or[Seq[Tensor[
+            ULong
+          ]]]#or[Seq[Tensor[Byte]]]#or[Seq[Tensor[Short]]]#or[Seq[Tensor[Int]]]#or[Seq[
+            Tensor[Long]
+          ]]#or[Seq[Tensor[Float16]]]#or[Seq[Tensor[Float]]]#or[Seq[Tensor[Double]]]#or[Seq[
+            Tensor[String]
+          ]]#or[Seq[Tensor[Boolean]]]#or[Seq[Tensor[Complex[Float]]]]#or[Seq[
+            Tensor[Complex[Double]]
+          ]]#or[UNil]#create
+        ],
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
+          Long
+        ]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[
+          Double
+        ]]#or[UNil]#create],
+        evI: Contains[I, Union[Int]#or[Long]#or[UNil]#create]
+    ): (S)
+
+  }
+  trait SequenceLength extends Operator {
+
+    def SequenceLength11[@sp S: Numeric: ClassTag, @sp I: Numeric: ClassTag](
+        name: String,
+        input_sequence: Option[S]
+    )(
+        implicit evS: Contains[
+          S,
+          Union[Seq[Tensor[UByte]]]#or[Seq[Tensor[UShort]]]#or[Seq[Tensor[UInt]]]#or[Seq[Tensor[
+            ULong
+          ]]]#or[Seq[Tensor[Byte]]]#or[Seq[Tensor[Short]]]#or[Seq[Tensor[Int]]]#or[Seq[
+            Tensor[Long]
+          ]]#or[Seq[Tensor[Float16]]]#or[Seq[Tensor[Float]]]#or[Seq[Tensor[Double]]]#or[Seq[
+            Tensor[String]
+          ]]#or[Seq[Tensor[Boolean]]]#or[Seq[Tensor[Complex[Float]]]]#or[Seq[
+            Tensor[Complex[Double]]
+          ]]#or[UNil]#create
+        ],
+        evI: Contains[I, Union[Long]#or[UNil]#create]
+    ): (Tensor[I])
 
   }
   trait Shape extends Operator {
@@ -2514,10 +3294,32 @@ package object onnx {
         evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
     ): (Tensor[T])
 
+    def Slice11[@sp T: Numeric: ClassTag, @sp Tind: Numeric: ClassTag](
+        name: String,
+        data: Option[Tensor[T]],
+        starts: Option[Tensor[Tind]],
+        ends: Option[Tensor[Tind]],
+        axes: Option[Tensor[Tind]] = None,
+        steps: Option[Tensor[Tind]] = None
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create],
+        evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
+    ): (Tensor[T])
+
   }
   trait Softmax extends Operator {
 
     def Softmax1[@sp T: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        input: Option[Tensor[T]]
+    )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T])
+
+    def Softmax11[@sp T: Numeric: ClassTag](
         name: String,
         axis: Option[(Int)] = None,
         input: Option[Tensor[T]]
@@ -2584,6 +3386,54 @@ package object onnx {
         ]
     ): (Tensor[T])
 
+    def Split11[@sp T: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        splitAttr: Option[(Array[Int])] = None,
+        input: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+            Short
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+        ]
+    ): (Tensor[T])
+
+  }
+  trait SplitToSequence extends Operator {
+
+    def SplitToSequence11[
+        @sp T: Numeric: ClassTag,
+        @sp I: Numeric: ClassTag,
+        @sp S: Numeric: ClassTag
+    ](
+        name: String,
+        axis: Option[(Int)] = None,
+        keepdims: Option[(Int)] = None,
+        input: Option[Tensor[T]],
+        split: Option[Tensor[I]] = None
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create],
+        evI: Contains[I, Union[Int]#or[Long]#or[UNil]#create],
+        evS: Contains[
+          S,
+          Union[Seq[Tensor[UByte]]]#or[Seq[Tensor[UShort]]]#or[Seq[Tensor[UInt]]]#or[Seq[Tensor[
+            ULong
+          ]]]#or[Seq[Tensor[Byte]]]#or[Seq[Tensor[Short]]]#or[Seq[Tensor[Int]]]#or[Seq[
+            Tensor[Long]
+          ]]#or[Seq[Tensor[Float16]]]#or[Seq[Tensor[Float]]]#or[Seq[Tensor[Double]]]#or[Seq[
+            Tensor[String]
+          ]]#or[Seq[Tensor[Boolean]]]#or[Seq[Tensor[Complex[Float]]]]#or[Seq[
+            Tensor[Complex[Double]]
+          ]]#or[UNil]#create
+        ]
+    ): (S)
+
   }
   trait Sqrt extends Operator {
 
@@ -2601,6 +3451,18 @@ package object onnx {
   trait Squeeze extends Operator {
 
     def Squeeze1[@sp T: Numeric: ClassTag](
+        name: String,
+        axes: Option[(Array[Int])] = None,
+        data: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create]
+    ): (Tensor[T])
+
+    def Squeeze11[@sp T: Numeric: ClassTag](
         name: String,
         axes: Option[(Array[Int])] = None,
         data: Option[Tensor[T]]
@@ -2761,7 +3623,12 @@ package object onnx {
         k: Option[(Int)],
         X: Option[Tensor[T]]
     )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+        implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+            Short
+          ]#or[Int]#or[Long]#or[UNil]#create
+        ],
         evI: Contains[I, Union[Long]#or[UNil]#create]
     ): (Tensor[T], Tensor[I])
 
@@ -2771,7 +3638,29 @@ package object onnx {
         X: Option[Tensor[T]],
         K: Option[Tensor[Long]]
     )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+        implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+            Short
+          ]#or[Int]#or[Long]#or[UNil]#create
+        ],
+        evI: Contains[I, Union[Long]#or[UNil]#create]
+    ): (Tensor[T], Tensor[I])
+
+    def TopK11[@sp T: Numeric: ClassTag, @sp I: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        largest: Option[(Int)] = None,
+        sorted: Option[(Int)] = None,
+        X: Option[Tensor[T]],
+        K: Option[Tensor[Long]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+            Short
+          ]#or[Int]#or[Long]#or[UNil]#create
+        ],
         evI: Contains[I, Union[Long]#or[UNil]#create]
     ): (Tensor[T], Tensor[I])
 
@@ -2846,9 +3735,37 @@ package object onnx {
     ): (Tensor[Float])
 
   }
+  trait Unique extends Operator {
+
+    def Unique11[@sp T: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        sorted: Option[(Int)] = None,
+        X: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create]
+    ): (Tensor[T], Tensor[Long], Tensor[Long], Tensor[Long])
+
+  }
   trait Unsqueeze extends Operator {
 
     def Unsqueeze1[@sp T: Numeric: ClassTag](
+        name: String,
+        axes: Option[(Array[Int])],
+        data: Option[Tensor[T]]
+    )(
+        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+          Int
+        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+          Complex[Double]
+        ]#or[UNil]#create]
+    ): (Tensor[T])
+
+    def Unsqueeze11[@sp T: Numeric: ClassTag](
         name: String,
         axes: Option[(Array[Int])],
         data: Option[Tensor[T]]

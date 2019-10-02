@@ -17,16 +17,14 @@ trait AbsNet {
   val Abs: Abs
   def program[
       T: Numeric: ClassTag
-  ]
-  (inputData: Tensor[T])
-  (
-        implicit evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-            Short
-          ]#or[Int]#or[Long]#or[UNil]#create
-        ]
-    ): List[Tensor[T]] = {
+  ](inputData: Tensor[T])(
+      implicit evT: Contains[
+        T,
+        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+          Short
+        ]#or[Int]#or[Long]#or[UNil]#create
+      ]
+  ): List[Tensor[T]] = {
     for {
       nodedata <- List(inputData)
       nodeabs <- List(

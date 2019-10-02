@@ -19,14 +19,13 @@
 package org.emergentorder.onnx
 
 import java.nio.file._
-import java.nio.ByteBuffer
 import scala.meta._
 import org.bytedeco.onnx.TensorProto
 import collection.JavaConverters._
-import spire.math.Number
 
 import scala.reflect.io.Streamable
-import scala.reflect.ClassTag
+
+//TODO ASAP: Fix references to UnionTypes and  ONNXHelper init in generated programs
 
 //TODO: Use Squid to clean up / improve this
 
@@ -63,9 +62,8 @@ object ONNXProgramGenerator {
       )
       .toMap
 
-    val useZIO            = false
-    val useDotty          = false
-    val unionTypeOperator = (if (useDotty) " | " else " TypeOr ")
+    val useZIO   = false
+    val useDotty = false
 
     //TODO: Fix output for the benchmark models shown here: https://github.com/onnx/backend-scoreboard
     //TODO: run time benchmarks on the same models
@@ -74,7 +72,7 @@ object ONNXProgramGenerator {
                                                                     "ZIO"
                                                                   else "")
     val path = Paths.get(
-      "programGenerator/src/gen/scala/" + programName + ".scala"
+      "programGenerator/src/main/scala/gen/" + programName + ".scala"
     );
 
     //TODO: Be explicit about model version, metadata
@@ -130,7 +128,7 @@ object ONNXProgramGenerator {
          else "import org.emergentorder.onnx.backends._\n") +
         (if (useDotty) ""
          else
-           "import org.emergentorder.union.UnionType._\n") +
+           "import org.emergentorder.union._\n") +
         "import scala.reflect.ClassTag\n" +
         "import spire.implicits._\n" +
         "import spire.math.UByte\n" +
@@ -140,23 +138,22 @@ object ONNXProgramGenerator {
         "import spire.math.Numeric\n" +
 //        "import singleton.ops._\n" +
         "import scala.language.higherKinds\n\n" +
-        (if (useZIO) "object " else "trait ") + programName + " {\n" +
-        "val onnxHelper = new ONNXHelper(\"" + fileName + "\")" + "\n" + //TODO: Use one global NGraphBackend?
+        ("class ") + programName + "(byteArray: Array[Byte])" + " {\n" +
         distinctOps
           .map { x =>
             "  val " + x + (if (useZIO) "ZIO" else "") + ": " + x.capitalize + (if (useZIO)
                                                                                   "ZIO"
                                                                                 else
                                                                                   "") +
-              (if (useZIO) " = new ONNXNGraphHandlers(onnxHelper)"
-               else " = new NGraphBackend(onnxHelper)") +
+              (if (useZIO) " = new ONNXNGraphHandlers(byteArray)"
+               else " = new NGraphBackend(byteArray)") +
               "\n"
           } //TODO: Make class instead of object and inject implementations
           .mkString("") +
         "  val dataSource: DataSource" + (if (useZIO)
-                                            "ZIO = new ONNXNGraphHandlers(onnxHelper)"
+                                            "ZIO = new ONNXNGraphHandlers(byteArray)"
                                           else
-                                            " = new NGraphBackend(onnxHelper)") + "\n" +
+                                            " = new NGraphBackend(byteArray)") + "\n" +
 //    "  import cats.implicits._\n" +
         //Omit return type here for now
         "  def program" + (if (graphInputs.size > 0)
@@ -219,7 +216,6 @@ object ONNXProgramGenerator {
                                                        else "") + ")"
             } // ,""" + y.name.getString + "name" + " = " + """ Some("""" + y + """")""")
 
-            val nodesOrParamsRaw = x._1._1._1.map(y => "node" + y)
             val longFields = x._2
               .filter { y =>
                 y.has_i

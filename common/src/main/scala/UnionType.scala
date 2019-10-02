@@ -15,19 +15,19 @@
 
 package org.emergentorder
 
-package object union{
+package object union {
 
-type ![A] = A => Nothing
-type !![A] = ![![A]]
+  type ![A]  = A => Nothing
+  type !![A] = ![![A]]
 
-trait Disjunction[T] {
-  type or[S] = Disjunction[T with ![S]]
-  type create = ![T]
-}
+  trait Disjunction[T] {
+    type or[S]  = Disjunction[T with ![S]]
+    type create = ![T]
+  }
 
-type Union[T] = {
-  type or[S] = Disjunction[![T]]#or[S]
-}
+  type Union[T] = {
+    type or[S] = Disjunction[![T]]#or[S]
+  }
 
-type Contains[S, T] = !![S] <:< T
+  type Contains[S, T] = !![S] <:< T
 }

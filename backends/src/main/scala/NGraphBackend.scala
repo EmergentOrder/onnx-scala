@@ -39,7 +39,7 @@ import org.bytedeco.onnx.global.onnx.check_model
 //TODO: ONNX Runtime backend for JVM (and Native?)
 class NGraphBackend(onnxBytes: Array[Byte])
     extends Add
-//    with DataSource
+    with DataSource
     with Constant
     with ArgMin
     with ArgMax
@@ -62,21 +62,19 @@ class NGraphBackend(onnxBytes: Array[Byte])
     with AveragePool
     with Reshape
     with AutoCloseable {
-//with DataSource
+
   val scope = new PointerScope()
 
   val ngraphBackend = Backend.create("CPU")
-  /*
+
+  val onnxHelper = new ONNXHelper(onnxBytes)
+
   def paramsMap[T: spire.math.Numeric: ClassTag] =
     onnxHelper.params
       .map(x => x._1 -> (x._2, x._3.asInstanceOf[Array[T]], x._4))
       .toMap
 
-  override def getParams[T: Numeric: ClassTag](name: String)(
-      implicit ev: (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Complex[
-        Float
-      ] TypeOr Complex[Double])#check[T]
-  ): Tensor[T] = {
+  override def getParams[T: Numeric: ClassTag](name: String): Tensor[T] = {
     val params = paramsMap.get(name)
     params match {
       case Some(x) => TensorFactory.getTensor(x._2, x._3.map(z => z: XInt))
@@ -84,7 +82,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
         throw new Exception("No params found for param name: " + name)
     }
   }
-   */
+
   def Abs1[@sp T: Numeric: ClassTag](
       name: String,
       consumed_inputs: Option[(Array[Int])] = None,
@@ -207,8 +205,8 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
   def Equal1[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
       name: String,
-      axis: Option[(Int)] = None,
-      broadcast: Option[(Int)] = None,
+      axis: Option[(Int)],
+      broadcast: Option[(Int)],
       A: Option[Tensor[T]],
       B: Option[Tensor[T]]
   )(

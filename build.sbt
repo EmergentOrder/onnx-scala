@@ -23,12 +23,12 @@ lazy val commonSettings = Seq(
 lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure) in file("common"))
   .settings(commonSettings, name := "onnx-scala-common",
-    excludeFilter in unmanagedSources := (CrossVersion
-      .partialVersion(scalaVersion.value) match {
-      case Some((0, n)) => "UnionType.scala"
-      case _ => ""
-      }
-    )
+//    excludeFilter in unmanagedSources := (CrossVersion
+//      .partialVersion(scalaVersion.value) match {
+//      case Some((0, n)) => "UnionType.scala"
+//      case _ => ""
+//      }
+//    )
   )
   .jvmSettings(
 //    scalaVersion := scala213Version,

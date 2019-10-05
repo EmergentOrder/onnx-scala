@@ -100,7 +100,10 @@ All together, these should enable model inspection and modification, extra compi
 
 ## Getting Started
 
-You'll need sbt.
+
+You'll need sbt. 
+
+To build and publish locally:
 
 ```
 sbt publishLocal
@@ -117,16 +120,18 @@ to build against all of Scala 2.11, 2.12, 2.13 and Dotty/3.0, where possible.
 Then you can add this to your project's build.sbt 
 
 ```scala
-libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala" % "1.6.0-0.1.0-SNAPSHOT"
+libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala" % "0.1.0"
 ```
 
 or 
 
 ```scala
-libraryDependencies += "org.emergentorder.onnx" %% "onnx-scala-zio" % "1.6.0-0.1.0-SNAPSHOT"
+libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala-zio" % "0.1.0"
 ``` 
 
 and build away with the traits provided. Backend implementation (and other) PRs welcome!
+
+As of v0.1.0, artifacts are published to Sonatype OSS.
 
 ## Program Generator
 

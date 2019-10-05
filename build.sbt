@@ -12,24 +12,13 @@ scalaVersion := scala212Version
 lazy val commonSettings = Seq(
   scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
-  version := "1.6.0-0.1.0-SNAPSHOT",
+  version := "v0.1.0-SNAPSHOT",
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
   scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-Ywarn-unused", "-Yrangepos"),
   autoCompilerPlugins := true,
-  organization := "com.github.EmergentOrder",
-  homepage := Some(url("https://github.com/EmergentOrder/onnx-scala")),
-  scmInfo := Some(ScmInfo(url("https://github.com/EmergentOrder/onnx-scala"),
-                            "git@github.com:EmergentOrder/onnx-scala.git")),
-  developers := List(Developer("EmergentOrder",
-                             "Alexander Merritt",
-                             "lecaran@gmail.com",
-                             url("https://github.com/EmergentOrder"))),
-  licenses += ("AGPL-3.0", url("https://www.gnu.org/licenses/agpl-3.0.html")),
-  publishMavenStyle := true,
-  publishTo := sonatypePublishToBundle.value
-)
+) ++ sonatypeSettings
 
 lazy val common = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("common"))
@@ -55,7 +44,7 @@ lazy val commonJS = common.js
   .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
   .disablePlugins(dotty.tools.sbtplugin.DottyIDEPlugin)
 
-lazy val programGenerator = (crossProject(JSPlatform, JVMPlatform)
+lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
   .crossType(CrossType.Pure) in file("programGenerator"))
   .dependsOn(backends)
   .settings(
@@ -76,14 +65,14 @@ lazy val programGenerator = (crossProject(JSPlatform, JVMPlatform)
       scala213Version
     )
   )
-  .jsSettings(
-    crossScalaVersions := Seq(
-      scala212Version,
-      scala211Version,
-      scala213Version
-    )
-  )
-lazy val backends = (crossProject(JVMPlatform, JSPlatform)
+//  .jsSettings(
+//    crossScalaVersions := Seq(
+//      scala212Version,
+//      scala211Version,
+//      scala213Version
+//    )
+//  )
+lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
   .crossType(CrossType.Pure) in file("backends"))
   .dependsOn(core)
   .settings(
@@ -97,9 +86,9 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
   .jvmSettings(
     crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
   )
-  .jsSettings(
-    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
-  )
+//  .jsSettings(
+//    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
+//  )
 //  .nativeSettings(
 //    scalaVersion := scala211Version
 //  )
@@ -152,10 +141,6 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
     ),
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, n)) if (n == 13 || n == 11) =>
-        Seq(
-          "org.typelevel" %%% "spire" % spireVersion
-        )
       case _ =>
         Seq(
           "org.typelevel" %%% "spire" % spireVersion
@@ -172,7 +157,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
     )
 */
 
-lazy val zio = (crossProject(JVMPlatform, JSPlatform)
+lazy val zio = (crossProject(JVMPlatform)//, JSPlatform)
   .crossType(CrossType.Pure) in file("zio"))
   .dependsOn(backends)
   .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
@@ -183,11 +168,6 @@ lazy val zio = (crossProject(JVMPlatform, JSPlatform)
     publishArtifact in (Compile, packageDoc) := false,
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, n)) if n == 13 =>
-        Seq(
-          //"org.typelevel" %% "cats-effect" % "2.0.0-M4"
-          "dev.zio" %% "zio" % zioVersion
-        )
       case _ =>
         Seq(
           "dev.zio" %% "zio" % zioVersion
@@ -197,9 +177,11 @@ lazy val zio = (crossProject(JVMPlatform, JSPlatform)
   .jvmSettings(
     crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
   )
-  .jsSettings(
-    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
-  )
+//  .jsSettings(
+//    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
+//  )
+
+skip in publish := true
 
 lazy val sonatypeSettings = Seq(
 organization := "com.github.EmergentOrder",

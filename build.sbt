@@ -31,7 +31,8 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform)
       scala213Version,
       scala211Version
     ),
-    publishArtifact in (Compile, packageDoc) := false
+ //   sources in (Compile, doc) := Seq(),
+ //   publishArtifact in (Compile, packageDoc) := false
   )
   .jsSettings(
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
@@ -56,7 +57,8 @@ lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
     libraryDependencies ++= Seq(
       ("org.scalameta" %% "scalameta" % scalametaVersion)
     ),
-    publishArtifact in (Compile, packageDoc) := false
+//    sources in (Compile, doc) := Seq(),
+//    publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(
     crossScalaVersions := Seq(
@@ -81,7 +83,8 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
     libraryDependencies ++= Seq(
       "org.bytedeco" % "ngraph-platform" % "0.25.0-1.5.2-SNAPSHOT"
     ),
-    publishArtifact in (Compile, packageDoc) := false
+//    sources in (Compile, doc) := Seq(),
+//    publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(
     crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
@@ -114,7 +117,8 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
       scala213Version,
       scala211Version
     ),
-    publishArtifact in (Compile, packageDoc) := false,
+//    sources in (Compile, doc) := Seq(),
+//    publishArtifact in (Compile, packageDoc) := false,
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {
       case Some((2, n)) =>
@@ -165,7 +169,8 @@ lazy val zio = (crossProject(JVMPlatform)//, JSPlatform)
     commonSettings,
     name := "onnx-scala-zio",
 //    scalaVersion := scala213Version,
-    publishArtifact in (Compile, packageDoc) := false,
+//    sources in (Compile, doc) := Seq(),
+//    publishArtifact in (Compile, packageDoc) := false,
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {
       case _ =>
@@ -182,6 +187,9 @@ lazy val zio = (crossProject(JVMPlatform)//, JSPlatform)
 //  )
 
 skip in publish := true
+sonatypeProfileName := "com.github.EmergentOrder" 
+//sonatypeSessionName := s"[sbt-sonatype] ${name.value} ${version.value}"
+//sources in (Compile, packageDoc) := Seq()
 
 lazy val sonatypeSettings = Seq(
 organization := "com.github.EmergentOrder",
@@ -193,6 +201,15 @@ developers := List(Developer("EmergentOrder",
                              "lecaran@gmail.com",
                              url("https://github.com/EmergentOrder"))),
 licenses += ("AGPL-3.0", url("https://www.gnu.org/licenses/agpl-3.0.html")),
+sonatypeProfileName := "lecaran",
 publishMavenStyle := true,
-publishTo := sonatypePublishToBundle.value
+publishConfiguration := publishConfiguration.value.withOverwrite(true),
+publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true),
+publishTo := Some(
+  if (isSnapshot.value)
+    Opts.resolver.sonatypeSnapshots
+  else
+    Opts.resolver.sonatypeStaging
+)
+//publishTo := sonatypePublishToBundle.value
 )

@@ -67,7 +67,7 @@ trait AbsNet {
 }
 ```
 
-C) Currently a single partial backend implementation of ONNX, accessible from the JVM, is available. More backends may be added in due time.
+C) Currently. at the operator level, a single partial backend implementation of ONNX, accessible from the JVM, is available.
 
 This backend is based on [nGraph](https://github.com/NervanaSystems/ngraph), via nGraph JavaCPP Preset.
 
@@ -95,6 +95,9 @@ Supported ONNX ops (more coming):
 * Reshape
 * Sigmoid
 * Softmax
+
+
+You can also pass entire models to nGraph (see Execution Modes below) to enable its more extensive set of [supported operators](https://github.com/NervanaSystems/ngraph/tree/v0.25.0/src/ngraph/frontend/onnx_import/op).  More backends may be added in due time.
 
 All together, these should enable model inspection and modification, extra compile-time assurances, mixing/matching of backend operator implementations and integration into JVM-based production systems, for a start.
 
@@ -228,7 +231,7 @@ Currently at ONNX 1.6.0.
 
 #### Backend
 
-* [nGraph via JavaCPP Preset for nGraph 0.22.0](https://github.com/bytedeco/javacpp-presets/tree/master/ngraph) - nGraph is an open source C++ library, compiler and runtime for Deep Learning frameworks / The missing bridge between Java and native C++ libraries
+* [nGraph via JavaCPP Preset for nGraph 0.25.0](https://github.com/bytedeco/javacpp-presets/tree/master/ngraph) - nGraph is an open source C++ library, compiler and runtime for Deep Learning frameworks / The missing bridge between Java and native C++ libraries
 
 
 ### Inspiration

@@ -131,7 +131,7 @@ libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala-zio" % "0.1.0"
 
 and build away with the traits provided. Backend implementation (and other) PRs welcome!
 
-As of v0.1.0, artifacts are published to Sonatype OSS.
+As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central.
 
 ## Program Generator
 

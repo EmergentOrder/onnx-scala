@@ -818,7 +818,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       .reduceLeft(_ * _)
 
     val fp = new FloatPointer(arraySize)
-    tensVec.get(0).read(fp, 0, arraySize * 4)
+    tensVec.get(0).read(fp, arraySize * 4)
 
     val fb = fp.asByteBuffer.asFloatBuffer
     val fa = (0 until fb.capacity).map { x =>

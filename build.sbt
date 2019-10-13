@@ -81,7 +81,8 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
     commonSettings,
     name := "onnx-scala-backends",
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "ngraph-platform" % "0.25.0-1.5.2-SNAPSHOT"
+      "org.bytedeco" % "openblas-platform" % "0.3.7-1.5.2-SNAPSHOT",
+      "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.2-SNAPSHOT"
     ),
 //    sources in (Compile, doc) := Seq(),
 //    publishArtifact in (Compile, packageDoc) := false

@@ -4,7 +4,7 @@ val scala211Version = "2.11.12"
 val scala212Version = "2.12.10"
 val scala213Version = "2.13.1"
 val spireVersion = "0.17.0-M1"
-val zioVersion = "1.0.0-RC14"
+val zioVersion = "1.0.0-RC15"
 val scalametaVersion = "4.2.3"
 val onnxJavaCPPPresetVersion = "1.6.0-1.5.2-SNAPSHOT"
 scalaVersion := scala212Version
@@ -81,7 +81,6 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
     commonSettings,
     name := "onnx-scala-backends",
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "openblas-platform" % "0.3.7-1.5.2-SNAPSHOT",
       "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.2-SNAPSHOT"
     ),
 //    sources in (Compile, doc) := Seq(),

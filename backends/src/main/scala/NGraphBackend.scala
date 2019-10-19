@@ -24,13 +24,10 @@ import org.bytedeco.onnx.global.onnx.ParseProtoFromBytes;
 import org.bytedeco.onnx.MessageLite;
 import org.bytedeco.onnx.NodeProto;
 import org.bytedeco.onnx.GraphProto
-import org.bytedeco.ngraph.global.ngraph.import_onnx_model
+import org.bytedeco.ngraph.global._
+import ngraph.import_onnx_model
 import org.bytedeco.ngraph.Backend
-import org.bytedeco.ngraph.global.ngraph.f32
-import org.bytedeco.ngraph.global.ngraph.f64
-import org.bytedeco.ngraph.global.ngraph.i64
-import org.bytedeco.ngraph.global.ngraph.i32
-import org.bytedeco.onnx.global.onnx.check_model
+// TODO: check import org.bytedeco.onnx.global.onnx.check_model
 
 //TODEFER: Tracing Mode: Extract ModelProto modifications into generic layer, then do each layer-wise
 // op in a lazy fashion, while doing the same for generating a single overall ModelProto, via ModelProto.MergeFrom.
@@ -105,7 +102,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
         ]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): (Tensor[T]) = {
-    (trinaryOpNoAttrs(name, "Abs", X, None, None))
+    (trinaryOpNoAttrs(name, "Abs", X, None: Option[Tensor[T]], None: Option[Tensor[T]]))
   }
 
   def Add1[@sp T: Numeric: ClassTag](
@@ -145,7 +142,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
         Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): (Tensor[T]) = {
-    (trinaryOpNoAttrs(name, "Add", A, B, None))
+    (trinaryOpNoAttrs(name, "Add", A, B, None: Option[Tensor[T]]))
   }
 
   def ArgMax1[@sp T: Numeric: ClassTag](
@@ -223,7 +220,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
         ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
       ]
   ): (Tensor[T]) = {
-    (trinaryOpNoAttrs(name, "Constant", value, None, None))
+    (trinaryOpNoAttrs(name, "Constant", value, None: Option[Tensor[T]], None: Option[Tensor[T]]))
   }
 
   def Constant11[@sp T: Numeric: ClassTag](
@@ -283,7 +280,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
   )(
       implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = {
-    (trinaryOpNoAttrs(name, "GlobalAveragePool", X, None, None))
+    (trinaryOpNoAttrs(name, "GlobalAveragePool", X, None: Option[Tensor[T]], None: Option[Tensor[T]]))
   }
 
   def Log1[@sp T: Numeric: ClassTag](
@@ -297,7 +294,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
   def Log6[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
       implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = {
-    (trinaryOpNoAttrs(name, "Log", input, None, None))
+    (trinaryOpNoAttrs(name, "Log", input, None: Option[Tensor[T]], None: Option[Tensor[T]]))
   }
 
   def Max6[@sp T: Numeric: ClassTag](
@@ -342,7 +339,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = {
     val map: Map[String, Any] = Map("axis" -> axis)
-    (trinaryOp(name, "Softmax", input, None, None, map))
+    (trinaryOp(name, "Softmax", input, None: Option[Tensor[T]], None: Option[Tensor[T]], map))
   }
 
   def Softmax11[@sp T: Numeric: ClassTag](
@@ -389,7 +386,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
         Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
       ]
   ): (Tensor[T]) = {
-    (trinaryOpNoAttrs(name, "Mul", A, B, None))
+    (trinaryOpNoAttrs(name, "Mul", A, B, None: Option[Tensor[T]]))
   }
 
   def Sigmoid1[@sp T: Numeric: ClassTag](
@@ -403,7 +400,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
   def Sigmoid6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
       implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = {
-    (trinaryOpNoAttrs(name, "Sigmoid", X, None, None))
+    (trinaryOpNoAttrs(name, "Sigmoid", X, None: Option[Tensor[T]], None: Option[Tensor[T]]))
   }
   def Gemm1[@sp T: Numeric: ClassTag](
       name: String,
@@ -585,7 +582,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T], Tensor[T]) = {
     val map: Map[String, Any] = Map("ratio" -> ratio)
-    (trinaryOp(name, "Dropout", data, None, None, map), null) //TODO: optional output
+    (trinaryOp(name, "Dropout", data, None: Option[Tensor[T]], None: Option[Tensor[T]], map), null) //TODO: optional output
   }
 
   def Dropout10[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
@@ -609,7 +606,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
   def Relu6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
       implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = {
-    trinaryOpNoAttrs(name, "Relu", X, None, None)
+    trinaryOpNoAttrs(name, "Relu", X, None: Option[Tensor[T]], None: Option[Tensor[T]])
   }
 
   def trinaryOpNoAttrs[@sp T: ClassTag, T1: ClassTag, T2: ClassTag](
@@ -782,13 +779,13 @@ class NGraphBackend(onnxBytes: Array[Byte])
     case Some(tensor: Tensor[T]) => {
       val data = tensor._1
       data match {
-        case dat: Array[Int]   => (new IntPointer(dat.asInstanceOf[Array[Int]]: _*), i32)
-        case dat: Array[Long]  => (new LongPointer(dat.asInstanceOf[Array[Long]]: _*), i64)
-        case dat: Array[Float] => (new FloatPointer(dat.asInstanceOf[Array[Float]]: _*), f32)
+        case dat: Array[Int]   => (new IntPointer(dat.asInstanceOf[Array[Int]]: _*), ngraph.i32)
+        case dat: Array[Long]  => (new LongPointer(dat.asInstanceOf[Array[Long]]: _*), ngraph.i64)
+        case dat: Array[Float] => (new FloatPointer(dat.asInstanceOf[Array[Float]]: _*), ngraph.f32)
 
       }
     }
-    case None => (new IntPointer, f32)
+    case None => (new IntPointer, ngraph.f32)
   }
 
   def tensorToInputShape[T: ClassTag](tens: Option[Tensor[T]]): org.bytedeco.ngraph.Shape =
@@ -810,15 +807,26 @@ class NGraphBackend(onnxBytes: Array[Byte])
   def tensorVectorToOutputTensor[T3: ClassTag](
       tensVec: org.bytedeco.ngraph.TensorVector,
       outputShape: org.bytedeco.ngraph.Shape
-  ) = {
+  ): (Tensor[T3]) = {
+
+    val sampleArr = Array[T3]()
     val arraySize = (0 until outputShape.size.toInt)
       .map { x =>
         outputShape.get(x).toInt
       }
       .reduceLeft(_ * _)
 
+    val tens = tensVec.get(0)
+    val elemType = tens.get_element_type() //.get_type_enum()
+
+    sampleArr match{
+      case arr: Array[Int] => ???
+      case arr: Array[Long] => ???
+      case arr: Array[Float] => {
+
+    assert(elemType.equals(ngraph.f32)) 
     val fp = new FloatPointer(arraySize)
-    tensVec.get(0).read(fp, arraySize * 4)
+    tens.read(fp, arraySize * 4)
 
     val fb = fp.asByteBuffer.asFloatBuffer
     val fa = (0 until fb.capacity).map { x =>
@@ -834,6 +842,8 @@ class NGraphBackend(onnxBytes: Array[Byte])
     tensVec.close
     outputShape.close
     (result)
+    } 
+    }
   }
 
   def opFromModel[@sp T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag](
@@ -925,7 +935,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
     executable.close
     //convert result to onnx-scala Tensor
 
-    val result: Tensor[T3] = tensorVectorToOutputTensor(outputVector, outputShape)
+    val result: Tensor[T3] = tensorVectorToOutputTensor[T3](outputVector, outputShape)
 
     inputShape.close
     secondInputShape.close
@@ -1025,7 +1035,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       "strides"       -> strides
     )
 
-    (trinaryOp[T, T, T, T](name, "MaxPool", X, None, None, map), null) //TODO:optional output
+    (trinaryOp[T, T, T, T](name, "MaxPool", X, None: Option[Tensor[T]], None: Option[Tensor[T]], map), null) //TODO:optional output
   }
 
   def MaxPool10[@sp T: Numeric: ClassTag, @sp I: Numeric: ClassTag](
@@ -1127,7 +1137,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       "strides"           -> strides
     )
 
-    trinaryOp(name, "AveragePool", X, None, None, map)
+    trinaryOp(name, "AveragePool", X, None: Option[Tensor[T]], None: Option[Tensor[T]], map)
   }
 
   def AveragePool10[@sp T: Numeric: ClassTag](
@@ -1182,7 +1192,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       ]
   ): (Tensor[T]) = {
     val map: Map[String, Any] = Map("shape" -> shape)
-    trinaryOp(name, "Reshape", data, None, None, map)
+    trinaryOp(name, "Reshape", data, None: Option[Tensor[T]], None: Option[Tensor[T]], map)
   }
 
   override def close(): Unit = {

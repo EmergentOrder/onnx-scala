@@ -80,14 +80,16 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala-backends",
+    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2") else Nil },
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.2-SNAPSHOT"
+      "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.2-SNAPSHOT",
+      "org.osgi" % "org.osgi.annotation.versioning" % "1.1.0"
     ),
 //    sources in (Compile, doc) := Seq(),
 //    publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(
-    crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
+    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version)
   )
 //  .jsSettings(
 //    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)

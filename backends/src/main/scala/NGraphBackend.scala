@@ -817,14 +817,14 @@ class NGraphBackend(onnxBytes: Array[Byte])
       .reduceLeft(_ * _)
 
     val tens = tensVec.get(0)
-    val elemType = tens.get_element_type().get_type_enum()
+    val elemType: Int = tens.get_element_type().get_type_enum()
 
     sampleArr match{
       case arr: Array[Int] => ???
       case arr: Array[Long] => ???
       case arr: Array[Float] => {
 
-    assert(elemType.equals(ngraph.f32)) 
+    assert(elemType.equals(ngraph.f32().get_type_enum()))
     val fp = new FloatPointer(arraySize)
     tens.read(fp, arraySize * 4)
 

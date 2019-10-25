@@ -817,7 +817,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       .reduceLeft(_ * _)
 
     val tens = tensVec.get(0)
-    val elemType = tens.get_element_type() //.get_type_enum()
+    val elemType = tens.get_element_type().get_type_enum()
 
     sampleArr match{
       case arr: Array[Int] => ???

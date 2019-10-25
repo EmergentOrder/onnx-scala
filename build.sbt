@@ -83,7 +83,8 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2") else Nil },
     libraryDependencies ++= Seq(
       "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.2-SNAPSHOT",
-      "org.osgi" % "org.osgi.annotation.versioning" % "1.1.0"
+      "org.osgi" % "org.osgi.annotation.versioning" % "1.1.0",
+//      "com.microsoft.onnxruntime" % "onnxruntime4j" % "1.0.0-SNAPSHOT"
     ),
 //    sources in (Compile, doc) := Seq(),
 //    publishArtifact in (Compile, packageDoc) := false
@@ -166,7 +167,6 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
 lazy val zio = (crossProject(JVMPlatform)//, JSPlatform)
   .crossType(CrossType.Pure) in file("zio"))
   .dependsOn(backends)
-  .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
   .settings(
     commonSettings,
     name := "onnx-scala-zio",
@@ -174,15 +174,20 @@ lazy val zio = (crossProject(JVMPlatform)//, JSPlatform)
 //    sources in (Compile, doc) := Seq(),
 //    publishArtifact in (Compile, packageDoc) := false,
     libraryDependencies ++= (CrossVersion
-      .partialVersion(scalaVersion.value) match {
-      case _ =>
+    .partialVersion(scalaVersion.value) match {
+     case Some((2,_)) =>
         Seq(
           "dev.zio" %% "zio" % zioVersion
         )
-    })
+     case _ =>
+        Seq(
+         ("dev.zio" %% "zio" % zioVersion).withDottyCompat(dottyVersion)
+        )
+     })
   )
   .jvmSettings(
-    crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
+    //crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
+    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version)
   )
 //  .jsSettings(
 //    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)

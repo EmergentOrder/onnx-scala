@@ -1,6 +1,9 @@
 <p align="center"><img src="Logotype-500px.png" /></p>
 
 --------------------------------------------------------------------------------
+[![Build status](https://travis-ci.com/EmergentOrder/onnx-scala.svg?branch=master)](http://travis-ci.org/EmergentOrder/onnx-scala)
+[![Latest version](https://index.scala-lang.org/emergentorder/onnx-scala/onnx-scala/latest.svg?color=orange)](https://index.scala-lang.org/emergentorder/onnx-scala/onnx-scala)
+
 
 This project provides:
 
@@ -203,8 +206,6 @@ The ONNX-Scala core API is cross-built against Scala JVM (for Scala 2.11, 2.12 a
 The Scala Native build will fail unless you apply this [PR](https://github.com/scala-native/scala-native/pull/1641).
 
 To take advantage of union types to express type constraints, a Dotty (Scala 3) build is available. The Dotty build does not support Scala.js or Scala Native.
-
-The ZIO variant is not yet available for Dotty.
 
 Currently at ONNX 1.6.0.
 

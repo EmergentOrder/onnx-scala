@@ -1,1 +1,2 @@
 language: scala
+script: sbt +test

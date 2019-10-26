@@ -280,7 +280,13 @@ class NGraphBackend(onnxBytes: Array[Byte])
   )(
       implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
   ): (Tensor[T]) = {
-    (trinaryOpNoAttrs(name, "GlobalAveragePool", X, None: Option[Tensor[T]], None: Option[Tensor[T]]))
+    (trinaryOpNoAttrs(
+      name,
+      "GlobalAveragePool",
+      X,
+      None: Option[Tensor[T]],
+      None: Option[Tensor[T]]
+    ))
   }
 
   def Log1[@sp T: Numeric: ClassTag](
@@ -779,9 +785,12 @@ class NGraphBackend(onnxBytes: Array[Byte])
     case Some(tensor: Tensor[T]) => {
       val data = tensor._1
       data match {
+        case dat: Array[Byte]   => (new BytePointer(dat.asInstanceOf[Array[Byte]]: _*), ngraph.i8)
+        case dat: Array[Short]  => (new ShortPointer(dat.asInstanceOf[Array[Short]]: _*), ngraph.i16)
         case dat: Array[Int]   => (new IntPointer(dat.asInstanceOf[Array[Int]]: _*), ngraph.i32)
         case dat: Array[Long]  => (new LongPointer(dat.asInstanceOf[Array[Long]]: _*), ngraph.i64)
         case dat: Array[Float] => (new FloatPointer(dat.asInstanceOf[Array[Float]]: _*), ngraph.f32)
+        case dat: Array[Double] => (new DoublePointer(dat.asInstanceOf[Array[Double]]: _*), ngraph.f64)
 
       }
     }
@@ -810,40 +819,105 @@ class NGraphBackend(onnxBytes: Array[Byte])
   ): (Tensor[T3]) = {
 
     val sampleArr = Array[T3]()
-    val arraySize = (0 until outputShape.size.toInt)
+    val arraySize: Long = (0 until outputShape.size.toInt)
       .map { x =>
         outputShape.get(x).toInt
       }
       .reduceLeft(_ * _)
 
-    val tens = tensVec.get(0)
+    val tens          = tensVec.get(0)
     val elemType: Int = tens.get_element_type().get_type_enum()
 
-    sampleArr match{
-      case arr: Array[Int] => ???
-      case arr: Array[Long] => ???
+    val fa: Array[T3] = sampleArr match {
+
+      case arr: Array[Byte] => {
+
+        assert(elemType.equals(ngraph.i8().get_type_enum()))
+        val fp = new BytePointer(arraySize)
+        tens.read(fp, arraySize * 1)
+
+        val fb = fp.asByteBuffer
+
+        (0 until fb.capacity).map { x =>
+          fb.get(x).asInstanceOf[T3] //unsafe : asInstanceOf
+        }.toArray
+
+      }
+      case arr: Array[Short] => {
+
+        assert(elemType.equals(ngraph.i16().get_type_enum()))
+        val fp = new ShortPointer(arraySize)
+        tens.read(fp, arraySize * 2)
+
+        val fb = fp.asByteBuffer.asShortBuffer
+
+        (0 until fb.capacity).map { x =>
+          fb.get(x).asInstanceOf[T3] //unsafe : asInstanceOf
+        }.toArray
+
+      }
+      case arr: Array[Int] => {
+
+        assert(elemType.equals(ngraph.i32().get_type_enum()))
+        val fp = new IntPointer(arraySize)
+        tens.read(fp, arraySize * 4)
+
+        val fb = fp.asByteBuffer.asIntBuffer
+
+        (0 until fb.capacity).map { x =>
+          fb.get(x).asInstanceOf[T3] //unsafe : asInstanceOf
+        }.toArray
+
+      }
+      case arr: Array[Long] => {
+
+        assert(elemType.equals(ngraph.i64().get_type_enum()))
+        val fp = new LongPointer(arraySize)
+        tens.read(fp, arraySize * 8)
+
+        val fb = fp.asByteBuffer.asLongBuffer
+
+        (0 until fb.capacity).map { x =>
+          fb.get(x).asInstanceOf[T3] //unsafe : asInstanceOf
+        }.toArray
+
+      }
       case arr: Array[Float] => {
 
-    assert(elemType.equals(ngraph.f32().get_type_enum()))
-    val fp = new FloatPointer(arraySize)
-    tens.read(fp, arraySize * 4)
+        assert(elemType.equals(ngraph.f32().get_type_enum()))
+        val fp = new FloatPointer(arraySize)
+        tens.read(fp, arraySize * 4)
 
-    val fb = fp.asByteBuffer.asFloatBuffer
-    val fa = (0 until fb.capacity).map { x =>
-      fb.get(x).asInstanceOf[T3] //unsafe : asInstanceOf
-    }.toArray
+        val fb = fp.asByteBuffer.asFloatBuffer
+
+        (0 until fb.capacity).map { x =>
+          fb.get(x).asInstanceOf[T3] //unsafe : asInstanceOf
+        }.toArray
+
+      }
+      case arr: Array[Double] => {
+
+        assert(elemType.equals(ngraph.f64().get_type_enum()))
+        val fp = new DoublePointer(arraySize)
+        tens.read(fp, arraySize * 8)
+
+        val fb = fp.asByteBuffer.asDoubleBuffer
+
+        (0 until fb.capacity).map { x =>
+          fb.get(x).asInstanceOf[T3] //unsafe : asInstanceOf
+        }.toArray
+
+      }
+    }
 
     val shapeArray = (0 until outputShape.size.toInt).map { x =>
       outputShape.get(x).toInt
     }.toArray
 
     val result: Tensor[T3] = TensorFactory.getTensor(fa, shapeArray.map(z => z: XInt))
-
     tensVec.close
     outputShape.close
     (result)
-    } 
-    }
   }
 
   def opFromModel[@sp T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag](
@@ -1035,7 +1109,17 @@ class NGraphBackend(onnxBytes: Array[Byte])
       "strides"       -> strides
     )
 
-    (trinaryOp[T, T, T, T](name, "MaxPool", X, None: Option[Tensor[T]], None: Option[Tensor[T]], map), null) //TODO:optional output
+    (
+      trinaryOp[T, T, T, T](
+        name,
+        "MaxPool",
+        X,
+        None: Option[Tensor[T]],
+        None: Option[Tensor[T]],
+        map
+      ),
+      null
+    ) //TODO:optional output
   }
 
   def MaxPool10[@sp T: Numeric: ClassTag, @sp I: Numeric: ClassTag](

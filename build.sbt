@@ -12,7 +12,7 @@ scalaVersion := scala212Version
 lazy val commonSettings = Seq(
   scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
-  version := "v0.1.0",
+  version := "0.2.0-SNAPSHOT",
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
@@ -54,14 +54,24 @@ lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
     mainClass in (Compile, run) := Some(
       "org.emergentorder.onnx.ONNXProgramGenerator"
     ),
-    libraryDependencies ++= Seq(
-      ("org.scalameta" %% "scalameta" % scalametaVersion)
-    ),
+    libraryDependencies ++= (CrossVersion
+    .partialVersion(scalaVersion.value) match {
+     case Some((2,_)) =>
+        Seq(
+          "org.scalameta" %% "scalameta" % scalametaVersion
+        )
+     case _ =>
+        Seq(
+         ("org.scalameta" %% "scalameta" % scalametaVersion).withDottyCompat(dottyVersion)
+        )
+      }
+    )
 //    sources in (Compile, doc) := Seq(),
 //    publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(
     crossScalaVersions := Seq(
+      dottyVersion,
       scala212Version,
       scala211Version,
       scala213Version
@@ -121,7 +131,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
       scala211Version
     ),
 //    sources in (Compile, doc) := Seq(),
-//    publishArtifact in (Compile, packageDoc) := false,
+    publishArtifact in (Compile, packageDoc) := false, //TODO: Only block this for JS
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {
       case Some((2, n)) =>

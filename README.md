@@ -74,6 +74,14 @@ C) Currently. at the operator level, a single partial backend implementation of 
 
 This backend is based on [nGraph](https://github.com/NervanaSystems/ngraph), via nGraph JavaCPP Preset.
 
+Supported ONNX input and output tensor data types:
+* Byte
+* Short
+* Int
+* Long
+* Float
+* Double
+
 Supported ONNX ops (more coming):
 
 * Abs

@@ -65,9 +65,9 @@ lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
          ("org.scalameta" %% "scalameta" % scalametaVersion).withDottyCompat(dottyVersion)
         )
       }
-    )
+    ),
 //    sources in (Compile, doc) := Seq(),
-//    publishArtifact in (Compile, packageDoc) := false
+    publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(
     crossScalaVersions := Seq(

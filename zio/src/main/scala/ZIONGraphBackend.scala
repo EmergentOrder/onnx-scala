@@ -35,7 +35,7 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
   //TODO: Task here
   def fullModel[T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag, T4: ClassTag, T5: ClassTag, T6: ClassTag, T7: ClassTag, T8: ClassTag,
     T9: ClassTag, T10: ClassTag, T11: ClassTag, T12: ClassTag, T13: ClassTag, T14: ClassTag, T15: ClassTag, T16: ClassTag, T17: ClassTag](
-      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8],
+      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8]
   ): (Task[T9]) = {
     Task{
     ngraphBackend.fullModel[T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17](inputs)  

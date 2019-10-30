@@ -1,6 +1,7 @@
 <p align="center"><img src="Logotype-500px.png" /></p>
 
 --------------------------------------------------------------------------------
+
 [![Build status](https://travis-ci.com/EmergentOrder/onnx-scala.svg?branch=master)](http://travis-ci.com/EmergentOrder/onnx-scala)
 [![Latest version](https://index.scala-lang.org/emergentorder/onnx-scala/onnx-scala/latest.svg?color=orange)](https://index.scala-lang.org/emergentorder/onnx-scala/onnx-scala)
 
@@ -42,6 +43,20 @@ This API is expressed via traits, with version-named methods. For example, Abs, 
 B) a program generator, capable of translating ONNX model Protobuf (.onnx) files into Scala programs written in terms of this API. For example, an "absolute value network":
 
 ```scala
+import org.emergentorder.onnx._
+
+import scala.reflect.ClassTag
+import spire.implicits._
+import spire.math.UByte
+import spire.math.UInt
+import spire.math.ULong
+import spire.math.UShort
+import spire.math.Complex
+import spire.algebra.Field
+import spire.math.Numeric
+import scala.language.higherKinds
+import org.emergentorder.union._
+
 trait AbsNet {
   val dataSource: DataSource
   val Abs: Abs
@@ -97,7 +112,7 @@ Supported ONNX ops (more coming):
 * Gather
 * Gemm
 * GlobalAveragePool
-* Log 
+* Log
 * Max
 * MaxPool
 * Min
@@ -115,7 +130,7 @@ All together, these should enable model inspection and modification, extra compi
 ## Getting Started
 
 
-You'll need sbt. 
+You'll need sbt.
 
 To build and publish locally:
 
@@ -123,7 +138,7 @@ To build and publish locally:
 sbt publishLocal
 ```
 
-or 
+or
 
 ```
 sbt +publishLocal
@@ -131,17 +146,17 @@ sbt +publishLocal
 
 to build against all of Scala 2.11, 2.12, 2.13 and Dotty/3.0, where possible.
 
-Then you can add this to your project's build.sbt 
+Then you can add this to your project's build.sbt
 
 ```scala
-libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala" % "0.1.0"
+libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala" % "0.2.0-SNAPSHOT"
 ```
 
-or 
+or
 
 ```scala
-libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala-zio" % "0.1.0"
-``` 
+libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala-zio" % "0.2.0-SNAPSHOT"
+```
 
 and build away with the traits provided. Backend implementation (and other) PRs welcome!
 
@@ -151,7 +166,7 @@ As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central.
 
 To generate an ONNX-Scala program from an ONNX Protobuf file (often `*.onnx`):
 
-Depending on the size of the ONNX model, you may need to 
+Depending on the size of the ONNX model, you may need to
 
 ```
 export SBT_OPTS="-XX:+CMSClassUnloadingEnabled -Xmx28G -Xss8M -XX:MaxMetaspaceSize=1024M"
@@ -174,43 +189,48 @@ The resulting generated program appears as `programGenerator/src/gen/scala/Squee
 There are 3 execution modes:
 
 #### Full model / Black-box execution
+
 In this mode we load the provided ONNX model file and pass it as-is to the underlying ONNX backend.
 The model is represented as a Scala function with appropriately typed inputs and outputs.
 Although we also generate the ONNX-Scala version of the program for type-checking and readability reasons, in the live code path the model internals are invisible to Scala.
 This is the most performant execution mode, and is recommended in cases where static, pre-defined graphs are sufficient.
 
 #### Fine-grained mode
-In this mode, each ONNX operation is executed on the underyling backend individually. 
+
+In this mode, each ONNX operation is executed on the underyling backend individually.
 As a result, you can write your own models from scratch in Scala using ONNX-Scala operations, injecting parameters from outside sources as need be.
 You can also generate an ONNX-Scala program from an ONNX model file and then customize it as you see fit.
 
-Type-checking is done at the operation level on inputs and outputs for data types, with support for type-checking over axis labels and tensor shapes coming. 
+Type-checking is done at the operation level on inputs and outputs for data types, with support for type-checking over axis labels and tensor shapes coming.
 This allows for dynamic graph structure, in which the execution itself defines the graph, similar to PyTorch and Tensorflow Eager.
 The trade-off made for this flexibility is that the underlying ONNX backend can no longer optimize the full graph, and the boundary-crossing at each operation results in additional overhead.
 
 #### Tracing mode
+
 In this mode, we construct the ONNX model to be executed on the fly, in memory and then execute it all at once on the backend.
 We thus recover some of the performance we sacrificed in fine-grained mode, at the cost of losing support for dynamic graph structure (because we don't get outputs for individual ops).
 This mode will allow for export of your from-scratch or generated-but-customized ONNX models.
 This mode is a work-in-progress.
 
 ### Example execution
-The most extensive working example at the moment is `zio/src/main/scala/NCFZIO.scala`, an implementation of Neural Collaborative Filtering, although you currently need to provide your own model file to load params from at `zio/.jvm/src/main/resources/NCF.onnx`. 
+
+The most extensive working example at the moment is `zio/src/main/scala/NCFZIO.scala`, an implementation of Neural Collaborative Filtering, although you currently need to provide your own model file to load params from at `zio/.jvm/src/main/resources/NCF.onnx`.
 
 This example provides full model execution via the `fullNCF` method, while an example of fine-grained execution can be found at `zio/src/main/scala/NCFZIOFine.scala` in the `fineNCF` method.
 
-To run it, use: 
+To run it, use:
+
 ```
 sbt "project zioJVM" "run"`
 ```
 
-## Project Details 
+## Project Details
 
 Automatic differentiation to enable training is under consideration (ONNX does not provide facilities for training).
 
 Balancing the interests of minimal imposition of dependencies with purely functional programming, ONNX-Scala comes in two flavors: Vanilla and ZIO-infused.
 
-The ONNX-Scala core API is cross-built against Scala JVM (for Scala 2.11, 2.12 and 2.13) , Scala.js / JavaScript (for Scala 2.11, 2.12 and 2.13) and Scala Native (for Scala 2.11). 
+The ONNX-Scala core API is cross-built against Scala JVM (for Scala 2.11, 2.12 and 2.13) , Scala.js / JavaScript (for Scala 2.11, 2.12 and 2.13) and Scala Native (for Scala 2.11).
 The Scala Native build will fail unless you apply this [PR](https://github.com/scala-native/scala-native/pull/1641).
 
 To take advantage of union types to express type constraints, a Dotty (Scala 3) build is available. The Dotty build does not support Scala.js or Scala Native.
@@ -232,7 +252,7 @@ Currently at ONNX 1.6.0.
 
 #### Optional - ZIO Variant
 
-* [ZIO](https://github.com/zio/zio) - A type-safe, composable library for asynchronous and concurrent programming in Scala 
+* [ZIO](https://github.com/zio/zio) - A type-safe, composable library for asynchronous and concurrent programming in Scala
 
 #### Program Generator
 
@@ -255,10 +275,11 @@ Currently at ONNX 1.6.0.
 
 * [DeepLearning.scala](https://github.com/ThoughtWorksInc/DeepLearning.scala) - A simple library for creating complex neural networks
 
-* [Deeplearning4j / Scalnet / ND4S ](https://github.com/deeplearning4j/deeplearning4j/tree/master/scalnet) - ScalNet is a wrapper around Deeplearning4J emulating a Keras like API for deep learning. 
+* [Deeplearning4j / Scalnet / ND4S ](https://github.com/deeplearning4j/deeplearning4j/tree/master/scalnet) - ScalNet is a wrapper around Deeplearning4J emulating a Keras like API for deep learning.
 
 #### Haskell
 
 * [Backprop](https://github.com/mstksg/backprop) - Heterogeneous automatic differentiation ("backpropagation") in Haskell
 
 * [Grenade](https://github.com/HuwCampbell/grenade) - Grenade is a composable, dependently typed, practical, and fast recurrent neural network library for concise and precise specifications of complex networks in Haskell.
+

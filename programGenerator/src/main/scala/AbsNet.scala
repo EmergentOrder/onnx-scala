@@ -12,12 +12,10 @@ import spire.math.Numeric
 import scala.language.higherKinds
 import org.emergentorder.union._
 
-trait AbsNet {
-  val dataSource: DataSource
-  val Abs: Abs
-  def program[
-      T: Numeric: ClassTag
-  ](inputData: Tensor[T])(
+class AbsNet[T: Numeric: ClassTag] {
+  val dataSource: DataSource = ???
+  val Abs: Abs = ???
+  def program(inputData: Option[Tensor[T]])(
       implicit evT: Contains[
         T,
         Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
@@ -30,7 +28,7 @@ trait AbsNet {
       nodeabs <- List(
         Abs.Abs6[T](
           "abs",
-          X = Some(nodedata)
+          X = nodedata
         )
       )
     } yield (nodeabs)

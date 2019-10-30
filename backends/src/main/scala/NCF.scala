@@ -22,25 +22,20 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
   val fullNgraphHandler = new NGraphBackend(byteArray)
 
   def fullNCF(
-      inputDataactual_input_1: List[Tensor[Long]],
-      inputDatalearned_0: List[Tensor[Long]]
-  ): List[Tensor[Float]] = {
+      inputDataactual_input_1: Tensor[Long],
+      inputDatalearned_0: Tensor[Long]
+  ): Tensor[Float] = {
 //    val scope = new PointerScope()
-    val result = for {
-      nodeactual_input_1 <- inputDataactual_input_1.map(
-        x => TensorFactory.getTensor(x._1.map(y => userIdsMap(y)), x._2)
-      )
-      nodelearned_0 <- inputDatalearned_0.map(
-        x => TensorFactory.getTensor(x._1.map(y => itemIdsMap(y)), x._2)
-      )
-      nodeFullOutput <- List(
+      val nodeactual_input_1 =  TensorFactory.getTensor(inputDataactual_input_1._1.map(y => userIdsMap(y)), inputDataactual_input_1._2)
+      
+      val nodelearned_0 = TensorFactory.getTensor(inputDatalearned_0._1.map(y => itemIdsMap(y)), inputDatalearned_0._2)
+      
+      val nodeFullOutput: Tensor[Float] =
         fullNgraphHandler
-          .fullModel[Long, Long, Long, Float](Some(nodeactual_input_1), Some(nodelearned_0), None)
-      )
-    } yield (nodeFullOutput)
+          .fullModel(Some(nodeactual_input_1), Some(nodelearned_0), None, None, None, None, None, None, None)
 //    scope.close
     System.runFinalization
-    result
+    nodeFullOutput //.asInstanceOf[Tensor[Float]] //Bad
   }
 
   override def close(): Unit = {

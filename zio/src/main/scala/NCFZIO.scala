@@ -35,9 +35,11 @@ class NCFZIO(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Ma
       nodelearned_0 <- inputDatalearned_0.map(
         x => TensorFactory.getTensor(x._1.map(y => itemIdsMap(y)), x._2)
       )
-      nodeFullOutput <- Task {
-        (fullNgraphHandler
-          .fullModel[Long, Long, Long, Float](Some(nodeactual_input_1), Some(nodelearned_0), None))
+      nodeFullOutput <- {
+      val nodeOutput: Task[Tensor[Float]] =
+        fullNgraphHandler
+          .fullModel(Some(nodeactual_input_1), Some(nodelearned_0), None, None, None, None, None, None, None)
+       nodeOutput
       }
     } yield (nodeFullOutput)
     scope.close

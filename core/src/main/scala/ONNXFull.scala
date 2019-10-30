@@ -1,6 +1,6 @@
-import org.emergentorder.onnx._
+package org.emergentorder.onnx
 
-trait FullBackend
+trait ONNXFull
     extends Abs
     with Acos
     with Acosh

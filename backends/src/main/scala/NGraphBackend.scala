@@ -27,6 +27,9 @@ import org.bytedeco.onnx.GraphProto
 import org.bytedeco.ngraph.global._
 import ngraph.import_onnx_model
 import org.bytedeco.ngraph.Backend
+
+
+
 // TODO: check import org.bytedeco.onnx.global.onnx.check_model
 
 //TODEFER: Tracing Mode: Extract ModelProto modifications into generic layer, then do each layer-wise
@@ -35,30 +38,10 @@ import org.bytedeco.ngraph.Backend
 // Use one path for speed and dynamic graph tracing at runtime (the default), the other for sanity/type/shape/AxisType/control flow checking at compile time
 //TODEFER: ONNX-JS backend for both JS and JVM
 //TODEFER: ONNX Runtime backend for JVM (and Native?)
-class NGraphBackend(onnxBytes: Array[Byte])
-    extends Add
+class NGraphBackend(onnxBytes: Array[Byte]) 
+//    extends ONNXFull
+    extends Operator
     with DataSource
-    with Constant
-    with ArgMin
-    with ArgMax
-    with Equal
-    with GlobalAveragePool
-    with Log
-    with Softmax
-    with Max
-    with Min
-    with Abs
-    with Conv
-    with Sigmoid
-    with Gemm
-    with Gather
-    with Mul
-    with Relu
-    with MaxPool
-    with Concat
-    with Dropout
-    with AveragePool
-    with Reshape
     with AutoCloseable {
 
   val scope = new PointerScope()
@@ -81,493 +64,8 @@ class NGraphBackend(onnxBytes: Array[Byte])
     }
   }
 
-  def Abs1[@sp T: Numeric: ClassTag](
-      name: String,
-      consumed_inputs: Option[(Array[Int])] = None,
-      X: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-          Short
-        ]#or[Int]#or[Long]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = ???
 
-  def Abs6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-          Short
-        ]#or[Int]#or[Long]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = {
-    (trinaryOpNoAttrs(name, "Abs", X, None: Option[Tensor[T]], None: Option[Tensor[T]]))
-  }
 
-  def Add1[@sp T: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)] = None,
-      broadcast: Option[(Int)] = None,
-      consumed_inputs: Option[(Array[Int])] = None,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = ???
-
-  def Add6[@sp T: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)] = None,
-      broadcast: Option[(Int)] = None,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = ???
-
-  def Add7[@sp T: Numeric: ClassTag](
-      name: String,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = {
-    (trinaryOpNoAttrs(name, "Add", A, B, None: Option[Tensor[T]]))
-  }
-
-  def ArgMax1[@sp T: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)] = None,
-      keepdims: Option[(Int)] = None,
-      data: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-        Int
-      ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[Long]) = {
-    val map: Map[String, Any] = Map("axis" -> axis, "keepdims" -> keepdims)
-    // (trinaryOp(name, "ArgMax", data, None, None, map))
-    ???
-  }
-
-  def ArgMax11[@sp T: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)] = None,
-      keepdims: Option[(Int)] = None,
-      data: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-        Int
-      ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[Long]) = ???
-
-  def ArgMin1[@sp T: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)] = None,
-      keepdims: Option[(Int)] = None,
-      data: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-        Int
-      ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[Long]) = {
-    val map: Map[String, Any] = Map("axis" -> axis, "keepdims" -> keepdims)
-    //(trinaryOp(name, "ArgMin", data, None, None, map))
-    ???
-  }
-
-  def ArgMin11[@sp T: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)] = None,
-      keepdims: Option[(Int)] = None,
-      data: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-        Int
-      ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[Long]) = ???
-
-  def Constant1[@sp T: Numeric: ClassTag](
-      name: String,
-      value: Option[(Tensor[T])]
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-          Short
-        ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = ???
-
-  def Constant9[@sp T: Numeric: ClassTag](
-      name: String,
-      value: Option[(Tensor[T])]
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-          Short
-        ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = {
-    (trinaryOpNoAttrs(name, "Constant", value, None: Option[Tensor[T]], None: Option[Tensor[T]]))
-  }
-
-  def Constant11[@sp T: Numeric: ClassTag](
-      name: String,
-      sparse_value: Option[(SparseTensor[T])] = None,
-      value: Option[(Tensor[T])] = None
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-          Short
-        ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = ???
-
-  def Equal1[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)] = None,
-      broadcast: Option[(Int)] = None,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
-        ULong
-      ]#or[Byte]#or[Short]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
-      evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
-  ): (Tensor[T1]) = ???
-
-  def Equal7[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
-      name: String,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
-        ULong
-      ]#or[Byte]#or[Short]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
-      evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
-  ): (Tensor[T1]) = {
-    //(trinaryOpNoAttrs(name, "Equal", A, B, None))
-    ???
-  }
-
-  def Equal11[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
-      name: String,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
-        ULong
-      ]#or[Byte]#or[Short]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
-      evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
-  ): (Tensor[T1]) = ???
-
-  def GlobalAveragePool1[@sp T: Numeric: ClassTag](
-      name: String,
-      X: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = {
-    (trinaryOpNoAttrs(
-      name,
-      "GlobalAveragePool",
-      X,
-      None: Option[Tensor[T]],
-      None: Option[Tensor[T]]
-    ))
-  }
-
-  def Log1[@sp T: Numeric: ClassTag](
-      name: String,
-      consumed_inputs: Option[(Array[Int])] = None,
-      input: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = ???
-
-  def Log6[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = {
-    (trinaryOpNoAttrs(name, "Log", input, None: Option[Tensor[T]], None: Option[Tensor[T]]))
-  }
-
-  def Max6[@sp T: Numeric: ClassTag](
-      name: String,
-      data_0: Seq[Option[Tensor[T]]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = ???
-
-  def Max8[@sp T: Numeric: ClassTag](
-      name: String,
-      data_0: Seq[Option[Tensor[T]]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = {
-    ???
-    //(trinaryOpNoAttrs(name, "Max", data_0, None, None))
-  }
-
-  def Min6[@sp T: Numeric: ClassTag](
-      name: String,
-      data_0: Seq[Option[Tensor[T]]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = ???
-
-  def Min8[@sp T: Numeric: ClassTag](
-      name: String,
-      data_0: Seq[Option[Tensor[T]]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = {
-    //(trinaryOpNoAttrs(name, "Min", data_0, None, None))
-    ???
-  }
-
-  def Softmax1[@sp T: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)] = None,
-      input: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = {
-    val map: Map[String, Any] = Map("axis" -> axis)
-    (trinaryOp(name, "Softmax", input, None: Option[Tensor[T]], None: Option[Tensor[T]], map))
-  }
-
-  def Softmax11[@sp T: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)] = None,
-      input: Option[Tensor[T]]
-  )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T]) =
-    ???
-
-  def Mul1[@sp T: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)] = None,
-      broadcast: Option[(Int)] = None,
-      consumed_inputs: Option[(Array[Int])] = None,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = ???
-
-  def Mul6[@sp T: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)] = None,
-      broadcast: Option[(Int)] = None,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = ???
-
-  def Mul7[@sp T: Numeric: ClassTag](
-      name: String,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = {
-    (trinaryOpNoAttrs(name, "Mul", A, B, None: Option[Tensor[T]]))
-  }
-
-  def Sigmoid1[@sp T: Numeric: ClassTag](
-      name: String,
-      consumed_inputs: Option[(Array[Int])] = None,
-      X: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = ???
-
-  def Sigmoid6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = {
-    (trinaryOpNoAttrs(name, "Sigmoid", X, None: Option[Tensor[T]], None: Option[Tensor[T]]))
-  }
-  def Gemm1[@sp T: Numeric: ClassTag](
-      name: String,
-      alpha: Option[(Float)] = None,
-      beta: Option[(Float)] = None,
-      broadcast: Option[(Int)] = None,
-      transA: Option[(Int)] = None,
-      transB: Option[(Int)] = None,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]],
-      C: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = ???
-
-  def Gemm6[@sp T: Numeric: ClassTag](
-      name: String,
-      alpha: Option[(Float)] = None,
-      beta: Option[(Float)] = None,
-      broadcast: Option[(Int)] = None,
-      transA: Option[(Int)] = None,
-      transB: Option[(Int)] = None,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]],
-      C: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = ???
-
-  def Gemm7[@sp T: Numeric: ClassTag](
-      name: String,
-      alpha: Option[(Float)] = None,
-      beta: Option[(Float)] = None,
-      transA: Option[(Int)] = None,
-      transB: Option[(Int)] = None,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]],
-      C: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = ???
-
-  def Gemm9[@sp T: Numeric: ClassTag](
-      name: String,
-      alpha: Option[(Float)] = None,
-      beta: Option[(Float)] = None,
-      transA: Option[(Int)] = None,
-      transB: Option[(Int)] = None,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]],
-      C: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = {
-    val map: Map[String, Any] = Map(
-      "alpha"  -> alpha,
-      "beta"   -> beta,
-      "transA" -> transA,
-      "transB" -> transB
-    )
-    (trinaryOp(name, "Gemm", A, B, C, map))
-  }
-
-  def Gemm11[@sp T: Numeric: ClassTag](
-      name: String,
-      alpha: Option[(Float)] = None,
-      beta: Option[(Float)] = None,
-      transA: Option[(Int)] = None,
-      transB: Option[(Int)] = None,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T]],
-      C: Option[Tensor[T]] = None
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = ???
-
-  def Gather1[@sp T: Numeric: ClassTag, @sp Tind: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)],
-      data: Option[Tensor[T]],
-      indices: Option[Tensor[Tind]]
-  )(
-      implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-        Int
-      ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
-        Complex[Double]
-      ]#or[UNil]#create],
-      evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
-  ): (Tensor[T]) = {
-    (trinaryOpNoAttrs(name, "Gather", data, indices, None: Option[Tensor[T]]))
-  }
-
-  def Gather11[@sp T: Numeric: ClassTag, @sp Tind: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)] = None,
-      data: Option[Tensor[T]],
-      indices: Option[Tensor[Tind]]
-  )(
-      implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-        Int
-      ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
-        Complex[Double]
-      ]#or[UNil]#create],
-      evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
-  ): (Tensor[T]) = ???
-
-  def Conv1[@sp T: Numeric: ClassTag](
-      name: String,
-      auto_pad: Option[(String)] = None,
-      dilations: Option[(Array[Int])] = None,
-      group: Option[(Int)] = None,
-      kernel_shape: Option[(Array[Int])] = None,
-      pads: Option[(Array[Int])] = None,
-      strides: Option[(Array[Int])] = None,
-      X: Option[Tensor[T]],
-      W: Option[Tensor[T]],
-      B: Option[Tensor[T]] = None
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = {
-
-    val map: Map[String, Any] = Map(
-      "auto_pad"     -> auto_pad,
-      "dilations"    -> dilations,
-      "group"        -> group,
-      "kernel_shape" -> kernel_shape,
-      "pads"         -> pads,
-      "strides"      -> strides
-    )
-
-    trinaryOp(name, "Conv", X, W, B, map)
-  }
-
-  def Conv11[@sp T: Numeric: ClassTag](
-      name: String,
-      auto_pad: Option[(String)] = None,
-      dilations: Option[(Array[Int])] = None,
-      group: Option[(Int)] = None,
-      kernel_shape: Option[(Array[Int])] = None,
-      pads: Option[(Array[Int])] = None,
-      strides: Option[(Array[Int])] = None,
-      X: Option[Tensor[T]],
-      W: Option[Tensor[T]],
-      B: Option[Tensor[T]] = None
-  )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T]) =
-    ???
 
   /*
     val inputs: Seq[String] = node.input
@@ -580,59 +78,10 @@ class NGraphBackend(onnxBytes: Array[Byte])
           convNode(inputs, outputs.head, getConvMaxPAvPAttr(attributes))
    */
 
-  def Dropout7[@sp T: Numeric: ClassTag](
-      name: String,
-      ratio: Option[(Float)],
-      data: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T], Tensor[T]) = {
-    val map: Map[String, Any] = Map("ratio" -> ratio)
-    (trinaryOp(name, "Dropout", data, None: Option[Tensor[T]], None: Option[Tensor[T]], map), null) //TODO: optional output
-  }
-
-  def Dropout10[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
-      name: String,
-      ratio: Option[(Float)] = None,
-      data: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
-      evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
-  ): (Tensor[T], Tensor[T1]) = ???
-
-  def Relu1[@sp T: Numeric: ClassTag](
-      name: String,
-      consumed_inputs: Option[(Array[Int])] // = None //Default args don't work
-      ,
-      X: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = ???
-
-  def Relu6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = {
-    trinaryOpNoAttrs(name, "Relu", X, None: Option[Tensor[T]], None: Option[Tensor[T]])
-  }
-
-  def trinaryOpNoAttrs[@sp T: ClassTag, T1: ClassTag, T2: ClassTag](
+  def callOpNode[T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag, T4: ClassTag, T5: ClassTag, T6: ClassTag, T7: ClassTag, T8: ClassTag](
       name: String,
       opName: String,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T1]],
-      C: Option[Tensor[T2]]
-  ): (Tensor[T]) =
-    trinaryOp(name, opName, A, B, C, Map())
-
-  def trinaryOpNode[@sp T: ClassTag, T1: ClassTag, T2: ClassTag](
-      name: String,
-      opName: String,
-      A: Option[Tensor[T]],
-      aName: String,
-      B: Option[Tensor[T1]],
-      bName: String,
-      C: Option[Tensor[T2]],
-      cName: String,
+      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8], 
       outName: String,
       attrs: Map[String, Any]
   )
@@ -663,20 +112,32 @@ class NGraphBackend(onnxBytes: Array[Byte])
     }
 
     //TODO: Don't take tensor here
-    def addInput[A](input: Option[Tensor[A]], inputName: String): Unit = {
-
-      input match {
-        case Some(tens) => {
-          node.add_input(inputName)
-        }
-        case None =>
+    def addInput[A](input: A, inputName: String): Unit = {
+        
+    input match {
+      case tensorOpt: Option[Tensor[Any]] => {tensorOpt match {
+      case Some(y) => node.add_input(inputName)
+      case _ => ??? //TODO: Handle non-tensors / don't assume tensor here
       }
-
+      }
+      case _ => ???
+      }
     }
+    addInput(inputs._1, "NAMEHERE")
+    addInput(inputs._2, "NAMEHERE")
+    addInput(inputs._3, "NAMEHERE")
+    addInput(inputs._4, "NAMEHERE")
+    addInput(inputs._5, "NAMEHERE")
+    addInput(inputs._6, "NAMEHERE")
+    addInput(inputs._7, "NAMEHERE")
+    addInput(inputs._8, "NAMEHERE")
+    addInput(inputs._9, "NAMEHERE")
 
-    addInput(A, aName)
-    addInput(B, bName)
-    addInput(C, cName)
+
+
+
+
+
 
     handleAttrs
 
@@ -716,15 +177,10 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
   }
 
-  def trinaryOpModel[@sp T: ClassTag, T1: ClassTag, T2: ClassTag](
+  def callOpModel[T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag, T4: ClassTag, T5: ClassTag, T6: ClassTag, T7: ClassTag, T8: ClassTag](
       name: String,
       opName: String,
-      A: Option[Tensor[T]],
-      aName: String,
-      B: Option[Tensor[T1]],
-      bName: String,
-      C: Option[Tensor[T2]],
-      cName: String,
+      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8], 
       outName: String,
       attrs: Map[String, Any]
   ): (ModelProto) = {
@@ -735,7 +191,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
     graph.set_name(name)
 
     //TODO: pass real names
-    val origNode = trinaryOpNode(name, opName, A, aName, B, bName, C, cName, outName, attrs)
+    val origNode = callOpNode(name, opName, inputs, outName, attrs)
 
     val node = graph.add_node
     node.MergeFrom(origNode)
@@ -755,35 +211,19 @@ class NGraphBackend(onnxBytes: Array[Byte])
     outputValueInfo.`type`.mutable_tensor_type
     outputValueInfo.`type`.tensor_type.set_elem_type(1)
 
-    addInputToGraph(A, aName, graph)
-    addInputToGraph(B, bName, graph)
-    addInputToGraph(C, cName, graph)
+    //NEEDED?
+    //addInputToGraph(A, aName, graph)
+    //addInputToGraph(B, bName, graph)
+    //addInputToGraph(C, cName, graph)
 
     //TODEFER: Merge models, ensuring the outer model is the last merged
     (model)
   }
 
-  def trinaryOp[@sp T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag](
-      name: String,
-      opName: String,
-      A: Option[Tensor[T]],
-      //    aName: String,
-      B: Option[Tensor[T1]],
-      //    bName: String,
-      C: Option[Tensor[T2]],
-      //    cName: String,
-      //    outName: String,
-      attrs: Map[String, Any]
-  ) = {
-    val opModel = trinaryOpModel(name, opName, A, "aName", B, "bName", C, "cName", "outName", attrs)
-    opFromModel[T, T1, T2, T3](opModel, A, B, C)
-  }
-
   def tensorToPointerAndType[T: ClassTag](
-      tens: Option[Tensor[T]]
-  ): (Pointer, org.bytedeco.ngraph.Type) = tens match {
-    case Some(tensor: Tensor[T]) => {
-      val data = tensor._1
+      tens: Tensor[T]
+  ): (Pointer, org.bytedeco.ngraph.Type) = {
+      val data = tens._1
       data match {
         case dat: Array[Byte]   => (new BytePointer(dat.asInstanceOf[Array[Byte]]: _*), ngraph.i8)
         case dat: Array[Short]  => (new ShortPointer(dat.asInstanceOf[Array[Short]]: _*), ngraph.i16)
@@ -793,14 +233,10 @@ class NGraphBackend(onnxBytes: Array[Byte])
         case dat: Array[Double] => (new DoublePointer(dat.asInstanceOf[Array[Double]]: _*), ngraph.f64)
 
       }
-    }
-    case None => (new IntPointer, ngraph.f32)
   }
 
-  def tensorToInputShape[T: ClassTag](tens: Option[Tensor[T]]): org.bytedeco.ngraph.Shape =
-    tens match {
-      case Some(tens) => {
-        val dims = tens._2
+  def tensorToInputShape[T: ClassTag](tens: Tensor[T]): org.bytedeco.ngraph.Shape = {
+    val dims = tens._2
         val s    = new org.bytedeco.ngraph.Shape(tens._2.size)
         s.resize(tens._2.size)
         val longShape = tens._2.map { x =>
@@ -808,17 +244,13 @@ class NGraphBackend(onnxBytes: Array[Byte])
         }
         s.put(longShape: _*)
         s
-      }
-      case None => new org.bytedeco.ngraph.Shape
-
     }
 
-  def tensorVectorToOutputTensor[T3: ClassTag](
+  def tensorVectorToOutputTensor[T: ClassTag](
       tensVec: org.bytedeco.ngraph.TensorVector,
       outputShape: org.bytedeco.ngraph.Shape
-  ): (Tensor[T3]) = {
+  ): (T) = {
 
-    val sampleArr = Array[T3]()
     val arraySize: Long = (0 until outputShape.size.toInt)
       .map { x =>
         outputShape.get(x).toInt
@@ -827,84 +259,93 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
     val tens          = tensVec.get(0)
     val elemType: Int = tens.get_element_type().get_type_enum()
+    val i8: Int = ngraph.i8().get_type_enum()
+    val i16: Int = ngraph.i16().get_type_enum()
+    val i32: Int = ngraph.i32().get_type_enum()
+    val i64: Int = ngraph.i64().get_type_enum()
+    val f32: Int = ngraph.f32().get_type_enum()
+    val f64: Int = ngraph.f64().get_type_enum()
+    val fa = elemType match {
+//TODO: Match not working here
+      case `i8` => {
 
-    val fa: Array[T3] = sampleArr match {
-
-      case arr: Array[Byte] => {
-
-        assert(elemType.equals(ngraph.i8().get_type_enum()))
+//        assert(elemType.equals(ngraph.i8().get_type_enum()))
         val fp = new BytePointer(arraySize)
         tens.read(fp, arraySize * 1)
 
         val fb = fp.asByteBuffer
 
         (0 until fb.capacity).map { x =>
-          fb.get(x).asInstanceOf[T3] //unsafe : asInstanceOf
+          fb.get(x).asInstanceOf[Byte] //unsafe : asInstanceOf
         }.toArray
 
       }
-      case arr: Array[Short] => {
 
-        assert(elemType.equals(ngraph.i16().get_type_enum()))
+      case `i16` => {
+
+
+//        assert(elemType.equals(ngraph.i16().get_type_enum()))
         val fp = new ShortPointer(arraySize)
         tens.read(fp, arraySize * 2)
 
         val fb = fp.asByteBuffer.asShortBuffer
 
         (0 until fb.capacity).map { x =>
-          fb.get(x).asInstanceOf[T3] //unsafe : asInstanceOf
+          fb.get(x).asInstanceOf[Short] //unsafe : asInstanceOf
         }.toArray
 
       }
-      case arr: Array[Int] => {
+      case `i32` => {
 
-        assert(elemType.equals(ngraph.i32().get_type_enum()))
+
+//        assert(elemType.equals(ngraph.i32().get_type_enum()))
         val fp = new IntPointer(arraySize)
         tens.read(fp, arraySize * 4)
 
         val fb = fp.asByteBuffer.asIntBuffer
 
         (0 until fb.capacity).map { x =>
-          fb.get(x).asInstanceOf[T3] //unsafe : asInstanceOf
+          fb.get(x).asInstanceOf[Int] //unsafe : asInstanceOf
         }.toArray
 
       }
-      case arr: Array[Long] => {
+      case `i64` => {
 
-        assert(elemType.equals(ngraph.i64().get_type_enum()))
+//        assert(elemType.equals(ngraph.i64().get_type_enum()))
         val fp = new LongPointer(arraySize)
         tens.read(fp, arraySize * 8)
 
         val fb = fp.asByteBuffer.asLongBuffer
 
         (0 until fb.capacity).map { x =>
-          fb.get(x).asInstanceOf[T3] //unsafe : asInstanceOf
+          fb.get(x).asInstanceOf[Long] //unsafe : asInstanceOf
         }.toArray
 
       }
-      case arr: Array[Float] => {
+      case `f32` => {
 
-        assert(elemType.equals(ngraph.f32().get_type_enum()))
+
+       // assert(elemType.equals(ngraph.f32().get_type_enum()))
         val fp = new FloatPointer(arraySize)
         tens.read(fp, arraySize * 4)
 
         val fb = fp.asByteBuffer.asFloatBuffer
 
         (0 until fb.capacity).map { x =>
-          fb.get(x).asInstanceOf[T3] //unsafe : asInstanceOf
+          fb.get(x).asInstanceOf[Float] //unsafe : asInstanceOf
         }.toArray
 
       }
-      case arr: Array[Double] => {
+      case `f64` => {
 
-        assert(elemType.equals(ngraph.f64().get_type_enum()))
+       //assert(elemType.equals(ngraph.f64().get_type_enum()))
         val fp = new DoublePointer(arraySize)
         tens.read(fp, arraySize * 8)
 
         val fb = fp.asByteBuffer.asDoubleBuffer
 
         (0 until fb.capacity).map { x =>
-          fb.get(x).asInstanceOf[T3] //unsafe : asInstanceOf
+          fb.get(x).asInstanceOf[Double] //unsafe : asInstanceOf
         }.toArray
 
       }
@@ -914,18 +355,18 @@ class NGraphBackend(onnxBytes: Array[Byte])
       outputShape.get(x).toInt
     }.toArray
 
-    val result: Tensor[T3] = TensorFactory.getTensor(fa, shapeArray.map(z => z: XInt))
+    val result = TensorFactory.getTensor(fa, shapeArray.map(z => z: XInt)).asInstanceOf[T]
     tensVec.close
     outputShape.close
     (result)
   }
 
-  def opFromModel[@sp T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag](
+  def opFromModel[T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag, T4: ClassTag, T5: ClassTag, T6: ClassTag, T7: ClassTag, T8: ClassTag,
+    T9: ClassTag, T10: ClassTag, T11: ClassTag, T12: ClassTag, T13: ClassTag, T14: ClassTag, T15: ClassTag, T16: ClassTag, T17: ClassTag](
       opModel: ModelProto,
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T1]],
-      C: Option[Tensor[T2]]
-  ): (Tensor[T3]) = {
+      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8] 
+  ): (T9) = {
+    //, T10, T11, T12, T13, T14, T15, T16, T17] = { //TODO: Fix output type !!
     val scope = new PointerScope()
 
     //println(Pointer.totalBytes)
@@ -935,56 +376,59 @@ class NGraphBackend(onnxBytes: Array[Byte])
     modelString.close
 
     //println(Pointer.totalBytes)
-    val result: Tensor[T3] = opFromByteArray(modelStringBytes, A, B, C)
+    val result = opFromByteArray[T,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17](modelStringBytes, inputs)
     scope.close
-    result
+    (result.asInstanceOf[T9]) //TODO: More outputs
   }
 
-  def opFromByteArray[@sp T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag](
+  def getTensorShape[T: ClassTag](t: T): Option[org.bytedeco.ngraph.Shape] = {
+    t match {
+      case tensorOpt: Option[Tensor[Any]] => {tensorOpt match {
+      case Some(y) => Some(tensorToInputShape(y))
+      case None => None
+      }
+      } 
+      case _ => ??? //TODO: Handle non-tensors / don't assume tensor here
+      
+  }
+  }
+
+  def getTensorPointerAndType[T: ClassTag](t: T): Option[(Pointer, org.bytedeco.ngraph.Type)] = {
+  
+    t match {
+      case tensorOpt: Option[Tensor[Any]] => {tensorOpt match { 
+      case Some(y: Tensor[Any]) => Some(tensorToPointerAndType(y))
+      case None => None
+    }
+  }
+    }
+  }
+
+  def opFromByteArray[T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag, T4: ClassTag, T5: ClassTag, T6: ClassTag, T7: ClassTag, T8: ClassTag,
+    T9: ClassTag, T10: ClassTag, T11: ClassTag, T12: ClassTag, T13: ClassTag, T14: ClassTag, T15: ClassTag, T16: ClassTag, T17: ClassTag](
       opModel: Array[Byte],
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T1]],
-      C: Option[Tensor[T2]]
-  ): (Tensor[T3]) = {
+      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8] 
+  ): (T9) = {
     val scope       = new PointerScope()
     val modelString = new BytePointer(opModel: _*)
     val ngraphFunc  = import_onnx_model(modelString)
     modelString.close
 
-    val inputShape: org.bytedeco.ngraph.Shape       = tensorToInputShape(A)
-    val secondInputShape: org.bytedeco.ngraph.Shape = tensorToInputShape(B)
-    val thirdInputShape: org.bytedeco.ngraph.Shape  = tensorToInputShape(C)
+    val inputShapes = Seq(getTensorShape(inputs._1), getTensorShape(inputs._2), getTensorShape(inputs._3), getTensorShape(inputs._4),
+      getTensorShape(inputs._5), getTensorShape(inputs._6), getTensorShape(inputs._7), getTensorShape(inputs._8), getTensorShape(inputs._9)).flatten
 
     val outputShape                                    = ngraphFunc.get_output_shape(0)
     val outputType                                     = ngraphFunc.get_output_element_type(0)
-    val inputTens: (Pointer, org.bytedeco.ngraph.Type) = tensorToPointerAndType(A)
 
-    val secondInputTens: (Pointer, org.bytedeco.ngraph.Type) = tensorToPointerAndType(B)
+    val inputTensors = Seq(getTensorPointerAndType(inputs._1), getTensorPointerAndType(inputs._2), getTensorPointerAndType(inputs._3),
+      getTensorPointerAndType(inputs._4), getTensorPointerAndType(inputs._5), getTensorPointerAndType(inputs._6),
+      getTensorPointerAndType(inputs._7), getTensorPointerAndType(inputs._8), getTensorPointerAndType(inputs._9)).flatten
 
-    val thirdInputTens: (Pointer, org.bytedeco.ngraph.Type) = tensorToPointerAndType(C)
+    val ngraphInputs = (inputShapes zip inputTensors).map( x => ngraphBackend.create_tensor(x._2._2, x._1, x._2._1))
 
-    val input  = ngraphBackend.create_tensor(inputTens._2, inputShape, inputTens._1)
     val output = ngraphBackend.create_tensor(outputType, outputShape)
 
-    val inputVector = B match {
-      case Some(_) => {
-        val tens2 = ngraphBackend.create_tensor(
-          secondInputTens._2,
-          secondInputShape,
-          secondInputTens._1
-        )
-        C match {
-          case Some(_) =>
-            new org.bytedeco.ngraph.TensorVector(
-              input,
-              tens2,
-              ngraphBackend.create_tensor(thirdInputTens._2, thirdInputShape, thirdInputTens._1)
-            )
-          case None => new org.bytedeco.ngraph.TensorVector(input, tens2)
-        }
-      }
-      case None => new org.bytedeco.ngraph.TensorVector(input)
-    }
+    val inputVector = new org.bytedeco.ngraph.TensorVector(ngraphInputs: _*)
 
     val outputVector = new org.bytedeco.ngraph.TensorVector(output)
 
@@ -1009,20 +453,20 @@ class NGraphBackend(onnxBytes: Array[Byte])
     executable.close
     //convert result to onnx-scala Tensor
 
-    val result: Tensor[T3] = tensorVectorToOutputTensor[T3](outputVector, outputShape)
+    val result = tensorVectorToOutputTensor[T9](outputVector, outputShape)
 
-    inputShape.close
-    secondInputShape.close
-    thirdInputShape.close
+//    inputShape.close
+//    secondInputShape.close
+//    thirdInputShape.close
     outputType.close
-    inputTens._1.close
-    inputTens._2.close
-    secondInputTens._1.close
-    secondInputTens._2.close
-    thirdInputTens._1.close
-    thirdInputTens._2.close
+//    inputTens._1.close
+//    inputTens._2.close
+//    secondInputTens._1.close
+//    secondInputTens._2.close
+//    thirdInputTens._1.close
+//    thirdInputTens._2.close
 
-    input.close
+//    input.close
     inputVector.close
     output.close
     outputVector.close
@@ -1031,11 +475,11 @@ class NGraphBackend(onnxBytes: Array[Byte])
     (result)
   }
 
-  def fullModel[@sp T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag](
-      A: Option[Tensor[T]],
-      B: Option[Tensor[T1]],
-      C: Option[Tensor[T2]]
-  ) = {
+
+  def fullModel[T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag, T4: ClassTag, T5: ClassTag, T6: ClassTag, T7: ClassTag, T8: ClassTag,
+    T9: ClassTag, T10: ClassTag, T11: ClassTag, T12: ClassTag, T13: ClassTag, T14: ClassTag, T15: ClassTag, T16: ClassTag, T17: ClassTag](
+      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8],
+  ): (T9) = {
 
     //println(Pointer.totalBytes)
 //    val scope = new PointerScope()
@@ -1071,213 +515,16 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
      */
     //println(opModel.graph.input(0).name.getString)
-    val result = opFromByteArray[T, T1, T2, T3](byteArray, A, B, C)
+    val result = opFromByteArray[T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17](byteArray, inputs)
     //opModel.close
 //    scope.close
     //println(Pointer.totalBytes)
     result
   }
 
-  def MaxPool1[@sp T: Numeric: ClassTag](
-      name: String,
-      auto_pad: Option[(String)] = None,
-      kernel_shape: Option[(Array[Int])],
-      pads: Option[(Array[Int])] = None,
-      strides: Option[(Array[Int])] = None,
-      X: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = ???
 
-  def MaxPool8[@sp T: Numeric: ClassTag, @sp I: Numeric: ClassTag](
-      name: String,
-      auto_pad: Option[(String)] = None,
-      kernel_shape: Option[(Array[Int])],
-      pads: Option[(Array[Int])] = None,
-      storage_order: Option[(Int)] = None,
-      strides: Option[(Array[Int])] = None,
-      X: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
-      evI: Contains[I, Union[Long]#or[UNil]#create]
-  ): (Tensor[T], Tensor[I]) = {
-    val map: Map[String, Any] = Map(
-      "auto_pad"      -> auto_pad,
-      "kernel_shape"  -> kernel_shape,
-      "pads"          -> pads,
-      "storage_order" -> storage_order,
-      "strides"       -> strides
-    )
 
-    (
-      trinaryOp[T, T, T, T](
-        name,
-        "MaxPool",
-        X,
-        None: Option[Tensor[T]],
-        None: Option[Tensor[T]],
-        map
-      ),
-      null
-    ) //TODO:optional output
-  }
 
-  def MaxPool10[@sp T: Numeric: ClassTag, @sp I: Numeric: ClassTag](
-      name: String,
-      auto_pad: Option[(String)] = None,
-      ceil_mode: Option[(Int)] = None,
-      dilations: Option[(Array[Int])] = None,
-      kernel_shape: Option[(Array[Int])],
-      pads: Option[(Array[Int])] = None,
-      storage_order: Option[(Int)] = None,
-      strides: Option[(Array[Int])] = None,
-      X: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
-      evI: Contains[I, Union[Long]#or[UNil]#create]
-  ): (Tensor[T], Tensor[I]) = ???
-
-  def MaxPool11[@sp T: Numeric: ClassTag, @sp I: Numeric: ClassTag](
-      name: String,
-      auto_pad: Option[(String)] = None,
-      ceil_mode: Option[(Int)] = None,
-      dilations: Option[(Array[Int])] = None,
-      kernel_shape: Option[(Array[Int])],
-      pads: Option[(Array[Int])] = None,
-      storage_order: Option[(Int)] = None,
-      strides: Option[(Array[Int])] = None,
-      X: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
-      evI: Contains[I, Union[Long]#or[UNil]#create]
-  ): (Tensor[T], Tensor[I]) = ???
-
-  def Concat4[@sp T: Numeric: ClassTag](
-      name: String,
-      axis: Option[(Int)],
-      inputs: Seq[Option[Tensor[T]]]
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-          Short
-        ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = {
-    val map: Map[String, Any] = Map("axis" -> axis)
-    val X                     = inputs(0)
-    val Y                     = inputs(1)
-    val Z                     = if (inputs.size > 2) inputs(2) else None
-    trinaryOp(name, "Concat", X, Y, Z, map)
-    //TODO: > 3 inputs
-  }
-
-  def Dropout1[@sp T: Numeric: ClassTag](
-      name: String,
-      consumed_inputs: Option[(Array[Int])] = None,
-      is_test: Option[(Int)] = None,
-      ratio: Option[(Float)] = None,
-      data: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T], Tensor[T]) = ???
-
-  def Dropout6[@sp T: Numeric: ClassTag](
-      name: String,
-      is_test: Option[(Int)] = None,
-      ratio: Option[(Float)] = None,
-      data: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T], Tensor[T]) = ???
-
-  def AveragePool1[@sp T: Numeric: ClassTag](
-      name: String,
-      auto_pad: Option[(String)] = None,
-      kernel_shape: Option[(Array[Int])],
-      pads: Option[(Array[Int])] = None,
-      strides: Option[(Array[Int])] = None,
-      X: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = ???
-
-  def AveragePool7[@sp T: Numeric: ClassTag](
-      name: String,
-      auto_pad: Option[(String)] = None,
-      count_include_pad: Option[(Int)] = None,
-      kernel_shape: Option[(Array[Int])],
-      pads: Option[(Array[Int])] = None,
-      strides: Option[(Array[Int])] = None,
-      X: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = {
-    val map: Map[String, Any] = Map(
-      "auto_pad"          -> auto_pad,
-      "count_include_pad" -> count_include_pad,
-      "kernel_shape"      -> kernel_shape,
-      "pads"              -> pads,
-      "strides"           -> strides
-    )
-
-    trinaryOp(name, "AveragePool", X, None: Option[Tensor[T]], None: Option[Tensor[T]], map)
-  }
-
-  def AveragePool10[@sp T: Numeric: ClassTag](
-      name: String,
-      auto_pad: Option[(String)] = None,
-      ceil_mode: Option[(Int)] = None,
-      count_include_pad: Option[(Int)] = None,
-      kernel_shape: Option[(Array[Int])],
-      pads: Option[(Array[Int])] = None,
-      strides: Option[(Array[Int])] = None,
-      X: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-  ): (Tensor[T]) = ???
-
-  def AveragePool11[@sp T: Numeric: ClassTag](
-      name: String,
-      auto_pad: Option[(String)] = None,
-      ceil_mode: Option[(Int)] = None,
-      count_include_pad: Option[(Int)] = None,
-      kernel_shape: Option[(Array[Int])],
-      pads: Option[(Array[Int])] = None,
-      strides: Option[(Array[Int])] = None,
-      X: Option[Tensor[T]]
-  )(implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]): (Tensor[T]) =
-    ???
-
-  def Reshape1[@sp T: Numeric: ClassTag](
-      name: String,
-      consumed_inputs: Option[(Array[Int])] = None,
-      shape: Option[(Array[Int])] = None,
-      data: Option[Tensor[T]]
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-          Short
-        ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = ???
-
-  def Reshape5[@sp T: Numeric: ClassTag](
-      name: String,
-      data: Option[Tensor[T]],
-      shape: Option[Tensor[Long]]
-  )(
-      implicit evT: Contains[
-        T,
-        Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-          Short
-        ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
-      ]
-  ): (Tensor[T]) = {
-    val map: Map[String, Any] = Map("shape" -> shape)
-    trinaryOp(name, "Reshape", data, None: Option[Tensor[T]], None: Option[Tensor[T]], map)
-  }
 
   override def close(): Unit = {
     ngraphBackend.close

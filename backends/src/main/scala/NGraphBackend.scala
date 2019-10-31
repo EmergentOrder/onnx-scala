@@ -39,8 +39,182 @@ import org.bytedeco.ngraph.Backend
 //TODEFER: ONNX-JS backend for both JS and JVM
 //TODEFER: ONNX Runtime backend for JVM (and Native?)
 class NGraphBackend(onnxBytes: Array[Byte]) 
-//    extends ONNXFull
-    extends Operator
+ //   extends ONNXFull
+//    extends Operator
+    extends Abs
+    with Acos
+    with Acosh
+    with Add
+    with And
+    with ArgMax
+    with ArgMin
+    with ArrayFeatureExtractor
+    with Asin
+    with Asinh
+    with Atan
+    with AveragePool
+    with BatchNormalization
+    with Binarizer
+    with BitShift
+    with Cast
+    with CastMap
+    with CategoryMapper
+    with Ceil
+    with Clip
+    with Compress
+    with Concat
+    with ConcatFromSequence
+    with Constant
+    with ConstantOfShape
+    with Conv
+    with ConvInteger
+    with ConvTranspose
+    with Cos
+    with Cosh
+    with CumSum
+    with DepthToSpace
+    with DequantizeLinear
+    with Det
+    with DictVectorizer
+    with Div
+    with Dropout
+    with DynamicQuantizeLinear
+    with Elu
+    with Equal
+    with Erf
+    with Exp
+    with Expand
+    with EyeLike
+    with Flatten
+    with Floor
+    with GRU
+    with Gather
+    with GatherElements
+    with GatherND
+    with Gemm
+    with GlobalAveragePool
+    with GlobalLpPool
+    with GlobalMaxPool
+    with Greater
+    with HardSigmoid
+    with Hardmax
+    with Identity
+    with If
+    with Imputer
+    with InstanceNormalization
+    with IsInf
+    with IsNaN
+    with LRN
+    with LSTM
+    with LabelEncoder
+    with LeakyRelu
+    with Less
+    with LinearClassifier
+    with LinearRegressor
+    with Log
+    with LogSoftmax
+    with Loop
+    with LpNormalization
+    with LpPool
+    with MatMul
+    with MatMulInteger
+    with Max
+    with MaxPool
+    with MaxRoiPool
+    with MaxUnpool
+    with Mean
+    with MeanVarianceNormalization
+    with Min
+    with Mod
+    with Mul
+    with Multinomial
+    with Neg
+    with NonMaxSuppression
+    with NonZero
+    with Normalizer
+    with Not
+    with OneHot
+    with OneHotEncoder
+    with Or
+    with PRelu
+    with Pad
+    with Pow
+    /*
+    with QLinearConv
+    with QLinearMatMul
+    with QuantizeLinear
+    with RNN
+    with RandomNormal
+    with RandomNormalLike
+    with RandomUniform
+    with RandomUniformLike
+    with Range
+    with Reciprocal
+    with ReduceL1
+    with ReduceL2
+    with ReduceLogSum
+    with ReduceLogSumExp
+    with ReduceMax
+    with ReduceMean
+    with ReduceMin
+    with ReduceProd
+    with ReduceSum
+    with ReduceSumSquare 
+    with Relu
+    with Reshape
+    with Resize
+    with ReverseSequence
+    with RoiAlign
+    with Round
+    with SVMClassifier
+    with SVMRegressor
+    with Scaler
+    with Scan
+    with Scatter
+    with ScatterElements
+    with ScatterND
+    with Selu
+    with SequenceAt
+    with SequenceConstruct
+    with SequenceEmpty
+    with SequenceErase
+    with SequenceInsert
+    with SequenceLength
+    with Shape
+    with Shrink
+    with Sigmoid
+    with Sign
+    with Sin
+    with Sinh
+    with Size
+    with Slice
+    with Softmax
+    with Softplus
+    with Softsign
+    with SpaceToDepth
+    with Split
+    with SplitToSequence
+    with Sqrt
+    with Squeeze
+    with StringNormalizer
+    with Sub
+    with Sum
+    with Tan
+    with Tanh
+    with TfIdfVectorizer
+    with ThresholdedRelu
+    with Tile
+    with TopK
+    with Transpose
+    with TreeEnsembleClassifier
+    with TreeEnsembleRegressor
+    with Unique
+    with Unsqueeze
+    with Upsample
+    with Where
+    with Xor
+    with ZipMap
+*/
     with DataSource
     with AutoCloseable {
 
@@ -116,22 +290,23 @@ class NGraphBackend(onnxBytes: Array[Byte])
         
     input match {
       case tensorOpt: Option[Tensor[Any]] => {tensorOpt match {
-      case Some(y) => node.add_input(inputName)
-      case _ => ??? //TODO: Handle non-tensors / don't assume tensor here
-      }
+        case Some(y) => node.add_input(inputName)
+        case None =>  //TODO: Handle non-tensors / don't assume tensor here
+       }
       }
       case _ => ???
       }
     }
-    addInput(inputs._1, "NAMEHERE")
-    addInput(inputs._2, "NAMEHERE")
-    addInput(inputs._3, "NAMEHERE")
-    addInput(inputs._4, "NAMEHERE")
-    addInput(inputs._5, "NAMEHERE")
-    addInput(inputs._6, "NAMEHERE")
-    addInput(inputs._7, "NAMEHERE")
-    addInput(inputs._8, "NAMEHERE")
-    addInput(inputs._9, "NAMEHERE")
+    //TODO: fix names
+    addInput(inputs._1, "A")
+    addInput(inputs._2, "B")
+    addInput(inputs._3, "C")
+    addInput(inputs._4, "D")
+    addInput(inputs._5, "E")
+    addInput(inputs._6, "F")
+    addInput(inputs._7, "G")
+    addInput(inputs._8, "H")
+    addInput(inputs._9, "I")
 
 
 
@@ -144,10 +319,11 @@ class NGraphBackend(onnxBytes: Array[Byte])
     return node
   }
 
-  def addInputToGraph[A](input: Option[Tensor[A]], inputName: String, graph: GraphProto): Unit = {
+  def addInputToGraph[A](input: A, inputName: String, graph: GraphProto): Unit = {
 
     input match {
-      case Some(tens) => {
+      case tensorOpt: Option[Tensor[_]] => {tensorOpt match {
+        case Some(tens) => {
 
         val elemType = tens._1 match {
           case f: Array[Float] => 1
@@ -175,6 +351,8 @@ class NGraphBackend(onnxBytes: Array[Byte])
       case None =>
     }
 
+    }
+    }
   }
 
   def callOpModel[T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag, T4: ClassTag, T5: ClassTag, T6: ClassTag, T7: ClassTag, T8: ClassTag](
@@ -211,10 +389,15 @@ class NGraphBackend(onnxBytes: Array[Byte])
     outputValueInfo.`type`.mutable_tensor_type
     outputValueInfo.`type`.tensor_type.set_elem_type(1)
 
-    //NEEDED?
-    //addInputToGraph(A, aName, graph)
-    //addInputToGraph(B, bName, graph)
-    //addInputToGraph(C, cName, graph)
+    addInputToGraph(inputs._1, "A", graph)
+    addInputToGraph(inputs._2, "B", graph)
+    addInputToGraph(inputs._3, "C", graph)
+    addInputToGraph(inputs._4, "D", graph)
+    addInputToGraph(inputs._5, "E", graph)
+    addInputToGraph(inputs._6, "F", graph)
+    addInputToGraph(inputs._7, "G", graph)
+    addInputToGraph(inputs._8, "H", graph)
+    addInputToGraph(inputs._9, "I", graph)
 
     //TODEFER: Merge models, ensuring the outer model is the last merged
     (model)
@@ -411,6 +594,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
   ): (T9) = {
     val scope       = new PointerScope()
     val modelString = new BytePointer(opModel: _*)
+
     val ngraphFunc  = import_onnx_model(modelString)
     modelString.close
 

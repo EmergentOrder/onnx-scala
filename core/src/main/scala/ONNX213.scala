@@ -64,15 +64,14 @@ object AxesFactory {
   type SparseTensor[T] = Tensor[T]
 
   type XInt = Int with Singleton
-
+  
   object TensorFactory {
     def getTensor[T](data: Array[T], t: Array[Int]): Tensor[T] = {
-      require(data.size == t.foldLeft(1)(_ * _))
-      (data, t)
+      val shape: Array[XInt] = t.map(z => z: XInt)
+      require(data.size == shape.foldLeft(1)(_ * _))
+      (data, t, AxesFactory.getAxes(shape))
     }
-   }
-  
-
+  }
    
   trait Operator{
     def callOp[T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag, T4: ClassTag, T5: ClassTag, T6: ClassTag, T7: ClassTag, T8: ClassTag,

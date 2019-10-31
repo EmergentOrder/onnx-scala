@@ -14,7 +14,7 @@ import org.emergentorder.union._
 
 class AbsNet[T: Numeric: ClassTag] {
   val dataSource: DataSource = ???
-  val Abs: Abs = ???
+  val Abs: Abs               = ???
   def program(inputData: Option[Tensor[T]])(
       implicit evT: Contains[
         T,

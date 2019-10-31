@@ -25,20 +25,38 @@ import org.emergentorder.onnxZIO._
 import org.emergentorder.union._
 import org.emergentorder.onnx.backends._
 
-class ONNXNGraphHandlers(onnxBytes: Array[Byte])
-
-    extends AutoCloseable {
+class ONNXNGraphHandlers(onnxBytes: Array[Byte]) extends AutoCloseable {
   val scope         = new PointerScope()
   val ngraphBackend = new NGraphBackend(onnxBytes)
 
-
   //TODO: Task here
-  def fullModel[T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag, T4: ClassTag, T5: ClassTag, T6: ClassTag, T7: ClassTag, T8: ClassTag,
-    T9: ClassTag, T10: ClassTag, T11: ClassTag, T12: ClassTag, T13: ClassTag, T14: ClassTag, T15: ClassTag, T16: ClassTag, T17: ClassTag](
+  def fullModel[
+      T: ClassTag,
+      T1: ClassTag,
+      T2: ClassTag,
+      T3: ClassTag,
+      T4: ClassTag,
+      T5: ClassTag,
+      T6: ClassTag,
+      T7: ClassTag,
+      T8: ClassTag,
+      T9: ClassTag,
+      T10: ClassTag,
+      T11: ClassTag,
+      T12: ClassTag,
+      T13: ClassTag,
+      T14: ClassTag,
+      T15: ClassTag,
+      T16: ClassTag,
+      T17: ClassTag
+  ](
       inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8]
   ): (Task[T9]) = {
-    Task{
-    ngraphBackend.fullModel[T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17](inputs)  
+    Task {
+      ngraphBackend
+        .fullModel[T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17](
+          inputs
+        )
     }
   }
 
@@ -48,7 +66,6 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte])
     }
 
   }
-
 
   override def close(): Unit = {
     ngraphBackend.close

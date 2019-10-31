@@ -28,8 +28,6 @@ import org.bytedeco.ngraph.global._
 import ngraph.import_onnx_model
 import org.bytedeco.ngraph.Backend
 
-
-
 // TODO: check import org.bytedeco.onnx.global.onnx.check_model
 
 //TODEFER: Tracing Mode: Extract ModelProto modifications into generic layer, then do each layer-wise
@@ -38,8 +36,8 @@ import org.bytedeco.ngraph.Backend
 // Use one path for speed and dynamic graph tracing at runtime (the default), the other for sanity/type/shape/AxisType/control flow checking at compile time
 //TODEFER: ONNX-JS backend for both JS and JVM
 //TODEFER: ONNX Runtime backend for JVM (and Native?)
-class NGraphBackend(onnxBytes: Array[Byte]) 
- //   extends ONNXFull
+class NGraphBackend(onnxBytes: Array[Byte])
+//   extends ONNXFull
 //    extends Operator
     extends Abs
     with Acos
@@ -159,7 +157,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
     with ReduceMin
     with ReduceProd
     with ReduceSum
-    with ReduceSumSquare 
+    with ReduceSumSquare
     with Relu
     with Reshape
     with Resize
@@ -214,7 +212,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
     with Where
     with Xor
     with ZipMap
-*/
+     */
     with DataSource
     with AutoCloseable {
 
@@ -238,9 +236,6 @@ class NGraphBackend(onnxBytes: Array[Byte])
     }
   }
 
-
-
-
   /*
     val inputs: Seq[String] = node.input
           assert (inputs.size == 2 || inputs.size == 3, s"number of inputs of a conv node should always be 2 or 3, got ${inputs.size}")
@@ -252,10 +247,20 @@ class NGraphBackend(onnxBytes: Array[Byte])
           convNode(inputs, outputs.head, getConvMaxPAvPAttr(attributes))
    */
 
-  def callOpNode[T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag, T4: ClassTag, T5: ClassTag, T6: ClassTag, T7: ClassTag, T8: ClassTag](
+  def callOpNode[
+      T: ClassTag,
+      T1: ClassTag,
+      T2: ClassTag,
+      T3: ClassTag,
+      T4: ClassTag,
+      T5: ClassTag,
+      T6: ClassTag,
+      T7: ClassTag,
+      T8: ClassTag
+  ](
       name: String,
       opName: String,
-      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8], 
+      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8],
       outName: String,
       attrs: Map[String, Any]
   )
@@ -287,14 +292,15 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
     //TODO: Don't take tensor here
     def addInput[A](input: A, inputName: String): Unit = {
-        
-    input match {
-      case tensorOpt: Option[Tensor[Any]] => {tensorOpt match {
-        case Some(y) => node.add_input(inputName)
-        case None =>  //TODO: Handle non-tensors / don't assume tensor here
-       }
-      }
-      case _ => ???
+
+      input match {
+        case tensorOpt: Option[Tensor[Any]] => {
+          tensorOpt match {
+            case Some(y) => node.add_input(inputName)
+            case None    => //TODO: Handle non-tensors / don't assume tensor here
+          }
+        }
+        case _ => ???
       }
     }
     //TODO: fix names
@@ -308,12 +314,6 @@ class NGraphBackend(onnxBytes: Array[Byte])
     addInput(inputs._8, "H")
     addInput(inputs._9, "I")
 
-
-
-
-
-
-
     handleAttrs
 
     return node
@@ -322,43 +322,54 @@ class NGraphBackend(onnxBytes: Array[Byte])
   def addInputToGraph[A](input: A, inputName: String, graph: GraphProto): Unit = {
 
     input match {
-      case tensorOpt: Option[Tensor[_]] => {tensorOpt match {
-        case Some(tens) => {
+      case tensorOpt: Option[Tensor[_]] => {
+        tensorOpt match {
+          case Some(tens) => {
 
-        val elemType = tens._1 match {
-          case f: Array[Float] => 1
-          case i: Array[Int]   => 6
-          case l: Array[Long]  => 7
-        }
+            val elemType = tens._1 match {
+              case f: Array[Float] => 1
+              case i: Array[Int]   => 6
+              case l: Array[Long]  => 7
+            }
 
-        val inputValueInfo = graph.add_input
+            val inputValueInfo = graph.add_input
 
-        inputValueInfo.set_name(inputName)
-        inputValueInfo.mutable_type
-        inputValueInfo.`type`.mutable_tensor_type
-        inputValueInfo.`type`.tensor_type.set_elem_type(elemType)
+            inputValueInfo.set_name(inputName)
+            inputValueInfo.mutable_type
+            inputValueInfo.`type`.mutable_tensor_type
+            inputValueInfo.`type`.tensor_type.set_elem_type(elemType)
 
-        val dims = tens._2
-        inputValueInfo.`type`.tensor_type.mutable_shape
-        dims.foreach { x =>
-          val inputDim = inputValueInfo.`type`.tensor_type.shape.add_dim
+            val dims = tens._2
+            inputValueInfo.`type`.tensor_type.mutable_shape
+            dims.foreach { x =>
+              val inputDim = inputValueInfo.`type`.tensor_type.shape.add_dim
 
 //              inputDim.set_dim_param("NAME?")
-          inputDim.set_dim_value(x)
+              inputDim.set_dim_value(x)
 
+            }
+          }
+          case None =>
         }
-      }
-      case None =>
-    }
 
-    }
+      }
     }
   }
 
-  def callOpModel[T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag, T4: ClassTag, T5: ClassTag, T6: ClassTag, T7: ClassTag, T8: ClassTag](
+  def callOpModel[
+      T: ClassTag,
+      T1: ClassTag,
+      T2: ClassTag,
+      T3: ClassTag,
+      T4: ClassTag,
+      T5: ClassTag,
+      T6: ClassTag,
+      T7: ClassTag,
+      T8: ClassTag
+  ](
       name: String,
       opName: String,
-      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8], 
+      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8],
       outName: String,
       attrs: Map[String, Any]
   ): (ModelProto) = {
@@ -406,28 +417,29 @@ class NGraphBackend(onnxBytes: Array[Byte])
   def tensorToPointerAndType[T: ClassTag](
       tens: Tensor[T]
   ): (Pointer, org.bytedeco.ngraph.Type) = {
-      val data = tens._1
-      data match {
-        case dat: Array[Byte]   => (new BytePointer(dat.asInstanceOf[Array[Byte]]: _*), ngraph.i8)
-        case dat: Array[Short]  => (new ShortPointer(dat.asInstanceOf[Array[Short]]: _*), ngraph.i16)
-        case dat: Array[Int]   => (new IntPointer(dat.asInstanceOf[Array[Int]]: _*), ngraph.i32)
-        case dat: Array[Long]  => (new LongPointer(dat.asInstanceOf[Array[Long]]: _*), ngraph.i64)
-        case dat: Array[Float] => (new FloatPointer(dat.asInstanceOf[Array[Float]]: _*), ngraph.f32)
-        case dat: Array[Double] => (new DoublePointer(dat.asInstanceOf[Array[Double]]: _*), ngraph.f64)
+    val data = tens._1
+    data match {
+      case dat: Array[Byte]  => (new BytePointer(dat.asInstanceOf[Array[Byte]]: _*), ngraph.i8)
+      case dat: Array[Short] => (new ShortPointer(dat.asInstanceOf[Array[Short]]: _*), ngraph.i16)
+      case dat: Array[Int]   => (new IntPointer(dat.asInstanceOf[Array[Int]]: _*), ngraph.i32)
+      case dat: Array[Long]  => (new LongPointer(dat.asInstanceOf[Array[Long]]: _*), ngraph.i64)
+      case dat: Array[Float] => (new FloatPointer(dat.asInstanceOf[Array[Float]]: _*), ngraph.f32)
+      case dat: Array[Double] =>
+        (new DoublePointer(dat.asInstanceOf[Array[Double]]: _*), ngraph.f64)
 
-      }
+    }
   }
 
   def tensorToInputShape[T: ClassTag](tens: Tensor[T]): org.bytedeco.ngraph.Shape = {
     val dims = tens._2
-        val s    = new org.bytedeco.ngraph.Shape(tens._2.size)
-        s.resize(tens._2.size)
-        val longShape = tens._2.map { x =>
-          x.toLong
-        }
-        s.put(longShape: _*)
-        s
+    val s    = new org.bytedeco.ngraph.Shape(tens._2.size)
+    s.resize(tens._2.size)
+    val longShape = tens._2.map { x =>
+      x.toLong
     }
+    s.put(longShape: _*)
+    s
+  }
 
   def tensorVectorToOutputTensor[T: ClassTag](
       tensVec: org.bytedeco.ngraph.TensorVector,
@@ -442,12 +454,12 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
     val tens          = tensVec.get(0)
     val elemType: Int = tens.get_element_type().get_type_enum()
-    val i8: Int = ngraph.i8().get_type_enum()
-    val i16: Int = ngraph.i16().get_type_enum()
-    val i32: Int = ngraph.i32().get_type_enum()
-    val i64: Int = ngraph.i64().get_type_enum()
-    val f32: Int = ngraph.f32().get_type_enum()
-    val f64: Int = ngraph.f64().get_type_enum()
+    val i8: Int       = ngraph.i8().get_type_enum()
+    val i16: Int      = ngraph.i16().get_type_enum()
+    val i32: Int      = ngraph.i32().get_type_enum()
+    val i64: Int      = ngraph.i64().get_type_enum()
+    val f32: Int      = ngraph.f32().get_type_enum()
+    val f64: Int      = ngraph.f64().get_type_enum()
     val fa = elemType match {
 //TODO: Match not working here
       case `i8` => {
@@ -466,7 +478,6 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
       case `i16` => {
 
-
 //        assert(elemType.equals(ngraph.i16().get_type_enum()))
         val fp = new ShortPointer(arraySize)
         tens.read(fp, arraySize * 2)
@@ -479,7 +490,6 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
       }
       case `i32` => {
-
 
 //        assert(elemType.equals(ngraph.i32().get_type_enum()))
         val fp = new IntPointer(arraySize)
@@ -507,8 +517,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       }
       case `f32` => {
 
-
-       // assert(elemType.equals(ngraph.f32().get_type_enum()))
+        // assert(elemType.equals(ngraph.f32().get_type_enum()))
         val fp = new FloatPointer(arraySize)
         tens.read(fp, arraySize * 4)
 
@@ -521,7 +530,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       }
       case `f64` => {
 
-       //assert(elemType.equals(ngraph.f64().get_type_enum()))
+        //assert(elemType.equals(ngraph.f64().get_type_enum()))
         val fp = new DoublePointer(arraySize)
         tens.read(fp, arraySize * 8)
 
@@ -544,10 +553,28 @@ class NGraphBackend(onnxBytes: Array[Byte])
     (result)
   }
 
-  def opFromModel[T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag, T4: ClassTag, T5: ClassTag, T6: ClassTag, T7: ClassTag, T8: ClassTag,
-    T9: ClassTag, T10: ClassTag, T11: ClassTag, T12: ClassTag, T13: ClassTag, T14: ClassTag, T15: ClassTag, T16: ClassTag, T17: ClassTag](
+  def opFromModel[
+      T: ClassTag,
+      T1: ClassTag,
+      T2: ClassTag,
+      T3: ClassTag,
+      T4: ClassTag,
+      T5: ClassTag,
+      T6: ClassTag,
+      T7: ClassTag,
+      T8: ClassTag,
+      T9: ClassTag,
+      T10: ClassTag,
+      T11: ClassTag,
+      T12: ClassTag,
+      T13: ClassTag,
+      T14: ClassTag,
+      T15: ClassTag,
+      T16: ClassTag,
+      T17: ClassTag
+  ](
       opModel: ModelProto,
-      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8] 
+      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8]
   ): (T9) = {
     //, T10, T11, T12, T13, T14, T15, T16, T17] = { //TODO: Fix output type !!
     val scope = new PointerScope()
@@ -559,56 +586,113 @@ class NGraphBackend(onnxBytes: Array[Byte])
     modelString.close
 
     //println(Pointer.totalBytes)
-    val result = opFromByteArray[T,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17](modelStringBytes, inputs)
+    val result = opFromByteArray[
+      T,
+      T1,
+      T2,
+      T3,
+      T4,
+      T5,
+      T6,
+      T7,
+      T8,
+      T9,
+      T10,
+      T11,
+      T12,
+      T13,
+      T14,
+      T15,
+      T16,
+      T17
+    ](modelStringBytes, inputs)
     scope.close
     (result.asInstanceOf[T9]) //TODO: More outputs
   }
 
   def getTensorShape[T: ClassTag](t: T): Option[org.bytedeco.ngraph.Shape] = {
     t match {
-      case tensorOpt: Option[Tensor[Any]] => {tensorOpt match {
-      case Some(y) => Some(tensorToInputShape(y))
-      case None => None
+      case tensorOpt: Option[Tensor[Any]] => {
+        tensorOpt match {
+          case Some(y) => Some(tensorToInputShape(y))
+          case None    => None
+        }
       }
-      } 
       case _ => ??? //TODO: Handle non-tensors / don't assume tensor here
-      
-  }
+
+    }
   }
 
   def getTensorPointerAndType[T: ClassTag](t: T): Option[(Pointer, org.bytedeco.ngraph.Type)] = {
-  
+
     t match {
-      case tensorOpt: Option[Tensor[Any]] => {tensorOpt match { 
-      case Some(y: Tensor[Any]) => Some(tensorToPointerAndType(y))
-      case None => None
-    }
-  }
+      case tensorOpt: Option[Tensor[Any]] => {
+        tensorOpt match {
+          case Some(y: Tensor[Any]) => Some(tensorToPointerAndType(y))
+          case None                 => None
+        }
+      }
     }
   }
 
-  def opFromByteArray[T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag, T4: ClassTag, T5: ClassTag, T6: ClassTag, T7: ClassTag, T8: ClassTag,
-    T9: ClassTag, T10: ClassTag, T11: ClassTag, T12: ClassTag, T13: ClassTag, T14: ClassTag, T15: ClassTag, T16: ClassTag, T17: ClassTag](
+  def opFromByteArray[
+      T: ClassTag,
+      T1: ClassTag,
+      T2: ClassTag,
+      T3: ClassTag,
+      T4: ClassTag,
+      T5: ClassTag,
+      T6: ClassTag,
+      T7: ClassTag,
+      T8: ClassTag,
+      T9: ClassTag,
+      T10: ClassTag,
+      T11: ClassTag,
+      T12: ClassTag,
+      T13: ClassTag,
+      T14: ClassTag,
+      T15: ClassTag,
+      T16: ClassTag,
+      T17: ClassTag
+  ](
       opModel: Array[Byte],
-      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8] 
+      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8]
   ): (T9) = {
     val scope       = new PointerScope()
     val modelString = new BytePointer(opModel: _*)
 
-    val ngraphFunc  = import_onnx_model(modelString)
+    val ngraphFunc = import_onnx_model(modelString)
     modelString.close
 
-    val inputShapes = Seq(getTensorShape(inputs._1), getTensorShape(inputs._2), getTensorShape(inputs._3), getTensorShape(inputs._4),
-      getTensorShape(inputs._5), getTensorShape(inputs._6), getTensorShape(inputs._7), getTensorShape(inputs._8), getTensorShape(inputs._9)).flatten
+    val inputShapes = Seq(
+      getTensorShape(inputs._1),
+      getTensorShape(inputs._2),
+      getTensorShape(inputs._3),
+      getTensorShape(inputs._4),
+      getTensorShape(inputs._5),
+      getTensorShape(inputs._6),
+      getTensorShape(inputs._7),
+      getTensorShape(inputs._8),
+      getTensorShape(inputs._9)
+    ).flatten
 
-    val outputShape                                    = ngraphFunc.get_output_shape(0)
-    val outputType                                     = ngraphFunc.get_output_element_type(0)
+    val outputShape = ngraphFunc.get_output_shape(0)
+    val outputType  = ngraphFunc.get_output_element_type(0)
 
-    val inputTensors = Seq(getTensorPointerAndType(inputs._1), getTensorPointerAndType(inputs._2), getTensorPointerAndType(inputs._3),
-      getTensorPointerAndType(inputs._4), getTensorPointerAndType(inputs._5), getTensorPointerAndType(inputs._6),
-      getTensorPointerAndType(inputs._7), getTensorPointerAndType(inputs._8), getTensorPointerAndType(inputs._9)).flatten
+    val inputTensors = Seq(
+      getTensorPointerAndType(inputs._1),
+      getTensorPointerAndType(inputs._2),
+      getTensorPointerAndType(inputs._3),
+      getTensorPointerAndType(inputs._4),
+      getTensorPointerAndType(inputs._5),
+      getTensorPointerAndType(inputs._6),
+      getTensorPointerAndType(inputs._7),
+      getTensorPointerAndType(inputs._8),
+      getTensorPointerAndType(inputs._9)
+    ).flatten
 
-    val ngraphInputs = (inputShapes zip inputTensors).map( x => ngraphBackend.create_tensor(x._2._2, x._1, x._2._1))
+    val ngraphInputs =
+      (inputShapes zip inputTensors).map(x => ngraphBackend.create_tensor(x._2._2, x._1, x._2._1))
 
     val output = ngraphBackend.create_tensor(outputType, outputShape)
 
@@ -659,9 +743,26 @@ class NGraphBackend(onnxBytes: Array[Byte])
     (result)
   }
 
-
-  def fullModel[T: ClassTag, T1: ClassTag, T2: ClassTag, T3: ClassTag, T4: ClassTag, T5: ClassTag, T6: ClassTag, T7: ClassTag, T8: ClassTag,
-    T9: ClassTag, T10: ClassTag, T11: ClassTag, T12: ClassTag, T13: ClassTag, T14: ClassTag, T15: ClassTag, T16: ClassTag, T17: ClassTag](
+  def fullModel[
+      T: ClassTag,
+      T1: ClassTag,
+      T2: ClassTag,
+      T3: ClassTag,
+      T4: ClassTag,
+      T5: ClassTag,
+      T6: ClassTag,
+      T7: ClassTag,
+      T8: ClassTag,
+      T9: ClassTag,
+      T10: ClassTag,
+      T11: ClassTag,
+      T12: ClassTag,
+      T13: ClassTag,
+      T14: ClassTag,
+      T15: ClassTag,
+      T16: ClassTag,
+      T17: ClassTag
+  ](
       inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8]
   ): (T9) = {
 
@@ -699,16 +800,31 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
      */
     //println(opModel.graph.input(0).name.getString)
-    val result = opFromByteArray[T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17](byteArray, inputs)
+    val result = opFromByteArray[
+      T,
+      T1,
+      T2,
+      T3,
+      T4,
+      T5,
+      T6,
+      T7,
+      T8,
+      T9,
+      T10,
+      T11,
+      T12,
+      T13,
+      T14,
+      T15,
+      T16,
+      T17
+    ](byteArray, inputs)
     //opModel.close
 //    scope.close
     //println(Pointer.totalBytes)
     result
   }
-
-
-
-
 
   override def close(): Unit = {
     ngraphBackend.close

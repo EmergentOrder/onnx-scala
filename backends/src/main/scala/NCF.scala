@@ -26,17 +26,32 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
       inputDatalearned_0: Tensor[Long]
   ): Tensor[Float] = {
 //    val scope = new PointerScope()
-      val nodeactual_input_1 =  TensorFactory.getTensor(inputDataactual_input_1._1.map(y => userIdsMap(y)), inputDataactual_input_1._2)
-      
-      val nodelearned_0 = TensorFactory.getTensor(inputDatalearned_0._1.map(y => itemIdsMap(y)), inputDatalearned_0._2)
-      
-      //Note: Don't need to specify all the type params except in Dotty
-      val nodeFullOutput: Tensor[Float] =
-        fullNgraphHandler
-          .fullModel[Option[Tensor[Long]], Option[Tensor[Long]], Any, Any, Any, Any, Any, Any, Any,
-          Tensor[Float], Any, Any, Any, Any, Any, Any, Any, Any](Some(nodeactual_input_1), Some(nodelearned_0), None, None, None, None, None, None, None)
+    val nodeactual_input_1 = TensorFactory.getTensor(
+      inputDataactual_input_1._1.map(y => userIdsMap(y)),
+      inputDataactual_input_1._2
+    )
 
-          //    scope.close
+    val nodelearned_0 =
+      TensorFactory.getTensor(inputDatalearned_0._1.map(y => itemIdsMap(y)), inputDatalearned_0._2)
+
+    //Note: Don't need to specify all the type params except in Dotty
+    val nodeFullOutput: Tensor[Float] =
+      fullNgraphHandler
+        .fullModel[Option[Tensor[Long]], Option[Tensor[Long]], Any, Any, Any, Any, Any, Any, Any, Tensor[
+          Float
+        ], Any, Any, Any, Any, Any, Any, Any, Any](
+          Some(nodeactual_input_1),
+          Some(nodelearned_0),
+          None,
+          None,
+          None,
+          None,
+          None,
+          None,
+          None
+        )
+
+    //    scope.close
     System.runFinalization
     nodeFullOutput //.asInstanceOf[Tensor[Float]] //Bad
   }

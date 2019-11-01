@@ -5,7 +5,6 @@
 [![Build status](https://travis-ci.com/EmergentOrder/onnx-scala.svg?branch=master)](http://travis-ci.com/EmergentOrder/onnx-scala)
 [![Latest version](https://index.scala-lang.org/emergentorder/onnx-scala/onnx-scala/latest.svg?color=orange)](https://index.scala-lang.org/emergentorder/onnx-scala/onnx-scala)
 
-
 This project provides:
 
 A) a complete, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep learning and classical machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++) via the JavaCPP Preset for ONNX.
@@ -97,33 +96,13 @@ Supported ONNX input and output tensor data types:
 * Float
 * Double
 
-Supported ONNX ops (more coming):
+Supported ONNX ops:
 
-* Abs
-* Add
-* ArgMax
-* ArgMin
-* AveragePool
-* Concat
-* Constant
-* Conv
-* Dropout
-* Equal
-* Gather
-* Gemm
-* GlobalAveragePool
-* Log
-* Max
-* MaxPool
-* Min
-* Mul
-* Relu
-* Reshape
-* Sigmoid
-* Softmax
+* All those [supported](https://github.com/NervanaSystems/ngraph/tree/v0.26.0/src/ngraph/frontend/onnx_import/op) by nGraph, currently 100 of 153 total. The rest are in the API, but will error if called.
 
+ONNX Runtime, which supports all ONNX ops, is the next targeted backend.
 
-You can also pass entire models to nGraph (see Execution Modes below) to enable its more extensive set of [supported operators](https://github.com/NervanaSystems/ngraph/tree/v0.25.0/src/ngraph/frontend/onnx_import/op).  More backends may be added in due time.
+You can also pass entire models to nGraph (see Execution Modes below).
 
 All together, these should enable model inspection and modification, extra compile-time assurances, mixing/matching of backend operator implementations and integration into JVM-based production systems, for a start.
 

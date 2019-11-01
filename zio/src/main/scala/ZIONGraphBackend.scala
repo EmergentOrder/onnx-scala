@@ -77,7 +77,7 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte]) extends AutoCloseable {
 object ZIONGraphMain extends App {
 
   val scope          = new PointerScope()
-  val dummyArraySize = 2000000
+  val dummyArraySize = 100000 //Output size is determined by model
 
   val byteStream = getClass.getResourceAsStream("/" + "NCF.onnx")
 
@@ -111,18 +111,20 @@ object ZIONGraphMain extends App {
   val userIds                       = userIdsMap.keys.toArray
   val itemIds                       = itemIdsMap.keys.toArray
   val rand                          = new Random(42)
-  def getRandomId(arr: Array[Long]) = arr(rand.nextInt(arr.length))
+  val rand1                          = new Random(53)
+
+  def getRandomId(arr: Array[Long], aRand: Random) = arr(aRand.nextInt(arr.length))
 
   val input = Task {
     val tens = TensorFactory.getTensor(
-      (0 until dummyArraySize).toArray.map(x => getRandomId(userIds)),
+      (0 until dummyArraySize).toArray.map(x => getRandomId(userIds, rand)),
       Array(dummyArraySize)
     )
     tens
   }
   val input2 = Task {
     val tens = TensorFactory.getTensor(
-      (0 until dummyArraySize).toArray.map(x => getRandomId(itemIds)),
+      (0 until dummyArraySize).toArray.map(x => getRandomId(itemIds, rand1)),
       Array(dummyArraySize)
     )
     tens
@@ -130,14 +132,9 @@ object ZIONGraphMain extends App {
 
 //  val scope = new PointerScope()
 //  val finalizer = UIO.effectTotal(scope.close)
+ 
   val ncfZIO = new NCFZIO(byteArray, userIdsMap, itemIdsMap)
 
-//  def program = ncfZIO.fullNCF(input, input2)
-  //val scope = Task(new PointerScope())
-  //def close(scope: PointerScope) = UIO.effectTotal(scope.close)
-  //val scopedProgram = scope.bracket(close(_)) { scope =>
-  //  program
-  // }
   val runtime = new DefaultRuntime {}
 
 //  val scope = new PointerScope()
@@ -146,7 +143,7 @@ object ZIONGraphMain extends App {
 
   val after = System.nanoTime
   println("Elapsed: " + (after - before))
-  //scope.close
+
   ncfZIO.close
 
   //Pointer.close
@@ -154,12 +151,10 @@ object ZIONGraphMain extends App {
 //  Pointer.deallocateReferences()
   println(Pointer.totalBytes)
   println(Pointer.physicalBytes)
-  // scope.close
-  // scope.close
   println(Pointer.maxPhysicalBytes)
   println("Output size: " + output2._1.size)
   println("Output 0: " + output2._1(0))
-  println("Output 1: " + output2._1(7999))
+  println("Output 7999: " + output2._1(7999))
 //   println("Output 2: " + output2._1(2))
 //   println("Output 3: " + output2._1(3))
 //   println("Output 4: " + output2._1(4))

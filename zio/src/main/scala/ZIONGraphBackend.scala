@@ -60,12 +60,12 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte]) extends AutoCloseable {
     }
   }
 
-  def getParamsZIO[T: Numeric: ClassTag](name: String): Task[Tensor[T]] = {
-    Task {
-      ngraphBackend.getParams(name)
-    }
+//  def getParamsZIO[T: Numeric: ClassTag](name: String): Task[Tensor[T]] = {
+//    Task {
+//      ngraphBackend.getParams(name)
+//    }
 
-  }
+//  }
 
   override def close(): Unit = {
     ngraphBackend.close

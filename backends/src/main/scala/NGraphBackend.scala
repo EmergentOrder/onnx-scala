@@ -37,39 +37,28 @@ import org.bytedeco.ngraph.Backend
 //TODEFER: ONNX-JS backend for both JS and JVM
 //TODEFER: ONNX Runtime backend for JVM (and Native?)
 class NGraphBackend(onnxBytes: Array[Byte])
-    extends DataSource
-    with AutoCloseable {
+//    extends DataSource
+    extends AutoCloseable {
 
   val scope = new PointerScope()
 
   val ngraphBackend = Backend.create("CPU")
 
-  val onnxHelper = new ONNXHelper(onnxBytes)
+//  val onnxHelper = new ONNXHelper(onnxBytes)
 
-  def paramsMap[T: spire.math.Numeric: ClassTag] =
-    onnxHelper.params
-      .map(x => x._1 -> (x._2, x._3.asInstanceOf[Array[T]], x._4))
-      .toMap
+//  def paramsMap[T: spire.math.Numeric: ClassTag] =
+//    onnxHelper.params
+//      .map(x => x._1 -> (x._2, x._3.asInstanceOf[Array[T]], x._4))
+//      .toMap
 
-  override def getParams[T: Numeric: ClassTag](name: String): Tensor[T] = {
-    val params = paramsMap.get(name)
-    params match {
-      case Some(x) => TensorFactory.getTensor(x._2, x._3.map(z => z: XInt))
-      case None =>
-        throw new Exception("No params found for param name: " + name)
-    }
-  }
-
-  /*
-    val inputs: Seq[String] = node.input
-          assert (inputs.size == 2 || inputs.size == 3, s"number of inputs of a conv node should always be 2 or 3, got ${inputs.size}")
-
-          val outputs: Seq[String] = node.output
-          assert (outputs.size == 1, "number of output of a conv node should always be 1")
-
-          val attributes: Seq[onnx_ml.AttributeProto] = node.attribute
-          convNode(inputs, outputs.head, getConvMaxPAvPAttr(attributes))
-   */
+//  override def getParams[T: Numeric: ClassTag](name: String): Tensor[T] = {
+//   val params = paramsMap.get(name)
+//    params match {
+//      case Some(x) => TensorFactory.getTensor(x._2, x._3.map(z => z: XInt))
+//      case None =>
+//        throw new Exception("No params found for param name: " + name)
+//    }
+//  }
 
   def callOpNode[
       T: ClassTag,
@@ -121,10 +110,11 @@ class NGraphBackend(onnxBytes: Array[Byte])
         case tensorOpt: Option[Tensor[Any]] => {
           tensorOpt match {
             case Some(y) => node.add_input(inputName)
-            case None    => //TODO: Handle non-tensors / don't assume tensor here
+            case None    =>
           }
         }
-        case _ => ???
+        case _ => ??? //TODO: Handle non-tensors / don't assume tensor here
+
       }
     }
     //TODO: fix names
@@ -235,6 +225,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
     addInputToGraph(inputs._9, "I", graph)
 
     //TODEFER: Merge models, ensuring the outer model is the last merged
+    graph.close
     (model)
   }
 
@@ -285,7 +276,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
     val f32: Int      = ngraph.f32().get_type_enum()
     val f64: Int      = ngraph.f64().get_type_enum()
     val fa = elemType match {
-//TODO: Match not working here
+
       case `i8` => {
 
 //        assert(elemType.equals(ngraph.i8().get_type_enum()))
@@ -294,10 +285,11 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
         val fb = fp.asByteBuffer
 
-        (0 until fb.capacity).map { x =>
+        val res = (0 until fb.capacity).map { x =>
           fb.get(x).asInstanceOf[Byte] //unsafe : asInstanceOf
         }.toArray
-
+        fp.close
+        res
       }
 
       case `i16` => {
@@ -308,10 +300,12 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
         val fb = fp.asByteBuffer.asShortBuffer
 
-        (0 until fb.capacity).map { x =>
+        val res = (0 until fb.capacity).map { x =>
           fb.get(x).asInstanceOf[Short] //unsafe : asInstanceOf
         }.toArray
 
+        fp.close
+        res
       }
       case `i32` => {
 
@@ -321,10 +315,11 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
         val fb = fp.asByteBuffer.asIntBuffer
 
-        (0 until fb.capacity).map { x =>
+        val res = (0 until fb.capacity).map { x =>
           fb.get(x).asInstanceOf[Int] //unsafe : asInstanceOf
         }.toArray
-
+        fp.close
+        res
       }
       case `i64` => {
 
@@ -334,9 +329,11 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
         val fb = fp.asByteBuffer.asLongBuffer
 
-        (0 until fb.capacity).map { x =>
+        val res = (0 until fb.capacity).map { x =>
           fb.get(x).asInstanceOf[Long] //unsafe : asInstanceOf
         }.toArray
+        fp.close
+        res
 
       }
       case `f32` => {
@@ -347,10 +344,11 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
         val fb = fp.asByteBuffer.asFloatBuffer
 
-        (0 until fb.capacity).map { x =>
+        val res = (0 until fb.capacity).map { x =>
           fb.get(x).asInstanceOf[Float] //unsafe : asInstanceOf
         }.toArray
-
+        fp.close
+        res
       }
       case `f64` => {
 
@@ -360,10 +358,11 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
         val fb = fp.asByteBuffer.asDoubleBuffer
 
-        (0 until fb.capacity).map { x =>
+        val res = (0 until fb.capacity).map { x =>
           fb.get(x).asInstanceOf[Double] //unsafe : asInstanceOf
         }.toArray
-
+        fp.close
+        res
       }
     }
 
@@ -524,9 +523,6 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
     val outputVector = new org.bytedeco.ngraph.TensorVector(output)
 
-    //println(outputShape)
-    //println(ngraphFunc)
-    //println(ngraphFunc.get_output_shape(0))
     val executable = ngraphBackend.compile(ngraphFunc)
 
     def t = {
@@ -543,22 +539,25 @@ class NGraphBackend(onnxBytes: Array[Byte])
     ngraphFunc.close
     modelString.close
     executable.close
+
     //convert result to onnx-scala Tensor
 
     val result = tensorVectorToOutputTensor[T9](outputVector, outputShape)
 
-//    inputShape.close
-//    secondInputShape.close
-//    thirdInputShape.close
-    outputType.close
-//    inputTens._1.close
-//    inputTens._2.close
-//    secondInputTens._1.close
-//    secondInputTens._2.close
-//    thirdInputTens._1.close
-//    thirdInputTens._2.close
+    inputTensors.foreach{ x:(Pointer, org.bytedeco.ngraph.Type)  =>
+      x._1.close //close pointers
+      x._2.close //close shapes
+    }
 
-//    input.close
+    inputShapes.foreach{ x: org.bytedeco.ngraph.Shape  =>
+      x.close
+    }
+
+    ngraphInputs.foreach{ x: org.bytedeco.ngraph.Tensor  =>
+      x.close
+    }
+
+    outputType.close
     inputVector.close
     output.close
     outputVector.close
@@ -590,40 +589,8 @@ class NGraphBackend(onnxBytes: Array[Byte])
       inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8]
   ): (T9) = {
 
-    //println(Pointer.totalBytes)
-//    val scope = new PointerScope()
-
-    val byteArray = onnxBytes
-    /*
-    val opModel = {
-    val mod = (new ModelProto)
-    val r = mod.New()
-    val bytes = new BytePointer(byteArray: _*)
-
-    ParseProtoFromBytes(
-      r,
-      bytes,
-      byteArray.length.toLong
-    )
-    bytes.close
-    mod.close
-    r
-    }
-
-    //opModel.Clear()
     println(Pointer.totalBytes)
-
-    //FIXME: Hardcoding the output size to match input size
-    val aSize = A.map(x => x._2(0)) match {
-      case Some(y) => y.toLong
-      case None    => 0L
-    }
-    opModel.graph.input(0).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
-    opModel.graph.input(1).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
-    opModel.graph.output(0).`type`.tensor_type.shape.dim(0).set_dim_value(aSize)
-
-     */
-    //println(opModel.graph.input(0).name.getString)
+    val byteArray = onnxBytes
     val result = opFromByteArray[
       T,
       T1,
@@ -644,14 +611,12 @@ class NGraphBackend(onnxBytes: Array[Byte])
       T16,
       T17
     ](byteArray, inputs)
-    //opModel.close
-//    scope.close
-    //println(Pointer.totalBytes)
     result
   }
 
   override def close(): Unit = {
     ngraphBackend.close
+//    onnxHelper.close
     scope.close
   }
 }

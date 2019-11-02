@@ -18,6 +18,8 @@ As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the l
 
 ### Full ONNX model inference quick start:
 
+First, download the model file for [SqueezeNet](https://s3.amazonaws.com/download.onnx/models/opset_8/squeezenet.tar.gz).
+
 ```scala
 import java.nio.file.{Files, Paths}
 import org.emergentorder.onnx.{Tensor, TensorFactory}
@@ -39,7 +41,7 @@ val out: Tensor[Float] = squeezenet.fullModel(Some(tens), None, None, None, None
 //     0.0037017514F,
 //     1.2095133E-4F,
 //     0.0012580326F,
-//     1.9726616E-5F,
+//     0.0012466566F,
 // ...
 ```
 

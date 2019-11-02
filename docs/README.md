@@ -15,6 +15,7 @@ As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the l
 
 
 ### Full ONNX model inference quick start:
+First, download the model file for [SqueezeNet](https://s3.amazonaws.com/download.onnx/models/opset_8/squeezenet.tar.gz).
 
 ```scala mdoc:silent
 import java.nio.file.{Files, Paths}

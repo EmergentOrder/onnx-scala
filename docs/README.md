@@ -4,9 +4,7 @@
 
 [![Build status](https://travis-ci.com/EmergentOrder/onnx-scala.svg?branch=master)](http://travis-ci.com/EmergentOrder/onnx-scala)
 [![Latest version](https://index.scala-lang.org/emergentorder/onnx-scala/onnx-scala/latest.svg?color=orange)](https://index.scala-lang.org/emergentorder/onnx-scala/onnx-scala)
-
 ## Getting Started
-
 Add to your build.sbt:
 
 ```scala
@@ -18,7 +16,7 @@ As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the b
 
 ###Full ONNX model inference quick start:
 
-```scala
+```scala mdoc:silent
 import java.nio.file.{Files, Paths}
 import org.emergentorder.onnx.{Tensor, TensorFactory}
 import org.emergentorder.onnx.backends.NGraphBackend
@@ -29,73 +27,21 @@ val squeezenet = new NGraphBackend(byteArray)
 
 val tens = TensorFactory.getTensor(Array.fill(3*224*224){42},Array(3,224,224))
 ```
-
-```scala
+```scala mdoc
 val out: Tensor[Float] = squeezenet.fullModel(Some(tens), None, None, None, None, None, None, None, None)
-// 0
-// out: (Array[Float], Array[Int]) = (
-//   Array(
-//     5.6710942E-5F,
-//     0.0037017514F,
-//     1.2095133E-4F,
-//     0.0012580326F,
-//     0.0012466566F,
-//     0.010058249F,
-//     0.044423662F,
-//     1.4545877E-6F,
-//     1.6602387E-5F,
-//     2.1824633E-7F,
-//     4.8585175E-6F,
-//     1.7232561E-7F,
-//     7.891946E-6F,
-//     3.5113113E-5F,
-//     3.8513674E-5F,
-//     7.933592E-6F,
-//     2.8786615E-6F,
-//     1.487555E-6F,
-//     1.1225727E-5F,
-//     6.625051E-7F,
-//     3.784396E-5F,
-//     1.2982675E-5F,
-//     1.0616628E-6F,
-//     8.025676E-7F,
-//     3.5096306E-7F,
-//     3.3136002E-6F,
-//     3.6958884E-4F,
-//     1.554595E-5F,
-//     5.227527E-6F,
-//     0.0017657734F,
-//     3.7831387E-6F,
-//     7.085056E-6F,
-//     3.1432806E-5F,
-//     0.012730919F,
-//     0.0020759895F,
-//     2.0339304E-4F,
-//     0.017675316F,
-//     1.16482326E-4F,
-//     0.0020461152F,
-//     5.085468E-7F,
-//     1.0191648E-5F,
-//     2.777774E-5F,
-//     3.0154622E-6F,
-//     1.9726616E-5F,
-//     1.394644E-4F,
-//     0.0045426707F,
-//     7.371995E-6F,
-// ...
+
 ```
 
 ## Project Overview
-
+ 
 This project provides:
 
 ### A) API
-
 A complete, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep learning and classical machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++) via the JavaCPP Preset for ONNX. We also generate implementations for each operator in terms of core methods to be implemented by the backend.
 
 This API is expressed via traits, with version-named methods. For example, Abs, the absolute value operator (defined here for operator set 6):
 
-```scala
+```scala mdoc
 import scala.{specialized => sp}
 import spire.math.UByte
 import spire.math.UShort
@@ -119,11 +65,10 @@ trait Abs extends Operator {
 ```
 
 ### B) Program Generator
-
 Capable of translating ONNX model Protobuf (.onnx) files into Scala programs written in terms of this API.  
 For example, an ["absolute value network"](https://raw.githubusercontent.com/onnx/onnx/master/onnx/backend/test/data/node/test_abs/model.onnx):
 
-Depending on the size of the ONNX model, you may need to add
+Depending on the size of the ONNX model, you may need to add 
 
 ```
 export SBT_OPTS="-XX:+CMSClassUnloadingEnabled -Xmx16G -Xss8M -XX:MaxMetaspaceSize=1024M"
@@ -139,7 +84,7 @@ sbt "project programGeneratorJVM" "run absnet.onnx"
 
 The resulting generated program appears as `programGenerator/src/gen/scala/Absnet.scala`:
 
-```scala
+```scala mdoc
 import org.emergentorder.onnx.backends._
 
 class Absnet(byteArray: Array[Byte]) {
@@ -155,7 +100,6 @@ class Absnet(byteArray: Array[Byte]) {
 and you can run `sbt compile` to confirm that the generated code compiles.
 
 ### C) Backend
-
 Currently. at the operator level, a single partial backend implementation of ONNX, accessible from the JVM, is available.
 
 This backend is based on [nGraph](https://github.com/NervanaSystems/ngraph), via nGraph JavaCPP Preset.

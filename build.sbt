@@ -182,7 +182,7 @@ lazy val docs = (crossProject(JVMPlatform)
       "VERSION" -> version.value
    )
   )
-  .dependsOn(core)
+  .dependsOn(backends)
   .enablePlugins(MdocPlugin)
 
 lazy val zio = (crossProject(JVMPlatform)//, JSPlatform)

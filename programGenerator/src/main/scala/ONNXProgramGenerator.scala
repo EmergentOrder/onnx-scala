@@ -132,10 +132,7 @@ object ONNXProgramGenerator {
         "import spire.math.UByte\n" +
         "import spire.math.UShort\n" +
         "import spire.math.Complex\n" +
-        "import spire.algebra.Field\n" +
-        "import spire.math.Numeric\n" +
-//        "import singleton.ops._\n" +
-        "import scala.language.higherKinds\n\n" +
+        "import spire.math.Numeric\n\n" +
         ("class ") + programName + "(byteArray: Array[Byte])" + " {\n" +
         distinctOps
           .map { x =>
@@ -144,14 +141,10 @@ object ONNXProgramGenerator {
                                                                                 else
                                                                                   "") +
               (if (useZIO) " = new ONNXNGraphHandlers(byteArray)"
-               else " = new NGraphBackend(byteArray)") +
+               else " = new NGraphBackendFullAtoL(byteArray)") + //TODO: Fix this split full backend issue
               "\n"
           } //TODO: Make class instead of object and inject implementations
           .mkString("") +
-        "  val dataSource: DataSource" + (if (useZIO)
-                                            "ZIO = new ONNXNGraphHandlers(byteArray)"
-                                          else
-                                            " = new NGraphBackend(byteArray)") + "\n" +
 //    "  import cats.implicits._\n" +
         //Omit return type here for now
         "  def program" + (if (graphInputs.size > 0)

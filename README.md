@@ -7,13 +7,13 @@
 
 ## Getting Started
 
-Add to your build.sbt:
+Add this to your build.sbt:
 
 ```scala
 libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala" % "0.2.0-SNAPSHOT"
 ```
 
-As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the build and publish locally from master.
+As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the latest, build and publish locally from master.
 
 
 ### Full ONNX model inference quick start:
@@ -39,13 +39,11 @@ val out: Tensor[Float] = squeezenet.fullModel(Some(tens), None, None, None, None
 //     0.0037017514F,
 //     1.2095133E-4F,
 //     0.0012580326F,
-//     2.0339304E-4F,
+//     1.9726616E-5F,
 // ...
 ```
 
 ## Project Overview
-
-This project provides:
 
 ### A) API
 

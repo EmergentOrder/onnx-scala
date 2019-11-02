@@ -5,13 +5,13 @@
 [![Build status](https://travis-ci.com/EmergentOrder/onnx-scala.svg?branch=master)](http://travis-ci.com/EmergentOrder/onnx-scala)
 [![Latest version](https://index.scala-lang.org/emergentorder/onnx-scala/onnx-scala/latest.svg?color=orange)](https://index.scala-lang.org/emergentorder/onnx-scala/onnx-scala)
 ## Getting Started
-Add to your build.sbt:
+Add this to your build.sbt:
 
 ```scala
 libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala" % "0.2.0-SNAPSHOT"
 ```
 
-As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the build and publish locally from master.
+As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the latest, build and publish locally from master.
 
 
 ### Full ONNX model inference quick start:
@@ -34,8 +34,6 @@ val out: Tensor[Float] = squeezenet.fullModel(Some(tens), None, None, None, None
 
 ## Project Overview
  
-This project provides:
-
 ### A) API
 A complete, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep learning and classical machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++) via the JavaCPP Preset for ONNX. We also generate implementations for each operator in terms of core methods to be implemented by the backend.
 

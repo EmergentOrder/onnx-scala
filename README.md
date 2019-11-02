@@ -16,7 +16,7 @@ libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala" % "0.2.0-SNAPS
 As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the build and publish locally from master.
 
 
-###Full ONNX model inference quick start:
+### Full ONNX model inference quick start:
 
 ```scala
 import java.nio.file.{Files, Paths}
@@ -39,49 +39,7 @@ val out: Tensor[Float] = squeezenet.fullModel(Some(tens), None, None, None, None
 //     0.0037017514F,
 //     1.2095133E-4F,
 //     0.0012580326F,
-//     0.0012466566F,
-//     0.010058249F,
-//     0.044423662F,
-//     1.4545877E-6F,
-//     1.6602387E-5F,
-//     2.1824633E-7F,
-//     4.8585175E-6F,
-//     1.7232561E-7F,
-//     7.891946E-6F,
-//     3.5113113E-5F,
-//     3.8513674E-5F,
-//     7.933592E-6F,
-//     2.8786615E-6F,
-//     1.487555E-6F,
-//     1.1225727E-5F,
-//     6.625051E-7F,
-//     3.784396E-5F,
-//     1.2982675E-5F,
-//     1.0616628E-6F,
-//     8.025676E-7F,
-//     3.5096306E-7F,
-//     3.3136002E-6F,
-//     3.6958884E-4F,
-//     1.554595E-5F,
-//     5.227527E-6F,
-//     0.0017657734F,
-//     3.7831387E-6F,
-//     7.085056E-6F,
-//     3.1432806E-5F,
-//     0.012730919F,
-//     0.0020759895F,
 //     2.0339304E-4F,
-//     0.017675316F,
-//     1.16482326E-4F,
-//     0.0020461152F,
-//     5.085468E-7F,
-//     1.0191648E-5F,
-//     2.777774E-5F,
-//     3.0154622E-6F,
-//     1.9726616E-5F,
-//     1.394644E-4F,
-//     0.0045426707F,
-//     7.371995E-6F,
 // ...
 ```
 

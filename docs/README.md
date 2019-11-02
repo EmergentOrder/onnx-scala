@@ -14,7 +14,7 @@ libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala" % "0.2.0-SNAPS
 As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the build and publish locally from master.
 
 
-###Full ONNX model inference quick start:
+### Full ONNX model inference quick start:
 
 ```scala mdoc:silent
 import java.nio.file.{Files, Paths}

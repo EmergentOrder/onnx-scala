@@ -145,6 +145,10 @@ object ONNXProgramGenerator {
               "\n"
           } //TODO: Make class instead of object and inject implementations
           .mkString("") +
+                  "  val dataSource: DataSource" + (if (useZIO)
+                                            "ZIO = new ONNXNGraphHandlers(byteArray)"
+                                          else
+                                            " = new NGraphBackend(byteArray)") + "\n" +
 //    "  import cats.implicits._\n" +
         //Omit return type here for now
         "  def program" + (if (graphInputs.size > 0)
@@ -196,15 +200,7 @@ object ONNXProgramGenerator {
           .map { x =>
             //TODO: handle multiple outputs
             val nodesOrParams = x._1._1._1.map { y =>
-              "Some(node" + y.replaceAll("\\.", "") + (if (y.contains("dropout") || y
-                                                             .contains("bn_1") || y
-                                                             .contains(
-                                                               "fire9_concat_2"
-                                                             ) || y.contains(
-                                                             "pool5_7x7_s1_2"
-                                                           ))
-                                                         "._1" //TODO: Access multiple outputs correctly
-                                                       else "") + ")"
+              "Some(node" + y.replaceAll("\\.", "") + ")"
             } // ,""" + y.name.getString + "name" + " = " + """ Some("""" + y + """")""")
 
             val longFields = x._2

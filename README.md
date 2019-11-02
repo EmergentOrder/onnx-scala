@@ -29,7 +29,7 @@ val byteArray = Files.readAllBytes(Paths.get("squeezenet.onnx"))
 
 val squeezenet = new NGraphBackend(byteArray)
 
-val tens = TensorFactory.getTensor(Array.fill(3*224*224){42},Array(3,224,224))
+val tens = TensorFactory.getTensor(Array.fill(3*224*224){42f},Array(3,224,224))
 ```
 
 ```scala
@@ -37,11 +37,11 @@ val out: Tensor[Float] = squeezenet.fullModel(Some(tens), None, None, None, None
 // 0
 // out: (Array[Float], Array[Int]) = (
 //   Array(
-//     5.6710942E-5F,
-//     0.0037017514F,
-//     1.2095133E-4F,
-//     0.0012580326F,
-//     0.0012466566F,
+//     1.7861872E-4F,
+//     0.0011791866F,
+//     3.2175478E-4F,
+//     2.3761144E-4F,
+//     0.0012107284F,
 // ...
 ```
 

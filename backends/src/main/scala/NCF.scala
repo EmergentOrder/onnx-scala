@@ -19,7 +19,7 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
     extends AutoCloseable {
 
   val scope             = new PointerScope()
-  val fullNgraphHandler = new NGraphBackend(byteArray)
+  val fullNgraphHandler = new NGraphBackend()
 
   def fullNCF(
       inputDataactual_input_1: Tensor[Long],
@@ -40,7 +40,8 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
         .fullModel[Option[Tensor[Long]], Option[Tensor[Long]], Any, Any, Any, Any, Any, Any, Any, Tensor[
           Float
         ], Any, Any, Any, Any, Any, Any, Any, Any](
-          Some(nodeactual_input_1),
+          byteArray,
+          (Some(nodeactual_input_1),
           Some(nodelearned_0),
           None,
           None,
@@ -48,7 +49,7 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
           None,
           None,
           None,
-          None
+          None)
         )
 
     //    scope.close

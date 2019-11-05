@@ -1,8 +1,8 @@
 package org.emergentorder.onnx.backends
 import org.emergentorder.onnx._
 
-class NGraphBackendFullAtoL(onnxBytes: Array[Byte])
-    extends NGraphBackend(onnxBytes)
+class NGraphBackendFullAtoL()
+    extends NGraphBackend()
     with Abs
     with Acos
     with Acosh

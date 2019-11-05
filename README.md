@@ -39,18 +39,18 @@ Run SqueezeNet image classification inference on an ["image"](https://upload.wik
 ```scala
 import java.nio.file.{Files, Paths}
 import org.emergentorder.onnx.{Tensor, TensorFactory}
-import org.emergentorder.onnx.backends.NGraphBackend
+import org.emergentorder.onnx.backends.NGraphBackendFull
 
-val byteArray = Files.readAllBytes(Paths.get("squeezenet.onnx"))
+val squeezenet = Files.readAllBytes(Paths.get("squeezenet.onnx"))
 
-val squeezenet = new NGraphBackend(byteArray)
+val backend = new NGraphBackendFull()
 
 val tens = TensorFactory.getTensor(Array.fill(3*224*224){42f},Array(3,224,224))
 ```
 
 ```scala
-val out: Tensor[Float] = squeezenet.fullModel(Some(tens), None, None, None, None, None, None, None, None)
-// 4955840
+val out: Tensor[Float] = backend.fullModel(squeezenet, (Some(tens), None, None, None, None, None, None, None, None))
+// 0
 // out: (Array[Float], Array[Int]) = (
 //   Array(
 //     1.7861872E-4F,
@@ -58,6 +58,48 @@ val out: Tensor[Float] = squeezenet.fullModel(Some(tens), None, None, None, None
 //     3.2175478E-4F,
 //     2.3761144E-4F,
 //     0.0012107284F,
+//     0.001055565F,
+//     0.0020061873F,
+//     5.3280102E-5F,
+//     1.0611086E-4F,
+//     1.9102386E-4F,
+//     2.1579255E-4F,
+//     2.7805474E-5F,
+//     1.4492947E-4F,
+//     5.1116274E-4F,
+//     2.35596E-4F,
+//     2.8172476E-4F,
+//     2.924024E-4F,
+//     2.3823042E-5F,
+//     1.4235933E-4F,
+//     7.303802E-5F,
+//     3.6985413E-4F,
+//     0.0019121763F,
+//     4.4580622E-4F,
+//     7.3717587E-4F,
+//     3.224361E-4F,
+//     2.9249542E-4F,
+//     0.0017698877F,
+//     0.0013047516F,
+//     7.72928E-4F,
+//     8.915134E-4F,
+//     5.079145E-5F,
+//     4.9063313E-4F,
+//     2.0100089E-4F,
+//     0.0012380655F,
+//     7.192166E-4F,
+//     1.8899185E-4F,
+//     0.0024600818F,
+//     1.7438037E-4F,
+//     0.002380561F,
+//     2.315136E-5F,
+//     2.0602834E-4F,
+//     6.4735324E-4F,
+//     1.5407143E-4F,
+//     1.6742272E-4F,
+//     4.6979298E-4F,
+//     2.4148599E-4F,
+//     4.202457E-4F,
 // ...
 
 out._1.size
@@ -69,6 +111,115 @@ out._1.indices.maxBy(out._1)
 
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "envelope".
 
+### Operator-level (Fine-grained) API
+
+```scala
+backend.Abs6("abs", Some(tens))
+// res2: (Array[Float], Array[Int]) = (
+//   Array(
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+//     42.0F,
+// ...
+
+backend.Sqrt6("sqrt", Some(tens))
+// res3: (Array[Float], Array[Int]) = (
+//   Array(
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+//     6.4807405F,
+// ...
+```
+
+//TODO: Example of calling a fine-grained op here, fix example
 
 ## Project Overview
 
@@ -126,7 +277,7 @@ The resulting generated program appears as `programGenerator/src/gen/scala/Absne
 import org.emergentorder.onnx.backends._
 
 class Absnet(byteArray: Array[Byte]) {
-  val Abs: org.emergentorder.onnx.Abs = new NGraphBackendFull(byteArray)
+  val Abs: org.emergentorder.onnx.Abs = new NGraphBackendFull()
   def program(inputDatax: Tensor[Float]): List[Tensor[Float]]  = 
     for {
       nodex <- List(inputDatax)
@@ -253,7 +404,7 @@ Currently at ONNX 1.6.0.
 
 #### Backend
 
-* [nGraph via JavaCPP Preset for nGraph 0.25.0](https://github.com/bytedeco/javacpp-presets/tree/master/ngraph) - nGraph is an open source C++ library, compiler and runtime for Deep Learning frameworks / The missing bridge between Java and native C++ libraries
+* [nGraph via JavaCPP Preset for nGraph 0.26.0](https://github.com/bytedeco/javacpp-presets/tree/master/ngraph) - nGraph is an open source C++ library, compiler and runtime for Deep Learning frameworks / The missing bridge between Java and native C++ libraries
 
 
 ### Inspiration

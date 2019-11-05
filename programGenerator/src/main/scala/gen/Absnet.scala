@@ -9,8 +9,8 @@ import spire.math.UShort
 import spire.math.Complex
 import spire.math.Numeric
 
-class Absnet(byteArray: Array[Byte]) {
-  val Abs: Abs = new NGraphBackendFullAtoL(byteArray)
+class Absnet() {
+  val Abs: Abs = new NGraphBackendFull()
   def program(inputDatax: Tensor[Float]): List[Tensor[Float]]  = 
     for {
       nodex <- List(inputDatax)

@@ -140,15 +140,15 @@ object ONNXProgramGenerator {
                                                                                   "ZIO"
                                                                                 else
                                                                                   "") +
-              (if (useZIO) " = new ONNXNGraphHandlers(byteArray)"
-               else " = new NGraphBackendFullAtoL(byteArray)") + //TODO: Fix this split full backend issue
+              (if (useZIO) " = new ONNXNGraphHandlers()"
+               else " = new NGraphBackendFull()") +
               "\n"
           } //TODO: Make class instead of object and inject implementations
           .mkString("") +
                   "  val dataSource: DataSource" + (if (useZIO)
-                                            "ZIO = new ONNXNGraphHandlers(byteArray)"
+                                            "ZIO = new ZIONGraphDataSource(byteArray)"
                                           else
-                                            " = new NGraphBackend(byteArray)") + "\n" +
+                                            " = new NGraphDataSource(byteArray)") + "\n" +
 //    "  import cats.implicits._\n" +
         //Omit return type here for now
         "  def program" + (if (graphInputs.size > 0)

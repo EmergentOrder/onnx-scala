@@ -11,14 +11,14 @@ import spire.math.Numeric
 
 //TODO: fix issues on generation
 class Squeezenet(byteArray: Array[Byte]) {
-  val Conv: Conv = new NGraphBackendFull(byteArray)
-  val Relu: Relu = new NGraphBackendFull(byteArray)
-  val MaxPool: MaxPool = new NGraphBackendFull(byteArray)
-  val Concat: Concat = new NGraphBackendFull(byteArray)
-  val Dropout: Dropout = new NGraphBackendFull(byteArray)
-  val GlobalAveragePool: GlobalAveragePool = new NGraphBackendFull(byteArray)
-  val Softmax: Softmax = new NGraphBackendFull(byteArray)
-  val dataSource: DataSource = new NGraphBackend(byteArray)
+  val Conv: Conv = new NGraphBackendFull()
+  val Relu: Relu = new NGraphBackendFull()
+  val MaxPool: MaxPool = new NGraphBackendFull()
+  val Concat: Concat = new NGraphBackendFull()
+  val Dropout: Dropout = new NGraphBackendFull()
+  val GlobalAveragePool: GlobalAveragePool = new NGraphBackendFull()
+  val Softmax: Softmax = new NGraphBackendFull()
+  val dataSource: DataSource = new NGraphDataSource(byteArray)
   def program(inputDatadata_0: Tensor[Float]): List[Tensor[Float]]  = 
     for {
       nodedata_0 <- List(inputDatadata_0)

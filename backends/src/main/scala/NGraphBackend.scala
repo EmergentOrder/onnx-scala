@@ -36,29 +36,13 @@ import org.bytedeco.ngraph.Backend
 // Use one path for speed and dynamic graph tracing at runtime (the default), the other for sanity/type/shape/AxisType/control flow checking at compile time
 //TODEFER: ONNX-JS backend for both JS and JVM
 //TODEFER: ONNX Runtime backend for JVM (and Native?)
-class NGraphBackend(onnxBytes: Array[Byte])
-    extends DataSource
+class NGraphBackend
+    extends Operator 
     with AutoCloseable {
 
   val scope = new PointerScope()
 
   val ngraphBackend = Backend.create("CPU")
-
-  val onnxHelper = new ONNXHelper(onnxBytes)
-
-  def paramsMap[T: spire.math.Numeric: ClassTag] =
-    onnxHelper.params
-      .map(x => x._1 -> (x._2, x._3.asInstanceOf[Array[T]], x._4))
-      .toMap
-
-  override def getParams[T: Numeric: ClassTag](name: String): Tensor[T] = {
-   val params = paramsMap.get(name)
-    params match {
-      case Some(x) => TensorFactory.getTensor(x._2, x._3.map(z => z: XInt))
-      case None =>
-        throw new Exception("No params found for param name: " + name)
-    }
-  }
 
   def callOpNode[
       T: ClassTag,
@@ -225,7 +209,6 @@ class NGraphBackend(onnxBytes: Array[Byte])
     addInputToGraph(inputs._9, "I", graph)
 
     //TODEFER: Merge models, ensuring the outer model is the last merged
-    graph.close
     (model)
   }
 
@@ -586,6 +569,7 @@ class NGraphBackend(onnxBytes: Array[Byte])
       T16: ClassTag,
       T17: ClassTag
   ](
+      onnxBytes: Array[Byte],
       inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8]
   ): (T9) = {
 
@@ -616,7 +600,6 @@ class NGraphBackend(onnxBytes: Array[Byte])
 
   override def close(): Unit = {
     ngraphBackend.close
-    onnxHelper.close
     scope.close
   }
 }

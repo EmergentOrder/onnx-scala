@@ -1,8 +1,8 @@
 package org.emergentorder.onnx.backends
 import org.emergentorder.onnx._
 
-class NGraphBackendFull(onnxBytes: Array[Byte])
-    extends NGraphBackendFullAtoL(onnxBytes)
+class NGraphBackendFull()
+    extends NGraphBackendFullAtoL()
     with MatMul
     with MatMulInteger
     with Max

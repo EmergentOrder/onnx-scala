@@ -27,7 +27,7 @@ import org.emergentorder.onnx.backends._
 
 class ONNXNGraphHandlers(onnxBytes: Array[Byte]) extends AutoCloseable {
   val scope         = new PointerScope()
-  val ngraphBackend = new NGraphBackend(onnxBytes)
+  val ngraphBackend = new NGraphBackend()
 
   def fullModel[
       T: ClassTag,
@@ -54,6 +54,7 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte]) extends AutoCloseable {
     Task {
       ngraphBackend
         .fullModel[T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17](
+          onnxBytes,
           inputs
         )
     } //TODO: .ensuring(ngraphBackend.close)

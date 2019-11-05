@@ -34,17 +34,17 @@ Run SqueezeNet image classification inference on an ["image"](https://upload.wik
 ```scala mdoc:silent
 import java.nio.file.{Files, Paths}
 import org.emergentorder.onnx.{Tensor, TensorFactory}
-import org.emergentorder.onnx.backends.NGraphBackend
+import org.emergentorder.onnx.backends.NGraphBackendFull
 
-val byteArray = Files.readAllBytes(Paths.get("squeezenet.onnx"))
+val squeezenet = Files.readAllBytes(Paths.get("squeezenet.onnx"))
 
-val squeezenet = new NGraphBackend(byteArray)
+val backend = new NGraphBackendFull()
 
 val tens = TensorFactory.getTensor(Array.fill(3*224*224){42f},Array(3,224,224))
 ```
 
 ```scala mdoc
-val out: Tensor[Float] = squeezenet.fullModel(Some(tens), None, None, None, None, None, None, None, None)
+val out: Tensor[Float] = backend.fullModel(squeezenet, (Some(tens), None, None, None, None, None, None, None, None))
 
 out._1.size
 
@@ -53,6 +53,15 @@ out._1.indices.maxBy(out._1)
 
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "envelope".
 
+### Operator-level (Fine-grained) API
+
+```scala mdoc
+backend.Abs6("abs", Some(tens))
+
+backend.Sqrt6("sqrt", Some(tens))
+```
+
+//TODO: Example of calling a fine-grained op here, fix example
 
 ## Project Overview
  
@@ -108,7 +117,7 @@ The resulting generated program appears as `programGenerator/src/gen/scala/Absne
 import org.emergentorder.onnx.backends._
 
 class Absnet(byteArray: Array[Byte]) {
-  val Abs: org.emergentorder.onnx.Abs = new NGraphBackendFull(byteArray)
+  val Abs: org.emergentorder.onnx.Abs = new NGraphBackendFull()
   def program(inputDatax: Tensor[Float]): List[Tensor[Float]]  = 
     for {
       nodex <- List(inputDatax)
@@ -234,7 +243,7 @@ Currently at ONNX 1.6.0.
 
 #### Backend
 
-* [nGraph via JavaCPP Preset for nGraph 0.25.0](https://github.com/bytedeco/javacpp-presets/tree/master/ngraph) - nGraph is an open source C++ library, compiler and runtime for Deep Learning frameworks / The missing bridge between Java and native C++ libraries
+* [nGraph via JavaCPP Preset for nGraph 0.26.0](https://github.com/bytedeco/javacpp-presets/tree/master/ngraph) - nGraph is an open source C++ library, compiler and runtime for Deep Learning frameworks / The missing bridge between Java and native C++ libraries
 
 
 ### Inspiration

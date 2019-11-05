@@ -5,10 +5,10 @@
 [![Build status](https://travis-ci.com/EmergentOrder/onnx-scala.svg?branch=master)](http://travis-ci.com/EmergentOrder/onnx-scala)
 [![Latest version](https://index.scala-lang.org/emergentorder/onnx-scala/onnx-scala/latest.svg?color=orange)](https://index.scala-lang.org/emergentorder/onnx-scala/onnx-scala)
 ## Getting Started
-Add this to your build.sbt:
+Add this to the build.sbt in your project:
 
 ```scala
-libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala" % "0.2.0-SNAPSHOT"
+libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala-backends" % "0.2.0-SNAPSHOT"
 ```
 
 As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the latest, build and publish locally from master.
@@ -20,7 +20,7 @@ First, download the [model file](https://s3.amazonaws.com/download.onnx/models/o
 Using the console:
 ```
 sbt
-project backendsJVM
+project backendsJVM #If you are in this project root
 console 
 ```
 
@@ -47,8 +47,6 @@ out._1.indices.maxBy(out._1)
 ```
 
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "envelope":
-
-
 
 ## Project Overview
  

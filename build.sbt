@@ -93,7 +93,6 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2") else Nil },
     libraryDependencies ++= Seq(
       "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.2",
-      "org.osgi" % "org.osgi.annotation.versioning" % "1.1.0",
 //      "com.microsoft.onnxruntime" % "onnxruntime4j" % "1.0.0-SNAPSHOT"
     ),
 //    sources in (Compile, doc) := Seq(),
@@ -115,6 +114,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala",
+    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2") else Nil },
 //    scalaVersion := scala213Version,
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
@@ -144,7 +144,8 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
         )
     }),
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion
+      "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion,
+      "org.osgi" % "org.osgi.annotation.versioning" % "1.1.0"
     )
   )
   .jsSettings(

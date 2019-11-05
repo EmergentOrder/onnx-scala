@@ -20,12 +20,18 @@ As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the l
 
 First, download the [model file](https://s3.amazonaws.com/download.onnx/models/opset_8/squeezenet.tar.gz) for [SqueezeNet](https://en.wikipedia.org/wiki/SqueezeNet), extracting and renaming.
 
-Using the console:
+Using the console, from this project root:
 
 ```
 sbt
-project backendsJVM #If you are in this project root
+project backendsJVM
 console 
+```
+
+or from your project:
+
+```
+sbt console
 ```
 
 Run SqueezeNet image classification inference on an ["image"](https://upload.wikimedia.org/wikipedia/commons/0/0e/Answer_to_Life_42.svg):
@@ -61,7 +67,8 @@ out._1.indices.maxBy(out._1)
 // res1: Int = 549
 ```
 
-Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "envelope":
+Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "envelope".
+
 
 ## Project Overview
 

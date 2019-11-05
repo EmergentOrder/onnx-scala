@@ -87,8 +87,6 @@ backend.Sqrt6("sqrt", Some(tens))
 // ...
 ```
 
-//TODO: Example of calling a fine-grained op here, fix example
-
 ## Project Overview
 
 ### A) API

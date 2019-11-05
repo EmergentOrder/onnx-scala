@@ -15,7 +15,16 @@ As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the l
 
 
 ### Full ONNX model inference quick start:
-First, download the model file for [SqueezeNet](https://s3.amazonaws.com/download.onnx/models/opset_8/squeezenet.tar.gz).
+First, download the [model file](https://s3.amazonaws.com/download.onnx/models/opset_8/squeezenet.tar.gz) for [SqueezeNet](https://en.wikipedia.org/wiki/SqueezeNet), extracting and renaming.
+
+Using the console:
+```
+sbt
+project backendsJVM
+console 
+```
+
+Run SqueezeNet image classification inference on an ["image"](https://upload.wikimedia.org/wikipedia/commons/0/0e/Answer_to_Life_42.svg):
 
 ```scala mdoc:silent
 import java.nio.file.{Files, Paths}
@@ -28,10 +37,18 @@ val squeezenet = new NGraphBackend(byteArray)
 
 val tens = TensorFactory.getTensor(Array.fill(3*224*224){42f},Array(3,224,224))
 ```
+
 ```scala mdoc
 val out: Tensor[Float] = squeezenet.fullModel(Some(tens), None, None, None, None, None, None, None, None)
 
+out._1.size
+
+out._1.indices.maxBy(out._1)
 ```
+
+Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "envelope":
+
+
 
 ## Project Overview
  
@@ -87,7 +104,7 @@ The resulting generated program appears as `programGenerator/src/gen/scala/Absne
 import org.emergentorder.onnx.backends._
 
 class Absnet(byteArray: Array[Byte]) {
-  val Abs: org.emergentorder.onnx.Abs = new NGraphBackendFullAtoL(byteArray)
+  val Abs: org.emergentorder.onnx.Abs = new NGraphBackendFull(byteArray)
   def program(inputDatax: Tensor[Float]): List[Tensor[Float]]  = 
     for {
       nodex <- List(inputDatax)
@@ -123,9 +140,9 @@ All together, these should enable model inspection and modification, extra compi
 
 #### Example execution
 
-The most extensive working example at the moment is `zio/src/main/scala/NCFZIO.scala`, an implementation of Neural Collaborative Filtering, although you currently need to provide your own model file to load params from at `zio/.jvm/src/main/resources/NCF.onnx`.
+The most extensive working example at the moment is `zio/src/main/scala/NCFZIO.scala`, an implementation of Neural Collaborative Filtering, although you currently need to provide your own model file to load params from at `zio/.jvm/src/main/resources/NCF.onnx`, as well item and user id maps at `zio/.jvm/src/main/resources/itemIds.csv` and `zio/.jvm/src/main/resources/userIds.csv`.
 
-This example provides full model execution via the `fullNCF` method, while an example of fine-grained execution can be found at `zio/src/main/scala/NCFZIOFine.scala` in the `fineNCF` method.
+This example provides full model execution via the `fullNCF` method. 
 
 To run it, use:
 
@@ -185,10 +202,8 @@ Automatic differentiation to enable training is under consideration (ONNX does n
 
 Balancing the interests of minimal imposition of dependencies with purely functional programming, ONNX-Scala comes in two flavors: Vanilla and ZIO-infused.
 
-The ONNX-Scala core API is cross-built against Scala JVM (for Scala 2.11, 2.12 and 2.13) , Scala.js / JavaScript (for Scala 2.11, 2.12 and 2.13) and Scala Native (for Scala 2.11).
+The ONNX-Scala core API is cross-built against Scala JVM (for Scala 2.11, 2.12, 2.13 and Dotty/3.0) , Scala.js / JavaScript (for Scala 2.11, 2.12 and 2.13) and Scala Native (for Scala 2.11).
 The Scala Native build will fail unless you apply this [PR](https://github.com/scala-native/scala-native/pull/1641).
-
-To take advantage of union types to express type constraints, a Dotty (Scala 3) build is available. The Dotty build does not support Scala.js or Scala Native.
 
 Currently at ONNX 1.6.0.
 
@@ -203,7 +218,7 @@ Currently at ONNX 1.6.0.
 
 #### Optional - Dotty Variant
 
-* [Dotty](https://github.com/lampepfl/dotty) - A next-generation compiler that will become Scala 3 (For native union types, used here to express ONNX type constraints)
+* [Dotty](https://github.com/lampepfl/dotty) - A next-generation compiler that will become Scala 3 (For native union types, formerly used here to express ONNX type constraints, but currently using cross-version source compatibile union types instead)
 
 #### Optional - ZIO Variant
 

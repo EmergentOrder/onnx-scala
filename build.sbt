@@ -16,7 +16,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
-  scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-Ywarn-unused", "-Yrangepos"),
+  scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-Yrangepos"),
   autoCompilerPlugins := true,
 ) ++ sonatypeSettings
 

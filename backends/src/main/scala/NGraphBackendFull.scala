@@ -1,8 +1,8 @@
 package org.emergentorder.onnx.backends
 import org.emergentorder.onnx._
 
-class NGraphBackendFullMtoZ(onnxBytes: Array[Byte])
-    extends NGraphBackend(onnxBytes)
+class NGraphBackendFull(onnxBytes: Array[Byte])
+    extends NGraphBackendFullAtoL(onnxBytes)
     with MatMul
     with MatMulInteger
     with Max
@@ -100,3 +100,4 @@ class NGraphBackendFullMtoZ(onnxBytes: Array[Byte])
     with Where
     with Xor
 //    with ZipMap
+

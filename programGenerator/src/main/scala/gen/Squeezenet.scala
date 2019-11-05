@@ -1,5 +1,6 @@
 package org.emergentorder.onnx
 
+import org.emergentorder.onnx._
 import org.emergentorder.onnx.backends._
 import org.emergentorder.union._
 import scala.reflect.ClassTag
@@ -9,7 +10,7 @@ import spire.math.UShort
 import spire.math.Complex
 import spire.math.Numeric
 
-//TODO: fix issues on generation
+//TODO: Fix issue with MaxPool8
 class Squeezenet(byteArray: Array[Byte]) {
   val Conv: Conv = new NGraphBackendFull()
   val Relu: Relu = new NGraphBackendFull()
@@ -18,7 +19,7 @@ class Squeezenet(byteArray: Array[Byte]) {
   val Dropout: Dropout = new NGraphBackendFull()
   val GlobalAveragePool: GlobalAveragePool = new NGraphBackendFull()
   val Softmax: Softmax = new NGraphBackendFull()
-  val dataSource: DataSource = new NGraphDataSource(byteArray)
+  val dataSource: DataSource = new ONNXBytesDataSource(byteArray)
   def program(inputDatadata_0: Tensor[Float]): List[Tensor[Float]]  = 
     for {
       nodedata_0 <- List(inputDatadata_0)

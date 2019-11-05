@@ -123,7 +123,9 @@ object ONNXProgramGenerator {
         (if (useZIO)
            "import zio.Task\n" +
              "import org.emergentorder.onnx._\n"
-         else "import org.emergentorder.onnx.backends._\n") +
+         else 
+             "import org.emergentorder.onnx._\n" +
+           "import org.emergentorder.onnx.backends._\n") +
         (if (useDotty) ""
          else
            "import org.emergentorder.union._\n") +
@@ -145,10 +147,7 @@ object ONNXProgramGenerator {
               "\n"
           } //TODO: Make class instead of object and inject implementations
           .mkString("") +
-                  "  val dataSource: DataSource" + (if (useZIO)
-                                            "ZIO = new ZIONGraphDataSource(byteArray)"
-                                          else
-                                            " = new NGraphDataSource(byteArray)") + "\n" +
+                  "  val dataSource: DataSource" + (" = new ONNXBytesDataSource(byteArray)") + "\n" +
 //    "  import cats.implicits._\n" +
         //Omit return type here for now
         "  def program" + (if (graphInputs.size > 0)

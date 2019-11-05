@@ -1,11 +1,11 @@
-package org.emergentorder.onnx.backends
+package org.emergentorder.onnx
 
 import scala.reflect.ClassTag
 import spire.math.Numeric
 import org.emergentorder.onnx.
 _
 
-class NGraphDataSource(onnxBytes: Array[Byte]) extends AutoCloseable with DataSource{
+class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends AutoCloseable with DataSource{
 
 
   val onnxHelper = new ONNXHelper(onnxBytes)

@@ -185,6 +185,9 @@ lazy val docs = (crossProject(JVMPlatform)
   )
   .dependsOn(backends)
   .enablePlugins(MdocPlugin)
+  .jvmSettings(
+    crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
+  )
 
 lazy val zio = (crossProject(JVMPlatform)//, JSPlatform)
   .crossType(CrossType.Pure) in file("zio"))

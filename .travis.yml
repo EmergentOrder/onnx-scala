@@ -1,2 +1,4 @@
 language: scala
-script: sbt +test -J-Xmx5G
+script: 
+  - sbt +test -J-Xmx5G
+  - sbt ++2.13.1 docsJVM/mdoc

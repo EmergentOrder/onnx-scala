@@ -27,7 +27,7 @@ import org.emergentorder.onnx.backends._
 
 class ONNXNGraphHandlers(onnxBytes: Array[Byte]) extends AutoCloseable {
   val scope         = new PointerScope()
-  val ngraphBackend = new NGraphBackend()
+  val ngraphBackend = new NGraphModelBackend(onnxBytes)
 
   def fullModel[
       T: ClassTag,
@@ -54,18 +54,10 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte]) extends AutoCloseable {
     Task {
       ngraphBackend
         .fullModel[T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17](
-          onnxBytes,
           inputs
         )
     } //TODO: .ensuring(ngraphBackend.close)
   }
-
-//  def getParamsZIO[T: Numeric: ClassTag](name: String): Task[Tensor[T]] = {
-//    Task {
-//      ngraphBackend.getParams(name)
-//    }
-
-//  }
 
   override def close(): Unit = {
     ngraphBackend.close
@@ -108,10 +100,10 @@ object ZIONGraphMain extends App {
   val userIdsMap = getIdMap(userIdMapFilename)
   val itemIdsMap = getIdMap(itemIdMapFilename)
 
-  val userIds                       = userIdsMap.keys.toArray
-  val itemIds                       = itemIdsMap.keys.toArray
-  val rand                          = new Random(42)
-  val rand1                          = new Random(53)
+  val userIds = userIdsMap.keys.toArray
+  val itemIds = itemIdsMap.keys.toArray
+  val rand    = new Random(42)
+  val rand1   = new Random(53)
 
   def getRandomId(arr: Array[Long], aRand: Random) = arr(aRand.nextInt(arr.length))
 
@@ -132,7 +124,7 @@ object ZIONGraphMain extends App {
 
 //  val scope = new PointerScope()
 //  val finalizer = UIO.effectTotal(scope.close)
- 
+
   val ncfZIO = new NCFZIO(byteArray, userIdsMap, itemIdsMap)
 
   val runtime = new DefaultRuntime {}

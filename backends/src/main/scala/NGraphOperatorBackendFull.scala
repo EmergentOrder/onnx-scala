@@ -1,8 +1,9 @@
 package org.emergentorder.onnx.backends
 import org.emergentorder.onnx._
 
-class NGraphBackendFull()
-    extends NGraphBackendFullAtoL()
+//Commented out ops are not supported in NGraph currently
+class NGraphOperatorBackendFull
+    extends NGraphOperatorBackendAtoL
     with MatMul
     with MatMulInteger
     with Max
@@ -100,4 +101,3 @@ class NGraphBackendFull()
     with Where
     with Xor
 //    with ZipMap
-

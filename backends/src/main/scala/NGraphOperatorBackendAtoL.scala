@@ -1,8 +1,9 @@
 package org.emergentorder.onnx.backends
 import org.emergentorder.onnx._
 
-class NGraphBackendFullAtoL()
-    extends NGraphBackend()
+//Commented out ops are not supported in NGraph currently
+class NGraphOperatorBackendAtoL
+    extends NGraphOperatorBackend
     with Abs
     with Acos
     with Acosh

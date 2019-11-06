@@ -39,11 +39,14 @@ Run SqueezeNet image classification inference on an ["image"](https://upload.wik
 ```scala
 import java.nio.file.{Files, Paths}
 import org.emergentorder.onnx.{Tensor, TensorFactory}
-import org.emergentorder.onnx.backends.NGraphBackendFull
+import org.emergentorder.onnx.backends.NGraphOperatorBackendFull
+import org.emergentorder.onnx.backends.NGraphModelBackend
 
-val squeezenet = Files.readAllBytes(Paths.get("squeezenet1.1.onnx"))
+val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.1.onnx"))
 
-val backend = new NGraphBackendFull()
+val squeezenet = new NGraphModelBackend(squeezenetBytes)
+
+val onnx = new NGraphOperatorBackendFull()
 
 val tens = TensorFactory.getTensor(Array.fill(3*224*224){42f},Array(3,224,224))
 ```
@@ -51,8 +54,7 @@ val tens = TensorFactory.getTensor(Array.fill(3*224*224){42f},Array(3,224,224))
 Note that ONNX Tensor content is in row-major order.
 
 ```scala
-val out: Tensor[Float] = backend.fullModel(squeezenet, (Some(tens), None, None, None, None, None, None, None, None))
-// 0
+val out: Tensor[Float] = squeezenet.fullModel((Some(tens), None, None, None, None, None, None, None, None))
 // out: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
 //   Array(
 //     0.8230884F,
@@ -74,14 +76,14 @@ Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942
 ### Operator-level (Fine-grained) API
 
 ```scala
-backend.Abs6("abs", Some(tens))
+onnx.Abs6("abs", Some(tens))
 // res2: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
 //   Array(
 //     42.0F,
 //     42.0F,
 // ...
 
-backend.Sqrt6("sqrt", Some(tens))
+onnx.Sqrt6("sqrt", Some(tens))
 // res3: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
 //   Array(
 //     6.4807405F,
@@ -145,7 +147,7 @@ The resulting generated program appears as `programGenerator/src/gen/scala/Absne
 import org.emergentorder.onnx.backends._
 
 class Absnet(byteArray: Array[Byte]) {
-  val Abs: org.emergentorder.onnx.Abs = new NGraphBackendFull()
+  val Abs: org.emergentorder.onnx.Abs = new NGraphOperatorBackendFull()
   def program(inputDatax: Tensor[Float]): List[Tensor[Float]]  = 
     for {
       nodex <- List(inputDatax)
@@ -231,13 +233,6 @@ Type-checking is done at the operation level on inputs and outputs for data type
 This allows for dynamic graph structure, in which the execution itself defines the graph, similar to PyTorch and Tensorflow Eager.
 The trade-off made for this flexibility is that the underlying ONNX backend can no longer optimize the full graph, and the boundary-crossing at each operation results in additional overhead.
 
-#### Tracing mode
-
-In this mode, we construct the ONNX model to be executed on the fly, in memory and then execute it all at once on the backend.
-We thus recover some of the performance we sacrificed in fine-grained mode, at the cost of losing support for dynamic graph structure (because we don't get outputs for individual ops).
-This mode will allow for export of your from-scratch or generated-but-customized ONNX models.
-This mode is a work-in-progress.
-
 ## Project Details
 
 Automatic differentiation to enable training is under consideration (ONNX does not provide facilities for training).
@@ -267,8 +262,8 @@ type ImageAxes = imageAxes.type
 type ImageTensor = TypesafeTensor[Float, ImageAxes]
 
 val typesafeTens: ImageTensor = TensorFactory.getTypesafeTensor(Array.fill(3*224*224){42f},imageAxes) 
-backend.Sqrt6[Float, ImageAxes]("sqrt", Some(typesafeTens))
-backend.Sqrt6("sqrt", Some(typesafeTens))
+onnx.Sqrt6[Float, ImageAxes]("sqrt", Some(typesafeTens))
+onnx.Sqrt6("sqrt", Some(typesafeTens))
 
 val textAxes = (new Vec(100, new DataFeature{}))
 type TextAxes = textAxes.type
@@ -281,10 +276,10 @@ type TextTensor = TypesafeTensor[Float, TextAxes]
 val wrongSizeDataTens: ImageTensor = TensorFactory.getTypesafeTensor(Array.fill(3*224*225){42f},imageAxes)
 // java.lang.IllegalArgumentException: requirement failed
 // 	at scala.Predef$.require(Predef.scala:327)
-// 	at org.emergentorder.onnx.package$TensorFactory$.getTypesafeTensor(ONNX213.scala:94)
-// 	at repl.Session$App$$anonfun$30.apply$mcV$sp(README.md:151)
-// 	at repl.Session$App$$anonfun$30.apply(README.md:150)
-// 	at repl.Session$App$$anonfun$30.apply(README.md:150)
+// 	at org.emergentorder.onnx.package$TensorFactory$.getTypesafeTensor(ONNX213.scala:109)
+// 	at repl.Session$App$$anonfun$31.apply$mcV$sp(README.md:157)
+// 	at repl.Session$App$$anonfun$31.apply(README.md:156)
+// 	at repl.Session$App$$anonfun$31.apply(README.md:156)
 ```
 
 ```scala
@@ -300,40 +295,40 @@ val wordShouldBeImageTens: TextTensor = TensorFactory.getTypesafeTensor(Array.fi
 ```
 
 ```scala
-backend.Sqrt6[Float, TextAxes]("sqrt", Some(typesafeTens))
+onnx.Sqrt6[Float, TextAxes]("sqrt", Some(typesafeTens))
 // error: type mismatch;
 //  found   : repl.Session.App.ImageTensor
 //     (which expands to)  (Array[Float], Array[Int], repl.Session.App.imageAxes.type)
 //  required: org.emergentorder.onnx.TypesafeTensor[Float,repl.Session.App.TextAxes]
 //     (which expands to)  (Array[Float], Array[Int], repl.Session.App.textAxes.type)
-// backend.Sqrt6[Float, TextAxes]("sqrt", Some(typesafeTens))
-//                                             ^^^^^^^^^^^^
+// onnx.Sqrt6[Float, TextAxes]("sqrt", Some(typesafeTens))
+//                                          ^^^^^^^^^^^^
 ```
 
 ```scala
 val wrongSizedImageAxes = (new Tuple3OfDim(15, new DataChannel{}, 224, new DataFeature{}, 224, new DataFeature{}))
 type WrongSizedImageAxes = wrongSizedImageAxes.type
-backend.Sqrt6[Float, WrongSizedImageAxes]("sqrt", Some(typesafeTens))
+onnx.Sqrt6[Float, WrongSizedImageAxes]("sqrt", Some(typesafeTens))
 // error: type mismatch;
 //  found   : repl.Session.App.ImageTensor
 //     (which expands to)  (Array[Float], Array[Int], repl.Session.App.imageAxes.type)
 //  required: org.emergentorder.onnx.TypesafeTensor[Float,repl.Session.App.WrongSizedImageAxes]
 //     (which expands to)  (Array[Float], Array[Int], repl.Session.App.wrongSizedImageAxes.type)
-// backend.Sqrt6[Float, WrongSizedImageAxes]("sqrt", Some(typesafeTens))
-//                                                        ^^^^^^^^^^^^
+// onnx.Sqrt6[Float, WrongSizedImageAxes]("sqrt", Some(typesafeTens))
+//                                                     ^^^^^^^^^^^^
 ```
 
 ```scala
 val wrongDimTypeAxes = (new Tuple3OfDim(3, new DataBatch{}, 224, new DataFeature{}, 224, new DataFeature{}))
 type WrongDimTypeAxes = wrongDimTypeAxes.type
-backend.Sqrt6[Float, WrongDimTypeAxes]("sqrt", Some(typesafeTens))
+onnx.Sqrt6[Float, WrongDimTypeAxes]("sqrt", Some(typesafeTens))
 // error: type mismatch;
 //  found   : repl.Session.App.ImageTensor
 //     (which expands to)  (Array[Float], Array[Int], repl.Session.App.imageAxes.type)
 //  required: org.emergentorder.onnx.TypesafeTensor[Float,repl.Session.App.WrongDimTypeAxes]
 //     (which expands to)  (Array[Float], Array[Int], repl.Session.App.wrongDimTypeAxes.type)
-// backend.Sqrt6[Float, WrongDimTypeAxes]("sqrt", Some(typesafeTens))
-//                                                     ^^^^^^^^^^^^
+// onnx.Sqrt6[Float, WrongDimTypeAxes]("sqrt", Some(typesafeTens))
+//                                                  ^^^^^^^^^^^^
 ```
 
 ### Built With

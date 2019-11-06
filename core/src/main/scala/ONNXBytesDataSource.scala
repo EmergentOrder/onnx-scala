@@ -2,11 +2,9 @@ package org.emergentorder.onnx
 
 import scala.reflect.ClassTag
 import spire.math.Numeric
-import org.emergentorder.onnx.
-_
+import org.emergentorder.onnx._
 
-class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends AutoCloseable with DataSource{
-
+class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends AutoCloseable with DataSource {
 
   val onnxHelper = new ONNXHelper(onnxBytes)
 
@@ -16,7 +14,7 @@ class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends AutoCloseable with Dat
       .toMap
 
   override def getParams[T: Numeric: ClassTag](name: String): Tensor[T] = {
-   val params = paramsMap.get(name)
+    val params = paramsMap.get(name)
     params match {
       case Some(x) => TensorFactory.getTensor(x._2, x._3)
       case None =>
@@ -24,13 +22,10 @@ class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends AutoCloseable with Dat
     }
   }
 
-
-  
   override def close(): Unit = {
 
     onnxHelper.close
 
   }
-
 
 }

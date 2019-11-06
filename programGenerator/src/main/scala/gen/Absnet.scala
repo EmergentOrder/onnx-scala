@@ -10,10 +10,10 @@ import spire.math.Complex
 import spire.math.Numeric
 
 class Absnet() {
-  val Abs: Abs = new NGraphBackendFull()
-  def program(inputDatax: Tensor[Float]): List[Tensor[Float]]  = 
+  val Abs: Abs = new NGraphOperatorBackendFull()
+  def program(inputDatax: Tensor[Float]): List[Tensor[Float]] =
     for {
       nodex <- List(inputDatax)
-      nodey <- List(Abs.Abs6("y" ,X = Some(nodex)))
+      nodey <- List(Abs.Abs6("y", X = Some(nodex)))
     } yield (nodey)
 }

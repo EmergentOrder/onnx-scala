@@ -34,11 +34,14 @@ Run SqueezeNet image classification inference on an ["image"](https://upload.wik
 ```scala mdoc:silent
 import java.nio.file.{Files, Paths}
 import org.emergentorder.onnx.{Tensor, TensorFactory}
-import org.emergentorder.onnx.backends.NGraphBackendFull
+import org.emergentorder.onnx.backends.NGraphOperatorBackendFull
+import org.emergentorder.onnx.backends.NGraphModelBackend
 
-val squeezenet = Files.readAllBytes(Paths.get("squeezenet1.1.onnx"))
+val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.1.onnx"))
 
-val backend = new NGraphBackendFull()
+val squeezenet = new NGraphModelBackend(squeezenetBytes)
+
+val onnx = new NGraphOperatorBackendFull()
 
 val tens = TensorFactory.getTensor(Array.fill(3*224*224){42f},Array(3,224,224))
 ```
@@ -46,7 +49,7 @@ val tens = TensorFactory.getTensor(Array.fill(3*224*224){42f},Array(3,224,224))
 Note that ONNX Tensor content is in row-major order.
 
 ```scala mdoc
-val out: Tensor[Float] = backend.fullModel(squeezenet, (Some(tens), None, None, None, None, None, None, None, None))
+val out: Tensor[Float] = squeezenet.fullModel((Some(tens), None, None, None, None, None, None, None, None))
 
 out._1.size
 
@@ -58,9 +61,9 @@ Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942
 ### Operator-level (Fine-grained) API
 
 ```scala mdoc
-backend.Abs6("abs", Some(tens))
+onnx.Abs6("abs", Some(tens))
 
-backend.Sqrt6("sqrt", Some(tens))
+onnx.Sqrt6("sqrt", Some(tens))
 ```
 
 ## Project Overview
@@ -117,7 +120,7 @@ The resulting generated program appears as `programGenerator/src/gen/scala/Absne
 import org.emergentorder.onnx.backends._
 
 class Absnet(byteArray: Array[Byte]) {
-  val Abs: org.emergentorder.onnx.Abs = new NGraphBackendFull()
+  val Abs: org.emergentorder.onnx.Abs = new NGraphOperatorBackendFull()
   def program(inputDatax: Tensor[Float]): List[Tensor[Float]]  = 
     for {
       nodex <- List(inputDatax)
@@ -202,13 +205,6 @@ Type-checking is done at the operation level on inputs and outputs for data type
 This allows for dynamic graph structure, in which the execution itself defines the graph, similar to PyTorch and Tensorflow Eager.
 The trade-off made for this flexibility is that the underlying ONNX backend can no longer optimize the full graph, and the boundary-crossing at each operation results in additional overhead.
 
-#### Tracing mode
-
-In this mode, we construct the ONNX model to be executed on the fly, in memory and then execute it all at once on the backend.
-We thus recover some of the performance we sacrificed in fine-grained mode, at the cost of losing support for dynamic graph structure (because we don't get outputs for individual ops).
-This mode will allow for export of your from-scratch or generated-but-customized ONNX models.
-This mode is a work-in-progress.
-
 ## Project Details
 
 Automatic differentiation to enable training is under consideration (ONNX does not provide facilities for training).
@@ -237,8 +233,8 @@ type ImageAxes = imageAxes.type
 type ImageTensor = TypesafeTensor[Float, ImageAxes]
 
 val typesafeTens: ImageTensor = TensorFactory.getTypesafeTensor(Array.fill(3*224*224){42f},imageAxes) 
-backend.Sqrt6[Float, ImageAxes]("sqrt", Some(typesafeTens))
-backend.Sqrt6("sqrt", Some(typesafeTens))
+onnx.Sqrt6[Float, ImageAxes]("sqrt", Some(typesafeTens))
+onnx.Sqrt6("sqrt", Some(typesafeTens))
 
 val textAxes = (new Vec(100, new DataFeature{}))
 type TextAxes = textAxes.type
@@ -255,17 +251,17 @@ val wrongSizeDataTens: ImageTensor = TensorFactory.getTypesafeTensor(Array.fill(
 val wordShouldBeImageTens: TextTensor = TensorFactory.getTypesafeTensor(Array.fill(3*224*224){42f},imageAxes)
 ```
 ```scala mdoc:fail
-backend.Sqrt6[Float, TextAxes]("sqrt", Some(typesafeTens))
+onnx.Sqrt6[Float, TextAxes]("sqrt", Some(typesafeTens))
 ```
 ```scala mdoc:fail
 val wrongSizedImageAxes = (new Tuple3OfDim(15, new DataChannel{}, 224, new DataFeature{}, 224, new DataFeature{}))
 type WrongSizedImageAxes = wrongSizedImageAxes.type
-backend.Sqrt6[Float, WrongSizedImageAxes]("sqrt", Some(typesafeTens))
+onnx.Sqrt6[Float, WrongSizedImageAxes]("sqrt", Some(typesafeTens))
 ```
 ```scala mdoc:fail
 val wrongDimTypeAxes = (new Tuple3OfDim(3, new DataBatch{}, 224, new DataFeature{}, 224, new DataFeature{}))
 type WrongDimTypeAxes = wrongDimTypeAxes.type
-backend.Sqrt6[Float, WrongDimTypeAxes]("sqrt", Some(typesafeTens))
+onnx.Sqrt6[Float, WrongDimTypeAxes]("sqrt", Some(typesafeTens))
 ```
 
 ### Built With

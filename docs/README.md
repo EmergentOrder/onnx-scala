@@ -220,7 +220,7 @@ The Scala Native build will fail unless you apply this [PR](https://github.com/s
 
 Currently at ONNX 1.6.0.
 
-### Type-safe Tensors (Experimental, Scala 2.13 only)
+## Type-safe Tensors (Experimental, Scala 2.13 only)
 ```scala mdoc:silent
 import org.emergentorder.onnx._
 

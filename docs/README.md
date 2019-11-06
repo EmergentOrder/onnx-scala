@@ -14,7 +14,7 @@ libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala-backends" % "0.
 As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the latest, build and publish locally from master.
 
 
-### Full ONNX model inference quick start:
+### Full ONNX model inference quick start
 First, download the [model file](https://s3.amazonaws.com/download.onnx/models/opset_8/squeezenet.tar.gz) for [SqueezeNet](https://en.wikipedia.org/wiki/SqueezeNet), extracting and renaming.
 
 Using the console, from this project root:
@@ -42,6 +42,8 @@ val backend = new NGraphBackendFull()
 
 val tens = TensorFactory.getTensor(Array.fill(3*224*224){42f},Array(3,224,224))
 ```
+
+Note that ONNX Tensor content is in row-major order.
 
 ```scala mdoc
 val out: Tensor[Float] = backend.fullModel(squeezenet, (Some(tens), None, None, None, None, None, None, None, None))
@@ -218,6 +220,45 @@ The Scala Native build will fail unless you apply this [PR](https://github.com/s
 
 Currently at ONNX 1.6.0.
 
+### Type-safe Tensors (Experimental, Scala 2.13 only)
+```scala mdoc:silent
+import org.emergentorder.onnx._
+
+trait Image extends Dim
+
+val imageAxes = new Tuple3OfDim(3, new Image{}, 224, new Image{},224, new Image{})
+type ImageAxes = imageAxes.type
+type ImageTensor = TypesafeTensor[Float, ImageAxes]
+val typesafeTens: ImageTensor = TensorFactory.getTypesafeTensor(Array.fill(3*224*224){42f},imageAxes) 
+backend.Sqrt6[Float, ImageAxes]("sqrt", Some(typesafeTens))
+backend.Sqrt6("sqrt", Some(typesafeTens))
+
+
+trait Word extends Dim
+val wordAxes = (new Vec(5, new Word{}))
+type WordAxes = wordAxes.type
+type WordTensor = TypesafeTensor[Float, WordAxes]
+
+```
+```scala mdoc:crash
+//Fails, as designed
+val wrongSizeDataTens: ImageTensor = TensorFactory.getTypesafeTensor(Array.fill(3*224*225){42f},imageAxes)
+```
+```scala mdoc:fail
+//Fails, as designed
+
+val wordShouldBeImageTens: WordTensor = TensorFactory.getTypesafeTensor(Array.fill(3*224*224){42f},imageAxes)
+```
+```scala mdoc:fail
+//Fails, as designed
+backend.Sqrt6[Float, WordAxes]("sqrt", Some(typesafeTens))
+```
+```scala mdoc:fail
+//Fails, as designed
+val wrongSizedImageAxes = (new Vec(15, new Image{}))
+type WrongSizedImageAxes = wrongSizedImageAxes.type
+backend.Sqrt6[Float, WrongSizedImageAxes]("sqrt", Some(typesafeTens))
+```
 
 ### Built With
 

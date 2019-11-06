@@ -353,7 +353,7 @@ class NGraphBackend
       outputShape.get(x).toInt
     }.toArray
 
-    val result = TensorFactory.getTensor(fa, shapeArray.map(z => z: XInt)).asInstanceOf[T]
+    val result = TensorFactory.getTensor(fa, shapeArray).asInstanceOf[T]
     tensVec.close
     outputShape.close
     (result)

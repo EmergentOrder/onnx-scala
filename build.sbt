@@ -7,12 +7,12 @@ val spireVersion = "0.17.0-M1"
 val zioVersion = "1.0.0-RC16"
 val scalametaVersion = "4.2.3"
 val onnxJavaCPPPresetVersion = "1.6.0-1.5.2"
-scalaVersion := scala212Version
 
 lazy val commonSettings = Seq(
   scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
   version := "0.2.0-SNAPSHOT",
+  scalaVersion := scala213Version,
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),

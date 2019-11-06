@@ -18,7 +18,7 @@ class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends AutoCloseable with Dat
   override def getParams[T: Numeric: ClassTag](name: String): Tensor[T] = {
    val params = paramsMap.get(name)
     params match {
-      case Some(x) => TensorFactory.getTensor(x._2, x._3.map(z => z: XInt))
+      case Some(x) => TensorFactory.getTensor(x._2, x._3)
       case None =>
         throw new Exception("No params found for param name: " + name)
     }

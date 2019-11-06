@@ -32,73 +32,15 @@ import org.bytedeco.ngraph.Backend
 
 //TODEFER: ONNX-JS backend for both JS and JVM
 //TODEFER: ONNX Runtime backend for JVM (and Native?)
-trait NGraphOperatorBackend extends Operator with NGraphBackendUtils with AutoCloseable {
+trait NGraphOperatorBackend
+    extends Operator
+    with OpToONNXBytesConverter
+    with NGraphBackendUtils
+    with AutoCloseable {
 
   val scope = new PointerScope()
 
   val ngraphBackend = Backend.create("CPU")
-
-  def opToONNXBytes[
-      T: ClassTag,
-      T1: ClassTag,
-      T2: ClassTag,
-      T3: ClassTag,
-      T4: ClassTag,
-      T5: ClassTag,
-      T6: ClassTag,
-      T7: ClassTag,
-      T8: ClassTag
-  ](
-      name: String,
-      opName: String,
-      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8],
-      outName: String,
-      attrs: Map[String, Any]
-  ): Array[Byte] = {
-
-    val model = (new ModelProto).New()
-    val graph = new org.bytedeco.onnx.GraphProto
-    model.set_producer_name("ONNX-Scala")
-    graph.set_name(name)
-
-    //TODO: pass real names
-    val origNode = opToNode(name, opName, inputs, outName, attrs)
-
-    val node = graph.add_node
-    node.MergeFrom(origNode)
-
-    origNode.close
-    model.set_allocated_graph(graph)
-    model.set_ir_version(3)
-
-    model.add_opset_import
-    model.opset_import(0).set_version(8)
-
-    val outputValueInfo = graph.add_output
-
-    outputValueInfo.set_name(outName)
-
-    outputValueInfo.mutable_type
-    outputValueInfo.`type`.mutable_tensor_type
-    outputValueInfo.`type`.tensor_type.set_elem_type(1)
-
-    addInputToGraph(inputs._1, "A", graph)
-    addInputToGraph(inputs._2, "B", graph)
-    addInputToGraph(inputs._3, "C", graph)
-    addInputToGraph(inputs._4, "D", graph)
-    addInputToGraph(inputs._5, "E", graph)
-    addInputToGraph(inputs._6, "F", graph)
-    addInputToGraph(inputs._7, "G", graph)
-    addInputToGraph(inputs._8, "H", graph)
-    addInputToGraph(inputs._9, "I", graph)
-
-    val modelString = model.SerializeAsString
-    model.close
-    val modelStringBytes = modelString.getStringBytes
-    modelString.close
-
-    (modelStringBytes)
-  }
 
   def callByteArrayOp[
       T: ClassTag,
@@ -263,7 +205,6 @@ trait NGraphOperatorBackend extends Operator with NGraphBackendUtils with AutoCl
       //    outName: String,
       attrs: Map[String, Any]
   ): (T9) = {
-    //TODO: Separate out
     val onnxBytes = opToONNXBytes(name, opName, inputs, "outName", attrs)
     callByteArrayOp[T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17](
       onnxBytes,

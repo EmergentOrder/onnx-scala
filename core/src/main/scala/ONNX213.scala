@@ -37,6 +37,7 @@ package object onnx {
  sealed case class Vec[I <: XInt, T <: Dim](i: I, t: T)                             extends Axes
  sealed case class Mat[I <: XInt, T <: Dim, J <: XInt, U <: Dim](i: I, t: T, j: J, u: U)                   extends Axes
  sealed case class Tuple3OfDim[I <: XInt, T <: Dim, J <: XInt, U <: Dim, K <: XInt, V <: Dim](i:I, t:T, j:J, u:U, k: K, v: V) extends Axes
+//TODO: 4+ dimensional
 
 object AxesFactory {
     def getAxes[T](shape: Array[XInt], dims: Array[Dim]): Axes = {

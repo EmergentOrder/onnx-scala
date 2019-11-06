@@ -92,6 +92,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
   def onnxTensorProtoToArray(tensorProto: TensorProto) = {
 
+    //TODO: Get dim and type denotations here in 2.13 / earlier if possible
     val scope = new PointerScope()
 
     val onnxDataType = tensorProto.data_type
@@ -99,6 +100,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
     val dimsList =
       (0 until dimsCount.toInt).map(x => tensorProto.dims(x)).toList
 
+    //TODO: Determine whether to use raw_data or type-specific
     val rawData = tensorProto.raw_data
 
     //TODO: Add the rest of the types

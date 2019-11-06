@@ -15,7 +15,7 @@ As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the l
 
 
 ### Full ONNX model inference quick start
-First, download the [model file](https://s3.amazonaws.com/download.onnx/models/opset_8/squeezenet.tar.gz) for [SqueezeNet](https://en.wikipedia.org/wiki/SqueezeNet), extracting and renaming.
+First, download the [model file](https://s3.amazonaws.com/onnx-model-zoo/squeezenet/squeezenet1.1/squeezenet1.1.onnx) for [SqueezeNet](https://en.wikipedia.org/wiki/SqueezeNet).
 
 Using the console, from this project root:
 ```
@@ -36,7 +36,7 @@ import java.nio.file.{Files, Paths}
 import org.emergentorder.onnx.{Tensor, TensorFactory}
 import org.emergentorder.onnx.backends.NGraphBackendFull
 
-val squeezenet = Files.readAllBytes(Paths.get("squeezenet.onnx"))
+val squeezenet = Files.readAllBytes(Paths.get("squeezenet1.1.onnx"))
 
 val backend = new NGraphBackendFull()
 
@@ -53,7 +53,7 @@ out._1.size
 out._1.indices.maxBy(out._1)
 ```
 
-Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "envelope".
+Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "ballpoint pen".
 
 ### Operator-level (Fine-grained) API
 
@@ -221,43 +221,51 @@ The Scala Native build will fail unless you apply this [PR](https://github.com/s
 Currently at ONNX 1.6.0.
 
 ## Type-safe Tensors (Experimental, Scala 2.13 only)
+Featuring type-checked axis labels (Dim), which along with literal types (new in Scala 2.13) for dimension sizes allow for axes-typed/shape-typed (Axes) tensors (TypesafeTensor).
+Using ONNX docs for [dimension](https://github.com/onnx/onnx/blob/master/docs/DimensionDenotation.md) and [type](https://github.com/onnx/onnx/blob/master/docs/TypeDenotation.md) denotation as a reference,
+and inspired by [Nexus](https://github.com/ctongfei/nexus), [Neurocat](https://github.com/mandubian/neurocat) and [Named Tensors](https://pytorch.org/docs/stable/named_tensor.html).
+
 ```scala mdoc:silent
 import org.emergentorder.onnx._
 
-trait Image extends Dim
+trait DataBatch extends Dim
+trait DataChannel extends Dim
+trait DataFeature extends Dim
 
-val imageAxes = new Tuple3OfDim(3, new Image{}, 224, new Image{},224, new Image{})
+val imageAxes = new Tuple3OfDim(3, new DataChannel{}, 224, new DataFeature{},224, new DataFeature{})
 type ImageAxes = imageAxes.type
 type ImageTensor = TypesafeTensor[Float, ImageAxes]
+
 val typesafeTens: ImageTensor = TensorFactory.getTypesafeTensor(Array.fill(3*224*224){42f},imageAxes) 
 backend.Sqrt6[Float, ImageAxes]("sqrt", Some(typesafeTens))
 backend.Sqrt6("sqrt", Some(typesafeTens))
 
-
-trait Word extends Dim
-val wordAxes = (new Vec(5, new Word{}))
-type WordAxes = wordAxes.type
-type WordTensor = TypesafeTensor[Float, WordAxes]
+val textAxes = (new Vec(100, new DataFeature{}))
+type TextAxes = textAxes.type
+type TextTensor = TypesafeTensor[Float, TextAxes]
 
 ```
 ```scala mdoc:crash
-//Fails, as designed
+//Fails at runtime, as designed
 val wrongSizeDataTens: ImageTensor = TensorFactory.getTypesafeTensor(Array.fill(3*224*225){42f},imageAxes)
 ```
 ```scala mdoc:fail
-//Fails, as designed
+//The rest fail to compile, as designed
 
-val wordShouldBeImageTens: WordTensor = TensorFactory.getTypesafeTensor(Array.fill(3*224*224){42f},imageAxes)
+val wordShouldBeImageTens: TextTensor = TensorFactory.getTypesafeTensor(Array.fill(3*224*224){42f},imageAxes)
 ```
 ```scala mdoc:fail
-//Fails, as designed
-backend.Sqrt6[Float, WordAxes]("sqrt", Some(typesafeTens))
+backend.Sqrt6[Float, TextAxes]("sqrt", Some(typesafeTens))
 ```
 ```scala mdoc:fail
-//Fails, as designed
-val wrongSizedImageAxes = (new Vec(15, new Image{}))
+val wrongSizedImageAxes = (new Tuple3OfDim(15, new DataChannel{}, 224, new DataFeature{}, 224, new DataFeature{}))
 type WrongSizedImageAxes = wrongSizedImageAxes.type
 backend.Sqrt6[Float, WrongSizedImageAxes]("sqrt", Some(typesafeTens))
+```
+```scala mdoc:fail
+val wrongDimTypeAxes = (new Tuple3OfDim(3, new DataBatch{}, 224, new DataFeature{}, 224, new DataFeature{}))
+type WrongDimTypeAxes = wrongDimTypeAxes.type
+backend.Sqrt6[Float, WrongDimTypeAxes]("sqrt", Some(typesafeTens))
 ```
 
 ### Built With

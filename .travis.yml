@@ -1,3 +1,5 @@
 language: scala
 script: 
+  - bash get_models.sh
   - sbt +test -J-Xmx5G
+  - sbt docsJVM/mdoc

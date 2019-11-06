@@ -122,6 +122,25 @@ trait Abs extends Operator {
 }
 ```
 
+A few examples of the type constraints in action:
+
+```scala
+val stringTens = TensorFactory.getTensor(Array.fill(3*224*224){"test"},Array(3,224,224))
+onnx.Abs6("abs", Some(stringTens))
+// error: could not find implicit value for evidence parameter of type spire.math.Numeric[String]
+// onnx.Abs6("abs", Some(stringTens))
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+
+```scala
+val aBigInt = new BigInt(new java.math.BigInteger("5"))
+val bigIntTens = TensorFactory.getTensor(Array.fill(3*224*224){aBigInt},Array(3,224,224))
+onnx.Abs6("abs", Some(bigIntTens))
+// error: Cannot prove that org.emergentorder.onnx.!![scala.math.BigInt] <:< org.emergentorder.onnx.Float16 => Nothing with Float => Nothing with Double => Nothing with spire.math.UByte => Nothing with spire.math.UShort => Nothing with spire.math.UInt => Nothing with spire.math.ULong => Nothing with Byte => Nothing with Short => Nothing with Int => Nothing with Long => Nothing with org.emergentorder.onnx.UNil => Nothing => Nothing.
+// onnx.Abs6("abs", Some(bigIntTens))
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+
 ### B) Program Generator
 
 Capable of translating ONNX model Protobuf (.onnx) files into Scala programs written in terms of this API.  
@@ -277,9 +296,9 @@ val wrongSizeDataTens: ImageTensor = TensorFactory.getTypesafeTensor(Array.fill(
 // java.lang.IllegalArgumentException: requirement failed
 // 	at scala.Predef$.require(Predef.scala:327)
 // 	at org.emergentorder.onnx.package$TensorFactory$.getTypesafeTensor(ONNX213.scala:109)
-// 	at repl.Session$App$$anonfun$31.apply$mcV$sp(README.md:157)
-// 	at repl.Session$App$$anonfun$31.apply(README.md:156)
-// 	at repl.Session$App$$anonfun$31.apply(README.md:156)
+// 	at repl.Session$App$$anonfun$33.apply$mcV$sp(README.md:169)
+// 	at repl.Session$App$$anonfun$33.apply(README.md:168)
+// 	at repl.Session$App$$anonfun$33.apply(README.md:168)
 ```
 
 ```scala

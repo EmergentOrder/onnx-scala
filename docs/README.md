@@ -96,6 +96,18 @@ trait Abs extends Operator {
 }
 ```
 
+A few examples of the type constraints in action:
+```scala mdoc:fail
+val stringTens = TensorFactory.getTensor(Array.fill(3*224*224){"test"},Array(3,224,224))
+onnx.Abs6("abs", Some(stringTens))
+```
+
+```scala mdoc:fail
+val aBigInt = new BigInt(new java.math.BigInteger("5"))
+val bigIntTens = TensorFactory.getTensor(Array.fill(3*224*224){aBigInt},Array(3,224,224))
+onnx.Abs6("abs", Some(bigIntTens))
+```
+
 ### B) Program Generator
 Capable of translating ONNX model Protobuf (.onnx) files into Scala programs written in terms of this API.  
 For example, an ["absolute value network"](https://raw.githubusercontent.com/onnx/onnx/master/onnx/backend/test/data/node/test_abs/model.onnx):

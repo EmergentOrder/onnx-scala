@@ -220,7 +220,7 @@ object ONNXProgramGenerator {
                 val longListCount = y.ints_size
                 val longListList =
                   (0 until longListCount.toInt).map(z => y.ints(z)).toList
-                !longListList.isEmpty //|| longList(0).isInstanceOf[Long]
+                !longListList.isEmpty
               }
               .map { y =>
                 val longListCount = y.ints_size
@@ -234,7 +234,7 @@ object ONNXProgramGenerator {
                 val stringCount = y.strings_size
                 val stringList =
                   (0 until stringCount.toInt).map(z => y.strings(z)).toList
-                !stringList.isEmpty //stringList(1).isInstanceOf[String]
+                !stringList.isEmpty
               }
               .map { y =>
                 val stringCount = y.strings_size
@@ -252,8 +252,7 @@ object ONNXProgramGenerator {
                 val tensorCount = y.tensors_size
                 val tensorList =
                   (0 until tensorCount.toInt).map(z => y.tensors(z)).toList
-                //fields(1)._2.isInstanceOf[TensorProto]
-                !tensorList.isEmpty //tensorList(1).isInstanceOf[TensorProto]
+                !tensorList.isEmpty
               }
               .map { y =>
                 val tensorCount = y.tensors_size
@@ -288,17 +287,7 @@ object ONNXProgramGenerator {
 
             val opInputs = (opInputsNames zip opInputsIsVariadic) zip groupedNodesOrParams
 
-            val opInputsCleaned = opInputs.map { t =>
-              (
-                (t._1._1, t._1._2),
-                (if (opName.contains("Reshape") && sinceVersion
-                       .equals("5") && t._1._1.equals("shape"))
-                   t._2 + ".asInstanceOf[Option[Tensor[Long]]]"
-                 else t._2)
-              )
-            }
-
-            val namedNodesOrParams = opInputsCleaned
+            val namedNodesOrParams = opInputs
               .filter(t => !t._2.equals(""))
               .map(
                 t =>

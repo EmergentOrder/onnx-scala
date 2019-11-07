@@ -16,6 +16,10 @@ class NGraphModelBackend(onnxBytes: Array[Byte])
 
   val ngraphFunc = import_onnx_model(modelString)
 
+  val executable = ngraphBackend.compile(ngraphFunc)
+  val outputShape = ngraphFunc.get_output_shape(0)
+  val outputType  = ngraphFunc.get_output_element_type(0)
+
   override def fullModel[
       T: ClassTag,
       T1: ClassTag,
@@ -38,13 +42,18 @@ class NGraphModelBackend(onnxBytes: Array[Byte])
   ](
       inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8]
   ): (T9) = {
-    callNGraphFuncOp[T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17](
-      ngraphFunc,
-      inputs
+    callNGraphExecutable[T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17](
+      executable,
+      inputs,
+      outputShape,
+      outputType
     )
   }
 
   override def close(): Unit = {
+    executable.close
+    outputShape.close
+    outputType.close
     modelString.close
     ngraphFunc.close
     scope.close

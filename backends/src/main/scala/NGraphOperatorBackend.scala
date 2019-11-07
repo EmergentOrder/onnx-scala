@@ -70,13 +70,24 @@ trait NGraphOperatorBackend
     val ngraphFunc = import_onnx_model(modelString)
     modelString.close
 
-    callNGraphFuncOp[T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17](
-      ngraphFunc,
-      inputs
+    val outputShape = ngraphFunc.get_output_shape(0)
+    val outputType  = ngraphFunc.get_output_element_type(0)
+
+    ngraphFunc.close
+
+    val executable = ngraphBackend.compile(ngraphFunc)
+
+    val res = callNGraphExecutable[T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17](
+      executable,
+      inputs,
+      outputShape, 
+      outputType
     )
+    executable.close
+    res
   }
 
-  def callNGraphFuncOp[
+  def callNGraphExecutable[
       T: ClassTag,
       T1: ClassTag,
       T2: ClassTag,
@@ -96,8 +107,10 @@ trait NGraphOperatorBackend
       T16: ClassTag,
       T17: ClassTag
   ](
-      ngraphFunc: org.bytedeco.ngraph.Function,
-      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8]
+      executable: org.bytedeco.ngraph.Executable,
+      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8],
+      outputShape: org.bytedeco.ngraph.Shape,
+      outputType: org.bytedeco.ngraph.Type
   ): (T9) = {
     val scope = new PointerScope()
 
@@ -112,9 +125,6 @@ trait NGraphOperatorBackend
       getTensorShape(inputs._8),
       getTensorShape(inputs._9)
     ).flatten
-
-    val outputShape = ngraphFunc.get_output_shape(0)
-    val outputType  = ngraphFunc.get_output_element_type(0)
 
     val inputTensors = Seq(
       getTensorPointerAndType(inputs._1),
@@ -137,21 +147,14 @@ trait NGraphOperatorBackend
 
     val outputVector = new org.bytedeco.ngraph.TensorVector(output)
 
-    val executable = ngraphBackend.compile(ngraphFunc)
-
     def t = {
       val before = System.nanoTime
       executable.call(outputVector, inputVector)
       val after = System.nanoTime
-
-      executable.close
 //      println("Elapsed per Op: " + "  : " + (after - before))
     }
 
     t
-
-    ngraphFunc.close
-    executable.close
 
     //convert result to onnx-scala Tensor
 
@@ -170,11 +173,9 @@ trait NGraphOperatorBackend
       x.close
     }
 
-    outputType.close
     inputVector.close
     output.close
     outputVector.close
-    outputShape.close
     scope.close
     (result)
   }

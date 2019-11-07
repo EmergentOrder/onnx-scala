@@ -5,6 +5,8 @@ import scala.reflect.ClassTag
 import org.bytedeco.onnx.ModelProto
 import org.bytedeco.onnx.NodeProto
 import org.bytedeco.onnx.GraphProto
+import org.bytedeco.onnx.TensorProto
+import org.bytedeco.onnx.AttributeProto
 import org.bytedeco.javacpp.PointerScope
 import org.bytedeco.javacpp.BytePointer
 
@@ -41,15 +43,24 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 
     def handleAttrs = attrs.foreach {
       case (key, value) =>
-        val longVal = value.asInstanceOf[Option[Int]] match {
-          case Some(x) => {
-            node.add_attribute
-            val attr     = node.mutable_attribute(0)
+        val res = value match {
+          case Some(x: Int) => {
+            val attr = node.add_attribute
+            //val attr     = node.mutable_attribute(0)
             val attrName = new BytePointer(key)
             attr.set_name(attrName)
-            attr.set_type(2)
+            attr.set_type(AttributeProto.INT)
             val longVal = x.toLong
+
             attr.set_i(longVal)
+          }
+          case Some(x: Array[Int]) => {
+            val attr = node.add_attribute
+            //val attr = node.mutable_attribute(0)
+            val attrName = new BytePointer(key)
+            attr.set_name(attrName)
+            attr.set_type(AttributeProto.INTS)
+            (0 until x.size).foreach(y => attr.add_ints(x(y).toLong))
           }
           case None =>
         }
@@ -57,7 +68,6 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 
     //TODO: Don't take tensor here
     def addInput[A](input: A, inputName: String): Unit = {
-
       input match {
         case tensorOpt: Option[Tensor[Any]] => {
           tensorOpt match {
@@ -65,9 +75,24 @@ trait OpToONNXBytesConverter extends AutoCloseable {
             case None    =>
           }
         }
+        /*
+        case tensorOpt: Seq[Option[Tensor[Any]]] => {
+          tensorOpt.foreach { x =>
+            x match {
+              case tensorOpt: Option[Tensor[Any]] => {
+                tensorOpt match {
+                  case Some(y) => node.add_input(inputName)
+                  case None    =>
+                }
+              }
+            }
+          }
+        }
+        */
         case _ => ??? //TODO: Handle non-tensors / don't assume tensor here
 
       }
+
     }
     //TODO: fix names
     addInput(inputs._1, "A")
@@ -93,9 +118,9 @@ trait OpToONNXBytesConverter extends AutoCloseable {
           case Some(tens) => {
 
             val elemType = tens._1 match {
-              case f: Array[Float] => 1
-              case i: Array[Int]   => 6
-              case l: Array[Long]  => 7
+              case f: Array[Float] => TensorProto.FLOAT
+              case i: Array[Int]   => TensorProto.INT32
+              case l: Array[Long]  => TensorProto.INT64
             }
 
             val inputValueInfo = graph.add_input
@@ -119,6 +144,40 @@ trait OpToONNXBytesConverter extends AutoCloseable {
         }
 
       }
+      /*
+      case tensorOpt: Seq[Option[Tensor[_]]] => {
+        tensorOpt.foreach { x =>
+          x match {
+            //duplicated
+            case Some(tens) => {
+
+              val elemType = tens._1 match {
+                case f: Array[Float] => TensorProto.FLOAT
+                case i: Array[Int]   => TensorProto.INT32
+                case l: Array[Long]  => TensorProto.INT64
+              }
+
+              val inputValueInfo = graph.add_input
+
+              inputValueInfo.set_name(inputName)
+              inputValueInfo.mutable_type
+              inputValueInfo.`type`.mutable_tensor_type
+              inputValueInfo.`type`.tensor_type.set_elem_type(elemType)
+
+              val dims = tens._2
+              inputValueInfo.`type`.tensor_type.mutable_shape
+              dims.foreach { x =>
+                val inputDim = inputValueInfo.`type`.tensor_type.shape.add_dim
+
+                inputDim.set_dim_value(x)
+
+              }
+            }
+            case None =>
+          }
+        }
+      }
+      */
     }
   }
 
@@ -177,6 +236,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     addInputToGraph(inputs._9, "I", graph)
 
     val modelString = model.SerializeAsString
+
     model.close
     val modelStringBytes = modelString.getStringBytes
     modelString.close

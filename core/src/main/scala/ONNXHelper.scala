@@ -113,21 +113,41 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
     val array = onnxDataType match {
       case TensProtoInt => {
         val arrX = dimsToArray[Int](dimsCount, dimsList)
-        (0 until arrX.length).foreach(x => arrX(x) = rawData.getInt(x * 4))
+        (0 until arrX.length).foreach {
+          if (rawData == null) { x =>
+            arrX(x) = tensorProto.int32_data(x)
+          } else { x =>
+            arrX(x) = rawData.getInt(x * 4)
+          }
+        }
         arrX.toArray
       }
       case TensProtoLong => {
         val arrX = dimsToArray[Long](dimsCount, dimsList)
-        (0 until arrX.length).foreach(x => arrX(x) = rawData.getLong(x * 8))
+        (0 until arrX.length).foreach {
+          if (rawData == null) { x =>
+            arrX(x) = tensorProto.int64_data(x)
+          } else { x =>
+            arrX(x) = rawData.getLong(x * 8)
+          }
+        }
         arrX.toArray
       }
       case TensProtoFloat => {
         val arrX = dimsToArray[Float](dimsCount, dimsList)
-        (0 until arrX.length).foreach(x => arrX(x) = rawData.getFloat(x * 4))
+        (0 until arrX.length).foreach {
+          if (rawData == null) { x =>
+            arrX(x) = tensorProto.float_data(x)
+          } else { x =>
+            arrX(x) = rawData.getFloat(x * 4)
+          }
+        }
         arrX.toArray
       }
     }
-    rawData.close
+    if (rawData != null) {
+      rawData.close
+    }
     tensorProto.close
     scope.close
     array

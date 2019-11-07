@@ -67,9 +67,12 @@ object ONNXProgramGenerator {
     //TODO: Test outputs for the benchmark models shown here: https://github.com/onnx/backend-scoreboard
     //TODEFER: run time benchmarks on the same models
 
-    val programName = fileName.stripSuffix(".onnx").capitalize + (if (useZIO)
-                                                                    "ZIO"
-                                                                  else "")
+    val programName = fileName
+      .replaceFirst("\\.", "dot")
+      .stripSuffix(".onnx")
+      .capitalize + (if (useZIO)
+                       "ZIO"
+                     else "")
     val path = Paths.get(
       "programGenerator/src/main/scala/gen/" + programName + ".scala"
     );
@@ -144,7 +147,7 @@ object ONNXProgramGenerator {
                                                                                 else
                                                                                   "") +
               (if (useZIO) " = new ONNXNGraphHandlers()"
-               else " = new NGraphBackendFull()") +
+               else " = new NGraphOperatorBackendFull()") +
               "\n"
           } //TODO: Make class instead of object and inject implementations
           .mkString("") +
@@ -300,14 +303,15 @@ object ONNXProgramGenerator {
               .map(
                 t =>
                   t._1._1
-                    .replaceAll("var", "someVar") + " = " + (if (t._1._2)
-                                                               t._2
-                                                                 .replaceFirst(
-                                                                   "Some",
-                                                                   "Seq(Some"
-                                                                 )
-                                                                 + ")"
-                                                             else t._2)
+                    .replaceAll("var", "someVar")
+                    .replaceAll("shape", "shapeInput") + " = " + (if (t._1._2)
+                                                                    t._2
+                                                                      .replaceFirst(
+                                                                        "Some",
+                                                                        "Seq(Some"
+                                                                      )
+                                                                      + ")"
+                                                                  else t._2)
               )
 
             val nodeName = x._1._2(0)

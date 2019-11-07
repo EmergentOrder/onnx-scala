@@ -40,15 +40,7 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
         .fullModel[Option[Tensor[Long]], Option[Tensor[Long]], Any, Any, Any, Any, Any, Any, Any, Tensor[
           Float
         ], Any, Any, Any, Any, Any, Any, Any, Any](
-          (Some(nodeactual_input_1),
-          Some(nodelearned_0),
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          None)
+          (Some(nodeactual_input_1), Some(nodelearned_0), None, None, None, None, None, None, None)
         )
 
     //    scope.close

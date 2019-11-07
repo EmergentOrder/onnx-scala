@@ -29,7 +29,7 @@ or from your project:
 sbt console
 ```
 
-Run SqueezeNet image classification inference on an ["image"](https://upload.wikimedia.org/wikipedia/commons/0/0e/Answer_to_Life_42.svg):
+Run SqueezeNet image classification inference on an "image" composed entirely of pixel value [42](https://upload.wikimedia.org/wikipedia/commons/0/0e/Answer_to_Life_42.svg):
 
 ```scala mdoc:silent
 import java.nio.file.{Files, Paths}
@@ -41,17 +41,13 @@ val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.1.onnx"))
 
 val squeezenet = new NGraphModelBackend(squeezenetBytes)
 
-val onnx = new NGraphOperatorBackendFull()
-
-val tens = TensorFactory.getTensor(Array.fill(1*3*224*224){42f},Array(1,3,224,224))
+val imageTens = TensorFactory.getTensor(Array.fill(1*3*224*224){42f},Array(1,3,224,224))
 ```
 
 Note that ONNX Tensor content is in row-major order.
 
 ```scala mdoc
-val out: Tensor[Float] = squeezenet.fullModel((Some(tens), None, None, None, None, None, None, None, None))
-
-out._1.size
+val out: Tensor[Float] = squeezenet.fullModel((Some(imageTens), None, None, None, None, None, None, None, None))
 
 out._2
 
@@ -64,26 +60,43 @@ Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942
 
 You can call individual operators:
 ```scala mdoc
-onnx.Abs6("abs", Some(tens))
+val onnx = new NGraphOperatorBackendFull()
 
-onnx.Sqrt6("sqrt", Some(tens))
+onnx.Sqrt6("sqrt", Some(imageTens))
+
+val longTens = TensorFactory.getTensor(Array.fill(1*3*224*224){-42l},Array(1,3,224,224))
+
+onnx.Abs6("abs", Some(longTens))
 ```
 
-And similarly you can call generated programs composed of these operators:
+Sqrt will fail to compile because it's not defined for Long:
+```scala mdoc:fail
+onnx.Sqrt6("sqrt", Some(longTens))
+```
+
+And similarly you can call generated programs composed of these operators (details on how to generate from onnx file follow):
 ```scala mdoc
 import org.emergentorder.onnx.Squeezenet1dot1
 val generatedSqueezenet = new Squeezenet1dot1(squeezenetBytes)
-val result = generatedSqueezenet.program(tens)
+val result = generatedSqueezenet.program(imageTens)
 
 result(0)._2
 
 result(0)._1.indices.maxBy(out._1)
 ```
 
-And freely combine the two:
+And you can freely combine the two:
 ```scala mdoc
 onnx.Softmax1("softmax", None, Some(result(0))) 
 ```
+
+Note the type-safety (the full model version shown above fails at runtime):
+
+```scala mdoc:fail
+generatedSqueezenet.program(longTens)
+```
+
+Take note however, the generated version runs ~10x slower on this example.
 
 ## Project Overview
  
@@ -115,7 +128,7 @@ trait Abs extends Operator {
 }
 ```
 
-A few examples of the type constraints in action:
+A few more examples of the type constraints in action:
 ```scala mdoc:fail
 val stringTens = TensorFactory.getTensor(Array.fill(3*224*224){"test"},Array(3,224,224))
 onnx.Abs6("abs", Some(stringTens))

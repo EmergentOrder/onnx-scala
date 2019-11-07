@@ -4,9 +4,7 @@
 
 [![Build status](https://travis-ci.com/EmergentOrder/onnx-scala.svg?branch=master)](http://travis-ci.com/EmergentOrder/onnx-scala)
 [![Latest version](https://index.scala-lang.org/emergentorder/onnx-scala/onnx-scala/latest.svg?color=orange)](https://index.scala-lang.org/emergentorder/onnx-scala/onnx-scala)
-
 ## Getting Started
-
 Add this to the build.sbt in your project:
 
 ```scala
@@ -17,11 +15,9 @@ As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the l
 
 
 ### Full ONNX model inference quick start
-
 First, download the [model file](https://s3.amazonaws.com/onnx-model-zoo/squeezenet/squeezenet1.1/squeezenet1.1.onnx) for [SqueezeNet](https://en.wikipedia.org/wiki/SqueezeNet).
 
 Using the console, from this project root:
-
 ```
 sbt
 project backendsJVM
@@ -29,12 +25,11 @@ console
 ```
 
 or from your project:
-
 ```
 sbt console
 ```
 
-Run SqueezeNet image classification inference on an ["image"](https://upload.wikimedia.org/wikipedia/commons/0/0e/Answer_to_Life_42.svg):
+Run SqueezeNet image classification inference on an "image" composed entirely of pixel value [42](https://upload.wikimedia.org/wikipedia/commons/0/0e/Answer_to_Life_42.svg):
 
 ```scala
 import java.nio.file.{Files, Paths}
@@ -46,15 +41,13 @@ val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.1.onnx"))
 
 val squeezenet = new NGraphModelBackend(squeezenetBytes)
 
-val onnx = new NGraphOperatorBackendFull()
-
-val tens = TensorFactory.getTensor(Array.fill(1*3*224*224){42f},Array(1,3,224,224))
+val imageTens = TensorFactory.getTensor(Array.fill(1*3*224*224){42f},Array(1,3,224,224))
 ```
 
 Note that ONNX Tensor content is in row-major order.
 
 ```scala
-val out: Tensor[Float] = squeezenet.fullModel((Some(tens), None, None, None, None, None, None, None, None))
+val out: Tensor[Float] = squeezenet.fullModel((Some(imageTens), None, None, None, None, None, None, None, None))
 // out: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
 //   Array(
 //     0.8230884F,
@@ -64,14 +57,11 @@ val out: Tensor[Float] = squeezenet.fullModel((Some(tens), None, None, None, Non
 //     5.4786053F,
 // ...
 
-out._1.size
-// res0: Int = 1000
-
 out._2
-// res1: Array[Int] = Array(1, 1000)
+// res0: Array[Int] = Array(1, 1000)
 
 out._1.indices.maxBy(out._1)
-// res2: Int = 418
+// res1: Int = 418
 ```
 
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "ballpoint pen".
@@ -79,30 +69,46 @@ Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942
 ### Operator-level (Fine-grained) API and generated programs
 
 You can call individual operators:
-
 ```scala
-onnx.Abs6("abs", Some(tens))
-// res3: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
+val onnx = new NGraphOperatorBackendFull()
+// onnx: NGraphOperatorBackendFull = org.emergentorder.onnx.backends.NGraphOperatorBackendFull@3c5698e6
+
+onnx.Sqrt6("sqrt", Some(imageTens))
+// res2: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
 //   Array(
-//     42.0F,
-//     42.0F,
+//     6.4807405F,
+//     6.4807405F,
 // ...
 
-onnx.Sqrt6("sqrt", Some(tens))
-// res4: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
+val longTens = TensorFactory.getTensor(Array.fill(1*3*224*224){-42l},Array(1,3,224,224))
+// longTens: (Array[Long], Array[Int], org.emergentorder.onnx.package.Axes) = (
 //   Array(
-//     6.4807405F,
-//     6.4807405F,
+//     -42L,
+//     -42L,
+// ...
+
+onnx.Abs6("abs", Some(longTens))
+// res3: (Array[Long], Array[Int], org.emergentorder.onnx.package.Axes) = (
+//   Array(
+//     42L,
+//     42L,
 // ...
 ```
 
-And similarly you can call generated programs composed of these operators:
+Sqrt will fail to compile because it's not defined for Long:
+```scala
+onnx.Sqrt6("sqrt", Some(longTens))
+// error: Cannot prove that org.emergentorder.onnx.!![Long] <:< org.emergentorder.onnx.Float16 => Nothing with Float => Nothing with Double => Nothing with org.emergentorder.onnx.UNil => Nothing => Nothing.
+// onnx.Sqrt6("sqrt", Some(longTens))
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
 
+And similarly you can call generated programs composed of these operators (details on how to generate from onnx file follow):
 ```scala
 import org.emergentorder.onnx.Squeezenet1dot1
 val generatedSqueezenet = new Squeezenet1dot1(squeezenetBytes)
-// generatedSqueezenet: Squeezenet1dot1 = org.emergentorder.onnx.Squeezenet1dot1@2b3e35eb
-val result = generatedSqueezenet.program(tens)
+// generatedSqueezenet: Squeezenet1dot1 = org.emergentorder.onnx.Squeezenet1dot1@21805298
+val result = generatedSqueezenet.program(imageTens)
 // result: List[(Array[Float], Array[Int], org.emergentorder.onnx.package.Axes)] = List(
 //   (
 //     Array(
@@ -120,8 +126,7 @@ result(0)._1.indices.maxBy(out._1)
 // res6: Int = 418
 ```
 
-And freely combine the two:
-
+And you can freely combine the two:
 ```scala
 onnx.Softmax1("softmax", None, Some(result(0))) 
 // res7: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
@@ -134,10 +139,24 @@ onnx.Softmax1("softmax", None, Some(result(0)))
 // ...
 ```
 
+Note the type-safety (the full model version shown above fails at runtime):
+
+```scala
+generatedSqueezenet.program(longTens)
+// error: type mismatch;
+//  found   : org.emergentorder.onnx.Tensor[Long]
+//     (which expands to)  (Array[Long], Array[Int], org.emergentorder.onnx.Axes)
+//  required: org.emergentorder.onnx.Tensor[Float]
+//     (which expands to)  (Array[Float], Array[Int], org.emergentorder.onnx.Axes)
+// generatedSqueezenet.program(longTens)
+//                             ^^^^^^^^
+```
+
+Take note however, the generated version runs ~10x slower on this example.
+
 ## Project Overview
-
+ 
 ### A) API
-
 A complete, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep learning and classical machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++) via the JavaCPP Preset for ONNX. We also generate implementations for each operator in terms of core methods to be implemented by the backend.
 
 This API is expressed via traits, with version-named methods. For example, Abs, the absolute value operator (defined here for operator set 6):
@@ -165,8 +184,7 @@ trait Abs extends Operator {
 }
 ```
 
-A few examples of the type constraints in action:
-
+A few more examples of the type constraints in action:
 ```scala
 val stringTens = TensorFactory.getTensor(Array.fill(3*224*224){"test"},Array(3,224,224))
 onnx.Abs6("abs", Some(stringTens))
@@ -185,11 +203,10 @@ onnx.Abs6("abs", Some(bigIntTens))
 ```
 
 ### B) Program Generator
-
 Capable of translating ONNX model Protobuf (.onnx) files into Scala programs written in terms of this API.  
 For example, an ["absolute value network"](https://raw.githubusercontent.com/onnx/onnx/master/onnx/backend/test/data/node/test_abs/model.onnx):
 
-Depending on the size of the ONNX model, you may need to add
+Depending on the size of the ONNX model, you may need to add 
 
 ```
 export SBT_OPTS="-XX:+CMSClassUnloadingEnabled -Xmx16G -Xss8M -XX:MaxMetaspaceSize=1024M"
@@ -221,7 +238,6 @@ class Absnet(byteArray: Array[Byte]) {
 and you can run `sbt compile` to confirm that the generated code compiles.
 
 ### C) Backend
-
 Currently. at the operator level, a single partial backend implementation of ONNX, accessible from the JVM, is available.
 
 This backend is based on [nGraph](https://github.com/NervanaSystems/ngraph), via nGraph JavaCPP Preset.
@@ -248,7 +264,7 @@ All together, these should enable model inspection and modification, extra compi
 
 The most extensive working example at the moment is `zio/src/main/scala/NCFZIO.scala`, an implementation of Neural Collaborative Filtering, although you currently need to provide your own model file to load params from at `zio/.jvm/src/main/resources/NCF.onnx`, as well item and user id maps at `zio/.jvm/src/main/resources/itemIds.csv` and `zio/.jvm/src/main/resources/userIds.csv`.
 
-This example provides full model execution via the `fullNCF` method.
+This example provides full model execution via the `fullNCF` method. 
 
 To run it, use:
 
@@ -307,7 +323,6 @@ The Scala Native build will fail unless you apply this [PR](https://github.com/s
 Currently at ONNX 1.6.0.
 
 ## Type-safe Tensors (Experimental, Scala 2.13 only)
-
 Featuring type-checked axis labels (Dim), which along with literal types (new in Scala 2.13) for dimension sizes allow for axes-typed/shape-typed (Axes) tensors (TypesafeTensor).
 Using ONNX docs for [dimension](https://github.com/onnx/onnx/blob/master/docs/DimensionDenotation.md) and [type](https://github.com/onnx/onnx/blob/master/docs/TypeDenotation.md) denotation as a reference,
 and inspired by [Nexus](https://github.com/ctongfei/nexus), [Neurocat](https://github.com/mandubian/neurocat) and [Named Tensors](https://pytorch.org/docs/stable/named_tensor.html).
@@ -332,18 +347,16 @@ type TextAxes = textAxes.type
 type TextTensor = TypesafeTensor[Float, TextAxes]
 
 ```
-
 ```scala
 //Fails at runtime, as designed
 val wrongSizeDataTens: ImageTensor = TensorFactory.getTypesafeTensor(Array.fill(3*224*225){42f},imageAxes)
 // java.lang.IllegalArgumentException: requirement failed
 // 	at scala.Predef$.require(Predef.scala:327)
 // 	at org.emergentorder.onnx.package$TensorFactory$.getTypesafeTensor(ONNX213.scala:109)
-// 	at repl.Session$App$$anonfun$41.apply$mcV$sp(README.md:196)
-// 	at repl.Session$App$$anonfun$41.apply(README.md:195)
-// 	at repl.Session$App$$anonfun$41.apply(README.md:195)
+// 	at repl.Session$App$$anonfun$46.apply$mcV$sp(README.md:208)
+// 	at repl.Session$App$$anonfun$46.apply(README.md:207)
+// 	at repl.Session$App$$anonfun$46.apply(README.md:207)
 ```
-
 ```scala
 //The rest fail to compile, as designed
 
@@ -355,7 +368,6 @@ val wordShouldBeImageTens: TextTensor = TensorFactory.getTypesafeTensor(Array.fi
 // val wordShouldBeImageTens: TextTensor = TensorFactory.getTypesafeTensor(Array.fill(3*224*224){42f},imageAxes)
 //                                                                                                    ^^^^^^^^^
 ```
-
 ```scala
 onnx.Sqrt6[Float, TextAxes]("sqrt", Some(typesafeTens))
 // error: type mismatch;
@@ -366,7 +378,6 @@ onnx.Sqrt6[Float, TextAxes]("sqrt", Some(typesafeTens))
 // onnx.Sqrt6[Float, TextAxes]("sqrt", Some(typesafeTens))
 //                                          ^^^^^^^^^^^^
 ```
-
 ```scala
 val wrongSizedImageAxes = (new Tuple3OfDim(15, new DataChannel{}, 224, new DataFeature{}, 224, new DataFeature{}))
 type WrongSizedImageAxes = wrongSizedImageAxes.type
@@ -379,7 +390,6 @@ onnx.Sqrt6[Float, WrongSizedImageAxes]("sqrt", Some(typesafeTens))
 // onnx.Sqrt6[Float, WrongSizedImageAxes]("sqrt", Some(typesafeTens))
 //                                                     ^^^^^^^^^^^^
 ```
-
 ```scala
 val wrongDimTypeAxes = (new Tuple3OfDim(3, new DataBatch{}, 224, new DataFeature{}, 224, new DataFeature{}))
 type WrongDimTypeAxes = wrongDimTypeAxes.type

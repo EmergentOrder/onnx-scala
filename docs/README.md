@@ -43,7 +43,7 @@ val squeezenet = new NGraphModelBackend(squeezenetBytes)
 
 val onnx = new NGraphOperatorBackendFull()
 
-val tens = TensorFactory.getTensor(Array.fill(3*224*224){42f},Array(3,224,224))
+val tens = TensorFactory.getTensor(Array.fill(1*3*224*224){42f},Array(1,3,224,224))
 ```
 
 Note that ONNX Tensor content is in row-major order.
@@ -53,17 +53,36 @@ val out: Tensor[Float] = squeezenet.fullModel((Some(tens), None, None, None, Non
 
 out._1.size
 
+out._2
+
 out._1.indices.maxBy(out._1)
 ```
 
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "ballpoint pen".
 
-### Operator-level (Fine-grained) API
+### Operator-level (Fine-grained) API and generated programs
 
+You can call individual operators:
 ```scala mdoc
 onnx.Abs6("abs", Some(tens))
 
 onnx.Sqrt6("sqrt", Some(tens))
+```
+
+And similarly you can call generated programs composed of these operators:
+```scala mdoc
+import org.emergentorder.onnx.Squeezenet1dot1
+val generatedSqueezenet = new Squeezenet1dot1(squeezenetBytes)
+val result = generatedSqueezenet.program(tens)
+
+result(0)._2
+
+result(0)._1.indices.maxBy(out._1)
+```
+
+And freely combine the two:
+```scala mdoc
+onnx.Softmax1("softmax", None, Some(result(0))) 
 ```
 
 ## Project Overview

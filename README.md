@@ -48,7 +48,7 @@ val squeezenet = new NGraphModelBackend(squeezenetBytes)
 
 val onnx = new NGraphOperatorBackendFull()
 
-val tens = TensorFactory.getTensor(Array.fill(3*224*224){42f},Array(3,224,224))
+val tens = TensorFactory.getTensor(Array.fill(1*3*224*224){42f},Array(1,3,224,224))
 ```
 
 Note that ONNX Tensor content is in row-major order.
@@ -67,27 +67,70 @@ val out: Tensor[Float] = squeezenet.fullModel((Some(tens), None, None, None, Non
 out._1.size
 // res0: Int = 1000
 
+out._2
+// res1: Array[Int] = Array(1, 1000)
+
 out._1.indices.maxBy(out._1)
-// res1: Int = 418
+// res2: Int = 418
 ```
 
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "ballpoint pen".
 
-### Operator-level (Fine-grained) API
+### Operator-level (Fine-grained) API and generated programs
+
+You can call individual operators:
 
 ```scala
 onnx.Abs6("abs", Some(tens))
-// res2: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
+// res3: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
 //   Array(
 //     42.0F,
 //     42.0F,
 // ...
 
 onnx.Sqrt6("sqrt", Some(tens))
-// res3: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
+// res4: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
 //   Array(
 //     6.4807405F,
 //     6.4807405F,
+// ...
+```
+
+And similarly you can call generated programs composed of these operators:
+
+```scala
+import org.emergentorder.onnx.Squeezenet1dot1
+val generatedSqueezenet = new Squeezenet1dot1(squeezenetBytes)
+// generatedSqueezenet: Squeezenet1dot1 = org.emergentorder.onnx.Squeezenet1dot1@2b3e35eb
+val result = generatedSqueezenet.program(tens)
+// result: List[(Array[Float], Array[Int], org.emergentorder.onnx.package.Axes)] = List(
+//   (
+//     Array(
+//       0.8230884F,
+//       2.3508213F,
+//       5.1132765F,
+//       4.885488F,
+//       5.4786053F,
+// ...
+
+result(0)._2
+// res5: Array[Int] = Array(1, 1000, 1, 1)
+
+result(0)._1.indices.maxBy(out._1)
+// res6: Int = 418
+```
+
+And freely combine the two:
+
+```scala
+onnx.Softmax1("softmax", None, Some(result(0))) 
+// res7: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
+//   Array(
+//     2.251989E-9F,
+//     1.0376532E-8F,
+//     1.6435071E-7F,
+//     1.3087133E-7F,
+//     2.3682735E-7F,
 // ...
 ```
 
@@ -296,9 +339,9 @@ val wrongSizeDataTens: ImageTensor = TensorFactory.getTypesafeTensor(Array.fill(
 // java.lang.IllegalArgumentException: requirement failed
 // 	at scala.Predef$.require(Predef.scala:327)
 // 	at org.emergentorder.onnx.package$TensorFactory$.getTypesafeTensor(ONNX213.scala:109)
-// 	at repl.Session$App$$anonfun$33.apply$mcV$sp(README.md:169)
-// 	at repl.Session$App$$anonfun$33.apply(README.md:168)
-// 	at repl.Session$App$$anonfun$33.apply(README.md:168)
+// 	at repl.Session$App$$anonfun$41.apply$mcV$sp(README.md:196)
+// 	at repl.Session$App$$anonfun$41.apply(README.md:195)
+// 	at repl.Session$App$$anonfun$41.apply(README.md:195)
 ```
 
 ```scala

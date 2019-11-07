@@ -88,7 +88,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
             }
           }
         }
-        */
+         */
         case _ => ??? //TODO: Handle non-tensors / don't assume tensor here
 
       }
@@ -177,7 +177,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
           }
         }
       }
-      */
+     */
     }
   }
 

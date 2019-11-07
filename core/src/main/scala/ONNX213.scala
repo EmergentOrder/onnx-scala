@@ -30,7 +30,7 @@ package object onnx {
 
   type UNil
 
-  trait Dim
+    trait Dim
   sealed trait Axes
 
   sealed case class Scalar()                             extends Axes
@@ -2032,7 +2032,113 @@ package object onnx {
   }
   trait Concat extends Operator {
 
+    def Concat1[@sp T: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)] = None,
+        inputs: Seq[Option[Tensor[T]]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+            Short
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+        ]
+    ): (Tensor[T]) = {
+      val map: Map[String, Any] = Map("axis" -> axis)
+      val allInputs = (
+        inputs.lift(0).flatten,
+        inputs.lift(1).flatten,
+        inputs.lift(2).flatten,
+        inputs.lift(3).flatten,
+        inputs.lift(4).flatten,
+        inputs.lift(5).flatten,
+        inputs.lift(6).flatten,
+        inputs.lift(7).flatten,
+        inputs.lift(8).flatten
+      )
+      (
+        callOp[
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Tensor[T],
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any
+        ](
+          name,
+          "Concat",
+          allInputs,
+          map
+        )
+      )
+    }
+
     def Concat4[@sp T: Numeric: ClassTag](
+        name: String,
+        axis: Option[(Int)],
+        inputs: Seq[Option[Tensor[T]]]
+    )(
+        implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+            Short
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+        ]
+    ): (Tensor[T]) = {
+      val map: Map[String, Any] = Map("axis" -> axis)
+      val allInputs = (
+        inputs.lift(0).flatten,
+        inputs.lift(1).flatten,
+        inputs.lift(2).flatten,
+        inputs.lift(3).flatten,
+        inputs.lift(4).flatten,
+        inputs.lift(5).flatten,
+        inputs.lift(6).flatten,
+        inputs.lift(7).flatten,
+        inputs.lift(8).flatten
+      )
+      (
+        callOp[
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Tensor[T],
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any
+        ](
+          name,
+          "Concat",
+          allInputs,
+          map
+        )
+      )
+    }
+
+    def Concat11[@sp T: Numeric: ClassTag](
         name: String,
         axis: Option[(Int)],
         inputs: Seq[Option[Tensor[T]]]
@@ -3796,6 +3902,56 @@ package object onnx {
         Any,
         Any
       ](name, "EyeLike", allInputs, map))
+    }
+  }
+  trait FeatureVectorizer extends Operator {
+
+    def FeatureVectorizer1[@sp T1: Numeric: ClassTag](
+        name: String,
+        inputdimensions: Option[(Array[Int])] = None,
+        X: Seq[Option[Tensor[T1]]]
+    )(
+        implicit evT1: Contains[T1, Union[Int]#or[Long]#or[Float]#or[Double]#or[UNil]#create]
+    ): (Tensor[Float]) = {
+      val map: Map[String, Any] = Map("inputdimensions" -> inputdimensions)
+      val allInputs = (
+        X.lift(0).flatten,
+        X.lift(1).flatten,
+        X.lift(2).flatten,
+        X.lift(3).flatten,
+        X.lift(4).flatten,
+        X.lift(5).flatten,
+        X.lift(6).flatten,
+        X.lift(7).flatten,
+        X.lift(8).flatten
+      )
+      (
+        callOp[
+          Option[Tensor[T1]],
+          Option[Tensor[T1]],
+          Option[Tensor[T1]],
+          Option[Tensor[T1]],
+          Option[Tensor[T1]],
+          Option[Tensor[T1]],
+          Option[Tensor[T1]],
+          Option[Tensor[T1]],
+          Option[Tensor[T1]],
+          Tensor[Float],
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any
+        ](
+          name,
+          "FeatureVectorizer",
+          allInputs,
+          map
+        )
+      )
     }
   }
   trait Flatten extends Operator {
@@ -6795,6 +6951,54 @@ package object onnx {
   }
   trait Max extends Operator {
 
+    def Max1[@sp T: Numeric: ClassTag](
+        name: String,
+        consumed_inputs: Option[(Array[Int])] = None,
+        data_0: Seq[Option[Tensor[T]]]
+    )(
+        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    ): (Tensor[T]) = {
+      val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
+      val allInputs = (
+        data_0.lift(0).flatten,
+        data_0.lift(1).flatten,
+        data_0.lift(2).flatten,
+        data_0.lift(3).flatten,
+        data_0.lift(4).flatten,
+        data_0.lift(5).flatten,
+        data_0.lift(6).flatten,
+        data_0.lift(7).flatten,
+        data_0.lift(8).flatten
+      )
+      (
+        callOp[
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Tensor[T],
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any
+        ](
+          name,
+          "Max",
+          allInputs,
+          map
+        )
+      )
+    }
+
     def Max6[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(
         implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
@@ -7256,6 +7460,54 @@ package object onnx {
   }
   trait Mean extends Operator {
 
+    def Mean1[@sp T: Numeric: ClassTag](
+        name: String,
+        consumed_inputs: Option[(Array[Int])] = None,
+        data_0: Seq[Option[Tensor[T]]]
+    )(
+        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    ): (Tensor[T]) = {
+      val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
+      val allInputs = (
+        data_0.lift(0).flatten,
+        data_0.lift(1).flatten,
+        data_0.lift(2).flatten,
+        data_0.lift(3).flatten,
+        data_0.lift(4).flatten,
+        data_0.lift(5).flatten,
+        data_0.lift(6).flatten,
+        data_0.lift(7).flatten,
+        data_0.lift(8).flatten
+      )
+      (
+        callOp[
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Tensor[T],
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any
+        ](
+          name,
+          "Mean",
+          allInputs,
+          map
+        )
+      )
+    }
+
     def Mean6[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(
         implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
@@ -7388,6 +7640,54 @@ package object onnx {
     }
   }
   trait Min extends Operator {
+
+    def Min1[@sp T: Numeric: ClassTag](
+        name: String,
+        consumed_inputs: Option[(Array[Int])] = None,
+        data_0: Seq[Option[Tensor[T]]]
+    )(
+        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    ): (Tensor[T]) = {
+      val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
+      val allInputs = (
+        data_0.lift(0).flatten,
+        data_0.lift(1).flatten,
+        data_0.lift(2).flatten,
+        data_0.lift(3).flatten,
+        data_0.lift(4).flatten,
+        data_0.lift(5).flatten,
+        data_0.lift(6).flatten,
+        data_0.lift(7).flatten,
+        data_0.lift(8).flatten
+      )
+      (
+        callOp[
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Tensor[T],
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any
+        ](
+          name,
+          "Min",
+          allInputs,
+          map
+        )
+      )
+    }
 
     def Min6[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(
         implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
@@ -10849,6 +11149,63 @@ package object onnx {
   }
   trait Scan extends Operator {
 
+    def Scan8[@sp I: Numeric: ClassTag, @sp V: Numeric: ClassTag](
+        name: String,
+        body: Option[(Graph)],
+        directions: Option[(Array[Int])] = None,
+        num_scan_inputs: Option[(Int)],
+        sequence_lens: Option[Tensor[I]] = None,
+        initial_state_and_scan_inputs: Seq[Option[Tensor[V]]]
+    )(
+        implicit evI: Contains[I, Union[Long]#or[UNil]#create],
+        evV: Contains[V, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
+          Long
+        ]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[
+          Double
+        ]]#or[UNil]#create]
+    ): (Tensor[V]) = {
+      val map: Map[String, Any] =
+        Map("body" -> body, "directions" -> directions, "num_scan_inputs" -> num_scan_inputs)
+      val allInputs = (
+        sequence_lens,
+        initial_state_and_scan_inputs.lift(0).flatten,
+        initial_state_and_scan_inputs.lift(1).flatten,
+        initial_state_and_scan_inputs.lift(2).flatten,
+        initial_state_and_scan_inputs.lift(3).flatten,
+        initial_state_and_scan_inputs.lift(4).flatten,
+        initial_state_and_scan_inputs.lift(5).flatten,
+        initial_state_and_scan_inputs.lift(6).flatten,
+        initial_state_and_scan_inputs.lift(7).flatten
+      )
+      (
+        callOp[
+          Option[Tensor[I]],
+          Option[Tensor[V]],
+          Option[Tensor[V]],
+          Option[Tensor[V]],
+          Option[Tensor[V]],
+          Option[Tensor[V]],
+          Option[Tensor[V]],
+          Option[Tensor[V]],
+          Option[Tensor[V]],
+          Tensor[V],
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any
+        ](
+          name,
+          "Scan",
+          allInputs,
+          map
+        )
+      )
+    }
+
     def Scan9[@sp V: Numeric: ClassTag](
         name: String,
         body: Option[(Graph)],
@@ -12900,6 +13257,54 @@ package object onnx {
     }
   }
   trait Sum extends Operator {
+
+    def Sum1[@sp T: Numeric: ClassTag](
+        name: String,
+        consumed_inputs: Option[(Array[Int])] = None,
+        data_0: Seq[Option[Tensor[T]]]
+    )(
+        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    ): (Tensor[T]) = {
+      val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
+      val allInputs = (
+        data_0.lift(0).flatten,
+        data_0.lift(1).flatten,
+        data_0.lift(2).flatten,
+        data_0.lift(3).flatten,
+        data_0.lift(4).flatten,
+        data_0.lift(5).flatten,
+        data_0.lift(6).flatten,
+        data_0.lift(7).flatten,
+        data_0.lift(8).flatten
+      )
+      (
+        callOp[
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Option[Tensor[T]],
+          Tensor[T],
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any,
+          Any
+        ](
+          name,
+          "Sum",
+          allInputs,
+          map
+        )
+      )
+    }
 
     def Sum6[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(
         implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]

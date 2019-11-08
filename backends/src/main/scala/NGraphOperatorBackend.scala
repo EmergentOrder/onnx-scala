@@ -73,10 +73,9 @@ trait NGraphOperatorBackend
     val outputShape = ngraphFunc.get_output_shape(0)
     val outputType  = ngraphFunc.get_output_element_type(0)
 
-    ngraphFunc.close
-
     val executable = ngraphBackend.compile(ngraphFunc)
 
+    ngraphFunc.close
     val res = callNGraphExecutable[T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17](
       executable,
       inputs,

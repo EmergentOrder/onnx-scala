@@ -67,10 +67,15 @@ out._1.indices.maxBy(out._1)
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "ballpoint pen".
 
 #### Performance
-A simple benchmark, run on my laptop:
+A few simple benchmarks, run on my laptop:
 
 Over 1000 iterations of cold start (using a new backend/session each time) SqueezeNet inference, ONNX-Scala took ~0.04696 seconds on average vs ~0.05948 seconds for ONNX Runtime 1.0 (Python API), > 20% faster. 
 If we reuse the backend/session, the gap is larger still.
+
+Over 10000 sequential runs, it took ~0.0068 seconds on average, vs ~ 0.0701 seconds for ONNX Runtime, over 10x faster!
+
+Finally, after modifying the model to use fixed batch size of 1000 (and learning along the way that nGraph does not currently support dynamic batch sizes!),
+it took ~0.0077 seconds on average vs ~0.0321 seconds for ONNX Runtime, over 4x faster.
 
 The resulting output values also match ONNX Runtime.
 
@@ -161,6 +166,8 @@ generatedSqueezenet.program(longTens)
 ```
 
 Take note however, the generated version runs ~10x slower on this example.
+
+Also note that in real use backends should be closed to prevent native memory leaks.
 
 ## Project Overview
  

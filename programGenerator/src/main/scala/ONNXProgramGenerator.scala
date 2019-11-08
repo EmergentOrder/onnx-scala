@@ -68,8 +68,9 @@ object ONNXProgramGenerator {
     //TODEFER: run time benchmarks on the same models
 
     val programName = fileName
-      .replaceFirst("\\.", "dot")
+
       .stripSuffix(".onnx")
+      .replaceFirst("\\.", "dot")
       .capitalize + (if (useZIO)
                        "ZIO"
                      else "")

@@ -66,18 +66,7 @@ out._1.indices.maxBy(out._1)
 
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "ballpoint pen".
 
-#### Performance
-A few simple benchmarks, run on my laptop:
-
-Over 1000 iterations of cold start (using a new backend/session each time) SqueezeNet inference, ONNX-Scala took ~0.04696 seconds on average vs ~0.05948 seconds for ONNX Runtime 1.0 (Python API), > 20% faster. 
-If we reuse the backend/session, the gap is larger still.
-
-Over 10000 sequential runs, it took ~0.0068 seconds on average, vs ~ 0.0701 seconds for ONNX Runtime, over 10x faster!
-
-Finally, after modifying the model to use fixed batch size of 1000 (and learning along the way that nGraph does not currently support dynamic batch sizes!),
-it took ~0.0077 seconds on average vs ~0.0321 seconds for ONNX Runtime, over 4x faster.
-
-The resulting output values also match ONNX Runtime.
+In terms of performance, based on some simple benchmarks (see below) comparing it against ONNX Runtime, SqueezeNet inference in ONNX-Scala is at least on par, and up to 10x faster(!) depending on the setting.
 
 ### Operator-level (Fine-grained) API and generated programs
 
@@ -274,6 +263,19 @@ ONNX Runtime, which supports all ONNX ops, is the next targeted backend.
 You can also pass entire models to nGraph (see Execution Modes below).
 
 All together, these should enable model inspection and modification, extra compile-time assurances, mixing/matching of backend operator implementations and integration into JVM-based production systems, for a start.
+
+#### Performance
+A few simple benchmarks, run on my laptop, using full model inference:
+
+Over 1000 iterations of cold start (using a new backend/session each time) SqueezeNet inference, ONNX-Scala took ~0.04696 seconds on average vs ~0.05948 seconds for ONNX Runtime 1.0 (Python API), > 20% faster. 
+If we reuse the backend/session, the gap is larger still.
+
+Over 10000 sequential runs with the same backend/session, it took ~0.0068 seconds on average, vs ~ 0.0701 seconds for ONNX Runtime, over 10x faster.
+
+Finally, after modifying the model to use fixed batch size of 1000 (and learning along the way that nGraph does not currently support dynamic batch sizes!),
+it took ~0.0077 seconds on average vs ~0.0321 seconds for ONNX Runtime, over 4x faster.
+
+The resulting output values also match ONNX Runtime.
 
 #### Example execution
 

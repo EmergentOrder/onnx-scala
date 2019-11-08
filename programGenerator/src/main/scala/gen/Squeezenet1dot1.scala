@@ -622,7 +622,7 @@ class Squeezenet1dot1(byteArray: Array[Byte]) {
         Reshape.Reshape5(
           "squeezenet0_flatten0_reshape0",
           data = Some(nodesqueezenet0_pool3_fwd),
-          shapeInput = None //Some(nodereshape_attr_tensor118) TODO: Fix this
+          shapeInput = None //Some(nodereshape_attr_tensor118) One small patch here, due to a limitation in nGraph 
         )
       )
     } yield (nodesqueezenet0_flatten0_reshape0)

@@ -66,12 +66,20 @@ out._1.indices.maxBy(out._1)
 
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "ballpoint pen".
 
+#### Performance
+A simple benchmark, run on my laptop:
+
+Over 1000 iterations of cold start (using a new backend/session each time) SqueezeNet inference, ONNX-Scala took ~0.04696 seconds on average vs ~0.05948 seconds for ONNX Runtime 1.0 (Python API), > 20% faster. 
+If we reuse the backend/session, the gap is larger still.
+
+The resulting output values also match ONNX Runtime.
+
 ### Operator-level (Fine-grained) API and generated programs
 
 You can call individual operators:
 ```scala
 val onnx = new NGraphOperatorBackendFull()
-// onnx: NGraphOperatorBackendFull = org.emergentorder.onnx.backends.NGraphOperatorBackendFull@3c5698e6
+// onnx: NGraphOperatorBackendFull = org.emergentorder.onnx.backends.NGraphOperatorBackendFull@513b862a
 
 onnx.Sqrt6("sqrt", Some(imageTens))
 // res2: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
@@ -107,7 +115,7 @@ And similarly you can call generated programs composed of these operators (detai
 ```scala
 import org.emergentorder.onnx.Squeezenet1dot1
 val generatedSqueezenet = new Squeezenet1dot1(squeezenetBytes)
-// generatedSqueezenet: Squeezenet1dot1 = org.emergentorder.onnx.Squeezenet1dot1@21805298
+// generatedSqueezenet: Squeezenet1dot1 = org.emergentorder.onnx.Squeezenet1dot1@259ad91f
 val result = generatedSqueezenet.program(imageTens)
 // result: List[(Array[Float], Array[Int], org.emergentorder.onnx.package.Axes)] = List(
 //   (

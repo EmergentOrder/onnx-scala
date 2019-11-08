@@ -56,6 +56,14 @@ out._1.indices.maxBy(out._1)
 
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "ballpoint pen".
 
+#### Performance
+A simple benchmark, run on my laptop:
+
+Over 1000 iterations of cold start (using a new backend/session each time) SqueezeNet inference, ONNX-Scala took ~0.04696 seconds on average vs ~0.05948 seconds for ONNX Runtime 1.0 (Python API), > 20% faster. 
+If we reuse the backend/session, the gap is larger still.
+
+The resulting output values also match ONNX Runtime.
+
 ### Operator-level (Fine-grained) API and generated programs
 
 You can call individual operators:

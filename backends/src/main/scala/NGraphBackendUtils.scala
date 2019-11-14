@@ -174,6 +174,7 @@ trait NGraphBackendUtils extends AutoCloseable {
     }.toArray
 
     val result = TensorFactory.getTensor(fa, shapeArray).asInstanceOf[T]
+    tens.close 
     tensVec.close
     outputShape.close
     (result)

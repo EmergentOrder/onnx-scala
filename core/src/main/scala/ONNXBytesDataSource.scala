@@ -8,15 +8,15 @@ class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends AutoCloseable with Dat
 
   val onnxHelper = new ONNXHelper(onnxBytes)
 
-  def paramsMap[T: spire.math.Numeric: ClassTag] =
+  val paramsMap =
     onnxHelper.params
-      .map(x => x._1 -> (x._2, x._3.asInstanceOf[Array[T]], x._4))
+      .map(x => x._1 -> (x._2, x._3, x._4))
       .toMap
 
   override def getParams[T: Numeric: ClassTag](name: String): Tensor[T] = {
     val params = paramsMap.get(name)
     params match {
-      case Some(x) => TensorFactory.getTensor(x._2, x._3)
+      case Some(x) => TensorFactory.getTensor(x._2.asInstanceOf[Array[T]], x._3)
       case None =>
         throw new Exception("No params found for param name: " + name)
     }

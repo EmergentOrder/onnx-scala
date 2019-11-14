@@ -154,7 +154,7 @@ generatedSqueezenet.program(longTens)
 //                             ^^^^^^^^
 ```
 
-Take note however, the generated version runs ~10x slower on this example.
+Take note however, the generated version runs ~10x slower on this example and up to ~100x slower averaged over many iterations.
 
 Also note that in real use backends should be closed to prevent native memory leaks.
 

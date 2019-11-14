@@ -68,7 +68,6 @@ object ONNXProgramGenerator {
     //TODEFER: run time benchmarks on the same models
 
     val programName = fileName
-
       .stripSuffix(".onnx")
       .replaceFirst("\\.", "dot")
       .capitalize + (if (useZIO)
@@ -140,19 +139,23 @@ object ONNXProgramGenerator {
         "import spire.math.UShort\n" +
         "import spire.math.Complex\n" +
         "import spire.math.Numeric\n\n" +
-        ("class ") + programName + "(byteArray: Array[Byte])" + " {\n" +
+        ("class ") + programName + "(byteArray: Array[Byte]) extends AutoCloseable" + " {\n" +
+        (if (useZIO) "val backend = new ONNXNGraphHandlers()"
+         else "val backend = new NGraphOperatorBackendFull()") +
+        "\n" +
+        "val bytesDataSource = new ONNXBytesDataSource(byteArray)" +
+        "\n" +
         distinctOps
           .map { x =>
             "  val " + x + (if (useZIO) "ZIO" else "") + ": " + x.capitalize + (if (useZIO)
                                                                                   "ZIO"
                                                                                 else
                                                                                   "") +
-              (if (useZIO) " = new ONNXNGraphHandlers()"
-               else " = new NGraphOperatorBackendFull()") +
+              " = backend" +
               "\n"
           } //TODO: Make class instead of object and inject implementations
           .mkString("") +
-        "  val dataSource: DataSource" + (" = new ONNXBytesDataSource(byteArray)") + "\n" +
+        "  val dataSource: DataSource" + (" = bytesDataSource") + "\n" +
 //    "  import cats.implicits._\n" +
         //Omit return type here for now
         "  def program" + (if (graphInputs.size > 0)
@@ -338,6 +341,12 @@ object ONNXProgramGenerator {
         "    } yield (" +
         outputs.map(x => "node" + x).mkString(",") +
         ")\n" +
+        "\n" +
+        """  override def close(): Unit = {
+    backend.close
+    bytesDataSource.close
+  }""" +
+        "\n" +
         "}\n"
     }
 //pw.write("for {\n")

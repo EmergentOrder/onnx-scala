@@ -32,7 +32,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform)
       scala211Version
     ),
  //   sources in (Compile, doc) := Seq(),
-    publishArtifact in (Compile, packageDoc) := false
+//    publishArtifact in (Compile, packageDoc) := false
   )
   .jsSettings(
     crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
@@ -67,7 +67,7 @@ lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
       }
     ),
 //    sources in (Compile, doc) := Seq(),
-    publishArtifact in (Compile, packageDoc) := false
+//    publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(
     crossScalaVersions := Seq(
@@ -96,7 +96,7 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
 //      "com.microsoft.onnxruntime" % "onnxruntime4j" % "1.0.0-SNAPSHOT"
     ),
 //    sources in (Compile, doc) := Seq(),
-    publishArtifact in (Compile, packageDoc) := false
+//    publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(
     crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version)
@@ -131,7 +131,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
       scala211Version
     ),
 //    sources in (Compile, doc) := Seq(),
-    publishArtifact in (Compile, packageDoc) := false, //TODO: Only block this for JS
+//    publishArtifact in (Compile, packageDoc) := false, //TODO: Only block this for JS
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {
       case Some((2, n)) =>

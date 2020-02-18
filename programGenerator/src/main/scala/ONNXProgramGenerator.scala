@@ -36,7 +36,6 @@ object ONNXProgramGenerator {
       def ===(other: A): Boolean = self == other
     }
 
-    //TODO: Get from project root, not resources here
     val fileName = args(0)
 
     val byteArray = Streamable.bytes(
@@ -153,7 +152,7 @@ object ONNXProgramGenerator {
                                                                                   "") +
               " = backend" +
               "\n"
-          } //TODO: Make class instead of object and inject implementations
+          } //TODO: inject op/backend implementations
           .mkString("") +
         "  val dataSource: DataSource" + (" = bytesDataSource") + "\n" +
 //    "  import cats.implicits._\n" +
@@ -171,7 +170,7 @@ object ONNXProgramGenerator {
                                }
                                .mkString(",") + ")") +
         (if (useZIO)
-           ": Task[Tensor[" + graphOutputType + "]] " //TODO: Fix graphOutputType
+           ": Task[Tensor[" + graphOutputType + "]] " //TODO: Fix graphOutputType for multiple outputs
          else
            ": List[Tensor[" + graphOutputType + "]] ") + " = \n" +
         //Body of program generated here
@@ -314,7 +313,7 @@ object ONNXProgramGenerator {
                                                                       else
                                                                         "List(") + opName + (if (useZIO)
                                                                                                "ZIO"
-                                                                                             else //TODO: Tell the compiler when one of the type params is an output type
+                                                                                             else
                                                                                                "") + "." + opName + sinceVersion + (if (useZIO)
                                                                                                                                       "ZIO"
                                                                                                                                     else

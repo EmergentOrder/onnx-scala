@@ -92,7 +92,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
   def onnxTensorProtoToArray(tensorProto: TensorProto) = {
 
-    //TODO: Get dim and type denotations here in 2.13 / earlier if possible
+    //TODEFER: Get dim and type denotations, encode into types here in 2.13 / earlier if possible
     val scope = new PointerScope()
 
     val onnxDataType = tensorProto.data_type
@@ -100,17 +100,38 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
     val dimsList =
       (0 until dimsCount.toInt).map(x => tensorProto.dims(x)).toList
 
-    //TODO: Determine whether to use raw_data or type-specific
     val rawData = tensorProto.raw_data
 
-    //TODO: Add the rest of the types
+    val TensProtoByte = TensorProto.INT8
+    val TensProtoShort = TensorProto.INT16
     val TensProtoInt = TensorProto.INT32
-
     val TensProtoLong = TensorProto.INT64
-
     val TensProtoFloat = TensorProto.FLOAT
+    val TensProtoDouble = TensorProto.DOUBLE
 
     val array = onnxDataType match {
+      case TensProtoByte => {
+        val arrX = dimsToArray[Byte](dimsCount, dimsList)
+        (0 until arrX.length).foreach {
+          if (rawData == null) { x =>
+            arrX(x) = tensorProto.int32_data(x).toByte
+          } else { x =>
+            arrX(x) = rawData.get(x)
+          }
+        }
+        arrX.toArray
+      }
+      case TensProtoShort => {
+        val arrX = dimsToArray[Short](dimsCount, dimsList)
+        (0 until arrX.length).foreach {
+          if (rawData == null) { x =>
+            arrX(x) = tensorProto.int32_data(x).toShort
+          } else { x =>
+            arrX(x) = rawData.getShort(x * 2)
+          }
+        }
+        arrX.toArray
+      }
       case TensProtoInt => {
         val arrX = dimsToArray[Int](dimsCount, dimsList)
         (0 until arrX.length).foreach {
@@ -140,6 +161,17 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
             arrX(x) = tensorProto.float_data(x)
           } else { x =>
             arrX(x) = rawData.getFloat(x * 4)
+          }
+        }
+        arrX.toArray
+      }
+      case TensProtoDouble => {
+        val arrX = dimsToArray[Double](dimsCount, dimsList)
+        (0 until arrX.length).foreach {
+          if (rawData == null) { x =>
+            arrX(x) = tensorProto.double_data(x)
+          } else { x =>
+            arrX(x) = rawData.getDouble(x * 8)
           }
         }
         arrX.toArray

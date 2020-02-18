@@ -66,7 +66,6 @@ trait OpToONNXBytesConverter extends AutoCloseable {
         }
     }
 
-    //TODO: Don't take tensor here
     def addInput[A](input: A, inputName: String): Unit = {
       input match {
         case tensorOpt: Option[Tensor[Any]] => {
@@ -94,7 +93,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
       }
 
     }
-    //TODO: fix names
+    //Dummy names
     addInput(inputs._1, "A")
     addInput(inputs._2, "B")
     addInput(inputs._3, "C")
@@ -204,7 +203,6 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     model.set_producer_name("ONNX-Scala")
     graph.set_name(name)
 
-    //TODO: pass real names
     val origNode = opToNode(name, opName, inputs, outName, attrs)
 
     val node = graph.add_node
@@ -225,6 +223,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     outputValueInfo.`type`.mutable_tensor_type
     outputValueInfo.`type`.tensor_type.set_elem_type(1)
 
+    //Dummy names
     addInputToGraph(inputs._1, "A", graph)
     addInputToGraph(inputs._2, "B", graph)
     addInputToGraph(inputs._3, "C", graph)

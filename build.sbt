@@ -1,5 +1,5 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
-val dottyVersion = "0.20.0-RC1"
+val dottyVersion = "0.22.0-RC1"
 val scala211Version = "2.11.12"
 val scala212Version = "2.12.10"
 val scala213Version = "2.13.1"
@@ -90,7 +90,7 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala-backends",
-    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2") else Nil },
+    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= Seq(
       "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.2",
 //      "com.microsoft.onnxruntime" % "onnxruntime4j" % "1.0.0-SNAPSHOT"
@@ -114,7 +114,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala",
-    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2") else Nil },
+    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
 //    scalaVersion := scala213Version,
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {

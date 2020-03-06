@@ -4,7 +4,7 @@ val scala211Version = "2.11.12"
 val scala212Version = "2.12.10"
 val scala213Version = "2.13.1"
 val spireVersion = "0.17.0-M1"
-val zioVersion = "1.0.0-RC17"
+val zioVersion = "1.0.0-RC18-1"
 val scalametaVersion = "4.3.0"
 val onnxJavaCPPPresetVersion = "1.6.0-1.5.2"
 

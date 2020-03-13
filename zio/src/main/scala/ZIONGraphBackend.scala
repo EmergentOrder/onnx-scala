@@ -17,7 +17,7 @@ import spire.math.Complex
 import zio.Task
 import zio.UIO
 import zio.Managed
-import zio.DefaultRuntime
+import zio.Runtime
 
 import org.bytedeco.javacpp._
 import org.emergentorder.onnx._
@@ -127,7 +127,7 @@ object ZIONGraphMain extends App {
 
   val ncfZIO = new NCFZIO(byteArray, userIdsMap, itemIdsMap)
 
-  val runtime = new DefaultRuntime {}
+  val runtime = Runtime.default
 
 //  val scope = new PointerScope()
   val before  = System.nanoTime

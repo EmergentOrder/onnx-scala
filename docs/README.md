@@ -216,7 +216,7 @@ The resulting output values also match ONNX Runtime.
 
 #### Example execution
 
-The most extensive working example at the moment is `zio/src/main/scala/NCFZIO.scala`, an implementation of Neural Collaborative Filtering, although you currently need to provide your own model file to load params from at `zio/.jvm/src/main/resources/NCF.onnx`, as well item and user id maps at `zio/.jvm/src/main/resources/itemIds.csv` and `zio/.jvm/src/main/resources/userIds.csv`.
+The most extensive working example at the moment is `zio/src/main/scala/NCFZIO.scala`, an implementation of Neural Collaborative Filtering, although you currently need to provide your own model file to load params from at `zio/.jvm/src/main/resources/NCF.onnx`, as well as item and user id maps at `zio/.jvm/src/main/resources/itemIds.csv` and `zio/.jvm/src/main/resources/userIds.csv`.
 
 This example provides full model execution via the `fullNCF` method. 
 
@@ -246,7 +246,7 @@ to build against all of Scala 2.11, 2.12, 2.13 and Dotty/3.0, where possible.
 
 ## Program Execution
 
-There are 3 execution modes:
+There are 2 execution modes:
 
 #### Full model / Black-box execution
 

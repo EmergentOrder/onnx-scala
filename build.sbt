@@ -5,7 +5,7 @@ val scala212Version = "2.12.11"
 val scala213Version = "2.13.1"
 val spireVersion = "0.17.0-M1"
 val zioVersion = "1.0.0-RC18-2"
-val scalametaVersion = "4.3.6"
+val scalametaVersion = "4.3.7"
 val onnxJavaCPPPresetVersion = "1.6.0-1.5.2"
 
 lazy val commonSettings = Seq(

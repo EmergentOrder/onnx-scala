@@ -35,15 +35,17 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
       TensorFactory.getTensor(inputDatalearned_0._1.map(y => itemIdsMap(y)), inputDatalearned_0._2)
 
     //Note: Don't need to specify all the type params except in Dotty
-    val nodeFullOutput: Tuple1[Tensor[Float]] =
+    val nodeFullOutput: Tensor[Float] =
       fullNgraphHandler
-        .fullModel[Tensor[Float]](
-          Some((nodeactual_input_1, nodelearned_0))
+        .fullModel[Option[Tensor[Long]], Option[Tensor[Long]], Any, Any, Any, Any, Any, Any, Any, Tensor[
+          Float
+        ], Any, Any, Any, Any, Any, Any, Any, Any](
+          (Some(nodeactual_input_1), Some(nodelearned_0), None, None, None, None, None, None, None)
         )
 
     //    scope.close
     System.runFinalization
-    nodeFullOutput(0) //.asInstanceOf[Tensor[Float]] //Bad
+    nodeFullOutput //.asInstanceOf[Tensor[Float]] //Bad
   }
 
   override def close(): Unit = {

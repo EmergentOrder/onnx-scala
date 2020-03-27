@@ -15,11 +15,19 @@ trait OpToONNXBytesConverter extends AutoCloseable {
   private val scope = new PointerScope()
 
   protected def opToNode[
-      T: ClassTag
-      ](
+      T: ClassTag,
+      T1: ClassTag,
+      T2: ClassTag,
+      T3: ClassTag,
+      T4: ClassTag,
+      T5: ClassTag,
+      T6: ClassTag,
+      T7: ClassTag,
+      T8: ClassTag
+  ](
       name: String,
       opName: String,
-      inputs: Option[NonEmptyTuple],
+      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8],
       outName: String,
       attrs: Map[String, Any]
   )
@@ -86,20 +94,16 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 
     }
     //Dummy names
-    inputs match{
-      case Some(x) => {
-        addInput(x(0), "A")
-        addInput(x(1), "B")
-        addInput(x(2), "C")
-        addInput(x(3), "D")
-        addInput(x(4), "E")
-        addInput(x(5), "F")
-        addInput(x(6), "G")
-        addInput(x(7), "H")
-       addInput(x(8), "I")
-      }
-      case None =>
-    }
+    addInput(inputs._1, "A")
+    addInput(inputs._2, "B")
+    addInput(inputs._3, "C")
+    addInput(inputs._4, "D")
+    addInput(inputs._5, "E")
+    addInput(inputs._6, "F")
+    addInput(inputs._7, "G")
+    addInput(inputs._8, "H")
+    addInput(inputs._9, "I")
+
     handleAttrs
 
     return node
@@ -177,11 +181,19 @@ trait OpToONNXBytesConverter extends AutoCloseable {
   }
 
   def opToONNXBytes[
-      T: ClassTag
+      T: ClassTag,
+      T1: ClassTag,
+      T2: ClassTag,
+      T3: ClassTag,
+      T4: ClassTag,
+      T5: ClassTag,
+      T6: ClassTag,
+      T7: ClassTag,
+      T8: ClassTag
   ](
       name: String,
       opName: String,
-      inputs: Option[NonEmptyTuple],
+      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8],
       outName: String,
       attrs: Map[String, Any]
   ): Array[Byte] = {
@@ -212,20 +224,15 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     outputValueInfo.`type`.tensor_type.set_elem_type(1)
 
     //Dummy names
-    inputs match{
-      case Some(x) => {
-        addInputToGraph(x(0), "A", graph)
-        addInputToGraph(x(1), "B", graph)
-        addInputToGraph(x(2), "C", graph)
-        addInputToGraph(x(3), "D", graph)
-        addInputToGraph(x(4), "E", graph) 
-        addInputToGraph(x(5), "F", graph)
-        addInputToGraph(x(6), "G", graph)
-        addInputToGraph(x(7), "H", graph)
-        addInputToGraph(x(8), "I", graph)
-      }
-      case None =>
-    }
+    addInputToGraph(inputs._1, "A", graph)
+    addInputToGraph(inputs._2, "B", graph)
+    addInputToGraph(inputs._3, "C", graph)
+    addInputToGraph(inputs._4, "D", graph)
+    addInputToGraph(inputs._5, "E", graph)
+    addInputToGraph(inputs._6, "F", graph)
+    addInputToGraph(inputs._7, "G", graph)
+    addInputToGraph(inputs._8, "H", graph)
+    addInputToGraph(inputs._9, "I", graph)
 
     val modelString = model.SerializeAsString
 

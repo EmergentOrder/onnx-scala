@@ -182,8 +182,11 @@ trait NGraphBackendUtils extends AutoCloseable {
 
   protected def getTensorShape[T: ClassTag](t: T): Option[org.bytedeco.ngraph.Shape] = {
     t match {
-      case tensor: Tensor[Any] => {
-        Some(tensorToInputShape(tensor))
+      case tensorOpt: Option[Tensor[Any]] => {
+        tensorOpt match {
+          case Some(y) => Some(tensorToInputShape(y))
+          case None    => None
+        }
       }
       case _ => ??? //TODO: Handle non-tensors / don't assume tensor here
 
@@ -195,8 +198,11 @@ trait NGraphBackendUtils extends AutoCloseable {
   ): Option[(Pointer, org.bytedeco.ngraph.Type)] = {
 
     t match {
-      case tensor: Tensor[Any] => { 
-           Some(tensorToPointerAndType(tensor)) 
+      case tensorOpt: Option[Tensor[Any]] => {
+        tensorOpt match {
+          case Some(y: Tensor[Any]) => Some(tensorToPointerAndType(y))
+          case None                 => None
+        }
       }
     }
   }

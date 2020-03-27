@@ -90,6 +90,14 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala-backends",
+    excludeFilter in unmanagedSources := (CrossVersion
+      .partialVersion(scalaVersion.value) match {
+      case Some((2, 11)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | "NGraphOperatorBackend.scala" | "NCF.scala"
+      case Some((2, 12)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | "NGraphOperatorBackend.scala" | "NCF.scala"
+      case Some((2, 13)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | "NGraphOperatorBackend.scala" | "NCF.scala"
+      case _ => "NGraphBackendUtils212.scala" | "NGraphModelBackend212.scala" | "NGraphOperatorBackend212.scala" | "NCF212.scala"
+      }
+    ),
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= Seq(
       "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.2",
@@ -118,8 +126,10 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
 //    scalaVersion := scala213Version,
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, 13)) => ("ONNX.scala")
-      case _ => "ONNX213.scala"
+      case Some((2, 11)) => "ONNX.scala" | "OpToONNXBytesConverter.scala"
+      case Some((2, 12)) => "ONNX.scala" | "OpToONNXBytesConverter.scala"
+      case Some((2, 13)) => "ONNX.scala" | "OpToONNXBytesConverter.scala"
+      case _ => "ONNX212.scala" | "OpToONNXBytesConverter212.scala"
       }
     )
   )

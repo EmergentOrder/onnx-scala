@@ -54,6 +54,17 @@ lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
     mainClass in (Compile, run) := Some(
       "org.emergentorder.onnx.ONNXProgramGenerator"
     ),
+    excludeFilter in unmanagedSources := (CrossVersion
+      .partialVersion(scalaVersion.value) match {
+      case Some((2, 11)) => "Absnet.scala" | "Squeezenet1dot1.scala"
+      case Some((2, 12)) => "Absnet.scala" | "Squeezenet1dot1.scala"
+      case Some((2, 13)) => "Absnet.scala" 
+      case _ => "Squeezenet1dot1.scala"
+      }
+    )
+  )
+  .jvmSettings(
+    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil }, 
     libraryDependencies ++= (CrossVersion
     .partialVersion(scalaVersion.value) match {
      case Some((2,_)) =>
@@ -92,10 +103,21 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
     name := "onnx-scala-backends",
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, 11)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | "NGraphOperatorBackend.scala" | "NCF.scala" | "NGraphOperatorBackendAtoL.scala" | "NGraphOperatorBackendMtoZ.scala"
-      case Some((2, 12)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | "NGraphOperatorBackend.scala" | "NCF.scala" | "NGraphOperatorBackendAtoL.scala" | "NGraphOperatorBackendMtoZ.scala"
-      case Some((2, 13)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | "NGraphOperatorBackend.scala" | "NCF.scala" | "NGraphOperatorBackendAtoL.scala" | "NGraphOperatorBackendMtoZ.scala"
-      case _ => "NGraphBackendUtils212.scala" | "NGraphModelBackend212.scala" | "NGraphOperatorBackend212.scala" | "NCF212.scala" | "NGraphOperatorBackendFull.scala"
+      case Some((2, 11)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | 
+                            "NGraphOperatorBackend.scala" | "NCF.scala" | 
+                            "NGraphOperatorBackendAtoL.scala" | "NGraphOperatorBackendMtoZ.scala" |
+                            "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala"
+      case Some((2, 12)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | 
+                            "NGraphOperatorBackend.scala" | "NCF.scala" | 
+                            "NGraphOperatorBackendAtoL.scala" | "NGraphOperatorBackendMtoZ.scala" |
+                            "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala"
+      case Some((2, 13)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | 
+                            "NGraphOperatorBackend.scala" | "NCF.scala" | 
+                            "NGraphOperatorBackendAtoL.scala" | "NGraphOperatorBackendMtoZ.scala" |
+                            "NGraphOperatorBackendFull.scala"
+      case _ => "NGraphBackendUtils212.scala" | "NGraphModelBackend212.scala" | 
+                "NGraphOperatorBackend212.scala" | "NCF212.scala" | 
+                "NGraphOperatorBackendFull.scala" | "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala"
       }
     ),
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
@@ -126,10 +148,10 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
 //    scalaVersion := scala213Version,
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, 11)) => "ONNX.scala" | "OpToONNXBytesConverter.scala"
-      case Some((2, 12)) => "ONNX.scala" | "OpToONNXBytesConverter.scala"
-      case Some((2, 13)) => "ONNX.scala" | "OpToONNXBytesConverter.scala"
-      case _ => "ONNX212.scala" | "OpToONNXBytesConverter212.scala"
+      case Some((2, 11)) => "ONNX.scala" | "ONNX213.scala" | "OpToONNXBytesConverter.scala"
+      case Some((2, 12)) => "ONNX.scala" | "ONNX213.scala" | "OpToONNXBytesConverter.scala"
+      case Some((2, 13)) => "ONNX.scala" | "ONNX212.scala" | "OpToONNXBytesConverter.scala"
+      case _ => "ONNX212.scala" | "ONNX213.scala" | "OpToONNXBytesConverter212.scala"
       }
     )
   )

@@ -92,10 +92,10 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
     name := "onnx-scala-backends",
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, 11)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | "NGraphOperatorBackend.scala" | "NCF.scala"
-      case Some((2, 12)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | "NGraphOperatorBackend.scala" | "NCF.scala"
-      case Some((2, 13)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | "NGraphOperatorBackend.scala" | "NCF.scala"
-      case _ => "NGraphBackendUtils212.scala" | "NGraphModelBackend212.scala" | "NGraphOperatorBackend212.scala" | "NCF212.scala"
+      case Some((2, 11)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | "NGraphOperatorBackend.scala" | "NCF.scala" | "NGraphOperatorBackendAtoL.scala" | "NGraphOperatorBackendMtoZ.scala"
+      case Some((2, 12)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | "NGraphOperatorBackend.scala" | "NCF.scala" | "NGraphOperatorBackendAtoL.scala" | "NGraphOperatorBackendMtoZ.scala"
+      case Some((2, 13)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | "NGraphOperatorBackend.scala" | "NCF.scala" | "NGraphOperatorBackendAtoL.scala" | "NGraphOperatorBackendMtoZ.scala"
+      case _ => "NGraphBackendUtils212.scala" | "NGraphModelBackend212.scala" | "NGraphOperatorBackend212.scala" | "NCF212.scala" | "NGraphOperatorBackendFull.scala"
       }
     ),
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
@@ -208,6 +208,15 @@ lazy val zio = (crossProject(JVMPlatform)//, JSPlatform)
 //    scalaVersion := scala213Version,
 //    sources in (Compile, doc) := Seq(),
 //    publishArtifact in (Compile, packageDoc) := false,
+    excludeFilter in unmanagedSources := (CrossVersion
+      .partialVersion(scalaVersion.value) match {
+      case Some((2, 11)) => "NCFZIO.scala" | "ZIONGraphBackend.scala" 
+      case Some((2, 12)) => "NCFZIO.scala" | "ZIONGraphBackend.scala"
+      case Some((2, 13)) => "NCFZIO.scala" | "ZIONGraphBackend.scala"
+      case _ => ""
+      }
+    ),
+    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= (CrossVersion
     .partialVersion(scalaVersion.value) match {
      case Some((2,_)) =>

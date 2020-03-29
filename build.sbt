@@ -56,10 +56,10 @@ lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
     ),
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, 11)) => "Absnet.scala" | "Squeezenet1dot1.scala"
-      case Some((2, 12)) => "Absnet.scala" | "Squeezenet1dot1.scala"
-      case Some((2, 13)) => "Absnet.scala" 
-      case _ => "Squeezenet1dot1.scala"
+      case Some((2, 11)) => "Absnet.scala" | "Squeezenet1dot1.scala" | "ONNXProgramGenerator213.scala" | "ONNXProgramGenerator.scala"
+      case Some((2, 12)) => "Absnet.scala" | "Squeezenet1dot1.scala" | "ONNXProgramGenerator213.scala" | "ONNXProgramGenerator.scala"
+      case Some((2, 13)) => "Absnet.scala" | "ONNXProgramGenerator.scala"
+      case _ => "Squeezenet1dot1.scala" | "ONNXProgramGenerator213.scala"
       }
     )
   )

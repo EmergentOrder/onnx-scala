@@ -25,9 +25,6 @@ import collection.JavaConverters._
 
 import scala.reflect.io.Streamable
 
-
-//TODO: Fix a bug (only in Dotty) where the input params don't get added 
-//
 //TODEFER: Use Squid to clean up / improve this
 
 //TODEFER: de-tuple on the left hand side when there are multiple outputs . should also solve the other output TODOs
@@ -143,13 +140,13 @@ object ONNXProgramGenerator {
         "import spire.math.Numeric\n\n" +
         ("class ") + programName + "(byteArray: Array[Byte]) extends AutoCloseable" + " {\n" +
         (if (useZIO) "val backend = new ONNXNGraphHandlers()"
-         else "val backend = new NGraphOperatorBackendAll()") +
+         else "val backend = new NGraphOperatorBackendFull()") +
         "\n" +
         "val bytesDataSource = new ONNXBytesDataSource(byteArray)" +
         "\n" +
         distinctOps
-          .map { x => 
-            "  val " + x + (if (useZIO) "ZIO" else "") + ": " + x.capitalize + "V" + schemaMap(x)._2.toString + (if (useZIO)
+          .map { x =>
+            "  val " + x + (if (useZIO) "ZIO" else "") + ": " + x.capitalize + (if (useZIO)
                                                                                   "ZIO"
                                                                                 else
                                                                                   "") +
@@ -173,9 +170,9 @@ object ONNXProgramGenerator {
                                }
                                .mkString(",") + ")") +
         (if (useZIO)
-           ": Task[Tuple1[Tensor[" + graphOutputType + "]]] " //TODO: Fix graphOutputType for multiple outputs
+           ": Task[Tensor[" + graphOutputType + "]] " //TODO: Fix graphOutputType for multiple outputs
          else
-           ": List[Tuple1[Tensor[" + graphOutputType + "]]] ") + " = \n" +
+           ": List[Tensor[" + graphOutputType + "]] ") + " = \n" +
         //Body of program generated here
         "    for {\n" +
         graphInputs
@@ -209,7 +206,7 @@ object ONNXProgramGenerator {
           .map { x =>
             //TODO: handle multiple outputs
             val nodesOrParams = x._1._1._1.map { y =>
-              "node" + y.replaceAll("\\.", "") + ""
+              "Some(node" + y.replaceAll("\\.", "") + ")"
             } // ,""" + y.name.getString + "name" + " = " + """ Some("""" + y + """")""")
 
             val longFields = x._2
@@ -317,7 +314,7 @@ object ONNXProgramGenerator {
                                                                         "List(") + opName + (if (useZIO)
                                                                                                "ZIO"
                                                                                              else
-                                                                                               "") + "." + opName + "V" + sinceVersion + (if (useZIO)
+                                                                                               "") + "." + opName + sinceVersion + (if (useZIO)
                                                                                                                                       "ZIO"
                                                                                                                                     else
                                                                                                                                       "") +

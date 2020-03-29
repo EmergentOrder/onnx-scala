@@ -106,7 +106,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
       case Some(x) => {
         val size = x.size
         (0 until size).foreach{i =>
-        addInput(x(i), "DUMMY") 
+        addInput(x(i), i.toString)
       
         }
       }
@@ -221,7 +221,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
       case Some(x) => {
         val size = x.size
         (0 until size).foreach{i =>
-        addInputToGraph(x(i), "DUMMY", graph) 
+        addInputToGraph(x(i), i.toString, graph)
         }
       }
       case None =>

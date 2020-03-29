@@ -89,7 +89,7 @@ trait NGraphOperatorBackend
 
     val inputShapes: Seq[org.bytedeco.ngraph.Shape] = inputs match {
       case Some(x) => { 
-        val size: Int = inputs.size
+        val size: Int = x.size
         (0 until size).map(y => getTensorShape(x(y))).flatten
       }
       case None => Seq()
@@ -98,7 +98,7 @@ trait NGraphOperatorBackend
 
     val inputTensors: Seq[(Pointer, org.bytedeco.ngraph.Type)] = inputs match {
       case Some(x) => { 
-        val size: Int = inputs.size
+        val size: Int = x.size
         (0 until size).map(y => getTensorPointerAndType(x(y))).flatten
       }
       case None => Seq()
@@ -106,12 +106,11 @@ trait NGraphOperatorBackend
 
     val ngraphInputs =
       (inputShapes zip inputTensors).map(x => ngraphBackend.create_tensor(x._2._2, x._1, x._2._1))
-
+ 
     val output = ngraphBackend.create_tensor(outputType, outputShape)
 
 //    println("OUTPUT TYPE" + outputType.get_type_enum())
     val inputVector = new org.bytedeco.ngraph.TensorVector(ngraphInputs: _*)
-
     val outputVector = new org.bytedeco.ngraph.TensorVector(output)
 
     def t = {

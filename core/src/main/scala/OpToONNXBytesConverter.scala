@@ -36,6 +36,25 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     def handleAttrs = attrs.foreach {
       case (key, value) =>
         val res = value match {
+          case x: Int => {
+            val attr = node.add_attribute
+            //val attr     = node.mutable_attribute(0)
+            val attrName = new BytePointer(key)
+            attr.set_name(attrName)
+            attr.set_type(AttributeProto.INT)
+            val longVal = x.toLong
+
+            attr.set_i(longVal)
+          }
+          case x: Array[Int] => {
+            val attr = node.add_attribute
+            //val attr = node.mutable_attribute(0)
+            val attrName = new BytePointer(key)
+            attr.set_name(attrName)
+            attr.set_type(AttributeProto.INTS)
+            (0 until x.size).foreach(y => attr.add_ints(x(y).toLong))
+          }
+
           case Some(x: Int) => {
             val attr = node.add_attribute
             //val attr     = node.mutable_attribute(0)
@@ -53,19 +72,16 @@ trait OpToONNXBytesConverter extends AutoCloseable {
             attr.set_name(attrName)
             attr.set_type(AttributeProto.INTS)
             (0 until x.size).foreach(y => attr.add_ints(x(y).toLong))
-          }
+          } 
           case None =>
         }
     }
 
     def addInput[A](input: A, inputName: String): Unit = {
       input match {
-        case tensorOpt: Option[Tensor[Any]] => {
-          tensorOpt match {
-            case Some(y) => node.add_input(inputName)
-            case None    =>
+        case tensor: Tensor[Any] => {
+            node.add_input(inputName)
           }
-        }
         /*
         case tensorOpt: Seq[Option[Tensor[Any]]] => {
           tensorOpt.foreach { x =>
@@ -88,15 +104,11 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     //Dummy names
     inputs match{
       case Some(x) => {
-        addInput(x(0), "A")
-        addInput(x(1), "B")
-        addInput(x(2), "C")
-        addInput(x(3), "D")
-        addInput(x(4), "E")
-        addInput(x(5), "F")
-        addInput(x(6), "G")
-        addInput(x(7), "H")
-       addInput(x(8), "I")
+        val size = x.size
+        (0 until size).foreach{i =>
+        addInput(x(i), "DUMMY") 
+      
+        }
       }
       case None =>
     }
@@ -108,10 +120,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
   protected def addInputToGraph[A](input: A, inputName: String, graph: GraphProto): Unit = {
 
     input match {
-      case tensorOpt: Option[Tensor[_]] => {
-        tensorOpt match {
-          case Some(tens) => {
-
+      case tens: Tensor[_] => {
             val elemType = tens._1 match {
               case f: Array[Float] => TensorProto.FLOAT
               case i: Array[Int]   => TensorProto.INT32
@@ -134,11 +143,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
               inputDim.set_dim_value(x)
 
             }
-          }
-          case None =>
         }
-
-      }
       /*
       case tensorOpt: Seq[Option[Tensor[_]]] => {
         tensorOpt.foreach { x =>
@@ -214,15 +219,10 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     //Dummy names
     inputs match{
       case Some(x) => {
-        addInputToGraph(x(0), "A", graph)
-        addInputToGraph(x(1), "B", graph)
-        addInputToGraph(x(2), "C", graph)
-        addInputToGraph(x(3), "D", graph)
-        addInputToGraph(x(4), "E", graph) 
-        addInputToGraph(x(5), "F", graph)
-        addInputToGraph(x(6), "G", graph)
-        addInputToGraph(x(7), "H", graph)
-        addInputToGraph(x(8), "I", graph)
+        val size = x.size
+        (0 until size).foreach{i =>
+        addInputToGraph(x(i), "DUMMY", graph) 
+        }
       }
       case None =>
     }

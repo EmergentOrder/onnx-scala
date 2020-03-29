@@ -28,13 +28,17 @@ import org.bytedeco.ngraph.global._
 import ngraph.import_onnx_model
 import org.bytedeco.ngraph.Backend
 
+//TODO: ORT backend, dotty only
+//TODO: fix readme perf claims, closer to 20% over ORT
+//TODO: Fix program generator, port over shape-safe tensors (use tf-dotty Shape?)
+//TODO: Update README for dotty, mdoc doesn't support it though..
+//TODO: consider wrong output data type  
 // TODO: check import org.bytedeco.onnx.global.onnx.check_model
 
 //TODEFER: ONNX-JS backend for both JS and JVM
 //TODEFER: ONNX Runtime backend for JVM (and Native?)
 trait NGraphOperatorBackend
-    extends Operator
-    with OpToONNXBytesConverter
+    extends OpToONNXBytesConverter
     with NGraphBackendUtils
     with AutoCloseable {
 
@@ -105,6 +109,7 @@ trait NGraphOperatorBackend
 
     val output = ngraphBackend.create_tensor(outputType, outputShape)
 
+//    println("OUTPUT TYPE" + outputType.get_type_enum())
     val inputVector = new org.bytedeco.ngraph.TensorVector(ngraphInputs: _*)
 
     val outputVector = new org.bytedeco.ngraph.TensorVector(output)

@@ -117,7 +117,7 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
                             "NGraphOperatorBackendFull.scala"
       case _ => "NGraphBackendUtils212.scala" | "NGraphModelBackend212.scala" | 
                 "NGraphOperatorBackend212.scala" | "NCF212.scala" | 
-                "NGraphOperatorBackendFull.scala" | "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala"
+                "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala"
       }
     ),
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },

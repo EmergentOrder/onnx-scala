@@ -3,7 +3,7 @@ import org.emergentorder.onnx._
 
 //Current ONNX opset 12 and ngraph test opset 11
 //Commented out ops are not supported in NGraph currently
-class NGraphOperatorBackendFull   
+class NGraphOperatorBackendMtoZ
 extends NGraphOperatorBackendAtoL
     with MatMulV9
 //    with MatMulIntegerV10 //fails in scoreboard //passes in ORT

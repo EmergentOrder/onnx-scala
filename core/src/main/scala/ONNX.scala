@@ -106,7 +106,7 @@ val allInputs = Some(Tuple1(input))
 
 
 trait AdagradV1 extends Operator {
-  def AdagradV1[@sp T1 <: Float | Double : Numeric:ClassTag,@sp T2 <: Long : Numeric:ClassTag,@sp T3 <: Float | Double : Numeric:ClassTag](name: String,decay_factor : Option[(Float)] = None,epsilon : Option[(Float)] = None,norm_coefficient : Option[(Float)] = None,R: Tensor[T1], T: Tensor[T2],inputs: Tuple)
+  def AdagradV1[@sp T1 <: Float | Double : Numeric:ClassTag,@sp T2 <: Long : Numeric:ClassTag,@sp T3 <: Float | Double : Numeric:ClassTag](name: String,decay_factor : Option[(Float)] = None,epsilon : Option[(Float)] = None,norm_coefficient : Option[(Float)] = None,R: Tensor[T1], T: Tensor[T2],inputs: NonEmptyTuple)
     : Tuple1[Tensor[T3]]
  = {
 val map: Map[String, Any] = Map("decay_factor" -> decay_factor 
@@ -642,34 +642,34 @@ val allInputs = Some(Tuple1(input_sequence))
 
 
 trait ConcatV11 extends Operator {
-  def ConcatV11[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,axis : (Int),inputs: Tuple)
+  def ConcatV11[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,axis : (Int),inputs: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map("axis" -> axis 
 )
-val allInputs = None
+val allInputs = Some(inputs)
 (callOp[Tensor[T]](name,"Concat",allInputs, map))
 }
 }
 
 trait ConcatV4 extends Operator {
-  def ConcatV4[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,axis : (Int),inputs: Tuple)
+  def ConcatV4[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,axis : (Int),inputs: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map("axis" -> axis 
 )
-val allInputs = None
+val allInputs = Some(inputs)
 (callOp[Tensor[T]](name,"Concat",allInputs, map))
 }
 }
 
 trait ConcatV1 extends Operator {
-  def ConcatV1[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,inputs: Tuple)
+  def ConcatV1[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,axis : Option[(Int)] = None,inputs: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map("axis" -> axis 
 )
-val allInputs = None
+val allInputs = Some(inputs)
 (callOp[Tensor[T]](name,"Concat",allInputs, map))
 }
 }
@@ -1028,12 +1028,12 @@ val allInputs = Some(Tuple1(x))
 
 
 trait EinsumV12 extends Operator {
-  def EinsumV12[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,equation : (String),Inputs: Tuple)
+  def EinsumV12[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,equation : (String),Inputs: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map("equation" -> equation 
 )
-val allInputs = None
+val allInputs = Some(Inputs)
 (callOp[Tensor[T]](name,"Einsum",allInputs, map))
 }
 }
@@ -1154,12 +1154,12 @@ val allInputs = Some(Tuple1(input))
 
 
 trait FeatureVectorizerV1 extends Operator {
-  def FeatureVectorizerV1[@sp T1 <: Int | Long | Float | Double : Numeric:ClassTag](name: String,inputdimensions : Option[(Array[Int])] = None,X: Tuple)
+  def FeatureVectorizerV1[@sp T1 <: Int | Long | Float | Double : Numeric:ClassTag](name: String,inputdimensions : Option[(Array[Int])] = None,X: NonEmptyTuple)
     : Tuple1[Tensor[Float]]
  = {
 val map: Map[String, Any] = Map("inputdimensions" -> inputdimensions 
 )
-val allInputs = None
+val allInputs = Some(X)
 (callOp[Tensor[Float]](name,"FeatureVectorizer",allInputs, map))
 }
 }
@@ -1450,26 +1450,26 @@ val allInputs = Some(Tuple1(X))
 
 
 trait GradientV1 extends Operator {
-  def GradientV1[@sp T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag,@sp T2 <: Float16 | Float | Double : Numeric:ClassTag](name: String,xs : (Array[String]),y : (String),zs : Option[(Array[String])] = None,Inputs: Tuple)
+  def GradientV1[@sp T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag,@sp T2 <: Float16 | Float | Double : Numeric:ClassTag](name: String,xs : (Array[String]),y : (String),zs : Option[(Array[String])] = None,Inputs: NonEmptyTuple)
     : Tuple1[Tensor[T2]]
  = {
 val map: Map[String, Any] = Map("xs" -> xs 
 ,"y" -> y 
 ,"zs" -> zs 
 )
-val allInputs = None
+val allInputs = Some(Inputs)
 (callOp[Tensor[T2]](name,"Gradient",allInputs, map))
 }
 }
 
 
 trait GraphCallV1 extends Operator {
-  def GraphCallV1[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,graph_name : (String),Inputs: Tuple)
+  def GraphCallV1[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,graph_name : (String),Inputs: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map("graph_name" -> graph_name 
 )
-val allInputs = None
+val allInputs = Some(Inputs)
 (callOp[Tensor[T]](name,"GraphCall",allInputs, map))
 }
 }
@@ -1908,7 +1908,7 @@ val allInputs = Some(Tuple1(input))
 
 
 trait LoopV11 extends Operator {
-  def LoopV11[@sp I <: Long : Numeric:ClassTag,@sp B <: Boolean : Numeric:ClassTag,@sp V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,body : (Graph),M: Option[Tensor[I]] = None, cond: Option[Tensor[B]] = None,v_initial: Tuple)
+  def LoopV11[@sp I <: Long : Numeric:ClassTag,@sp B <: Boolean : Numeric:ClassTag,@sp V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,body : (Graph),M: Option[Tensor[I]] = None, cond: Option[Tensor[B]] = None,v_initial: NonEmptyTuple)
     : Tuple1[Tensor[V]]
  = {
 val map: Map[String, Any] = Map("body" -> body 
@@ -1919,7 +1919,7 @@ val allInputs = Some(Tuple2(M,cond) ++ (v_initial))
 }
 
 trait LoopV1 extends Operator {
-  def LoopV1[@sp I <: Long : Numeric:ClassTag,@sp B <: Boolean : Numeric:ClassTag,@sp V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,body : (Graph),M: Option[Tensor[I]] = None, cond: Option[Tensor[B]] = None,v_initial: Tuple)
+  def LoopV1[@sp I <: Long : Numeric:ClassTag,@sp B <: Boolean : Numeric:ClassTag,@sp V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,body : (Graph),M: Option[Tensor[I]] = None, cond: Option[Tensor[B]] = None,v_initial: NonEmptyTuple)
     : Tuple1[Tensor[V]]
  = {
 val map: Map[String, Any] = Map("body" -> body 
@@ -2143,42 +2143,42 @@ val allInputs = Some(Tuple3(X,I,output_shapeInput))
 
 
 trait MaxV12 extends Operator {
-  def MaxV12[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: Tuple)
+  def MaxV12[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map()
-val allInputs = None
+val allInputs = Some(data_0)
 (callOp[Tensor[T]](name,"Max",allInputs, map))
 }
 }
 
 trait MaxV8 extends Operator {
-  def MaxV8[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: Tuple)
+  def MaxV8[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map()
-val allInputs = None
+val allInputs = Some(data_0)
 (callOp[Tensor[T]](name,"Max",allInputs, map))
 }
 }
 
 trait MaxV6 extends Operator {
-  def MaxV6[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: Tuple)
+  def MaxV6[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map()
-val allInputs = None
+val allInputs = Some(data_0)
 (callOp[Tensor[T]](name,"Max",allInputs, map))
 }
 }
 
 trait MaxV1 extends Operator {
-  def MaxV1[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,data_0: Tuple)
+  def MaxV1[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,data_0: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs 
 )
-val allInputs = None
+val allInputs = Some(data_0)
 (callOp[Tensor[T]](name,"Max",allInputs, map))
 }
 }
@@ -2197,32 +2197,32 @@ val allInputs = Some(Tuple3(scores,labels,weights))
 
 
 trait MeanV8 extends Operator {
-  def MeanV8[@sp T <: Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: Tuple)
+  def MeanV8[@sp T <: Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map()
-val allInputs = None
+val allInputs = Some(data_0)
 (callOp[Tensor[T]](name,"Mean",allInputs, map))
 }
 }
 
 trait MeanV6 extends Operator {
-  def MeanV6[@sp T <: Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: Tuple)
+  def MeanV6[@sp T <: Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map()
-val allInputs = None
+val allInputs = Some(data_0)
 (callOp[Tensor[T]](name,"Mean",allInputs, map))
 }
 }
 
 trait MeanV1 extends Operator {
-  def MeanV1[@sp T <: Float16 | Float | Double : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,data_0: Tuple)
+  def MeanV1[@sp T <: Float16 | Float | Double : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,data_0: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs 
 )
-val allInputs = None
+val allInputs = Some(data_0)
 (callOp[Tensor[T]](name,"Mean",allInputs, map))
 }
 }
@@ -2241,42 +2241,42 @@ val allInputs = Some(Tuple1(X))
 
 
 trait MinV12 extends Operator {
-  def MinV12[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: Tuple)
+  def MinV12[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map()
-val allInputs = None
+val allInputs = Some(data_0)
 (callOp[Tensor[T]](name,"Min",allInputs, map))
 }
 }
 
 trait MinV8 extends Operator {
-  def MinV8[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: Tuple)
+  def MinV8[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map()
-val allInputs = None
+val allInputs = Some(data_0)
 (callOp[Tensor[T]](name,"Min",allInputs, map))
 }
 }
 
 trait MinV6 extends Operator {
-  def MinV6[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: Tuple)
+  def MinV6[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map()
-val allInputs = None
+val allInputs = Some(data_0)
 (callOp[Tensor[T]](name,"Min",allInputs, map))
 }
 }
 
 trait MinV1 extends Operator {
-  def MinV1[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,data_0: Tuple)
+  def MinV1[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,data_0: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs 
 )
-val allInputs = None
+val allInputs = Some(data_0)
 (callOp[Tensor[T]](name,"Min",allInputs, map))
 }
 }
@@ -2295,7 +2295,7 @@ val allInputs = Some(Tuple2(A,B))
 
 
 trait MomentumV1 extends Operator {
-  def MomentumV1[@sp T1 <: Float | Double : Numeric:ClassTag,@sp T2 <: Long : Numeric:ClassTag,@sp T3 <: Float | Double : Numeric:ClassTag](name: String,alpha : (Float),beta : (Float),mode : (String),norm_coefficient : (Float),R: Tensor[T1], T: Tensor[T2],inputs: Tuple)
+  def MomentumV1[@sp T1 <: Float | Double : Numeric:ClassTag,@sp T2 <: Long : Numeric:ClassTag,@sp T3 <: Float | Double : Numeric:ClassTag](name: String,alpha : (Float),beta : (Float),mode : (String),norm_coefficient : (Float),R: Tensor[T1], T: Tensor[T2],inputs: NonEmptyTuple)
     : Tuple1[Tensor[T3]]
  = {
 val map: Map[String, Any] = Map("alpha" -> alpha 
@@ -3233,7 +3233,7 @@ val allInputs = Some(Tuple1(X))
 
 
 trait ScanV11 extends Operator {
-  def ScanV11[@sp V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,body : (Graph),num_scan_inputs : (Int),scan_input_axes : Option[(Array[Int])] = None,scan_input_directions : Option[(Array[Int])] = None,scan_output_axes : Option[(Array[Int])] = None,scan_output_directions : Option[(Array[Int])] = None,initial_state_and_scan_inputs: Tuple)
+  def ScanV11[@sp V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,body : (Graph),num_scan_inputs : (Int),scan_input_axes : Option[(Array[Int])] = None,scan_input_directions : Option[(Array[Int])] = None,scan_output_axes : Option[(Array[Int])] = None,scan_output_directions : Option[(Array[Int])] = None,initial_state_and_scan_inputs: NonEmptyTuple)
     : Tuple1[Tensor[V]]
  = {
 val map: Map[String, Any] = Map("body" -> body 
@@ -3243,13 +3243,13 @@ val map: Map[String, Any] = Map("body" -> body
 ,"scan_output_axes" -> scan_output_axes 
 ,"scan_output_directions" -> scan_output_directions 
 )
-val allInputs = None
+val allInputs = Some(initial_state_and_scan_inputs)
 (callOp[Tensor[V]](name,"Scan",allInputs, map))
 }
 }
 
 trait ScanV9 extends Operator {
-  def ScanV9[@sp V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,body : (Graph),num_scan_inputs : (Int),scan_input_axes : Option[(Array[Int])] = None,scan_input_directions : Option[(Array[Int])] = None,scan_output_axes : Option[(Array[Int])] = None,scan_output_directions : Option[(Array[Int])] = None,initial_state_and_scan_inputs: Tuple)
+  def ScanV9[@sp V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,body : (Graph),num_scan_inputs : (Int),scan_input_axes : Option[(Array[Int])] = None,scan_input_directions : Option[(Array[Int])] = None,scan_output_axes : Option[(Array[Int])] = None,scan_output_directions : Option[(Array[Int])] = None,initial_state_and_scan_inputs: NonEmptyTuple)
     : Tuple1[Tensor[V]]
  = {
 val map: Map[String, Any] = Map("body" -> body 
@@ -3259,13 +3259,13 @@ val map: Map[String, Any] = Map("body" -> body
 ,"scan_output_axes" -> scan_output_axes 
 ,"scan_output_directions" -> scan_output_directions 
 )
-val allInputs = None
+val allInputs = Some(initial_state_and_scan_inputs)
 (callOp[Tensor[V]](name,"Scan",allInputs, map))
 }
 }
 
 trait ScanV8 extends Operator {
-  def ScanV8[@sp I <: Long : Numeric:ClassTag,@sp V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,body : (Graph),directions : Option[(Array[Int])] = None,num_scan_inputs : (Int),sequence_lens: Option[Tensor[I]] = None,initial_state_and_scan_inputs: Tuple)
+  def ScanV8[@sp I <: Long : Numeric:ClassTag,@sp V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag](name: String,body : (Graph),directions : Option[(Array[Int])] = None,num_scan_inputs : (Int),sequence_lens: Option[Tensor[I]] = None,initial_state_and_scan_inputs: NonEmptyTuple)
     : Tuple1[Tensor[V]]
  = {
 val map: Map[String, Any] = Map("body" -> body 
@@ -3362,11 +3362,11 @@ val allInputs = Some(Tuple2(input_sequence,position))
 
 
 trait SequenceConstructV11 extends Operator {
-  def SequenceConstructV11[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag,@sp S <: Seq[Tensor[UByte]] | Seq[Tensor[UShort]] | Seq[Tensor[UInt]] | Seq[Tensor[ULong]] | Seq[Tensor[Byte]] | Seq[Tensor[Short]] | Seq[Tensor[Int]] | Seq[Tensor[Long]] | Seq[Tensor[Float16]] | Seq[Tensor[Float]] | Seq[Tensor[Double]] | Seq[Tensor[String]] | Seq[Tensor[Boolean]] | Seq[Tensor[Complex[Float]]] | Seq[Tensor[Complex[Double]]] : Numeric:ClassTag](name: String,inputs: Tuple)
+  def SequenceConstructV11[@sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | Complex[Double] : Numeric:ClassTag,@sp S <: Seq[Tensor[UByte]] | Seq[Tensor[UShort]] | Seq[Tensor[UInt]] | Seq[Tensor[ULong]] | Seq[Tensor[Byte]] | Seq[Tensor[Short]] | Seq[Tensor[Int]] | Seq[Tensor[Long]] | Seq[Tensor[Float16]] | Seq[Tensor[Float]] | Seq[Tensor[Double]] | Seq[Tensor[String]] | Seq[Tensor[Boolean]] | Seq[Tensor[Complex[Float]]] | Seq[Tensor[Complex[Double]]] : Numeric:ClassTag](name: String,inputs: NonEmptyTuple)
     : Tuple1[S]
  = {
 val map: Map[String, Any] = Map()
-val allInputs = None
+val allInputs = Some(inputs)
 (callOp[S](name,"SequenceConstruct",allInputs, map))
 }
 }
@@ -3757,32 +3757,32 @@ val allInputs = Some(Tuple2(A,B))
 
 
 trait SumV8 extends Operator {
-  def SumV8[@sp T <: Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: Tuple)
+  def SumV8[@sp T <: Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map()
-val allInputs = None
+val allInputs = Some(data_0)
 (callOp[Tensor[T]](name,"Sum",allInputs, map))
 }
 }
 
 trait SumV6 extends Operator {
-  def SumV6[@sp T <: Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: Tuple)
+  def SumV6[@sp T <: Float16 | Float | Double : Numeric:ClassTag](name: String,data_0: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map()
-val allInputs = None
+val allInputs = Some(data_0)
 (callOp[Tensor[T]](name,"Sum",allInputs, map))
 }
 }
 
 trait SumV1 extends Operator {
-  def SumV1[@sp T <: Float16 | Float | Double : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,data_0: Tuple)
+  def SumV1[@sp T <: Float16 | Float | Double : Numeric:ClassTag](name: String,consumed_inputs : Option[(Array[Int])] = None,data_0: NonEmptyTuple)
     : Tuple1[Tensor[T]]
  = {
 val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs 
 )
-val allInputs = None
+val allInputs = Some(data_0)
 (callOp[Tensor[T]](name,"Sum",allInputs, map))
 }
 }

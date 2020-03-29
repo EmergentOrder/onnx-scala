@@ -106,15 +106,17 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
       case Some((2, 11)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | 
                             "NGraphOperatorBackend.scala" | "NCF.scala" | 
                             "NGraphOperatorBackendAtoL.scala" | "NGraphOperatorBackendMtoZ.scala" |
-                            "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala"
+                            "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala" |
+                            "NGraphOperatorBackendAll.scala"
       case Some((2, 12)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | 
                             "NGraphOperatorBackend.scala" | "NCF.scala" | 
                             "NGraphOperatorBackendAtoL.scala" | "NGraphOperatorBackendMtoZ.scala" |
-                            "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala"
+                            "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala" |
+                            "NGraphOperatorBackendAll.scala"
       case Some((2, 13)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | 
                             "NGraphOperatorBackend.scala" | "NCF.scala" | 
                             "NGraphOperatorBackendAtoL.scala" | "NGraphOperatorBackendMtoZ.scala" |
-                            "NGraphOperatorBackendFull.scala"
+                            "NGraphOperatorBackendAll.scala"
       case _ => "NGraphBackendUtils212.scala" | "NGraphModelBackend212.scala" | 
                 "NGraphOperatorBackend212.scala" | "NCF212.scala" | 
                 "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala"

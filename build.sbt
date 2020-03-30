@@ -59,7 +59,7 @@ lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
       case Some((2, 11)) => "Absnet.scala" | "Squeezenet1dot1.scala" | "ONNXProgramGenerator213.scala" | "ONNXProgramGenerator.scala"
       case Some((2, 12)) => "Absnet.scala" | "Squeezenet1dot1.scala" | "ONNXProgramGenerator213.scala" | "ONNXProgramGenerator.scala"
       case Some((2, 13)) => "Absnet.scala" | "ONNXProgramGenerator.scala"
-      case _ => "Squeezenet1dot1.scala" | "ONNXProgramGenerator213.scala"
+      case _ => "ONNXProgramGenerator213.scala" | "Squeezenet1dot1.scala"
       }
     )
   )
@@ -150,9 +150,9 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
 //    scalaVersion := scala213Version,
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, 11)) => "ONNX.scala" | "ONNX213.scala" | "OpToONNXBytesConverter.scala"
-      case Some((2, 12)) => "ONNX.scala" | "ONNX213.scala" | "OpToONNXBytesConverter.scala"
-      case Some((2, 13)) => "ONNX.scala" | "ONNX212.scala" | "OpToONNXBytesConverter.scala"
+      case Some((2, 11)) => "ONNX.scala" | "ONNX213.scala" | "OpToONNXBytesConverter.scala" | "Tensor.scala"
+      case Some((2, 12)) => "ONNX.scala" | "ONNX213.scala" | "OpToONNXBytesConverter.scala" | "Tensor.scala"
+      case Some((2, 13)) => "ONNX.scala" | "ONNX212.scala" | "OpToONNXBytesConverter.scala" | "Tensor.scala"
       case _ => "ONNX212.scala" | "ONNX213.scala" | "OpToONNXBytesConverter212.scala"
       }
     )

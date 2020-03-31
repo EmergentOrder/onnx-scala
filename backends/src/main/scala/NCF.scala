@@ -38,7 +38,8 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
     val nodeFullOutput: Tuple1[Tensor[Float]] =
       fullNgraphHandler
         .fullModel[Tensor[Float]](
-          Some((nodeactual_input_1, nodelearned_0))
+          //TODO: testing less than enough inputs
+          Some((nodeactual_input_1))
         )
 
     //    scope.close

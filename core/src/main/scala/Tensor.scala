@@ -8,6 +8,7 @@ package org.emergentorder.onnx
   sealed case class Vec[I <: XInt, T <: Dim](i: I, t: T) extends Axes
   sealed case class Mat[I <: XInt, T <: Dim, J <: XInt, U <: Dim](i: I, t: T, j: J, u: U)
       extends Axes
+      //TODO: rename
   sealed case class Tuple3OfDim[I <: XInt, T <: Dim, J <: XInt, U <: Dim, K <: XInt, V <: Dim](
       i: I,
       t: T,

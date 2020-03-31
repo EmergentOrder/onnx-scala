@@ -25,8 +25,8 @@ import collection.JavaConverters._
 
 import scala.reflect.io.Streamable
 
-
-//TODO: Fix a bug (only in Dotty) where the input params don't get added 
+//TODO: Use the Tuples returned, don't use lists for program for comprehension
+//TODO: Fix a bug (only in Dotty) where the input params don't get added
 //
 //TODEFER: Use Squid to clean up / improve this
 
@@ -56,10 +56,9 @@ object ONNXProgramGenerator {
     val scalaCollSchemas = (0 until schemasSize.toInt).map(x => schemas.get(x))
     val schemaMap = scalaCollSchemas
       .filter(x => x.since_version <= maxOpsetVersion)
-      .map(
-        x =>
-          x.Name.getString ->
-            (x.inputs, x.since_version)
+      .map(x =>
+        x.Name.getString ->
+          (x.inputs, x.since_version)
       )
       .toMap
 
@@ -148,11 +147,11 @@ object ONNXProgramGenerator {
         "val bytesDataSource = new ONNXBytesDataSource(byteArray)" +
         "\n" +
         distinctOps
-          .map { x => 
+          .map { x =>
             "  val " + x + (if (useZIO) "ZIO" else "") + ": " + x.capitalize + "V" + schemaMap(x)._2.toString + (if (useZIO)
-                                                                                  "ZIO"
-                                                                                else
-                                                                                  "") +
+                                                                                                                   "ZIO"
+                                                                                                                 else
+                                                                                                                   "") +
               " = backend" +
               "\n"
           } //TODO: inject op/backend implementations
@@ -193,16 +192,15 @@ object ONNXProgramGenerator {
           .mkString("\n") +
         "\n" +
         params
-          .map(
-            x =>
-              "      node" + x._1.replaceAll("\\.", "") + " <- "
-                + (if (useZIO) "" else "List(") + " dataSource.getParams" + (if (useZIO)
-                                                                               "ZIO"
-                                                                             else
-                                                                               "") + "[" + x._2 + "]" + "(\"" + x._1 + "\")" + (if (useZIO)
-                                                                                                                                  ""
-                                                                                                                                else
-                                                                                                                                  ")") + "\n"
+          .map(x =>
+            "      node" + x._1.replaceAll("\\.", "") + " <- "
+              + (if (useZIO) "" else "List(") + " dataSource.getParams" + (if (useZIO)
+                                                                             "ZIO"
+                                                                           else
+                                                                             "") + "[" + x._2 + "]" + "(\"" + x._1 + "\")" + (if (useZIO)
+                                                                                                                                ""
+                                                                                                                              else
+                                                                                                                                ")") + "\n"
           )
           .mkString("") +
         (nodesInputsOpsAndOutputs zip attributes)
@@ -213,9 +211,7 @@ object ONNXProgramGenerator {
             } // ,""" + y.name.getString + "name" + " = " + """ Some("""" + y + """")""")
 
             val longFields = x._2
-              .filter { y =>
-                y.has_i
-              }
+              .filter { y => y.has_i }
               .map { y =>
                 val field = y.i.asInstanceOf[Long]
                 y.name.getString + """ = Some((""" + field.toInt + """))"""
@@ -295,18 +291,17 @@ object ONNXProgramGenerator {
 
             val namedNodesOrParams = opInputs
               .filter(t => !t._2.equals(""))
-              .map(
-                t =>
-                  t._1._1
-                    .replaceAll("var", "someVar")
-                    .replaceAll("shape", "shapeInput") + " = " + (if (t._1._2)
-                                                                    t._2
-                                                                      .replaceFirst(
-                                                                        "Some",
-                                                                        "Seq(Some"
-                                                                      )
-                                                                      + ")"
-                                                                  else t._2)
+              .map(t =>
+                t._1._1
+                  .replaceAll("var", "someVar")
+                  .replaceAll("shape", "shapeInput") + " = " + (if (t._1._2)
+                                                                  t._2
+                                                                    .replaceFirst(
+                                                                      "Some",
+                                                                      "Seq(Some"
+                                                                    )
+                                                                    + ")"
+                                                                else t._2)
               )
 
             val nodeName = x._1._2(0)
@@ -318,9 +313,9 @@ object ONNXProgramGenerator {
                                                                                                "ZIO"
                                                                                              else
                                                                                                "") + "." + opName + "V" + sinceVersion + (if (useZIO)
-                                                                                                                                      "ZIO"
-                                                                                                                                    else
-                                                                                                                                      "") +
+                                                                                                                                            "ZIO"
+                                                                                                                                          else
+                                                                                                                                            "") +
               (if (nodeName.contains("output")) "[" + graphOutputType + "]"
                else "") +
               "(" +

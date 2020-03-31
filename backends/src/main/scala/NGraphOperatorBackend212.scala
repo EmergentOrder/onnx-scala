@@ -185,13 +185,9 @@ trait NGraphOperatorBackend
       x._2.close //close shapes
     }
 
-    inputShapes.foreach { x: org.bytedeco.ngraph.Shape =>
-      x.close
-    }
+    inputShapes.foreach { x: org.bytedeco.ngraph.Shape => x.close }
 
-    ngraphInputs.foreach { x: org.bytedeco.ngraph.Tensor =>
-      x.close
-    }
+    ngraphInputs.foreach { x: org.bytedeco.ngraph.Tensor => x.close }
 
     inputVector.close
     output.close

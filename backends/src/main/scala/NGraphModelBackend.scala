@@ -23,10 +23,10 @@ class NGraphModelBackend(onnxBytes: Array[Byte])
   override def fullModel[
       T: ClassTag
   ](
-      inputs: Option[NonEmptyTuple],
+      inputs: Option[NonEmptyTuple]
   ): (Tuple1[T]) = {
     callNGraphExecutable[
-      T 
+      T
     ](
       executable,
       inputs,

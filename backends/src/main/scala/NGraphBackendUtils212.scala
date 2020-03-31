@@ -52,9 +52,7 @@ trait NGraphBackendUtils extends AutoCloseable {
     val dims = tens._2
     val s    = new org.bytedeco.ngraph.Shape(tens._2.size)
     s.resize(tens._2.size)
-    val longShape = tens._2.map { x =>
-      x.toLong
-    }
+    val longShape = tens._2.map { x => x.toLong }
     s.put(longShape: _*)
     s
   }
@@ -65,9 +63,7 @@ trait NGraphBackendUtils extends AutoCloseable {
   ): (T) = {
 
     val arraySize: Long = (0 until outputShape.size.toInt)
-      .map { x =>
-        outputShape.get(x).toInt
-      }
+      .map { x => outputShape.get(x).toInt }
       .reduceLeft(_ * _)
 
     val tens          = tensVec.get(0)
@@ -169,12 +165,10 @@ trait NGraphBackendUtils extends AutoCloseable {
       }
     }
 
-    val shapeArray = (0 until outputShape.size.toInt).map { x =>
-      outputShape.get(x).toInt
-    }.toArray
+    val shapeArray = (0 until outputShape.size.toInt).map { x => outputShape.get(x).toInt }.toArray
 
     val result = TensorFactory.getTensor(fa, shapeArray).asInstanceOf[T]
-    tens.close 
+    tens.close
     tensVec.close
     outputShape.close
     (result)

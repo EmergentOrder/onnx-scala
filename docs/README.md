@@ -49,14 +49,14 @@ Note that ONNX Tensor content is in row-major order.
 ```scala mdoc
 val out: Tensor[Float] = squeezenet.fullModel((Some(imageTens), None, None, None, None, None, None, None, None))
 
-out._2.take(5)
+out._2
 
 out._1.indices.maxBy(out._1)
 ```
 
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "ballpoint pen".
 
-Based on a simple benchmark of 10000 iterations of SqueezeNet inference (run on my laptop), it is 20% faster than ONNX Runtime (via Python).
+Based on a simple benchmark of 10000 iterations of SqueezeNet inference (run on my laptop), it is on par with (within 3% of) ONNX Runtime (via Python).
 
 The resulting output values also match ONNX Runtime.
 
@@ -84,7 +84,7 @@ import org.emergentorder.onnx.Squeezenet1dot1
 val generatedSqueezenet = new Squeezenet1dot1(squeezenetBytes)
 val result = generatedSqueezenet.program(imageTens)
 
-result(0)._2.take(5)
+result(0)._2
 
 result(0)._1.indices.maxBy(out._1)
 ```

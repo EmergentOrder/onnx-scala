@@ -53,8 +53,6 @@ val out: Tensor[Float] = squeezenet.fullModel((Some(imageTens), None, None, None
 //     0.8230884F,
 //     2.3508213F,
 //     5.1132765F,
-//     4.885488F,
-//     5.4786053F,
 // ...
 
 out._2
@@ -66,14 +64,16 @@ out._1.indices.maxBy(out._1)
 
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "ballpoint pen".
 
-In terms of performance, based on some simple benchmarks (see below) comparing it against ONNX Runtime, SqueezeNet inference in ONNX-Scala is at least on par, and up to 10x faster(!) depending on the setting.
+Based on a simple benchmark of 10000 iterations of SqueezeNet inference (run on my laptop), it is on par with (within 3% of) ONNX Runtime (via Python).
+
+The resulting output values also match ONNX Runtime.
 
 ### Operator-level (Fine-grained) API and generated programs
 
 You can call individual operators:
 ```scala
 val onnx = new NGraphOperatorBackendFull()
-// onnx: NGraphOperatorBackendFull = org.emergentorder.onnx.backends.NGraphOperatorBackendFull@513b862a
+// onnx: NGraphOperatorBackendFull = org.emergentorder.onnx.backends.NGraphOperatorBackendFull@316b0f45
 
 onnx.Sqrt6("sqrt", Some(imageTens))
 // res2: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
@@ -109,7 +109,7 @@ And similarly you can call generated programs composed of these operators (detai
 ```scala
 import org.emergentorder.onnx.Squeezenet1dot1
 val generatedSqueezenet = new Squeezenet1dot1(squeezenetBytes)
-// generatedSqueezenet: Squeezenet1dot1 = org.emergentorder.onnx.Squeezenet1dot1@259ad91f
+// generatedSqueezenet: Squeezenet1dot1 = org.emergentorder.onnx.Squeezenet1dot1@cfc6038
 val result = generatedSqueezenet.program(imageTens)
 // result: List[(Array[Float], Array[Int], org.emergentorder.onnx.package.Axes)] = List(
 //   (
@@ -117,8 +117,6 @@ val result = generatedSqueezenet.program(imageTens)
 //       0.8230884F,
 //       2.3508213F,
 //       5.1132765F,
-//       4.885488F,
-//       5.4786053F,
 // ...
 
 result(0)._2
@@ -136,8 +134,6 @@ onnx.Softmax1("softmax", None, Some(result(0)))
 //     2.251989E-9F,
 //     1.0376532E-8F,
 //     1.6435071E-7F,
-//     1.3087133E-7F,
-//     2.3682735E-7F,
 // ...
 ```
 
@@ -154,8 +150,7 @@ generatedSqueezenet.program(longTens)
 //                             ^^^^^^^^
 ```
 
-Take note however, the generated version runs ~10x slower on this example and up to ~100x slower averaged over many iterations.
-
+Take note however, the generated version runs ~6x slower over 1000 iterations.
 Also note that in real use backends should be closed to prevent native memory leaks.
 
 ## Project Overview
@@ -263,19 +258,6 @@ ONNX Runtime, which supports all ONNX ops, is the next targeted backend.
 You can also pass entire models to nGraph (see Execution Modes below).
 
 All together, these should enable model inspection and modification, extra compile-time assurances, mixing/matching of backend operator implementations and integration into JVM-based production systems, for a start.
-
-#### Performance
-A few simple benchmarks, run on my laptop, using full model inference:
-
-Over 1000 iterations of cold start (using a new backend/session each time) SqueezeNet inference, ONNX-Scala took ~0.04696 seconds on average vs ~0.05948 seconds for ONNX Runtime 1.0 (Python API), > 20% faster. 
-If we reuse the backend/session, the gap is larger still.
-
-Over 10000 sequential runs with the same backend/session, it took ~0.0068 seconds on average, vs ~ 0.0701 seconds for ONNX Runtime, over 10x faster.
-
-Finally, after modifying the model to use fixed batch size of 1000 (and learning along the way that nGraph does not currently support dynamic batch sizes!),
-it took ~0.0077 seconds on average vs ~0.0321 seconds for ONNX Runtime, over 4x faster.
-
-The resulting output values also match ONNX Runtime.
 
 #### Example execution
 

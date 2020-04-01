@@ -8,8 +8,7 @@ package org.emergentorder.onnx
   sealed case class Vec[I <: XInt, T <: Dim](i: I, t: T) extends Axes
   sealed case class Mat[I <: XInt, T <: Dim, J <: XInt, U <: Dim](i: I, t: T, j: J, u: U)
       extends Axes
-      //TODO: rename
-  sealed case class Tuple3OfDim[I <: XInt, T <: Dim, J <: XInt, U <: Dim, K <: XInt, V <: Dim](
+  sealed case class TensorRank3[I <: XInt, T <: Dim, J <: XInt, U <: Dim, K <: XInt, V <: Dim](
       i: I,
       t: T,
       j: J,
@@ -28,7 +27,7 @@ package org.emergentorder.onnx
         val d1 = dims(1)
         val t2 = shape(2)
         val d2 = dims(2)
-        new Tuple3OfDim[t0.type, d0.type, t1.type, d1.type, t2.type, d2.type](
+        new TensorRank3[t0.type, d0.type, t1.type, d1.type, t2.type, d2.type](
           t0,
           d0,
           t1,
@@ -73,7 +72,7 @@ package org.emergentorder.onnx
         case Scalar()                      => Array()
         case Vec(i, _)                     => Array(i)
         case Mat(i, _, j, _)               => Array(i, j)
-        case Tuple3OfDim(i, _, j, _, k, _) => Array(i, j, k)
+        case TensorRank3(i, _, j, _, k, _) => Array(i, j, k)
       }
 
       val shape: Array[XInt] = t.map(z => z: XInt)

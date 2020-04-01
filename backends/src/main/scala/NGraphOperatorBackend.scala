@@ -29,9 +29,9 @@ import ngraph.import_onnx_model
 import org.bytedeco.ngraph.Backend
 
 //TODO: Make typeclasses for ops
-//TODO: ORT backend, dotty only
-//TODO: fix readme perf claims, closer to 20% over ORT
-//TODO: Fix program generator, port over shape-safe tensors (use tf-dotty Shape?)
+//TODO: ORT backend, dotty only - WIP, full done
+//TODO: fix readme perf claims, closer to 20% over ORT - Fixed in mdoc
+//TODO: port over shape-safe tensors (use tf-dotty Shape?) - current tensors ported
 //TODO: Update README for dotty, mdoc doesn't support it though..
 //TODO: consider wrong output data type
 // TODO: check import org.bytedeco.onnx.global.onnx.check_model

@@ -64,7 +64,6 @@ trait OpToONNXBytesConverter extends AutoCloseable {
           }
           case None =>
         }
-        Unit
     }
 
     def addInput[A](input: A, inputName: String): Unit = {

@@ -178,10 +178,7 @@ object ONNXProgramGenerator {
         graphInputs
           .map { x =>
             "      node" + x._1.replaceAll("\\.", "") +
-              " <- " + (if (useZIO) "" else "List(") + "inputData" + x._1 + (if (useZIO)
-                                                                               ""
-                                                                             else
-                                                                               "") + //"[" + replaceTypeStrings(x._2) + "]" + //"[T]" +
+              " <- " + (if (useZIO) "" else "List(") + "inputData" + x._1  + //"[" + replaceTypeStrings(x._2) + "]" + //"[T]" +
               (if (useZIO)
                  ""
                else

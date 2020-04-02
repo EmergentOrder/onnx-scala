@@ -29,31 +29,12 @@ class ONNXNGraphHandlers(onnxBytes: Array[Byte]) extends AutoCloseable {
   val scope         = new PointerScope()
   val ngraphBackend = new NGraphModelBackend(onnxBytes)
 
-  def fullModel[
-      T: ClassTag,
-      T1: ClassTag,
-      T2: ClassTag,
-      T3: ClassTag,
-      T4: ClassTag,
-      T5: ClassTag,
-      T6: ClassTag,
-      T7: ClassTag,
-      T8: ClassTag,
-      T9: ClassTag,
-      T10: ClassTag,
-      T11: ClassTag,
-      T12: ClassTag,
-      T13: ClassTag,
-      T14: ClassTag,
-      T15: ClassTag,
-      T16: ClassTag,
-      T17: ClassTag
-  ](
-      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8]
-  ): (Task[T9]) = {
+  def fullModel[T: ClassTag](
+      inputs: Option[NonEmptyTuple]
+  ): (Task[Tuple1[Tensor[T]]]) = {
     Task {
       ngraphBackend
-        .fullModel[T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17](
+        .fullModel[Tensor[T]](
           inputs
         )
     }
@@ -145,8 +126,8 @@ object ZIONGraphMain extends App {
   println(Pointer.physicalBytes)
   println(Pointer.maxPhysicalBytes)
   println("Output size: " + output2._1.size)
-  println("Output 0: " + output2._1(0))
-  println("Output 7999: " + output2._1(7999))
+  println("Output 0: " + output2._1(0)(0))
+  println("Output 7999: " + output2._1(0)(7999))
 //   println("Output 2: " + output2._1(2))
 //   println("Output 3: " + output2._1(3))
 //   println("Output 4: " + output2._1(4))

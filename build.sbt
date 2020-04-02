@@ -6,7 +6,7 @@ val scala213Version = "2.13.1"
 val spireVersion = "0.17.0-M1"
 val zioVersion = "1.0.0-RC18-2"
 val scalametaVersion = "4.3.7"
-val onnxJavaCPPPresetVersion = "1.6.0-1.5.2"
+val onnxJavaCPPPresetVersion = "1.6.0-1.5.3-SNAPSHOT"
 
 lazy val commonSettings = Seq(
   scalaJSUseMainModuleInitializer := true, //Test only
@@ -54,6 +54,17 @@ lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
     mainClass in (Compile, run) := Some(
       "org.emergentorder.onnx.ONNXProgramGenerator"
     ),
+    excludeFilter in unmanagedSources := (CrossVersion
+      .partialVersion(scalaVersion.value) match {
+      case Some((2, 11)) => "Absnet.scala" | "Squeezenet1dot1.scala" | "Squeezenet1dot1213.scala" | "ONNXProgramGenerator213.scala" | "ONNXProgramGenerator.scala"
+      case Some((2, 12)) => "Absnet.scala" | "Squeezenet1dot1.scala" | "Squeezenet1dot1213.scala" | "ONNXProgramGenerator213.scala" | "ONNXProgramGenerator.scala"
+      case Some((2, 13)) => "Absnet.scala" | "Squeezenet1dot1.scala" | "ONNXProgramGenerator.scala"
+      case _ => "ONNXProgramGenerator213.scala" | "Squeezenet1dot1213.scala"
+      }
+    )
+  )
+  .jvmSettings(
+    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil }, 
     libraryDependencies ++= (CrossVersion
     .partialVersion(scalaVersion.value) match {
      case Some((2,_)) =>
@@ -90,9 +101,28 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala-backends",
+    excludeFilter in unmanagedSources := (CrossVersion
+      .partialVersion(scalaVersion.value) match {
+      case Some((2, 11)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | 
+                            "NGraphOperatorBackend.scala" | "NCF.scala" | 
+                            "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala" |
+                            "NGraphOperatorBackendAll.scala"
+      case Some((2, 12)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | 
+                            "NGraphOperatorBackend.scala" | "NCF.scala" | 
+                            "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala" |
+                            "NGraphOperatorBackendAll.scala"
+      case Some((2, 13)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | 
+                            "NGraphOperatorBackend.scala" | "NCF.scala" | 
+                            "NGraphOperatorBackendAll.scala"
+      case _ => "NGraphBackendUtils212.scala" | "NGraphModelBackend212.scala" | 
+                "NGraphOperatorBackend212.scala" | "NCF212.scala" | 
+                "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala"
+      }
+    ),
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= Seq(
       "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.2",
+      "org.bytedeco" % "onnxruntime-platform" % "1.2.0-1.5.3-SNAPSHOT",
 //      "com.microsoft.onnxruntime" % "onnxruntime4j" % "1.0.0-SNAPSHOT"
     ),
 //    sources in (Compile, doc) := Seq(),
@@ -118,8 +148,10 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
 //    scalaVersion := scala213Version,
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, 13)) => ("ONNX.scala")
-      case _ => "ONNX213.scala"
+      case Some((2, 11)) => "ONNX.scala" | "ONNX213.scala" | "OpToONNXBytesConverter.scala" | "Tensor.scala"
+      case Some((2, 12)) => "ONNX.scala" | "ONNX213.scala" | "OpToONNXBytesConverter.scala" | "Tensor.scala"
+      case Some((2, 13)) => "ONNX.scala" | "ONNX212.scala" | "OpToONNXBytesConverter.scala" | "Tensor.scala"
+      case _ => "ONNX212.scala" | "ONNX213.scala" | "OpToONNXBytesConverter212.scala"
       }
     )
   )
@@ -198,6 +230,15 @@ lazy val zio = (crossProject(JVMPlatform)//, JSPlatform)
 //    scalaVersion := scala213Version,
 //    sources in (Compile, doc) := Seq(),
 //    publishArtifact in (Compile, packageDoc) := false,
+    excludeFilter in unmanagedSources := (CrossVersion
+      .partialVersion(scalaVersion.value) match {
+      case Some((2, 11)) => "NCFZIO.scala" | "ZIONGraphBackend.scala" 
+      case Some((2, 12)) => "NCFZIO.scala" | "ZIONGraphBackend.scala"
+      case Some((2, 13)) => "NCFZIO.scala" | "ZIONGraphBackend.scala"
+      case _ => ""
+      }
+    ),
+    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= (CrossVersion
     .partialVersion(scalaVersion.value) match {
      case Some((2,_)) =>

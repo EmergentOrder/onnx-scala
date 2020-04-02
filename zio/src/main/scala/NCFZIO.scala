@@ -25,31 +25,26 @@ class NCFZIO(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Ma
   def fullNCF(
       inputDataactual_input_1: Task[Tensor[Long]],
       inputDatalearned_0: Task[Tensor[Long]]
-  ): Task[Tensor[Float]] = {
+  ): Task[Tuple1[Tensor[Float]]] = {
     //println(Pointer.totalBytes)
     val scope = new PointerScope()
     val result = for {
-      nodeactual_input_1 <- inputDataactual_input_1.map(
-        x => TensorFactory.getTensor(x._1.map(y => userIdsMap(y)), x._2)
+      nodeactual_input_1 <- inputDataactual_input_1.map(x =>
+        TensorFactory.getTensor(x._1.map(y => userIdsMap(y)), x._2)
       )
-      nodelearned_0 <- inputDatalearned_0.map(
-        x => TensorFactory.getTensor(x._1.map(y => itemIdsMap(y)), x._2)
+      nodelearned_0 <- inputDatalearned_0.map(x =>
+        TensorFactory.getTensor(x._1.map(y => itemIdsMap(y)), x._2)
       )
       nodeFullOutput <- {
-        val nodeOutput: Task[Tensor[Float]] =
+        val nodeOutput: Task[Tuple1[Tensor[Float]]] =
           fullNgraphHandler
-            .fullModel[Option[Tensor[Long]], Option[Tensor[Long]], Any, Any, Any, Any, Any, Any, Any, Tensor[
-              Float
-            ], Any, Any, Any, Any, Any, Any, Any, Any](
-              Some(nodeactual_input_1),
-              Some(nodelearned_0),
-              None,
-              None,
-              None,
-              None,
-              None,
-              None,
-              None
+            .fullModel(
+              Some(
+                (
+                  nodeactual_input_1,
+                  nodelearned_0
+                )
+              )
             )
         nodeOutput
       }

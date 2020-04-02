@@ -182,9 +182,6 @@ trait NGraphBackendUtils extends AutoCloseable {
           case None    => None
         }
       }
-      case tensor: Tensor[Any] => {
-        Some(tensorToInputShape(tensor))
-      }
       case _ => ??? //TODO: Handle non-tensors / don't assume tensor here
 
     }
@@ -200,9 +197,6 @@ trait NGraphBackendUtils extends AutoCloseable {
           case Some(y: Tensor[Any]) => Some(tensorToPointerAndType(y))
           case None                 => None
         }
-      }
-      case tensor: Tensor[Any] => {
-        Some(tensorToPointerAndType(tensor))
       }
     }
   }

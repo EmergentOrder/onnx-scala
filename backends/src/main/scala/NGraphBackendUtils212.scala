@@ -50,9 +50,9 @@ trait NGraphBackendUtils extends AutoCloseable {
 
   protected def tensorToInputShape[T: ClassTag](tens: Tensor[T]): org.bytedeco.ngraph.Shape = {
     val dims = tens._2
-    val s    = new org.bytedeco.ngraph.Shape(tens._2.size)
-    s.resize(tens._2.size)
-    val longShape = tens._2.map { x => x.toLong }
+    val s    = new org.bytedeco.ngraph.Shape(dims.size)
+    s.resize(dims.size)
+    val longShape = dims.map { x => x.toLong }
     s.put(longShape: _*)
     s
   }
@@ -77,88 +77,76 @@ trait NGraphBackendUtils extends AutoCloseable {
     val fa = elemType match {
 
       case `i8` => {
-
-//        assert(elemType.equals(ngraph.i8().get_type_enum()))
         val fp = new BytePointer(arraySize)
         tens.read(fp, arraySize * 1)
 
         val fb = fp.asByteBuffer
 
         val res = (0 until fb.capacity).map { x =>
-          fb.get(x).asInstanceOf[Byte] //unsafe : asInstanceOf
+          fb.get(x) //.asInstanceOf[Byte] //unsafe : asInstanceOf
         }.toArray
         fp.close
         res
       }
 
       case `i16` => {
-
-//        assert(elemType.equals(ngraph.i16().get_type_enum()))
         val fp = new ShortPointer(arraySize)
         tens.read(fp, arraySize * 2)
 
         val fb = fp.asByteBuffer.asShortBuffer
 
         val res = (0 until fb.capacity).map { x =>
-          fb.get(x).asInstanceOf[Short] //unsafe : asInstanceOf
+          fb.get(x) //.asInstanceOf[Short] //unsafe : asInstanceOf
         }.toArray
 
         fp.close
         res
       }
       case `i32` => {
-
-//        assert(elemType.equals(ngraph.i32().get_type_enum()))
         val fp = new IntPointer(arraySize)
         tens.read(fp, arraySize * 4)
 
         val fb = fp.asByteBuffer.asIntBuffer
 
         val res = (0 until fb.capacity).map { x =>
-          fb.get(x).asInstanceOf[Int] //unsafe : asInstanceOf
+          fb.get(x) //.asInstanceOf[Int] //unsafe : asInstanceOf
         }.toArray
         fp.close
         res
       }
       case `i64` => {
-
-//        assert(elemType.equals(ngraph.i64().get_type_enum()))
         val fp = new LongPointer(arraySize)
         tens.read(fp, arraySize * 8)
 
         val fb = fp.asByteBuffer.asLongBuffer
 
         val res = (0 until fb.capacity).map { x =>
-          fb.get(x).asInstanceOf[Long] //unsafe : asInstanceOf
+          fb.get(x) //.asInstanceOf[Long] //unsafe : asInstanceOf
         }.toArray
         fp.close
         res
 
       }
       case `f32` => {
-
-        // assert(elemType.equals(ngraph.f32().get_type_enum()))
         val fp = new FloatPointer(arraySize)
         tens.read(fp, arraySize * 4)
 
         val fb = fp.asByteBuffer.asFloatBuffer
 
         val res = (0 until fb.capacity).map { x =>
-          fb.get(x).asInstanceOf[Float] //unsafe : asInstanceOf
+          fb.get(x) //.asInstanceOf[Float] //unsafe : asInstanceOf
         }.toArray
         fp.close
         res
       }
       case `f64` => {
-
-        //assert(elemType.equals(ngraph.f64().get_type_enum()))
         val fp = new DoublePointer(arraySize)
         tens.read(fp, arraySize * 8)
 
         val fb = fp.asByteBuffer.asDoubleBuffer
 
         val res = (0 until fb.capacity).map { x =>
-          fb.get(x).asInstanceOf[Double] //unsafe : asInstanceOf
+          fb.get(x) //.asInstanceOf[Double] //unsafe : asInstanceOf
         }.toArray
         fp.close
         res

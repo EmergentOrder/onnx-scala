@@ -168,9 +168,9 @@ trait NGraphOperatorBackend
     val outputVector = new org.bytedeco.ngraph.TensorVector(output)
 
     def t = {
-      val before = System.nanoTime
+//      val before = System.nanoTime
       executable.call(outputVector, inputVector)
-      val after = System.nanoTime
+//      val after = System.nanoTime
 //      println("Elapsed per Op: " + "  : " + (after - before))
     }
 

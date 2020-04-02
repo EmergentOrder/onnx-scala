@@ -33,45 +33,38 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     node.set_op_type(opName)
     node.add_output(outName)
 
-    def handleAttrs = attrs.foreach {
-      case (key, value) =>
-        val res = value match {
-          case x: Int => {
-            val attr = node.add_attribute
-            //val attr     = node.mutable_attribute(0)
-            val attrName = new BytePointer(key)
-            attr.set_name(attrName)
-            attr.set_type(AttributeProto.INT)
-            val longVal = x.toLong
+    def handleIntAttrs(x: Int, key: String): Unit  = {
+      val attr = node.add_attribute
+      val attrName = new BytePointer(key)      
+      attr.set_name(attrName)      
+      attr.set_type(AttributeProto.INT)
+      val longVal = x.toLong
+      attr.set_i(longVal)
+    }
 
-            attr.set_i(longVal)
+    def handleIntArrayAttrs(x: Array[Int], key: String): Unit = {       
+      val attr = node.add_attribute
+      val attrName = new BytePointer(key)
+      attr.set_name(attrName)
+      attr.set_type(AttributeProto.INTS)
+      (0 until x.size).foreach(y => attr.add_ints(x(y).toLong))
+    }
+   
+
+    def handleAttrs: Unit = attrs.foreach {
+      case (key, value) =>
+        value match {
+          case x: Int => {
+            handleIntAttrs(x, key)
+          }
+          case Some(x: Int) => {
+            handleIntAttrs(x, key)
           }
           case x: Array[Int] => {
-            val attr = node.add_attribute
-            //val attr = node.mutable_attribute(0)
-            val attrName = new BytePointer(key)
-            attr.set_name(attrName)
-            attr.set_type(AttributeProto.INTS)
-            (0 until x.size).foreach(y => attr.add_ints(x(y).toLong))
-          }
-
-          case Some(x: Int) => {
-            val attr = node.add_attribute
-            //val attr     = node.mutable_attribute(0)
-            val attrName = new BytePointer(key)
-            attr.set_name(attrName)
-            attr.set_type(AttributeProto.INT)
-            val longVal = x.toLong
-
-            attr.set_i(longVal)
-          }
+            handleIntArrayAttrs(x, key)
+          } 
           case Some(x: Array[Int]) => {
-            val attr = node.add_attribute
-            //val attr = node.mutable_attribute(0)
-            val attrName = new BytePointer(key)
-            attr.set_name(attrName)
-            attr.set_type(AttributeProto.INTS)
-            (0 until x.size).foreach(y => attr.add_ints(x(y).toLong))
+            handleIntArrayAttrs(x, key)
           }
           case None =>
         }

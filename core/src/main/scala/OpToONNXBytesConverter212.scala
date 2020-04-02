@@ -41,12 +41,12 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     node.set_op_type(opName)
     node.add_output(outName)
 
-    def handleAttrs = attrs.foreach {
+    def handleAttrs: Unit = attrs.foreach {
       case (key, value) =>
-        val res = value match {
+        value match {
           case Some(x: Int) => {
             val attr = node.add_attribute
-            //val attr     = node.mutable_attribute(0)
+
             val attrName = new BytePointer(key)
             attr.set_name(attrName)
             attr.set_type(AttributeProto.INT)
@@ -56,7 +56,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
           }
           case Some(x: Array[Int]) => {
             val attr = node.add_attribute
-            //val attr = node.mutable_attribute(0)
+
             val attrName = new BytePointer(key)
             attr.set_name(attrName)
             attr.set_type(AttributeProto.INTS)
@@ -64,6 +64,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
           }
           case None =>
         }
+        Unit
     }
 
     def addInput[A](input: A, inputName: String): Unit = {

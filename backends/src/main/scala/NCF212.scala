@@ -25,7 +25,6 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
       inputDataactual_input_1: Tensor[Long],
       inputDatalearned_0: Tensor[Long]
   ): Tensor[Float] = {
-//    val scope = new PointerScope()
     val nodeactual_input_1 = TensorFactory.getTensor(
       inputDataactual_input_1._1.map(y => userIdsMap(y)),
       inputDataactual_input_1._2
@@ -43,9 +42,9 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
           (Some(nodeactual_input_1), Some(nodelearned_0), None, None, None, None, None, None, None)
         )
 
-    //    scope.close
+
     System.runFinalization
-    nodeFullOutput //.asInstanceOf[Tensor[Float]] //Bad
+    nodeFullOutput
   }
 
   override def close(): Unit = {

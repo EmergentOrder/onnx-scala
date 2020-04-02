@@ -31,7 +31,7 @@ import org.bytedeco.onnx.global.onnx.ParseProtoFromBytes
 
 class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
-  val scope = new PointerScope()
+//  val scope = new PointerScope()
 //  val loaded =
 //    org.bytedeco.javacpp.Loader.load(classOf[org.bytedeco.onnx.global.onnx])
 
@@ -308,7 +308,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
   override def close(): Unit = {
 //    model.close
-    scope.close
+//    scope.close
   }
 
 }

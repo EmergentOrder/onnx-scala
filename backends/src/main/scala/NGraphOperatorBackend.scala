@@ -87,7 +87,6 @@ trait NGraphOperatorBackend
       outputShape: org.bytedeco.ngraph.Shape,
       outputType: org.bytedeco.ngraph.Type
   ): (Tuple1[T]) = {
-    val scope = new PointerScope()
 
     val inputShapes: Seq[org.bytedeco.ngraph.Shape] = inputs match {
       case Some(x) => {
@@ -110,14 +109,13 @@ trait NGraphOperatorBackend
 
     val output = ngraphBackend.create_tensor(outputType, outputShape)
 
-//    println("OUTPUT TYPE" + outputType.get_type_enum())
     val inputVector  = new org.bytedeco.ngraph.TensorVector(ngraphInputs: _*)
     val outputVector = new org.bytedeco.ngraph.TensorVector(output)
 
     def t = {
-      val before = System.nanoTime
+//      val before = System.nanoTime
       executable.call(outputVector, inputVector)
-      val after = System.nanoTime
+//      val after = System.nanoTime
 //      println("Elapsed per Op: " + "  : " + (after - before))
     }
 

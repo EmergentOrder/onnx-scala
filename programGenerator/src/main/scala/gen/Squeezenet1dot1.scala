@@ -11,7 +11,7 @@ import spire.math.Complex
 import spire.math.Numeric
 
 class Squeezenet1dot1(byteArray: Array[Byte]) extends AutoCloseable {
-  val backend                    = new NGraphOperatorBackendAll()
+  val backend                    = new ORTOperatorBackendAll()
   val bytesDataSource            = new ONNXBytesDataSource(byteArray)
   val Conv: ConvV1               = backend
   val Relu: ReluV6               = backend
@@ -701,7 +701,7 @@ class Squeezenet1dot1(byteArray: Array[Byte]) extends AutoCloseable {
           .ReshapeV5(
             "squeezenet0_flatten0_reshape0",
             data = ((nodesqueezenet0_pool3_fwd)),
-            shapeInput = TensorFactory.getTensor(Array(0L, -1L), Array(2))
+            shapeInput = nodereshape_attr_tensor118
           )
           .apply(
             0

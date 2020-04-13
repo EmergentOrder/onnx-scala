@@ -34,12 +34,12 @@ Run SqueezeNet image classification inference on an "image" composed entirely of
 ```scala
 import java.nio.file.{Files, Paths}
 import org.emergentorder.onnx.{Tensor, TensorFactory}
-import org.emergentorder.onnx.backends.NGraphOperatorBackendFull
-import org.emergentorder.onnx.backends.NGraphModelBackend
+import org.emergentorder.onnx.backends.ORTOperatorBackendAll
+import org.emergentorder.onnx.backends.ORTModelBackend
 
 val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.1.onnx"))
 
-val squeezenet = new NGraphModelBackend(squeezenetBytes)
+val squeezenet = new ORTModelBackend(squeezenetBytes)
 
 val imageTens = TensorFactory.getTensor(Array.fill(1*3*224*224){42f},Array(1,3,224,224))
 ```
@@ -47,7 +47,7 @@ val imageTens = TensorFactory.getTensor(Array.fill(1*3*224*224){42f},Array(1,3,2
 Note that ONNX Tensor content is in row-major order.
 
 ```scala
-val out: Tensor[Float] = squeezenet.fullModel((Some(imageTens), None, None, None, None, None, None, None, None))
+val out: Tensor[Float] = squeezenet.fullModel(imageTens, None, None, None, None, None, None, None, None)
 // out: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
 //   Array(
 //     0.8230884F,
@@ -72,15 +72,8 @@ The resulting output values also match ONNX Runtime.
 
 You can call individual operators:
 ```scala
-val onnx = new NGraphOperatorBackendFull()
-// onnx: NGraphOperatorBackendFull = org.emergentorder.onnx.backends.NGraphOperatorBackendFull@316b0f45
+val onnx = new ORTOperatorBackendAll()
 
-onnx.Sqrt6("sqrt", Some(imageTens))
-// res2: (Array[Float], Array[Int], org.emergentorder.onnx.package.Axes) = (
-//   Array(
-//     6.4807405F,
-//     6.4807405F,
-// ...
 
 val longTens = TensorFactory.getTensor(Array.fill(1*3*224*224){-42l},Array(1,3,224,224))
 // longTens: (Array[Long], Array[Int], org.emergentorder.onnx.package.Axes) = (
@@ -225,7 +218,7 @@ The resulting generated program appears as `programGenerator/src/gen/scala/Absne
 import org.emergentorder.onnx.backends._
 
 class Absnet(byteArray: Array[Byte]) {
-  val Abs: org.emergentorder.onnx.Abs = new NGraphOperatorBackendFull()
+  val Abs: org.emergentorder.onnx.Abs = new ORTOperatorBackendAll()
   def program(inputDatax: Tensor[Float]): List[Tensor[Float]]  = 
     for {
       nodex <- List(inputDatax)

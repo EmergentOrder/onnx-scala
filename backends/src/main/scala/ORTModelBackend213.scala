@@ -55,14 +55,29 @@ class ORTModelBackend(onnxBytes: Array[Byte])
   val allNodeNamesAndDims = getInputAndOutputNodeNamesAndDims(session)
 
   override def fullModel[
-      T: ClassTag
-  ](
-      inputs: Option[NonEmptyTuple]
-  ): (Tuple1[T]) = {
+        T: ClassTag,
+        T1: ClassTag,
+        T2: ClassTag,
+        T3: ClassTag,
+        T4: ClassTag,
+        T5: ClassTag,
+        T6: ClassTag,
+        T7: ClassTag,
+        T8: ClassTag,
+        T9: ClassTag,
+        T10: ClassTag,
+        T11: ClassTag,
+        T12: ClassTag,
+        T13: ClassTag,
+        T14: ClassTag,
+        T15: ClassTag,
+        T16: ClassTag,
+        T17: ClassTag
+    ](
+        inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8]
+    ): (T9) = {
 
-    inputs match {
-      case Some(x) => {
-    val tens = x.apply(0).asInstanceOf[Tensor[Float]]
+    val tens = inputs._1.asInstanceOf[Tensor[Float]]
     val inputArray = tens._1
 
     val inputPointer = new FloatPointer(inputArray.asInstanceOf[Array[Float]]: _*)
@@ -106,11 +121,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
     val shapeSize: Long = output._2.capacity
     val shape = (0 until shapeSize.toInt).map(x => output._2.get(x).toInt).toArray
 
-    Tuple1(TensorFactory.getTensor(res, shape).asInstanceOf[T])
-      }  
-      case None => Tuple1(TensorFactory.getTensor(Array(), Array[Int]()).asInstanceOf[T])
-   
-    }
+    TensorFactory.getTensor(res, shape).asInstanceOf[T9]
   }
 
   override def close(): Unit = {

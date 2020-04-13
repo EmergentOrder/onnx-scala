@@ -206,6 +206,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 
     outputValueInfo.mutable_type
     outputValueInfo.`type`.mutable_tensor_type
+    //TODO: Fix elem type
     outputValueInfo.`type`.tensor_type.set_elem_type(1)
 
     //Dummy names

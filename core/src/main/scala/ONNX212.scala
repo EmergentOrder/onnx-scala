@@ -82,7 +82,7 @@ package object onnx {
     ): (T9)
   }
 
-  abstract class Model(onnxBytes: Array[Byte]) extends Operator {
+  abstract class Model(onnxBytes: Array[Byte]) {
     def fullModel[
         T: ClassTag,
         T1: ClassTag,

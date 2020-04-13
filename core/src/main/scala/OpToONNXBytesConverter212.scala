@@ -40,27 +40,38 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     node.set_name(name)
     node.set_op_type(opName)
     node.add_output(outName)
+   
+    def handleIntAttrs(x: Int, key: String): Unit  = {
+      val attr = node.add_attribute
+      val attrName = new BytePointer(key)
+      attr.set_name(attrName)
+      attr.set_type(AttributeProto.INT)
+      val longVal = x.toLong
+      attr.set_i(longVal)
+    }
+
+    def handleIntArrayAttrs(x: Array[Int], key: String): Unit = {
+      val attr = node.add_attribute
+      val attrName = new BytePointer(key)
+      attr.set_name(attrName)
+      attr.set_type(AttributeProto.INTS)
+      (0 until x.size).foreach(y => attr.add_ints(x(y).toLong))
+    }
 
     def handleAttrs: Unit = attrs.foreach {
       case (key, value) =>
         value match {
+          case x: Int => {
+            handleIntAttrs(x, key)
+          }
           case Some(x: Int) => {
-            val attr = node.add_attribute
-
-            val attrName = new BytePointer(key)
-            attr.set_name(attrName)
-            attr.set_type(AttributeProto.INT)
-            val longVal = x.toLong
-
-            attr.set_i(longVal)
+            handleIntAttrs(x, key)
+          }
+          case x: Array[Int] => {
+            handleIntArrayAttrs(x, key)
           }
           case Some(x: Array[Int]) => {
-            val attr = node.add_attribute
-
-            val attrName = new BytePointer(key)
-            attr.set_name(attrName)
-            attr.set_type(AttributeProto.INTS)
-            (0 until x.size).foreach(y => attr.add_ints(x(y).toLong))
+            handleIntArrayAttrs(x, key)
           }
           case None =>
         }
@@ -221,6 +232,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 
     outputValueInfo.mutable_type
     outputValueInfo.`type`.mutable_tensor_type
+    //TODO: fix elem type
     outputValueInfo.`type`.tensor_type.set_elem_type(1)
 
     //Dummy names

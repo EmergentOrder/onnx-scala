@@ -106,22 +106,33 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
       case Some((2, 11)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | 
                             "NGraphOperatorBackend.scala" | "NCF.scala" | 
                             "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala" |
-                            "NGraphOperatorBackendAll.scala"
+                            "NGraphOperatorBackendAll.scala" | "ORTOperatorBackendAll.scala" | 
+                            "ORTOperatorBackend.scala" | "ORTOperatorBackend213.scala" | 
+                            "ORTOperatorBackendAll213.scala" | "ORTModelBackend.scala" | 
+                            "ORTModelBackend213.scala" | "ORTOperatorBackendAtoL213.scala"
       case Some((2, 12)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | 
                             "NGraphOperatorBackend.scala" | "NCF.scala" | 
                             "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala" |
-                            "NGraphOperatorBackendAll.scala"
+                            "NGraphOperatorBackendAll.scala" | "ORTOperatorBackendAll.scala" | 
+                            "ORTOperatorBackend.scala" | "ORTOperatorBackend213.scala" | 
+                            "ORTOperatorBackendAll213.scala" | "ORTModelBackend.scala" | 
+                            "ORTModelBackend213.scala" | "ORTOperatorBackendAtoL213.scala"
       case Some((2, 13)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | 
                             "NGraphOperatorBackend.scala" | "NCF.scala" | 
-                            "NGraphOperatorBackendAll.scala"
+                            "NGraphOperatorBackendAll.scala" | "ORTOperatorBackend.scala" | 
+                            "ORTOperatorBackendAll.scala" | "ORTModelBackend.scala" | 
+                            "ORTModelBackend212.scala"
       case _ => "NGraphBackendUtils212.scala" | "NGraphModelBackend212.scala" | 
                 "NGraphOperatorBackend212.scala" | "NCF212.scala" | 
-                "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala"
+                "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala" |
+                "ORTModelBackend212.scala" | "ORTModelBackend213.scala" |
+                "ORTOperatorBackend213.scala" | "ORTOperatorBackendAll213.scala" | 
+                "ORTOperatorBackendAtoL213.scala"
       }
     ),
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.2",
+      "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.3-SNAPSHOT",
       "org.bytedeco" % "onnxruntime-platform" % "1.2.0-1.5.3-SNAPSHOT",
 //      "com.microsoft.onnxruntime" % "onnxruntime4j" % "1.0.0-SNAPSHOT"
     ),

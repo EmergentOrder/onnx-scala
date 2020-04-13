@@ -35,11 +35,12 @@ Run SqueezeNet image classification inference on an "image" composed entirely of
 import java.nio.file.{Files, Paths}
 import org.emergentorder.onnx.{Tensor, TensorFactory}
 import org.emergentorder.onnx.backends.NGraphOperatorBackendFull
-import org.emergentorder.onnx.backends.NGraphModelBackend
+import org.emergentorder.onnx.backends.ORTOperatorBackendAll
+import org.emergentorder.onnx.backends.ORTModelBackend
 
 val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.1.onnx"))
 
-val squeezenet = new NGraphModelBackend(squeezenetBytes)
+val squeezenet = new ORTModelBackend(squeezenetBytes)
 
 val imageTens = TensorFactory.getTensor(Array.fill(1*3*224*224){42f},Array(1,3,224,224))
 ```
@@ -47,7 +48,7 @@ val imageTens = TensorFactory.getTensor(Array.fill(1*3*224*224){42f},Array(1,3,2
 Note that ONNX Tensor content is in row-major order.
 
 ```scala mdoc
-val out: Tensor[Float] = squeezenet.fullModel((Some(imageTens), None, None, None, None, None, None, None, None))
+val out: Tensor[Float] = squeezenet.fullModel(imageTens, None, None, None, None, None, None, None, None)
 
 out._2
 
@@ -64,13 +65,12 @@ The resulting output values also match ONNX Runtime.
 
 You can call individual operators:
 ```scala mdoc
-val onnx = new NGraphOperatorBackendFull()
+val onnx = new ORTOperatorBackendAll()
 
-onnx.Sqrt6("sqrt", Some(imageTens))
+//TODO: restore
+//val longTens = TensorFactory.getTensor(Array.fill(1*3*224*224){-42l},Array(1,3,224,224))
 
-val longTens = TensorFactory.getTensor(Array.fill(1*3*224*224){-42l},Array(1,3,224,224))
-
-onnx.Abs6("abs", Some(longTens))
+//onnx.Abs6("abs", Some(longTens))
 ```
 
 Sqrt will fail to compile because it's not defined for Long:
@@ -169,7 +169,7 @@ The resulting generated program appears as `programGenerator/src/gen/scala/Absne
 import org.emergentorder.onnx.backends._
 
 class Absnet(byteArray: Array[Byte]) {
-  val Abs: org.emergentorder.onnx.Abs = new NGraphOperatorBackendFull()
+  val Abs: org.emergentorder.onnx.Abs = new ORTOperatorBackendAll()
   def program(inputDatax: Tensor[Float]): List[Tensor[Float]]  = 
     for {
       nodex <- List(inputDatax)

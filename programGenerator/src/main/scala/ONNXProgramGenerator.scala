@@ -30,7 +30,7 @@ import scala.reflect.io.Streamable
 
 //TODEFER: Fix a bug (only in Dotty) where the input params don't get added
 //
-//TODEFER: Use Squid to clean up / improve this
+//TODEFER: Use Squid or Dotty staging to clean up / improve this
 
 //TODEFER: de-tuple on the left hand side when there are multiple outputs . should also solve the other output TODOs
 object ONNXProgramGenerator {

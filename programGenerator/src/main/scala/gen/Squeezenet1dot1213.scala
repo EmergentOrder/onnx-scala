@@ -12,14 +12,17 @@ import spire.math.Numeric
 
 //TODO: Squeezenet for ONNX-Scala dotty
 class Squeezenet1dot1(byteArray: Array[Byte]) {
-  val Conv: Conv               = new NGraphOperatorBackendFull()
-  val Relu: Relu               = new NGraphOperatorBackendFull()
-  val MaxPool: MaxPool         = new NGraphOperatorBackendFull()
-  val Concat: Concat           = new NGraphOperatorBackendFull()
-  val Dropout: Dropout         = new NGraphOperatorBackendFull()
-  val AveragePool: AveragePool = new NGraphOperatorBackendFull()
-  val Reshape: Reshape         = new NGraphOperatorBackendFull()
-  val dataSource: DataSource   = new ONNXBytesDataSource(byteArray)
+  val backend                    = new ORTOperatorBackendAll()
+  val bytesDataSource            = new ONNXBytesDataSource(byteArray)
+  val Conv: Conv               = backend
+  val Relu: Relu               = backend
+  val MaxPool: MaxPool         = backend
+  val Concat: Concat           = backend
+  val Dropout: Dropout         = backend
+  val AveragePool: AveragePool = backend
+  val Reshape: Reshape         = backend
+  val dataSource: DataSource     = bytesDataSource
+
   def program(inputDatadata: Tensor[Float]): List[Tensor[Float]] =
     for {
       nodedata                     <- List(inputDatadata)
@@ -623,7 +626,7 @@ class Squeezenet1dot1(byteArray: Array[Byte]) {
         Reshape.Reshape5(
           "squeezenet0_flatten0_reshape0",
           data = Some(nodesqueezenet0_pool3_fwd),
-          shapeInput = None //Some(nodereshape_attr_tensor118) One small patch here, due to a limitation in nGraph
+          shapeInput = Some(nodereshape_attr_tensor118) 
         )
       )
     } yield (nodesqueezenet0_flatten0_reshape0)

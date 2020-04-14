@@ -12,6 +12,8 @@ trait ORTOperatorBackend
     with AutoCloseable {
 
   val allocator = new AllocatorWithDefaultOptions()
+  
+  val memory_info = MemoryInfo.CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)  
 
   def getSession(bytes: Array[Byte]) = {
     val env = new Env(ORT_LOGGING_LEVEL_WARNING, "test")
@@ -36,8 +38,6 @@ trait ORTOperatorBackend
 
     
     val value = new Value(input_tensor_values.size)
-  
-//    val memory_info = MemoryInfo.CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)  
 
     val input_tensor_size = (0 until input_tensor_values.size).foreach{i =>
 /*
@@ -124,9 +124,7 @@ trait ORTOperatorBackend
 
 
       val size: Long = dims.capacity
-      val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_*_)
-       
-      val memory_info = MemoryInfo.CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)  
+      val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_*_) 
 
       val inputTensor: Value = Value.CreateTensorLong(
             memory_info.asOrtMemoryInfo,
@@ -154,8 +152,6 @@ trait ORTOperatorBackend
 
       val size: Long = dims.capacity
       val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_*_)
-       
-      val memory_info = MemoryInfo.CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)  
 
       val inputTensor: Value = Value.CreateTensorFloat(
             memory_info.asOrtMemoryInfo,
@@ -202,8 +198,6 @@ trait ORTOperatorBackend
     val output_node_names = new PointerPointer[BytePointer](1) 
  
 //    val value = new Value(x.size)
-  
-    val memory_info = MemoryInfo.CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)  
 
 //    println(x.size)
 

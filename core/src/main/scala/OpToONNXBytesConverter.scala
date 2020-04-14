@@ -12,7 +12,7 @@ import org.bytedeco.javacpp.BytePointer
 
 trait OpToONNXBytesConverter extends AutoCloseable {
 
-  private val scope = new PointerScope()
+//  private val scope = new PointerScope()
 
   protected def opToNode[
       T: ClassTag
@@ -27,7 +27,8 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 //        implicit evT:  (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
   //       Float] TypeOr Complex[Double])#check[T])
       : NodeProto = {
-    val node = (new NodeProto).New()
+    val node = new NodeProto
+      //(new NodeProto).New()
 
     node.set_name(name)
     node.set_op_type(opName)
@@ -71,7 +72,6 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     }
 
     def addInput[A](input: A, inputName: String): Unit = {
-//      println(input)
       input match {
 
         case tensor: Some[Tensor[Any]] => {
@@ -182,7 +182,6 @@ trait OpToONNXBytesConverter extends AutoCloseable {
       outName: String,
       attrs: Map[String, Any]
   ): Array[Byte] = {
-
     val model = (new ModelProto).New()
     val graph = new org.bytedeco.onnx.GraphProto
     model.set_producer_name("ONNX-Scala")
@@ -229,7 +228,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
   }
 
   override def close(): Unit = {
-    scope.close
+//    scope.close
   }
 
 }

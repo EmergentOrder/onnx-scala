@@ -93,7 +93,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
   def onnxTensorProtoToArray(tensorProto: TensorProto) = {
 
     //TODEFER: Get dim and type denotations, encode into types here in 2.13 / earlier if possible
-    val scope = new PointerScope()
+//    val scope = new PointerScope()
 
     val onnxDataType = tensorProto.data_type
     val dimsCount    = tensorProto.dims_size

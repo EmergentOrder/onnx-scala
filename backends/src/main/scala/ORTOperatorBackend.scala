@@ -13,6 +13,8 @@ trait ORTOperatorBackend
 
   val allocator = new AllocatorWithDefaultOptions()
 
+  val memory_info = MemoryInfo.CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)
+
   def getSession(bytes: Array[Byte]) = {
     val env = new Env(ORT_LOGGING_LEVEL_WARNING, "test")
 
@@ -34,10 +36,7 @@ trait ORTOperatorBackend
       outputNames: PointerPointer[BytePointer] 
   ) = {
 
-    
     val value = new Value(input_tensor_values.size)
-  
-//    val memory_info = MemoryInfo.CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)  
 
     val input_tensor_size = (0 until input_tensor_values.size).foreach{i =>
 /*
@@ -125,8 +124,6 @@ trait ORTOperatorBackend
 
       val size: Long = dims.capacity
       val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_*_)
-       
-      val memory_info = MemoryInfo.CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)  
 
       val inputTensor: Value = Value.CreateTensorLong(
             memory_info.asOrtMemoryInfo,
@@ -154,8 +151,6 @@ trait ORTOperatorBackend
 
       val size: Long = dims.capacity
       val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_*_)
-       
-      val memory_info = MemoryInfo.CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)  
 
       val inputTensor: Value = Value.CreateTensorFloat(
             memory_info.asOrtMemoryInfo,
@@ -176,7 +171,7 @@ trait ORTOperatorBackend
   ): (Tuple1[T]) = {
 
     val sess = getSession(opModel) 
-    
+
     inputs match{
       case Some(x) => {
 
@@ -185,23 +180,17 @@ trait ORTOperatorBackend
     //TODO: more outputs
     val output_node_names = new PointerPointer[BytePointer](1) 
  
-//    val value = new Value(x.size)
-  
-    val memory_info = MemoryInfo.CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)  
-
-//    println(x.size)
 
     val inputDimsAndValues: Array[Tuple2[LongPointer, Value]] = (0 until x.size).map{i => 
      
 
       input_node_names.put(i,new BytePointer(i.toString))
 
-      (new LongPointer(), getTensor(x(i)))
+      (null, getTensor(x(i)))
     }.toArray
 
-//    println(inputDims.size)
     output_node_names.put(0l,new BytePointer("outName"))
-   
+    
     //println(tens._2(0))
     val output = runModel(
       sess, 
@@ -210,14 +199,13 @@ trait ORTOperatorBackend
       inputDimsAndValues.map(_._1),
       output_node_names
     )
- 
+
     //TODO: data types
     val fb = output._1.asByteBuffer.asFloatBuffer
 
     val res = (0 until fb.capacity).map { x =>
       fb.get(x).asInstanceOf[Float] //unsafe : asInstanceOf
     }.toArray
-
 
     val shapeSize: Long = output._2.capacity
     val shape = (0 until shapeSize.toInt).map(x => output._2.get(x).toInt).toArray

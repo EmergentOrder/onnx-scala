@@ -133,7 +133,7 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= Seq(
       "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.3-SNAPSHOT",
-      "org.bytedeco" % "onnxruntime-platform" % "1.2.0-1.5.3-SNAPSHOT",
+      "org.bytedeco" % "onnxruntime-platform" % "1.2.0-1.5.3",
 //      "com.microsoft.onnxruntime" % "onnxruntime4j" % "1.0.0-SNAPSHOT"
     ),
 //    sources in (Compile, doc) := Seq(),

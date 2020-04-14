@@ -6,7 +6,7 @@ val scala213Version = "2.13.1"
 val spireVersion = "0.17.0-M1"
 val zioVersion = "1.0.0-RC18-2"
 val scalametaVersion = "4.3.8"
-val onnxJavaCPPPresetVersion = "1.6.0-1.5.3-SNAPSHOT"
+val onnxJavaCPPPresetVersion = "1.6.0-1.5.3"
 
 lazy val commonSettings = Seq(
   scalaJSUseMainModuleInitializer := true, //Test only
@@ -132,8 +132,8 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
     ),
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.3",
-      "org.bytedeco" % "onnxruntime-platform" % "1.2.0-1.5.3-SNAPSHOT",
+      "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.3-SNAPSHOT",
+      "org.bytedeco" % "onnxruntime-platform" % "1.2.0-1.5.3",
 //      "com.microsoft.onnxruntime" % "onnxruntime4j" % "1.0.0-SNAPSHOT"
     ),
 //    sources in (Compile, doc) := Seq(),

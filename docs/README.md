@@ -34,7 +34,6 @@ Run SqueezeNet image classification inference on an "image" composed entirely of
 ```scala mdoc:silent
 import java.nio.file.{Files, Paths}
 import org.emergentorder.onnx.{Tensor, TensorFactory}
-import org.emergentorder.onnx.backends.NGraphOperatorBackendFull
 import org.emergentorder.onnx.backends.ORTOperatorBackendAll
 import org.emergentorder.onnx.backends.ORTModelBackend
 
@@ -110,6 +109,8 @@ A complete, versioned, numerically generic, type-safe / typeful API to ONNX(Open
 
 This API is expressed via traits, with version-named methods. For example, Abs, the absolute value operator (defined here for operator set 6):
 
+
+//TODO: Use Dotty syntax here
 ```scala mdoc
 import scala.{specialized => sp}
 import spire.math.UByte
@@ -181,9 +182,9 @@ class Absnet(byteArray: Array[Byte]) {
 and you can run `sbt compile` to confirm that the generated code compiles.
 
 ### C) Backend
-Currently. at the operator level, a single partial backend implementation of ONNX, accessible from the JVM, is available.
+Currently there are two backends supported.
 
-This backend is based on [nGraph](https://github.com/NervanaSystems/ngraph), via nGraph JavaCPP Preset.
+These backends are based on [nGraph](https://github.com/NervanaSystems/ngraph) and [ONNX Runtime](https://github.com/microsoft/onnxruntime), via nGraph JavaCPP Presets.
 
 Supported ONNX input and output tensor data types:
 * Byte
@@ -195,11 +196,13 @@ Supported ONNX input and output tensor data types:
 
 Supported ONNX ops:
 
-* All those [supported](https://github.com/NervanaSystems/ngraph/tree/v0.26.0/src/ngraph/frontend/onnx_import/op) by nGraph, currently 100 of 153 total. The rest are in the API, but will error if called.
+* nGraph: All those [supported](https://github.com/NervanaSystems/ngraph/tree/v0.26.0/src/ngraph/frontend/onnx_import/op) by nGraph, currently 101 of 156 total.
 
-ONNX Runtime, which supports all ONNX ops, is the next targeted backend.
+* ONNX Runtime: 145/156 total.
 
-You can also pass entire models to nGraph (see Execution Modes below).
+See the [ONNX backend scoreboard](http://onnx.ai/backend-scoreboard/index.html) 
+
+You can also pass entire models to the backend (see Execution Modes below).
 
 All together, these should enable model inspection and modification, extra compile-time assurances, mixing/matching of backend operator implementations and integration into JVM-based production systems, for a start.
 
@@ -333,10 +336,11 @@ onnx.Sqrt6[Float, WrongDimTypeAxes]("sqrt", Some(typesafeTens))
 
 * [Scalameta](https://github.com/scalameta/scalameta) - Library to read, analyze, transform and generate Scala programs (For a runtime parse pass of generated programs)
 
-#### Backend
+#### Backends
 
 * [nGraph via JavaCPP Preset for nGraph 0.26.0](https://github.com/bytedeco/javacpp-presets/tree/master/ngraph) - nGraph is an open source C++ library, compiler and runtime for Deep Learning frameworks / The missing bridge between Java and native C++ libraries
 
+* [ONNX Runtime via JavaCPP Preset for ONNX Runtime 1.2.0](https://github.com/bytedeco/javacpp-presets/tree/master/onnxruntime) - ONNX Runtime: cross-platform, high performance scoring engine for ML models
 
 ### Inspiration
 

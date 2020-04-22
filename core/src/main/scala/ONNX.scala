@@ -14,6 +14,8 @@ import scala.reflect.ClassTag
 import org.bytedeco.onnx.ModelProto
 package object onnx {
 
+  //TODO: Encode node names as types
+  //TODO: fix encoding of type constraints, use Tensor as part of definition of types
   sealed trait Operator {
     def callOp[T: ClassTag](
         name: String,
@@ -3927,7 +3929,7 @@ package object onnx {
         ] | Complex[Double]: Numeric: ClassTag
     ](name: String, data: Tensor[T], shapeInput: Tensor[Long]): Tuple1[Tensor[T]] = {
       val map: Map[String, Any] = Map()
-      val allInputs             = Some(Tuple1(data)) //TODONT: Hack to use default shape, nGraph fail
+      val allInputs             = Some(Tuple2(data, shapeInput))
       (callOp[Tensor[T]](name, "Reshape", allInputs, map))
     }
   }

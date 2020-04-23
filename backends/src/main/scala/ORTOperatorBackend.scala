@@ -27,7 +27,6 @@ trait ORTOperatorBackend
 
   }
 
-  //TODO: Support more than floats
   def runModel(
       sess: Session,
       input_tensor_values: Array[Value],
@@ -70,15 +69,53 @@ trait ORTOperatorBackend
     val dtype = value.GetTensorTypeAndShapeInfo.GetElementType
     val size = value.GetTensorTypeAndShapeInfo.GetElementCount
     dtype match {
-      case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT => value.GetTensorMutableDataFloat.capacity(size)
-      case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8 => value.GetTensorMutableDataByte().capacity(size)
-      case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16 => value.GetTensorMutableDataShort().capacity(size) 
-      case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32 => value.GetTensorMutableDataInt().capacity(size) 
-      case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64 => value.GetTensorMutableDataLong().capacity(size)
-      case ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE => value.GetTensorMutableDataDouble().capacity(size)
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT =>{
+        val point = value.GetTensorMutableDataFloat.capacity(size)
+        val buff = point.asByteBuffer.asFloatBuffer
+        (0 until buff.capacity).map { x =>
+          buff.get(x)
+        }.toArray
+      }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE =>{
+        val point = value.GetTensorMutableDataDouble.capacity(size)
+        val buff = point.asByteBuffer.asDoubleBuffer
+        (0 until buff.capacity).map { x =>
+          buff.get(x)
+        }.toArray
+      }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8 =>{
+        val point = value.GetTensorMutableDataByte.capacity(size)
+        val buff = point.asByteBuffer
+        (0 until buff.capacity).map { x =>
+          buff.get(x)
+        }.toArray
+      }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16 =>{
+        val point = value.GetTensorMutableDataShort.capacity(size)
+        val buff = point.asByteBuffer.asShortBuffer
+        (0 until buff.capacity).map { x =>
+          buff.get(x)
+        }.toArray
+      }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32 =>{
+        val point = value.GetTensorMutableDataInt.capacity(size)
+        val buff = point.asByteBuffer.asIntBuffer
+        (0 until buff.capacity).map { x =>
+          buff.get(x)
+        }.toArray
+      }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64 =>{
+        val point = value.GetTensorMutableDataLong.capacity(size)
+        val buff = point.asByteBuffer.asLongBuffer
+        (0 until buff.capacity).map { x =>
+          buff.get(x)
+        }.toArray
+      }
     }
   }
 
+
+  //TODO: Rest of the types
   def getTensor[T:ClassTag](input: T): Value = {
 
     input match{
@@ -198,20 +235,13 @@ trait ORTOperatorBackend
       input_node_names,
       inputDimsAndValues.map(_._1),
       output_node_names
-    )
-
-    //TODO: data types
-    val fb = output._1.asByteBuffer.asFloatBuffer
-
-    val res = (0 until fb.capacity).map { x =>
-      fb.get(x).asInstanceOf[Float] //unsafe : asInstanceOf
-    }.toArray
+    ) 
 
     val shapeSize: Long = output._2.capacity
     val shape = (0 until shapeSize.toInt).map(x => output._2.get(x).toInt).toArray
 
 
-    Tuple1(TensorFactory.getTensor(res, shape).asInstanceOf[T])
+    Tuple1(TensorFactory.getTensor(output._1, shape).asInstanceOf[T])
       } 
       case None => Tuple1(TensorFactory.getTensor(Array(), Array[Int]()).asInstanceOf[T])
     

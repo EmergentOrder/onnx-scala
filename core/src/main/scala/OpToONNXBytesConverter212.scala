@@ -129,6 +129,9 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 
             val elemType = tens._1 match {
               case f: Array[Float] => TensorProto.FLOAT
+              case i: Array[Double]   => TensorProto.DOUBLE
+              case l: Array[Byte]  => TensorProto.INT8
+              case f: Array[Short] => TensorProto.INT16
               case i: Array[Int]   => TensorProto.INT32
               case l: Array[Long]  => TensorProto.INT64
             }
@@ -229,11 +232,6 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     val outputValueInfo = graph.add_output
 
     outputValueInfo.set_name(outName)
-
-    outputValueInfo.mutable_type
-    outputValueInfo.`type`.mutable_tensor_type
-    //TODO: fix elem type
-    outputValueInfo.`type`.tensor_type.set_elem_type(1)
 
     //Dummy names
     addInputToGraph(inputs._1, "A", graph)

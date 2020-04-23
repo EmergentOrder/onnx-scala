@@ -112,16 +112,10 @@ class ORTModelBackend(onnxBytes: Array[Byte])
 
 //    println(outputPointer.get(0).IsTensor())
 
-    val fb = output._1.asByteBuffer.asFloatBuffer
-
-    val res = (0 until fb.capacity).map { x =>
-      fb.get(x).asInstanceOf[Float] //unsafe : asInstanceOf
-    }.toArray
-
     val shapeSize: Long = output._2.capacity
     val shape = (0 until shapeSize.toInt).map(x => output._2.get(x).toInt).toArray
 
-    TensorFactory.getTensor(res, shape).asInstanceOf[T9]
+    TensorFactory.getTensor(output._1, shape).asInstanceOf[T9]
   }
 
   override def close(): Unit = {

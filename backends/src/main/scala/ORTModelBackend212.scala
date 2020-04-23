@@ -113,16 +113,10 @@ class ORTModelBackend(onnxBytes: Array[Byte])
 
 //    println(outputPointer.get(0).IsTensor())
 
-    val fb = output._1.asByteBuffer.asFloatBuffer
-
-    val res = (0 until fb.capacity).map { x =>
-      fb.get(x).asInstanceOf[Float] //unsafe : asInstanceOf
-    }.toArray
-
     val shapeSize: Long = output._2.capacity
     val shape = (0 until shapeSize.toInt).map(x => output._2.get(x).toInt).toArray
 
-    TensorFactory.getTensor(res, shape).asInstanceOf[T9]
+    TensorFactory.getTensor(output._1, shape).asInstanceOf[T9]
   }
 
    def getSession(bytes: Array[Byte]) = {
@@ -176,7 +170,56 @@ class ORTModelBackend(onnxBytes: Array[Byte])
 
       val shape: LongPointer = firstOut.GetTensorTypeAndShapeInfo.GetShape();
  
-    (firstOut.GetTensorMutableDataFloat().capacity(size), shape)
+    (getTensorFromValue(firstOut), shape)
+  }
+
+  def getTensorFromValue(value: Value) = {
+    val dtype = value.GetTensorTypeAndShapeInfo.GetElementType
+    val size = value.GetTensorTypeAndShapeInfo.GetElementCount
+    dtype match {
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT =>{
+        val point = value.GetTensorMutableDataFloat.capacity(size)
+        val buff = point.asByteBuffer.asFloatBuffer
+        (0 until buff.capacity).map { x =>
+          buff.get(x)
+        }.toArray
+      }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE =>{
+        val point = value.GetTensorMutableDataDouble.capacity(size)
+        val buff = point.asByteBuffer.asDoubleBuffer
+        (0 until buff.capacity).map { x =>
+          buff.get(x)
+        }.toArray
+      }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8 =>{
+        val point = value.GetTensorMutableDataByte.capacity(size)
+        val buff = point.asByteBuffer
+        (0 until buff.capacity).map { x =>
+          buff.get(x)
+        }.toArray
+      }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16 =>{
+        val point = value.GetTensorMutableDataShort.capacity(size)
+        val buff = point.asByteBuffer.asShortBuffer
+        (0 until buff.capacity).map { x =>
+          buff.get(x)
+        }.toArray
+      }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32 =>{
+        val point = value.GetTensorMutableDataInt.capacity(size)
+        val buff = point.asByteBuffer.asIntBuffer
+        (0 until buff.capacity).map { x =>
+          buff.get(x)
+        }.toArray
+      }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64 =>{
+        val point = value.GetTensorMutableDataLong.capacity(size)
+        val buff = point.asByteBuffer.asLongBuffer
+        (0 until buff.capacity).map { x =>
+          buff.get(x)
+        }.toArray
+      }
+    }
   }
 
 

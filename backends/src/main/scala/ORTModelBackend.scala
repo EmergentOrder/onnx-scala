@@ -97,16 +97,10 @@ class ORTModelBackend(onnxBytes: Array[Byte])
 
 //    println(outputPointer.get(0).IsTensor())
 
-    val fb = output._1.asByteBuffer.asFloatBuffer
-
-    val res = (0 until fb.capacity).map { x =>
-      fb.get(x).asInstanceOf[Float] //unsafe : asInstanceOf
-    }.toArray
-
     val shapeSize: Long = output._2.capacity
     val shape = (0 until shapeSize.toInt).map(x => output._2.get(x).toInt).toArray
 
-    Tuple1(TensorFactory.getTensor(res, shape).asInstanceOf[T])
+    Tuple1(TensorFactory.getTensor(output._1, shape).asInstanceOf[T])
       }  
       case None => Tuple1(TensorFactory.getTensor(Array(), Array[Int]()).asInstanceOf[T])
    

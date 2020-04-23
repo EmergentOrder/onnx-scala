@@ -66,8 +66,7 @@ You can call individual operators:
 ```scala mdoc
 val onnx = new ORTOperatorBackendAll()
 
-//TODO: restore
-//val longTens = TensorFactory.getTensor(Array.fill(1*3*224*224){-42l},Array(1,3,224,224))
+val longTens = TensorFactory.getTensor(Array.fill(1*3*224*224){-42l},Array(1,3,224,224))
 
 //onnx.Abs6("abs", Some(longTens))
 ```

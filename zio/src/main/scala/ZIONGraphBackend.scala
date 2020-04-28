@@ -25,9 +25,9 @@ import org.emergentorder.onnxZIO._
 import org.emergentorder.union._
 import org.emergentorder.onnx.backends._
 
-class ONNXNGraphHandlers(onnxBytes: Array[Byte]) extends AutoCloseable {
+class ONNXORTHandlers(onnxBytes: Array[Byte]) extends AutoCloseable {
   val scope         = new PointerScope()
-  val ngraphBackend = new NGraphModelBackend(onnxBytes)
+  val ngraphBackend = new ORTModelBackend(onnxBytes)
 
   def fullModel[T: ClassTag](
       inputs: Option[NonEmptyTuple]

@@ -62,33 +62,17 @@ class ORTModelBackend(onnxBytes: Array[Byte])
 
     inputs match {
       case Some(x) => {
-    val tens = x.apply(0).asInstanceOf[Tensor[Float]]
-    val inputArray = tens._1
-
-    val inputPointer = new FloatPointer(inputArray.asInstanceOf[Array[Float]]: _*)
-      
-    val size: Long = tens._2.size
-     
-    val lp: LongPointer = new LongPointer(size)
-    (0 until size.toInt).map(i => lp.put(i,tens._2(i)))
-
-    val memory_info = MemoryInfo.CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)
-
-    val inputTensorSize = (0 until size.toInt).map(j => lp.get(j)).reduce(_*_)
-
-    val inputTensor: Value = Value.CreateTensorFloat(
-            memory_info.asOrtMemoryInfo,
-            inputPointer,
-            inputTensorSize,
-            lp,
-            size
-          )
-
     
-    //TODO: multiple inputs
+        val size = x.size
+        val inputTensors = (0 until size).map{i =>
+          val tens = x.apply(i)
+          val inputTensor: Value = getTensor(tens)
+          inputTensor
+        }.toArray
+
     val output = runModel(
       session,
-      Array(inputTensor),
+      inputTensors,
       allNodeNamesAndDims._1,
       allNodeNamesAndDims._2,
       allNodeNamesAndDims._3
@@ -97,10 +81,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
 
 //    println(outputPointer.get(0).IsTensor())
 
-    val shapeSize: Long = output._2.capacity
-    val shape = (0 until shapeSize.toInt).map(x => output._2.get(x).toInt).toArray
-
-    Tuple1(TensorFactory.getTensor(output._1, shape).asInstanceOf[T])
+    Tuple1(output.asInstanceOf[T])
       }  
       case None => Tuple1(TensorFactory.getTensor(Array(), Array[Int]()).asInstanceOf[T])
    

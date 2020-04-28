@@ -59,17 +59,17 @@ trait ORTOperatorBackend
 
     //TODO: More outputs
     val firstOut = output_tensor.get(0)
-      val size: Long = firstOut.GetTensorTypeAndShapeInfo.GetElementCount
 
-      val shape: LongPointer = firstOut.GetTensorTypeAndShapeInfo.GetShape();
+    val shape: LongPointer = firstOut.GetTensorTypeAndShapeInfo.GetShape()
  
-    (getTensorFromValue(firstOut), shape)
+    getTensorFromValue(firstOut, shape)
   }
 
-  def getTensorFromValue(value: Value) = {
+  def getTensorFromValue(value: Value, shapePointer: LongPointer) = {
     val dtype = value.GetTensorTypeAndShapeInfo.GetElementType
     val size = value.GetTensorTypeAndShapeInfo.GetElementCount
-    dtype match {
+    val shape = (0 until shapePointer.capacity().toInt).map(x => shapePointer.get(x).toInt).toArray
+    val arr = dtype match {
       case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT =>{
         val point = value.GetTensorMutableDataFloat.capacity(size)
         val buff = point.asByteBuffer.asFloatBuffer
@@ -113,6 +113,7 @@ trait ORTOperatorBackend
         }.toArray
       }
     }
+    TensorFactory.getTensor(arr, shape)
   }
 
   //TODO: Rest of the types
@@ -288,9 +289,9 @@ trait ORTOperatorBackend
       output_node_names
     )
  
-    val shapeSize: Long = output._2.capacity
-    val shape = (0 until shapeSize.toInt).map(x => output._2.get(x).toInt).toArray
-    TensorFactory.getTensor(output._1, shape).asInstanceOf[T9]
+
+
+    output.asInstanceOf[T9]
   }
 
   def callOp[

@@ -78,32 +78,22 @@ class ORTModelBackend(onnxBytes: Array[Byte])
     ): (T9) = {
 
     val tens = inputs._1.asInstanceOf[Tensor[Float]]
-    val inputArray = tens._1
 
-    val inputPointer = new FloatPointer(inputArray.asInstanceOf[Array[Float]]: _*)
-      
-    val size: Long = tens._2.size
-     
-    val lp: LongPointer = new LongPointer(size)
-    (0 until size.toInt).map(i => lp.put(i,tens._2(i)))
+    val inputTensors = Array(
+      getInput(inputs._1),
+      getInput(inputs._2),
+      getInput(inputs._3),
+      getInput(inputs._4),
+      getInput(inputs._5),
+      getInput(inputs._6),
+      getInput(inputs._7),
+      getInput(inputs._8),
+      getInput(inputs._9)
+    ).flatten
 
-    val memory_info = MemoryInfo.CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)
-
-    val inputTensorSize = (0 until size.toInt).map(j => lp.get(j)).reduce(_*_)
-
-    val inputTensor: Value = Value.CreateTensorFloat(
-            memory_info.asOrtMemoryInfo,
-            inputPointer,
-            inputTensorSize,
-            lp,
-            size
-          )
-
-    
-    //TODO: multiple inputs
     val output = runModel(
       session,
-      Array(inputTensor),
+      inputTensors,
       allNodeNamesAndDims._1,
       allNodeNamesAndDims._2,
       allNodeNamesAndDims._3
@@ -111,11 +101,23 @@ class ORTModelBackend(onnxBytes: Array[Byte])
 //    val outputPointer = out.get(0).GetTensorMutableDataFloat().capacity(inputs.GetTensorTypeAndShapeInfo().GetElementCount());
 
 //    println(outputPointer.get(0).IsTensor())
+     
+    output.asInstanceOf[T9]
+  }
 
-    val shapeSize: Long = output._2.capacity
-    val shape = (0 until shapeSize.toInt).map(x => output._2.get(x).toInt).toArray
-
-    TensorFactory.getTensor(output._1, shape).asInstanceOf[T9]
+  def getInput[T: ClassTag](
+        input: T
+    ): Option[Value] = {
+     input match {
+        case tensorOpt: Option[Tensor[Any]] => {
+          tensorOpt match {
+            case None    => None
+          }
+        }
+      case tensor: Tensor[Any] => {
+        Some(getTensor(tensor))
+      }
+    }
   }
 
   override def close(): Unit = {

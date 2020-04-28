@@ -20,7 +20,7 @@ class NCFZIO(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Ma
     extends AutoCloseable {
 
   val scope             = new PointerScope()
-  val fullNgraphHandler = new ONNXNGraphHandlers(byteArray)
+  val fullNgraphHandler = new ONNXORTHandlers(byteArray)
 
   def fullNCF(
       inputDataactual_input_1: Task[Tensor[Long]],

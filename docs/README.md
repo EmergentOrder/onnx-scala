@@ -181,9 +181,7 @@ class Absnet(byteArray: Array[Byte]) {
 and you can run `sbt compile` to confirm that the generated code compiles.
 
 ### C) Backend
-Currently there are two backends supported.
-
-These backends are based on [nGraph](https://github.com/NervanaSystems/ngraph) and [ONNX Runtime](https://github.com/microsoft/onnxruntime), via nGraph JavaCPP Presets.
+Currently there is one backend supported, based on [ONNX Runtime](https://github.com/microsoft/onnxruntime), via JavaCPP Presets.
 
 Supported ONNX input and output tensor data types:
 * Byte
@@ -194,8 +192,6 @@ Supported ONNX input and output tensor data types:
 * Double
 
 Supported ONNX ops:
-
-* nGraph: All those [supported](https://github.com/NervanaSystems/ngraph/tree/v0.26.0/src/ngraph/frontend/onnx_import/op) by nGraph, currently 101 of 156 total.
 
 * ONNX Runtime: 145/156 total.
 
@@ -336,8 +332,6 @@ onnx.Sqrt6[Float, WrongDimTypeAxes]("sqrt", Some(typesafeTens))
 * [Scalameta](https://github.com/scalameta/scalameta) - Library to read, analyze, transform and generate Scala programs (For a runtime parse pass of generated programs)
 
 #### Backends
-
-* [nGraph via JavaCPP Preset for nGraph 0.26.0](https://github.com/bytedeco/javacpp-presets/tree/master/ngraph) - nGraph is an open source C++ library, compiler and runtime for Deep Learning frameworks / The missing bridge between Java and native C++ libraries
 
 * [ONNX Runtime via JavaCPP Preset for ONNX Runtime 1.2.0](https://github.com/bytedeco/javacpp-presets/tree/master/onnxruntime) - ONNX Runtime: cross-platform, high performance scoring engine for ML models
 

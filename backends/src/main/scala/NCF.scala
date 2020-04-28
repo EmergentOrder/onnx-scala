@@ -19,7 +19,7 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
     extends AutoCloseable {
 
   val scope             = new PointerScope()
-  val fullNgraphHandler = new NGraphModelBackend(byteArray)
+  val fullNgraphHandler = new ORTModelBackend(byteArray)
 
   def fullNCF(
       inputDataactual_input_1: Tensor[Long],

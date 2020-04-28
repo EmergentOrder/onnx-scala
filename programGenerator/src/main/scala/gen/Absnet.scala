@@ -10,7 +10,7 @@ import spire.math.Complex
 import spire.math.Numeric
 
 class Absnet() {
-  val Abs: AbsV6 = new NGraphOperatorBackendAll()
+  val Abs: AbsV6 = new ORTOperatorBackendAll()
   def program(inputDatax: Tensor[Float]): List[Tuple1[Tensor[Float]]] =
     for {
       nodex <- List(inputDatax)

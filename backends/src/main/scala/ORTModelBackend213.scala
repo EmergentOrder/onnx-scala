@@ -77,8 +77,6 @@ class ORTModelBackend(onnxBytes: Array[Byte])
         inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8]
     ): (T9) = {
 
-    val tens = inputs._1.asInstanceOf[Tensor[Float]]
-
     val inputTensors = Array(
       getInput(inputs._1),
       getInput(inputs._2),

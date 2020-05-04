@@ -11,7 +11,7 @@ val onnxJavaCPPPresetVersion = "1.6.0-1.5.3"
 lazy val commonSettings = Seq(
 //  scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
-  version := "0.2.0",
+  version := "0.3.0",
   scalaVersion := scala213Version,
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
@@ -234,44 +234,6 @@ lazy val docs = (crossProject(JVMPlatform)
     crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
   )
 
-lazy val zio = (crossProject(JVMPlatform)//, JSPlatform)
-  .crossType(CrossType.Pure) in file("zio"))
-  .dependsOn(backends)
-  .settings(
-    commonSettings,
-    name := "onnx-scala-zio",
-//    scalaVersion := scala213Version,
-//    sources in (Compile, doc) := Seq(),
-//    publishArtifact in (Compile, packageDoc) := false,
-    excludeFilter in unmanagedSources := (CrossVersion
-      .partialVersion(scalaVersion.value) match {
-      case Some((2, 11)) => "NCFZIO.scala" | "ZIONGraphBackend.scala" 
-      case Some((2, 12)) => "NCFZIO.scala" | "ZIONGraphBackend.scala"
-      case Some((2, 13)) => "NCFZIO.scala" | "ZIONGraphBackend.scala"
-      case _ => ""
-      }
-    ),
-    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
-    libraryDependencies ++= (CrossVersion
-    .partialVersion(scalaVersion.value) match {
-     case Some((2,_)) =>
-        Seq(
-          "dev.zio" %% "zio" % zioVersion
-        )
-     case _ =>
-        Seq(
-         ("dev.zio" %% "zio" % zioVersion).withDottyCompat(dottyVersion)
-        )
-     })
-  )
-  .jvmSettings(
-    //crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
-    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version)
-  )
-//  .jsSettings(
-//    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
-//  )
-
 skip in publish := true
 sonatypeProfileName := "com.github.EmergentOrder" 
 //sonatypeSessionName := s"[sbt-sonatype] ${name.value} ${version.value}"
@@ -287,7 +249,6 @@ developers := List(Developer("EmergentOrder",
                              "lecaran@gmail.com",
                              url("https://github.com/EmergentOrder"))),
 licenses += ("AGPL-3.0", url("https://www.gnu.org/licenses/agpl-3.0.html")),
-sonatypeProfileName := "lecaran",
 publishMavenStyle := true,
 publishConfiguration := publishConfiguration.value.withOverwrite(true),
 publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true),

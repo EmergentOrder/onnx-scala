@@ -214,50 +214,141 @@ class ORTModelBackend(onnxBytes: Array[Byte])
     TensorFactory.getTensor(arr, shape)
   }
 
-
-  //TODO: Rest of the types
   def getTensor[T:ClassTag](input: T): Value = {
 
     input match{
-      case Some(tens: Tensor[Long]) => {
-        try{
-          getTensorLong(tens)
-        }
-        catch{
-          case e: Throwable => getTensorFloat(tens.asInstanceOf[Tensor[Float]])
-        }
-      }
-      case tens: Tensor[Long] => {
 
-        try{
-          getTensorLong(tens)
-        }
-        catch{
-          case e: Throwable => getTensorFloat(tens.asInstanceOf[Tensor[Float]])
+      case tensorOpt: Option[Tensor[_]] => {
+        tensorOpt match {
+          case Some(tens) => {
+            val value: Value = tens._1 match {
+              case b: Array[Byte] => getTensorByte(tens)
+              case s: Array[Short] => getTensorShort(tens)
+              case d: Array[Double] => getTensorDouble(tens)
+              case f: Array[Float] => getTensorFloat(tens)
+              case i: Array[Int]   => getTensorInt(tens)
+              case l: Array[Long]  => getTensorLong(tens)
+            }
+            value
+          }
         }
       }
-//      case Some(tens: Tensor[Float]) => {
-//        getTensorFloat(tens)
-//      }
-//      case tens: Tensor[Float] => {
-//        getTensorFloat(tens)
-//      }
+
+      case tensorOpt: Tensor[_] => {
+        tensorOpt match {
+          case tens => {
+            val value: Value = tens._1 match {
+              case b: Array[Byte] => getTensorByte(tens)
+              case s: Array[Short] => getTensorShort(tens)
+              case d: Array[Double] => getTensorDouble(tens)
+              case f: Array[Float] => getTensorFloat(tens)
+              case i: Array[Int]   => getTensorInt(tens)
+              case l: Array[Long]  => getTensorLong(tens)
+            }
+            value
+          }
+        }
+      }
+
     }
   }
 
-  def getTensorLong(tens: Tensor[Long]): Value = {
-
+  def getTensorByte(tens: Tensor[Byte]): Value = {
           val inputArray = tens._1
-
-          val inputPointer = new LongPointer(inputArray: _*)
-
+          val inputPointer = new BytePointer(inputArray: _*)
 //          input_node_names.put(i,new BytePointer(i.toString))
-
           val dims = new LongPointer(tens._2.size)
           (0 until tens._2.size).map{i =>
             dims.put(i, tens._2(i))
       }
 
+      val size: Long = dims.capacity
+      val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_*_)
+
+      val inputTensor: Value = Value.CreateTensorByte(
+            memory_info.asOrtMemoryInfo,
+            inputPointer,
+            inputTensorSize,
+            dims,
+            size
+          )
+      inputTensor
+  }
+
+  def getTensorShort(tens: Tensor[Short]): Value = {
+          val inputArray = tens._1
+          val inputPointer = new ShortPointer(inputArray: _*)
+//          input_node_names.put(i,new BytePointer(i.toString))
+          val dims = new LongPointer(tens._2.size)
+          (0 until tens._2.size).map{i =>
+            dims.put(i, tens._2(i))
+      }
+
+      val size: Long = dims.capacity
+      val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_*_)
+
+      val inputTensor: Value = Value.CreateTensorShort(
+            memory_info.asOrtMemoryInfo,
+            inputPointer,
+            inputTensorSize,
+            dims,
+            size
+          )
+      inputTensor
+  }
+
+  def getTensorDouble(tens: Tensor[Double]): Value = {
+          val inputArray = tens._1
+          val inputPointer = new DoublePointer(inputArray: _*)
+//          input_node_names.put(i,new BytePointer(i.toString))
+          val dims = new LongPointer(tens._2.size)
+          (0 until tens._2.size).map{i =>
+            dims.put(i, tens._2(i))
+      }
+
+      val size: Long = dims.capacity
+      val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_*_)
+
+      val inputTensor: Value = Value.CreateTensorDouble(
+            memory_info.asOrtMemoryInfo,
+            inputPointer,
+            inputTensorSize,
+            dims,
+            size
+          )
+      inputTensor
+  }
+
+  def getTensorInt(tens: Tensor[Int]): Value = {
+          val inputArray = tens._1
+          val inputPointer = new IntPointer(inputArray: _*)
+//          input_node_names.put(i,new BytePointer(i.toString))
+          val dims = new LongPointer(tens._2.size)
+          (0 until tens._2.size).map{i =>
+            dims.put(i, tens._2(i))
+      }
+
+      val size: Long = dims.capacity
+      val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_*_)
+
+      val inputTensor: Value = Value.CreateTensorInt(
+            memory_info.asOrtMemoryInfo,
+            inputPointer,
+            inputTensorSize,
+            dims,
+            size
+          )
+      inputTensor
+  }
+
+  def getTensorLong(tens: Tensor[Long]): Value = {
+          val inputArray = tens._1
+          val inputPointer = new LongPointer(inputArray: _*)
+//          input_node_names.put(i,new BytePointer(i.toString))
+          val dims = new LongPointer(tens._2.size)
+          (0 until tens._2.size).map{i =>
+            dims.put(i, tens._2(i))
+      }
 
       val size: Long = dims.capacity
       val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_*_)
@@ -273,7 +364,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
   }
 
   def getTensorFloat(tens: Tensor[Float]): Value = {
-
+        
           val inputArray = tens._1
 
           val inputPointer = new FloatPointer(inputArray: _*)

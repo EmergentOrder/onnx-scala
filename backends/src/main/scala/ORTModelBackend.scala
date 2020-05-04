@@ -9,7 +9,7 @@ import org.bytedeco.onnxruntime.global.onnxruntime._
 import org.emergentorder.onnx._
 
 
-//TODO: Clean up, remove asInstaceOf, multiple inputs, etc.
+//TODO: Clean up, remove asInstaceOf, etc.
 class ORTModelBackend(onnxBytes: Array[Byte])
     extends Model(onnxBytes)
     with ORTOperatorBackend

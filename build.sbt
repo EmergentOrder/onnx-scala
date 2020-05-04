@@ -9,7 +9,7 @@ val scalametaVersion = "4.3.10"
 val onnxJavaCPPPresetVersion = "1.6.0-1.5.3"
 
 lazy val commonSettings = Seq(
-  scalaJSUseMainModuleInitializer := true, //Test only
+//  scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
   version := "0.2.0",
   scalaVersion := scala213Version,
@@ -20,7 +20,7 @@ lazy val commonSettings = Seq(
   autoCompilerPlugins := true,
 ) ++ sonatypeSettings
 
-lazy val common = (crossProject(JSPlatform, JVMPlatform)
+lazy val common = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("common"))
   .settings(commonSettings, name := "onnx-scala-common",
   )
@@ -34,16 +34,16 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform)
  //   sources in (Compile, doc) := Seq(),
 //    publishArtifact in (Compile, packageDoc) := false
   )
-  .jsSettings(
-    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
-  )
+//  .jsSettings(
+//    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
+//  )
 //  .nativeSettings(
 //    scalaVersion := scala211Version
 //  )
 
-lazy val commonJS = common.js
-  .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
-  .disablePlugins(dotty.tools.sbtplugin.DottyIDEPlugin)
+//lazy val commonJS = common.js
+//  .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
+//  .disablePlugins(dotty.tools.sbtplugin.DottyIDEPlugin)
 
 lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
   .crossType(CrossType.Pure) in file("programGenerator"))
@@ -149,7 +149,7 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
 //    scalaVersion := scala211Version
 //  )
 
-lazy val core = (crossProject(JSPlatform, JVMPlatform)
+lazy val core = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("core"))
   .dependsOn(common)
   .settings(
@@ -191,6 +191,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
       "org.osgi" % "org.osgi.annotation.versioning" % "1.1.0"
     )
   )
+/*
   .jsSettings(
     crossScalaVersions := Seq(
       scala212Version,
@@ -208,6 +209,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
         )
     })
   )
+*/
 /*
     .nativeSettings(
       scalaVersion := scala211Version,

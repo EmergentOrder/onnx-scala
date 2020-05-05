@@ -22,6 +22,7 @@ import java.nio.file._
 import java.nio.ByteBuffer
 import collection.JavaConverters._
 import scala.reflect.ClassTag
+import scala.language.implicitConversions
 
 import java.io.File
 import scala.reflect.io.Streamable

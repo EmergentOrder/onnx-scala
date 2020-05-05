@@ -1,6 +1,7 @@
 package org.emergentorder.onnx
 
 import scala.reflect.ClassTag
+import scala.language.implicitConversions
 
 import org.bytedeco.onnx.ModelProto
 import org.bytedeco.onnx.NodeProto
@@ -74,11 +75,11 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     def addInput[A](input: A, inputName: String): Unit = {
       input match {
 
-        case tensor: Some[Tensor[Any]] => {
+        case tensor: Some[_] => {
           node.add_input(inputName)
         }
 
-        case tensor: Tensor[Any] => {
+        case tensor: Tensor[_] => {
           node.add_input(inputName)
         }
         /*
@@ -142,40 +143,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
           inputDim.set_dim_value(x)
 
         }
-      }
-      case tensorOpt: Option[Tensor[_]] => {
-        tensorOpt match {
-          //duplicated
-          case Some(tens) => {
-
-            val elemType = tens._1 match {
-              case b: Array[Byte] => TensorProto.INT8
-              case s: Array[Short] => TensorProto.INT16
-              case d: Array[Double] => TensorProto.DOUBLE
-              case f: Array[Float] => TensorProto.FLOAT
-              case i: Array[Int]   => TensorProto.INT32
-              case l: Array[Long]  => TensorProto.INT64
-            }
-
-            val inputValueInfo = graph.add_input
-
-            inputValueInfo.set_name(inputName)
-            inputValueInfo.mutable_type
-            inputValueInfo.`type`.mutable_tensor_type
-            inputValueInfo.`type`.tensor_type.set_elem_type(elemType)
-
-            val dims = tens._2
-            inputValueInfo.`type`.tensor_type.mutable_shape
-            dims.foreach { x =>
-              val inputDim = inputValueInfo.`type`.tensor_type.shape.add_dim
-
-              inputDim.set_dim_value(x)
-
-            }
-          }
-          case None =>
-        }
-      }
+      } 
     }
   }
 
@@ -213,7 +181,16 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     inputs match {
       case Some(x) => {
         val size = x.size
-        (0 until size).foreach { i => addInputToGraph(x(i), i.toString, graph) }
+        (0 until size).foreach { i => 
+        x(i) match {
+          case opt: Option[_] =>
+            opt match {
+              case Some(in) => addInputToGraph(in, i.toString, graph) 
+            }
+          case _ => addInputToGraph(x(i), i.toString, graph) 
+      
+        }
+        }
       }
       case None =>
     }

@@ -1,13 +1,13 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 val dottyVersion = "0.23.0"
-val scala211Version = "2.11.12"
-val scala212Version = "2.12.11"
 val scala213Version = "2.13.2"
 val spireVersion = "0.17.0-M1"
 val zioVersion = "1.0.0-RC18-2"
 val scalametaVersion = "4.3.10"
 val onnxJavaCPPPresetVersion = "1.6.0-1.5.3"
 
+  
+scalaVersion := scala213Version 
 lazy val commonSettings = Seq(
 //  scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
@@ -27,9 +27,7 @@ lazy val common = (crossProject(JVMPlatform)
   .jvmSettings(
     crossScalaVersions := Seq(
       dottyVersion,
-      scala212Version,
-      scala213Version,
-      scala211Version
+      scala213Version
     ),
  //   sources in (Compile, doc) := Seq(),
 //    publishArtifact in (Compile, packageDoc) := false
@@ -56,8 +54,6 @@ lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
     ),
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, 11)) => "Absnet.scala" | "Squeezenet1dot1.scala" | "Squeezenet1dot1213.scala" | "ONNXProgramGenerator213.scala" | "ONNXProgramGenerator.scala"
-      case Some((2, 12)) => "Absnet.scala" | "Squeezenet1dot1.scala" | "Squeezenet1dot1213.scala" | "ONNXProgramGenerator213.scala" | "ONNXProgramGenerator.scala"
       case Some((2, 13)) => "Absnet.scala" | "Squeezenet1dot1.scala" | "ONNXProgramGenerator.scala"
       case _ => "ONNXProgramGenerator213.scala" | "Squeezenet1dot1213.scala"
       }
@@ -83,8 +79,6 @@ lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
   .jvmSettings(
     crossScalaVersions := Seq(
       dottyVersion,
-      scala212Version,
-      scala211Version,
       scala213Version
     )
   )
@@ -103,29 +97,10 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
     name := "onnx-scala-backends",
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, 11)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | 
-                            "NGraphOperatorBackend.scala" | "NCF.scala" | 
-                            "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala" |
-                            "NGraphOperatorBackendAll.scala" | "ORTOperatorBackendAll.scala" | 
-                            "ORTOperatorBackend.scala" | "ORTOperatorBackend213.scala" | 
-                            "ORTOperatorBackendAll213.scala" | "ORTModelBackend.scala" | 
-                            "ORTModelBackend213.scala" | "ORTOperatorBackendAtoL213.scala"
-      case Some((2, 12)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | 
-                            "NGraphOperatorBackend.scala" | "NCF.scala" | 
-                            "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala" |
-                            "NGraphOperatorBackendAll.scala" | "ORTOperatorBackendAll.scala" | 
-                            "ORTOperatorBackend.scala" | "ORTOperatorBackend213.scala" | 
-                            "ORTOperatorBackendAll213.scala" | "ORTModelBackend.scala" | 
-                            "ORTModelBackend213.scala" | "ORTOperatorBackendAtoL213.scala"
-      case Some((2, 13)) => "NGraphBackendUtils.scala" | "NGraphModelBackend.scala" | 
-                            "NGraphOperatorBackend.scala" | "NCF.scala" | 
-                            "NGraphOperatorBackendAll.scala" | "ORTOperatorBackend.scala" | 
-                            "ORTOperatorBackendAll.scala" | "ORTModelBackend.scala" | 
-                            "ORTModelBackend212.scala"
-      case _ => "NGraphBackendUtils212.scala" | "NGraphModelBackend212.scala" | 
-                "NGraphOperatorBackend212.scala" | "NCF212.scala" | 
-                "NGraphOperatorBackendFull213.scala" | "NGraphOperatorBackendAtoL213.scala" |
-                "ORTModelBackend212.scala" | "ORTModelBackend213.scala" |
+      case Some((2, 13)) => "NCF.scala" | 
+                            "ORTOperatorBackend.scala" | 
+                            "ORTOperatorBackendAll.scala" | "ORTModelBackend.scala"
+      case _ => "ORTModelBackend213.scala" | "NCF213.scala" |
                 "ORTOperatorBackend213.scala" | "ORTOperatorBackendAll213.scala" | 
                 "ORTOperatorBackendAtoL213.scala"
       }
@@ -140,7 +115,7 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
 //    publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(
-    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version)
+    crossScalaVersions := Seq(dottyVersion, scala213Version)
   )
 //  .jsSettings(
 //    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
@@ -159,19 +134,15 @@ lazy val core = (crossProject(JVMPlatform)
 //    scalaVersion := scala213Version,
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, 11)) => "ONNX.scala" | "ONNX213.scala" | "OpToONNXBytesConverter.scala" | "Tensor.scala"
-      case Some((2, 12)) => "ONNX.scala" | "ONNX213.scala" | "OpToONNXBytesConverter.scala" | "Tensor.scala"
-      case Some((2, 13)) => "ONNX.scala" | "ONNX212.scala" | "OpToONNXBytesConverter.scala" | "Tensor.scala"
-      case _ => "ONNX212.scala" | "ONNX213.scala" | "OpToONNXBytesConverter212.scala"
+      case Some((2, 13)) => "ONNX.scala" | "OpToONNXBytesConverter.scala" | "Tensor.scala"
+      case _ => "ONNX213.scala" | "OpToONNXBytesConverter213.scala"
       }
     )
   )
   .jvmSettings(
     crossScalaVersions := Seq(
       dottyVersion,
-      scala212Version,
-      scala213Version,
-      scala211Version
+      scala213Version
     ),
 //    sources in (Compile, doc) := Seq(),
 //    publishArtifact in (Compile, packageDoc) := false, //TODO: Only block this for JS
@@ -231,7 +202,7 @@ lazy val docs = (crossProject(JVMPlatform)
   .dependsOn(programGenerator)
   .enablePlugins(MdocPlugin)
   .jvmSettings(
-    crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
+    crossScalaVersions := Seq(scala213Version)
   )
 
 skip in publish := true

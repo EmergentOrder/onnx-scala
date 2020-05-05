@@ -1,24 +1,23 @@
 package org.emergentorder.onnx
 
+trait Dim
+sealed trait Axes
 
-  trait Dim
-  sealed trait Axes
-
-  sealed case class Scalar()                             extends Axes
-  sealed case class Vec[I <: XInt, T <: Dim](i: I, t: T) extends Axes
-  sealed case class Mat[I <: XInt, T <: Dim, J <: XInt, U <: Dim](i: I, t: T, j: J, u: U)
+sealed case class Scalar()                             extends Axes
+sealed case class Vec[I <: XInt, T <: Dim](i: I, t: T) extends Axes
+sealed case class Mat[I <: XInt, T <: Dim, J <: XInt, U <: Dim](i: I, t: T, j: J, u: U)
       extends Axes
-  sealed case class TensorRank3[I <: XInt, T <: Dim, J <: XInt, U <: Dim, K <: XInt, V <: Dim](
+sealed case class TensorRank3[I <: XInt, T <: Dim, J <: XInt, U <: Dim, K <: XInt, V <: Dim](
       i: I,
       t: T,
       j: J,
       u: U,
       k: K,
       v: V
-  ) extends Axes
+) extends Axes
 //TODO: 4+ dimensional
 
-  object AxesFactory {
+object AxesFactory {
     def getAxes[T](shape: Array[XInt], dims: Array[Dim]): Axes = {
       if (shape.length == 3) {
         val t0 = shape(0)

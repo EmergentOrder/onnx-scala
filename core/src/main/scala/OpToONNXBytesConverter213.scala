@@ -79,7 +79,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 
     def addInput[A](input: A, inputName: String): Unit = {
       input match {
-        case tensorOpt: Option[Tensor[Any]] => {
+        case tensorOpt: Option[_] => {
           tensorOpt match {
             case Some(y) => node.add_input(inputName)
             case None    =>

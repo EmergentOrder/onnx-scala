@@ -22,6 +22,7 @@ import java.nio.file._
 import java.nio.ByteBuffer
 import collection.JavaConverters._
 import scala.reflect.ClassTag
+import scala.language.implicitConversions
 
 import java.io.File
 import scala.reflect.io.Streamable
@@ -31,7 +32,7 @@ import org.bytedeco.onnx.global.onnx.ParseProtoFromBytes
 
 class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
-  val scope = new PointerScope()
+//  val scope = new PointerScope()
 //  val loaded =
 //    org.bytedeco.javacpp.Loader.load(classOf[org.bytedeco.onnx.global.onnx])
 
@@ -44,7 +45,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
       bytes,
       byteArray.length.toLong
     )
-    bytes.close
+//    bytes.close
     r
   }
 
@@ -93,7 +94,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
   def onnxTensorProtoToArray(tensorProto: TensorProto) = {
 
     //TODEFER: Get dim and type denotations, encode into types here in 2.13 / earlier if possible
-    val scope = new PointerScope()
+//    val scope = new PointerScope()
 
     val onnxDataType = tensorProto.data_type
     val dimsCount    = tensorProto.dims_size
@@ -102,86 +103,68 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
     val rawData = tensorProto.raw_data
 
-    val TensProtoByte = TensorProto.INT8
-    val TensProtoShort = TensorProto.INT16
-    val TensProtoInt = TensorProto.INT32
-    val TensProtoLong = TensorProto.INT64
-    val TensProtoFloat = TensorProto.FLOAT
+    val TensProtoByte   = TensorProto.INT8
+    val TensProtoShort  = TensorProto.INT16
+    val TensProtoInt    = TensorProto.INT32
+    val TensProtoLong   = TensorProto.INT64
+    val TensProtoFloat  = TensorProto.FLOAT
     val TensProtoDouble = TensorProto.DOUBLE
 
     val array = onnxDataType match {
       case TensProtoByte => {
         val arrX = dimsToArray[Byte](dimsCount, dimsList)
         (0 until arrX.length).foreach {
-          if (rawData == null) { x =>
-            arrX(x) = tensorProto.int32_data(x).toByte
-          } else { x =>
-            arrX(x) = rawData.get(x)
-          }
+          if (rawData == null) { x => arrX(x) = tensorProto.int32_data(x).toByte }
+          else { x => arrX(x) = rawData.get(x) }
         }
         arrX.toArray
       }
       case TensProtoShort => {
         val arrX = dimsToArray[Short](dimsCount, dimsList)
         (0 until arrX.length).foreach {
-          if (rawData == null) { x =>
-            arrX(x) = tensorProto.int32_data(x).toShort
-          } else { x =>
-            arrX(x) = rawData.getShort(x * 2)
-          }
+          if (rawData == null) { x => arrX(x) = tensorProto.int32_data(x).toShort }
+          else { x => arrX(x) = rawData.getShort(x * 2) }
         }
         arrX.toArray
       }
       case TensProtoInt => {
         val arrX = dimsToArray[Int](dimsCount, dimsList)
         (0 until arrX.length).foreach {
-          if (rawData == null) { x =>
-            arrX(x) = tensorProto.int32_data(x)
-          } else { x =>
-            arrX(x) = rawData.getInt(x * 4)
-          }
+          if (rawData == null) { x => arrX(x) = tensorProto.int32_data(x) }
+          else { x => arrX(x) = rawData.getInt(x * 4) }
         }
         arrX.toArray
       }
       case TensProtoLong => {
         val arrX = dimsToArray[Long](dimsCount, dimsList)
         (0 until arrX.length).foreach {
-          if (rawData == null) { x =>
-            arrX(x) = tensorProto.int64_data(x)
-          } else { x =>
-            arrX(x) = rawData.getLong(x * 8)
-          }
+          if (rawData == null) { x => arrX(x) = tensorProto.int64_data(x) }
+          else { x => arrX(x) = rawData.getLong(x * 8) }
         }
         arrX.toArray
       }
       case TensProtoFloat => {
         val arrX = dimsToArray[Float](dimsCount, dimsList)
         (0 until arrX.length).foreach {
-          if (rawData == null) { x =>
-            arrX(x) = tensorProto.float_data(x)
-          } else { x =>
-            arrX(x) = rawData.getFloat(x * 4)
-          }
+          if (rawData == null) { x => arrX(x) = tensorProto.float_data(x) }
+          else { x => arrX(x) = rawData.getFloat(x * 4) }
         }
         arrX.toArray
       }
       case TensProtoDouble => {
         val arrX = dimsToArray[Double](dimsCount, dimsList)
         (0 until arrX.length).foreach {
-          if (rawData == null) { x =>
-            arrX(x) = tensorProto.double_data(x)
-          } else { x =>
-            arrX(x) = rawData.getDouble(x * 8)
-          }
+          if (rawData == null) { x => arrX(x) = tensorProto.double_data(x) }
+          else { x => arrX(x) = rawData.getDouble(x * 8) }
         }
         arrX.toArray
       }
     }
     if (rawData != null) {
-      rawData.close
+//      rawData.close
     }
-    tensorProto.close
-    scope.close
+//    tensorProto.close
+//    scope.close
     array
   }
 
@@ -228,12 +211,11 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
       .toArray
       .map { x =>
         x.toArray
-          .map(
-            y =>
-              y.getString
-                .asInstanceOf[String]
-                .replaceAll("-", "_")
-                .replaceAll("/", "_")
+          .map(y =>
+            y.getString
+              .asInstanceOf[String]
+              .replaceAll("-", "_")
+              .replaceAll("/", "_")
           )
       }
 
@@ -247,12 +229,11 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
       }
       .toArray
       .map { x =>
-        x.toArray.map(
-          y =>
-            y.getString
-              .asInstanceOf[String]
-              .replaceAll("-", "_")
-              .replaceAll("/", "_")
+        x.toArray.map(y =>
+          y.getString
+            .asInstanceOf[String]
+            .replaceAll("-", "_")
+            .replaceAll("/", "_")
         )
       }
 
@@ -314,22 +295,21 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
     val outputCount = graph.output_size.toInt
     val output      = (0 until outputCount).map(y => graph.output(y)).toList
     output.toArray
-      .map(
-        y =>
-          (
-            y.name.getString
-              .asInstanceOf[String]
-              .replaceAll("-", "_")
-              .replaceAll("/", "_"),
-            tensorElemTypeMap(y.`type`.tensor_type.elem_type)
-          )
+      .map(y =>
+        (
+          y.name.getString
+            .asInstanceOf[String]
+            .replaceAll("-", "_")
+            .replaceAll("/", "_"),
+          tensorElemTypeMap(y.`type`.tensor_type.elem_type)
+        )
       )
       .filter(z => !(params exists (_._1.equals(z._1))))
   }
 
   override def close(): Unit = {
-    model.close
-    scope.close
+//    model.close
+//    scope.close
   }
 
 }

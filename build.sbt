@@ -1,17 +1,17 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
-val dottyVersion = "0.22.0-RC1"
-val scala211Version = "2.11.12"
-val scala212Version = "2.12.10"
-val scala213Version = "2.13.1"
+val dottyVersion = "0.23.0"
+val scala213Version = "2.13.2"
 val spireVersion = "0.17.0-M1"
-val zioVersion = "1.0.0-RC18-1"
-val scalametaVersion = "4.3.0"
-val onnxJavaCPPPresetVersion = "1.6.0-1.5.2"
+val zioVersion = "1.0.0-RC18-2"
+val scalametaVersion = "4.3.10"
+val onnxJavaCPPPresetVersion = "1.6.0-1.5.3"
 
+  
+scalaVersion := scala213Version 
 lazy val commonSettings = Seq(
-  scalaJSUseMainModuleInitializer := true, //Test only
+//  scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
-  version := "0.2.0",
+  version := "0.3.0",
   scalaVersion := scala213Version,
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
@@ -20,30 +20,28 @@ lazy val commonSettings = Seq(
   autoCompilerPlugins := true,
 ) ++ sonatypeSettings
 
-lazy val common = (crossProject(JSPlatform, JVMPlatform)
+lazy val common = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("common"))
   .settings(commonSettings, name := "onnx-scala-common",
   )
   .jvmSettings(
     crossScalaVersions := Seq(
       dottyVersion,
-      scala212Version,
-      scala213Version,
-      scala211Version
+      scala213Version
     ),
  //   sources in (Compile, doc) := Seq(),
 //    publishArtifact in (Compile, packageDoc) := false
   )
-  .jsSettings(
-    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
-  )
+//  .jsSettings(
+//    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
+//  )
 //  .nativeSettings(
 //    scalaVersion := scala211Version
 //  )
 
-lazy val commonJS = common.js
-  .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
-  .disablePlugins(dotty.tools.sbtplugin.DottyIDEPlugin)
+//lazy val commonJS = common.js
+//  .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
+//  .disablePlugins(dotty.tools.sbtplugin.DottyIDEPlugin)
 
 lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
   .crossType(CrossType.Pure) in file("programGenerator"))
@@ -54,6 +52,15 @@ lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
     mainClass in (Compile, run) := Some(
       "org.emergentorder.onnx.ONNXProgramGenerator"
     ),
+    excludeFilter in unmanagedSources := (CrossVersion
+      .partialVersion(scalaVersion.value) match {
+      case Some((2, 13)) => "Absnet.scala" | "Squeezenet1dot1.scala" | "ONNXProgramGenerator.scala"
+      case _ => "ONNXProgramGenerator213.scala" | "Squeezenet1dot1213.scala"
+      }
+    )
+  )
+  .jvmSettings(
+    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil }, 
     libraryDependencies ++= (CrossVersion
     .partialVersion(scalaVersion.value) match {
      case Some((2,_)) =>
@@ -72,8 +79,6 @@ lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
   .jvmSettings(
     crossScalaVersions := Seq(
       dottyVersion,
-      scala212Version,
-      scala211Version,
       scala213Version
     )
   )
@@ -90,16 +95,27 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala-backends",
+    excludeFilter in unmanagedSources := (CrossVersion
+      .partialVersion(scalaVersion.value) match {
+      case Some((2, 13)) => "NCF.scala" | 
+                            "ORTOperatorBackend.scala" | 
+                            "ORTOperatorBackendAll.scala" | "ORTModelBackend.scala"
+      case _ => "ORTModelBackend213.scala" | "NCF213.scala" |
+                "ORTOperatorBackend213.scala" | "ORTOperatorBackendAll213.scala" | 
+                "ORTOperatorBackendAtoL213.scala"
+      }
+    ),
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.2",
+      "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.3",
+      "org.bytedeco" % "onnxruntime-platform" % "1.2.0-1.5.3",
 //      "com.microsoft.onnxruntime" % "onnxruntime4j" % "1.0.0-SNAPSHOT"
     ),
 //    sources in (Compile, doc) := Seq(),
 //    publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(
-    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version)
+    crossScalaVersions := Seq(dottyVersion, scala213Version)
   )
 //  .jsSettings(
 //    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
@@ -108,7 +124,7 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
 //    scalaVersion := scala211Version
 //  )
 
-lazy val core = (crossProject(JSPlatform, JVMPlatform)
+lazy val core = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("core"))
   .dependsOn(common)
   .settings(
@@ -118,17 +134,15 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
 //    scalaVersion := scala213Version,
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, 13)) => ("ONNX.scala")
-      case _ => "ONNX213.scala"
+      case Some((2, 13)) => "ONNX.scala" | "OpToONNXBytesConverter.scala" | "Tensor.scala"
+      case _ => "ONNX213.scala" | "OpToONNXBytesConverter213.scala"
       }
     )
   )
   .jvmSettings(
     crossScalaVersions := Seq(
       dottyVersion,
-      scala212Version,
-      scala213Version,
-      scala211Version
+      scala213Version
     ),
 //    sources in (Compile, doc) := Seq(),
 //    publishArtifact in (Compile, packageDoc) := false, //TODO: Only block this for JS
@@ -148,6 +162,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
       "org.osgi" % "org.osgi.annotation.versioning" % "1.1.0"
     )
   )
+/*
   .jsSettings(
     crossScalaVersions := Seq(
       scala212Version,
@@ -165,6 +180,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
         )
     })
   )
+*/
 /*
     .nativeSettings(
       scalaVersion := scala211Version,
@@ -186,37 +202,8 @@ lazy val docs = (crossProject(JVMPlatform)
   .dependsOn(programGenerator)
   .enablePlugins(MdocPlugin)
   .jvmSettings(
-    crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
+    crossScalaVersions := Seq(scala213Version)
   )
-
-lazy val zio = (crossProject(JVMPlatform)//, JSPlatform)
-  .crossType(CrossType.Pure) in file("zio"))
-  .dependsOn(backends)
-  .settings(
-    commonSettings,
-    name := "onnx-scala-zio",
-//    scalaVersion := scala213Version,
-//    sources in (Compile, doc) := Seq(),
-//    publishArtifact in (Compile, packageDoc) := false,
-    libraryDependencies ++= (CrossVersion
-    .partialVersion(scalaVersion.value) match {
-     case Some((2,_)) =>
-        Seq(
-          "dev.zio" %% "zio" % zioVersion
-        )
-     case _ =>
-        Seq(
-         ("dev.zio" %% "zio" % zioVersion).withDottyCompat(dottyVersion)
-        )
-     })
-  )
-  .jvmSettings(
-    //crossScalaVersions := Seq(scala212Version, scala213Version, scala211Version)
-    crossScalaVersions := Seq(dottyVersion, scala212Version, scala213Version, scala211Version)
-  )
-//  .jsSettings(
-//    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
-//  )
 
 skip in publish := true
 sonatypeProfileName := "com.github.EmergentOrder" 
@@ -233,7 +220,6 @@ developers := List(Developer("EmergentOrder",
                              "lecaran@gmail.com",
                              url("https://github.com/EmergentOrder"))),
 licenses += ("AGPL-3.0", url("https://www.gnu.org/licenses/agpl-3.0.html")),
-sonatypeProfileName := "lecaran",
 publishMavenStyle := true,
 publishConfiguration := publishConfiguration.value.withOverwrite(true),
 publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true),

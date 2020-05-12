@@ -2,23 +2,23 @@ package org.emergentorder.onnx.backends
 import org.emergentorder.onnx._
 
 //Commented out ops are not supported in NGraph currently
-class NGraphOperatorBackendFull
-    extends NGraphOperatorBackendAtoL
+class ORTOperatorBackendAll
+    extends ORTOperatorBackendAtoL
     with MatMul
     with MatMulInteger
     with Max
     with MaxPool
 //    with MaxRoiPool
-//    with MaxUnpool
+    with MaxUnpool
     with Mean
     with MeanVarianceNormalization
     with Min
-//    with Mod
+    with Mod
     with Mul
     with Multinomial
     with Neg
-//    with NonMaxSuppression
-//    with NonZero
+    with NonMaxSuppression
+    with NonZero
 //    with Normalizer
     with Not
     with OneHot
@@ -30,12 +30,12 @@ class NGraphOperatorBackendFull
     with QLinearConv
     with QLinearMatMul
     with QuantizeLinear
-//    with RNN
+    with RNN
 //    with RandomNormal
 //    with RandomNormalLike
 //    with RandomUniform
 //    with RandomUniformLike
-//    with Range
+    with Range
     with Reciprocal
     with ReduceL1
     with ReduceL2
@@ -49,14 +49,14 @@ class NGraphOperatorBackendFull
     with ReduceSumSquare
     with Relu
     with Reshape
-//    with Resize
+    with Resize
     with ReverseSequence
-//    with RoiAlign
-//    with Round
+    with RoiAlign
+    with Round
 //    with SVMClassifier
 //    with SVMRegressor
 //    with Scaler
-//    with Scan
+    with Scan
 //    with Scatter
 //    with ScatterElements
 //    with ScatterND
@@ -66,7 +66,7 @@ class NGraphOperatorBackendFull
 //    with SequenceEmpty
 //    with SequenceErase
 //    with SequenceInsert
-//    with SequenceLength
+//   with SequenceLength
     with Shape
     with Shrink
     with Sigmoid

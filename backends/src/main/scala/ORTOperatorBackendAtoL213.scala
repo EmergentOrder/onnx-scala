@@ -1,9 +1,10 @@
 package org.emergentorder.onnx.backends
 import org.emergentorder.onnx._
 
+//TODO: add extra ORT ops
 //Commented out ops are not supported in NGraph currently
-class NGraphOperatorBackendAtoL
-    extends NGraphOperatorBackend
+class ORTOperatorBackendAtoL
+    extends ORTOperatorBackend
     with Abs
     with Acos
     with Acosh
@@ -19,42 +20,42 @@ class NGraphOperatorBackendAtoL
     with AveragePool
     with BatchNormalization
 //    with Binarizer
-//    with BitShift
+    with BitShift
     with Cast
 //    with CastMap
 //    with CategoryMapper
     with Ceil
     with Clip
-//    with Compress
+    with Compress
     with Concat
-//    with ConcatFromSequence
+    with ConcatFromSequence
     with Constant
-//    with ConstantOfShape
+    with ConstantOfShape
     with Conv
     with ConvInteger
     with ConvTranspose
     with Cos
     with Cosh
-//    with CumSum
+    with CumSum
     with DepthToSpace
     with DequantizeLinear
-//    with Det
+    with Det
 //    with DictVectorizer
     with Div
     with Dropout
-//    with DynamicQuantizeLinear
+    with DynamicQuantizeLinear
     with Elu
     with Equal
     with Erf
     with Exp
-//    with Expand
+    with Expand
     with EyeLike
     with Flatten
     with Floor
     with GRU
     with Gather
-//    with GatherElements
-//    with GatherND
+    with GatherElements
+    with GatherND
     with Gemm
     with GlobalAveragePool
 //    with GlobalLpPool
@@ -66,7 +67,7 @@ class NGraphOperatorBackendAtoL
 //    with If
 //    with Imputer
     with InstanceNormalization
-//    with IsInf
+    with IsInf
     with IsNaN
     with LRN
     with LSTM
@@ -77,6 +78,6 @@ class NGraphOperatorBackendAtoL
 //    with LinearRegressor
     with Log
     with LogSoftmax
-//    with Loop
+    with Loop
     with LpNormalization
     with LpPool

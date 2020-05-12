@@ -34,12 +34,12 @@ Run SqueezeNet image classification inference on an "image" composed entirely of
 ```scala mdoc:silent
 import java.nio.file.{Files, Paths}
 import org.emergentorder.onnx.{Tensor, TensorFactory}
-import org.emergentorder.onnx.backends.NGraphOperatorBackendFull
-import org.emergentorder.onnx.backends.NGraphModelBackend
+import org.emergentorder.onnx.backends.ORTOperatorBackendAll
+import org.emergentorder.onnx.backends.ORTModelBackend
 
 val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.1.onnx"))
 
-val squeezenet = new NGraphModelBackend(squeezenetBytes)
+val squeezenet = new ORTModelBackend(squeezenetBytes)
 
 val imageTens = TensorFactory.getTensor(Array.fill(1*3*224*224){42f},Array(1,3,224,224))
 ```
@@ -47,7 +47,7 @@ val imageTens = TensorFactory.getTensor(Array.fill(1*3*224*224){42f},Array(1,3,2
 Note that ONNX Tensor content is in row-major order.
 
 ```scala mdoc
-val out: Tensor[Float] = squeezenet.fullModel((Some(imageTens), None, None, None, None, None, None, None, None))
+val out: Tensor[Float] = squeezenet.fullModel(imageTens, None, None, None, None, None, None, None, None)
 
 out._2
 
@@ -56,19 +56,19 @@ out._1.indices.maxBy(out._1)
 
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "ballpoint pen".
 
-In terms of performance, based on some simple benchmarks (see below) comparing it against ONNX Runtime, SqueezeNet inference in ONNX-Scala is at least on par, and up to 10x faster(!) depending on the setting.
+Based on a simple benchmark of 10000 iterations of SqueezeNet inference (run on my laptop), it is on par with (within 3% of) ONNX Runtime (via Python).
+
+The resulting output values also match ONNX Runtime.
 
 ### Operator-level (Fine-grained) API and generated programs
 
 You can call individual operators:
 ```scala mdoc
-val onnx = new NGraphOperatorBackendFull()
-
-onnx.Sqrt6("sqrt", Some(imageTens))
+val onnx = new ORTOperatorBackendAll()
 
 val longTens = TensorFactory.getTensor(Array.fill(1*3*224*224){-42l},Array(1,3,224,224))
 
-onnx.Abs6("abs", Some(longTens))
+//onnx.Abs6("abs", Some(longTens))
 ```
 
 Sqrt will fail to compile because it's not defined for Long:
@@ -98,7 +98,7 @@ Note the type-safety (the full model version shown above fails at runtime):
 generatedSqueezenet.program(longTens)
 ```
 
-Take note however, the generated version runs ~10x slower on this example and up to ~100x slower averaged over many iterations.
+Take note however, the generated version runs ~6x slower over 1000 iterations.
 Also note that in real use backends should be closed to prevent native memory leaks.
 
 ## Project Overview
@@ -108,6 +108,8 @@ A complete, versioned, numerically generic, type-safe / typeful API to ONNX(Open
 
 This API is expressed via traits, with version-named methods. For example, Abs, the absolute value operator (defined here for operator set 6):
 
+
+//TODO: Use Dotty syntax here
 ```scala mdoc
 import scala.{specialized => sp}
 import spire.math.UByte
@@ -167,7 +169,7 @@ The resulting generated program appears as `programGenerator/src/gen/scala/Absne
 import org.emergentorder.onnx.backends._
 
 class Absnet(byteArray: Array[Byte]) {
-  val Abs: org.emergentorder.onnx.Abs = new NGraphOperatorBackendFull()
+  val Abs: org.emergentorder.onnx.Abs = new ORTOperatorBackendAll()
   def program(inputDatax: Tensor[Float]): List[Tensor[Float]]  = 
     for {
       nodex <- List(inputDatax)
@@ -179,9 +181,7 @@ class Absnet(byteArray: Array[Byte]) {
 and you can run `sbt compile` to confirm that the generated code compiles.
 
 ### C) Backend
-Currently. at the operator level, a single partial backend implementation of ONNX, accessible from the JVM, is available.
-
-This backend is based on [nGraph](https://github.com/NervanaSystems/ngraph), via nGraph JavaCPP Preset.
+Currently there is one backend supported, based on [ONNX Runtime](https://github.com/microsoft/onnxruntime), via JavaCPP Presets.
 
 Supported ONNX input and output tensor data types:
 * Byte
@@ -193,30 +193,17 @@ Supported ONNX input and output tensor data types:
 
 Supported ONNX ops:
 
-* All those [supported](https://github.com/NervanaSystems/ngraph/tree/v0.26.0/src/ngraph/frontend/onnx_import/op) by nGraph, currently 100 of 153 total. The rest are in the API, but will error if called.
+* ONNX Runtime: 145/156 total.
 
-ONNX Runtime, which supports all ONNX ops, is the next targeted backend.
+See the [ONNX backend scoreboard](http://onnx.ai/backend-scoreboard/index.html) 
 
-You can also pass entire models to nGraph (see Execution Modes below).
+You can also pass entire models to the backend (see Execution Modes below).
 
 All together, these should enable model inspection and modification, extra compile-time assurances, mixing/matching of backend operator implementations and integration into JVM-based production systems, for a start.
 
-#### Performance
-A few simple benchmarks, run on my laptop, using full model inference:
-
-Over 1000 iterations of cold start (using a new backend/session each time) SqueezeNet inference, ONNX-Scala took ~0.04696 seconds on average vs ~0.05948 seconds for ONNX Runtime 1.0 (Python API), > 20% faster. 
-If we reuse the backend/session, the gap is larger still.
-
-Over 10000 sequential runs with the same backend/session, it took ~0.0068 seconds on average, vs ~ 0.0701 seconds for ONNX Runtime, over 10x faster.
-
-Finally, after modifying the model to use fixed batch size of 1000 (and learning along the way that nGraph does not currently support dynamic batch sizes!),
-it took ~0.0077 seconds on average vs ~0.0321 seconds for ONNX Runtime, over 4x faster.
-
-The resulting output values also match ONNX Runtime.
-
 #### Example execution
 
-The most extensive working example at the moment is `zio/src/main/scala/NCFZIO.scala`, an implementation of Neural Collaborative Filtering, although you currently need to provide your own model file to load params from at `zio/.jvm/src/main/resources/NCF.onnx`, as well item and user id maps at `zio/.jvm/src/main/resources/itemIds.csv` and `zio/.jvm/src/main/resources/userIds.csv`.
+The most extensive working example at the moment is `zio/src/main/scala/NCFZIO.scala`, an implementation of Neural Collaborative Filtering, although you currently need to provide your own model file to load params from at `zio/.jvm/src/main/resources/NCF.onnx`, as well as item and user id maps at `zio/.jvm/src/main/resources/itemIds.csv` and `zio/.jvm/src/main/resources/userIds.csv`.
 
 This example provides full model execution via the `fullNCF` method. 
 
@@ -246,7 +233,7 @@ to build against all of Scala 2.11, 2.12, 2.13 and Dotty/3.0, where possible.
 
 ## Program Execution
 
-There are 3 execution modes:
+There are 2 execution modes:
 
 #### Full model / Black-box execution
 
@@ -344,10 +331,9 @@ onnx.Sqrt6[Float, WrongDimTypeAxes]("sqrt", Some(typesafeTens))
 
 * [Scalameta](https://github.com/scalameta/scalameta) - Library to read, analyze, transform and generate Scala programs (For a runtime parse pass of generated programs)
 
-#### Backend
+#### Backends
 
-* [nGraph via JavaCPP Preset for nGraph 0.26.0](https://github.com/bytedeco/javacpp-presets/tree/master/ngraph) - nGraph is an open source C++ library, compiler and runtime for Deep Learning frameworks / The missing bridge between Java and native C++ libraries
-
+* [ONNX Runtime via JavaCPP Preset for ONNX Runtime 1.2.0](https://github.com/bytedeco/javacpp-presets/tree/master/onnxruntime) - ONNX Runtime: cross-platform, high performance scoring engine for ML models
 
 ### Inspiration
 

@@ -3,7 +3,7 @@ val dottyVersion = "0.23.0"
 val scala213Version = "2.13.2"
 val spireVersion = "0.17.0-M1"
 val zioVersion = "1.0.0-RC18-2"
-val scalametaVersion = "4.3.10"
+val scalametaVersion = "4.3.12"
 val onnxJavaCPPPresetVersion = "1.6.0-1.5.3"
 
   

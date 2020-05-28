@@ -2,9 +2,8 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 val dottyVersion = "0.23.0"
 val scala213Version = "2.13.2"
 val spireVersion = "0.17.0-M1"
-val zioVersion = "1.0.0-RC18-2"
 val scalametaVersion = "4.3.13"
-val onnxJavaCPPPresetVersion = "1.6.0-1.5.3"
+val onnxJavaCPPPresetVersion = "1.7.0-1.5.4-SNAPSHOT"
 
   
 scalaVersion := scala213Version 
@@ -32,18 +31,9 @@ lazy val common = (crossProject(JVMPlatform)
  //   sources in (Compile, doc) := Seq(),
 //    publishArtifact in (Compile, packageDoc) := false
   )
-//  .jsSettings(
-//    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
-//  )
-//  .nativeSettings(
-//    scalaVersion := scala211Version
-//  )
 
-//lazy val commonJS = common.js
-//  .disablePlugins(dotty.tools.sbtplugin.DottyPlugin)
-//  .disablePlugins(dotty.tools.sbtplugin.DottyIDEPlugin)
 
-lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
+lazy val programGenerator = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("programGenerator"))
   .dependsOn(backends)
   .settings(
@@ -73,8 +63,6 @@ lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
         )
       }
     ),
-//    sources in (Compile, doc) := Seq(),
-//    publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(
     crossScalaVersions := Seq(
@@ -82,14 +70,8 @@ lazy val programGenerator = (crossProject(JVMPlatform)//,JSPlatform)
       scala213Version
     )
   )
-//  .jsSettings(
-//    crossScalaVersions := Seq(
-//      scala212Version,
-//      scala211Version,
-//      scala213Version
-//    )
-//  )
-lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
+
+lazy val backends = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("backends"))
   .dependsOn(core)
   .settings(
@@ -107,22 +89,12 @@ lazy val backends = (crossProject(JVMPlatform) //JSPlatform)
     ),
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "ngraph-platform" % "0.26.0-1.5.3",
-      "org.bytedeco" % "onnxruntime-platform" % "1.2.0-1.5.3",
-//      "com.microsoft.onnxruntime" % "onnxruntime4j" % "1.0.0-SNAPSHOT"
+      "org.bytedeco" % "onnxruntime-platform" % "1.3.0-1.5.4-SNAPSHOT"
     ),
-//    sources in (Compile, doc) := Seq(),
-//    publishArtifact in (Compile, packageDoc) := false
   )
   .jvmSettings(
     crossScalaVersions := Seq(dottyVersion, scala213Version)
   )
-//  .jsSettings(
-//    crossScalaVersions := Seq(scala212Version, scala211Version, scala213Version)
-//  )
-//  .nativeSettings(
-//    scalaVersion := scala211Version
-//  )
 
 lazy val core = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("core"))
@@ -131,7 +103,6 @@ lazy val core = (crossProject(JVMPlatform)
     commonSettings,
     name := "onnx-scala",
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
-//    scalaVersion := scala213Version,
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
       case Some((2, 13)) => "ONNX.scala" | "OpToONNXBytesConverter.scala" | "Tensor.scala"
@@ -144,8 +115,6 @@ lazy val core = (crossProject(JVMPlatform)
       dottyVersion,
       scala213Version
     ),
-//    sources in (Compile, doc) := Seq(),
-//    publishArtifact in (Compile, packageDoc) := false, //TODO: Only block this for JS
     libraryDependencies ++= (CrossVersion
       .partialVersion(scalaVersion.value) match {
       case Some((2, n)) =>
@@ -162,34 +131,6 @@ lazy val core = (crossProject(JVMPlatform)
       "org.osgi" % "org.osgi.annotation.versioning" % "1.1.0"
     )
   )
-/*
-  .jsSettings(
-    crossScalaVersions := Seq(
-      scala212Version,
-      scala211Version,
-      scala213Version
-    ),
-    libraryDependencies ++= Seq(
-      "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion
-    ),
-    libraryDependencies ++= (CrossVersion
-      .partialVersion(scalaVersion.value) match {
-      case _ =>
-        Seq(
-          "org.typelevel" %%% "spire" % spireVersion
-        )
-    })
-  )
-*/
-/*
-    .nativeSettings(
-      scalaVersion := scala211Version,
-      libraryDependencies ++= Seq(
-        "org.typelevel" %% "spire" % spireVersion,
-        "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion
-      )
-    )
-*/
 
 lazy val docs = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("core-docs"))       // new documentation project
@@ -207,8 +148,6 @@ lazy val docs = (crossProject(JVMPlatform)
 
 skip in publish := true
 sonatypeProfileName := "com.github.EmergentOrder" 
-//sonatypeSessionName := s"[sbt-sonatype] ${name.value} ${version.value}"
-//sources in (Compile, packageDoc) := Seq()
 
 lazy val sonatypeSettings = Seq(
 organization := "com.github.EmergentOrder",
@@ -229,5 +168,4 @@ publishTo := Some(
   else
     Opts.resolver.sonatypeStaging
 )
-//publishTo := sonatypePublishToBundle.value
 )

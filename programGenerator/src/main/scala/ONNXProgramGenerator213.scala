@@ -140,7 +140,7 @@ object ONNXProgramGenerator {
         "import spire.math.Numeric\n\n" +
         ("class ") + programName + "(byteArray: Array[Byte]) extends AutoCloseable" + " {\n" +
         (if (useZIO) "val backend = new ONNXNGraphHandlers()"
-         else "val backend = new NGraphOperatorBackendFull()") +
+         else "val backend = new ORTOperatorBackendAll()") +
         "\n" +
         "val bytesDataSource = new ONNXBytesDataSource(byteArray)" +
         "\n" +
@@ -247,7 +247,23 @@ object ONNXProgramGenerator {
                   .map(z => "\"" + z + "\"")
                   .mkString(",") + """))"""
               }
-            val tensorProtoFields = x._2
+
+              val tensorProtoField = x._2
+              .filter { y =>
+                y.has_t
+              }
+              .map { y =>
+                    val dimsCount    = y.t.dims_size
+                    val dimsArray = if(dimsCount == 0) Array(1) else (0 until dimsCount.toInt).map(x => y.t.dims(x)).toArray
+                    val field = onnxHelper.onnxTensorProtoToArray(y.t)
+                (field, dimsArray) match {
+                  case arrays: (Array[_], Array[_]) =>
+                    y.name.getString + " = Some(TensorFactory.getTensor(Array(" + arrays._1.mkString(",") + ")," + 
+                      "Array(" + arrays._2.mkString(",") +")))"
+                }
+              }
+
+              val tensorProtoFields = x._2
               .filter { y =>
                 val tensorCount = y.tensors_size
                 val tensorList =
@@ -319,6 +335,8 @@ object ONNXProgramGenerator {
                else "") +
               "(" +
               """"""" + nodeName + """" """ + //assumes > 0 args
+              (if (tensorProtoField.size > 0) "," else "") +
+              tensorProtoField.mkString(",") +
               (if (tensorProtoFields.size > 0) "," else "") +
               tensorProtoFields.mkString(",") +
               (if (longListFields.size > 0) "," else "") +
@@ -327,7 +345,7 @@ object ONNXProgramGenerator {
               stringFields.mkString(",") +
               (if (longFields.size > 0) "," else "") +
               longFields.mkString(",") +
-              "," +
+              (if (namedNodesOrParams.size > 0) "," else "") +
               namedNodesOrParams.mkString(",") +
               ")" + (if (useZIO) ""
                      // "}"

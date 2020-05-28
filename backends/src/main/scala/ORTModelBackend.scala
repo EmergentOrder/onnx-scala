@@ -1,6 +1,7 @@
 package org.emergentorder.onnx.backends
 
 import scala.reflect.ClassTag
+import scala.language.implicitConversions
 import org.bytedeco.javacpp._
 import org.bytedeco.javacpp.indexer.FloatIndexer
 import org.bytedeco.onnxruntime._

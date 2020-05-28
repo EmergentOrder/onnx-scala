@@ -64,7 +64,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
   ): Array[VV] = {
     val dimsArrayInt = dimsList.map(x => x.toInt).toArray
     val arrX = dimsCount match {
-      case 0 => Array[VV]()
+      case 0 => Array.ofDim[VV](1)
       case 1 => Array.ofDim[VV](dimsArrayInt(0))
       case 2 => Array.ofDim[VV](dimsArrayInt(0) * dimsArrayInt(1))
       case 3 =>

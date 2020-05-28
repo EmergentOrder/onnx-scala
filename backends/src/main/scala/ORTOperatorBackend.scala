@@ -1,11 +1,15 @@
 package org.emergentorder.onnx.backends
 
 import scala.reflect.ClassTag
+import scala.language.implicitConversions
 import org.bytedeco.javacpp._
 import org.bytedeco.onnxruntime._
 import org.bytedeco.onnxruntime.global.onnxruntime._
 
 import org.emergentorder.onnx._
+
+  
+val env = new Env(ORT_LOGGING_LEVEL_WARNING, "onnx-scala" + System.currentTimeMillis)
 
 trait ORTOperatorBackend
     extends OpToONNXBytesConverter
@@ -15,11 +19,12 @@ trait ORTOperatorBackend
 
   val memory_info = MemoryInfo.CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)
 
-  def getSession(bytes: Array[Byte]) = {
-    val env = new Env(ORT_LOGGING_LEVEL_WARNING, "test")
-
+  def getSession(bytes: Array[Byte]) = { 
     val session_options = new SessionOptions
 
+//    session_options.SetIntraOpNumThreads(1)
+    //Using DNNL
+//    OrtSessionOptionsAppendExecutionProvider_Dnnl(session_options.asOrtSessionOptions(), 1)
     val modelString = new BytePointer(bytes: _*).capacity(bytes.size)
 
 
@@ -133,6 +138,7 @@ trait ORTOperatorBackend
             }
             value
           }
+          case None =>  new Value()
         }
       }
 

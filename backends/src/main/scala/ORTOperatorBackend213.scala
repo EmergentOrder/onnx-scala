@@ -11,12 +11,11 @@ trait ORTOperatorBackend
     extends OpToONNXBytesConverter
     with AutoCloseable {
 
-  val allocator = new AllocatorWithDefaultOptions()
-  
-  val memory_info = MemoryInfo.CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)  
+  val allocator = new AllocatorWithDefaultOptions() 
+  val memory_info = MemoryInfo.CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)
+  val env = new Env(ORT_LOGGING_LEVEL_WARNING, "onnx-scala" + System.currentTimeMillis)
 
   def getSession(bytes: Array[Byte]) = {
-    val env = new Env(ORT_LOGGING_LEVEL_WARNING, "test")
 
     val session_options = new SessionOptions
 

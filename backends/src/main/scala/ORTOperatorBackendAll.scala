@@ -33,6 +33,7 @@ class ORTOperatorBackendAll
     with ConcatV4
     with ConcatV11
     with ConcatFromSequenceV11 //fails in scoreboard //passes in ORT
+    with ConstantV9
     with ConstantV11
     with ConstantOfShapeV9 //fails in scoreboard //passes in ORT
     with ConvV1
@@ -60,9 +61,11 @@ class ORTOperatorBackendAll
     with FlattenV11
     with FloorV6
     with GRUV7 //fails in scoreboard //passes in ORT
+    with GatherV1
     with GatherV11
     with GatherElementsV11 //fails in scoreboard //passes in ORT
     with GatherNDV11 //fails in scoreboard //passes in nGraph dev branch & ORT
+    with GemmV9
     with GemmV11
     with GlobalAveragePoolV1
 //    with GlobalLpPoolV2 //fails in scoreboard
@@ -134,6 +137,7 @@ class ORTOperatorBackendAll
     with ReduceLogSumV11
     with ReduceLogSumExpV11
     with ReduceMaxV11
+    with ReduceMeanV1
     with ReduceMeanV11
     with ReduceMinV11
     with ReduceProdV11
@@ -166,15 +170,19 @@ class ORTOperatorBackendAll
     with SinV7
     with SinhV9
     with SizeV1
+    with SliceV10
     with SliceV11
+    with SoftmaxV1
     with SoftmaxV11
 //    with SoftmaxCrossEntropyLossV12 //new in 1.7.0
     with SoftplusV1
     with SoftsignV1
 //    with SpaceToDepthV1 //fails in scoreboard
+    with SplitV2
     with SplitV11
     with SplitToSequenceV11 //fails in scoreboard //passes in ORT
     with SqrtV6
+    with SqueezeV1
     with SqueezeV11
 //    with StringNormalizerV10 //fails in scoreboard
     with SubV7
@@ -189,6 +197,7 @@ class ORTOperatorBackendAll
 //    with TreeEnsembleClassifierV1 //ONNX ML, not tested for in scoreboard
 //    with TreeEnsembleRegressorV1 //ONNX ML, not tested for in scoreboard
     with UniqueV11 //fails in scoreboard //passes in ORT
+    with UnsqueezeV1 
     with UnsqueezeV11
     with UpsampleV10 //fails in scoreboard //passes in ORT
     with WhereV9

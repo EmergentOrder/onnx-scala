@@ -1,6 +1,7 @@
 package org.emergentorder.onnx.backends
 
 import scala.reflect.ClassTag
+import scala.language.existentials
 import org.bytedeco.javacpp._
 import org.bytedeco.javacpp.indexer.FloatIndexer
 import org.bytedeco.onnxruntime._
@@ -109,6 +110,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
      input match {
         case tensorOpt: Option[Tensor[Any]] => {
           tensorOpt match {
+            case Some(x) => Some(getTensor(x))
             case None    => None
           }
         }

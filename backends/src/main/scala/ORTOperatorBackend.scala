@@ -125,9 +125,9 @@ trait ORTOperatorBackend
 
     input match{
 
-      case tensorOpt: Option[Tensor[_]] => {
+      case tensorOpt: Option[_] => {
         tensorOpt match {
-          case Some(tens) => {
+          case Some(tens: Tensor[_]) => {
             val value: Value = tens._1 match {
               case b: Array[Byte] => getTensorByte(tens)
               case s: Array[Short] => getTensorShort(tens)

@@ -3637,7 +3637,7 @@ package object onnx {
       ](name, "Equal", allInputs, map))
     }
 
-    def Equal11[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
+    def Equal11[@sp T: Numeric: ClassTag, @sp T1: ClassTag](
         name: String,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
@@ -5123,7 +5123,7 @@ package object onnx {
       ](name, "Greater", allInputs, map))
     }
 
-    def Greater9[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
+    def Greater9[@sp T: Numeric: ClassTag, @sp T1: ClassTag](
         name: String,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
@@ -6188,7 +6188,7 @@ package object onnx {
       ](name, "Less", allInputs, map))
     }
 
-    def Less9[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
+    def Less9[@sp T: Numeric: ClassTag, @sp T1: ClassTag](
         name: String,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]

@@ -224,10 +224,10 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 
     origNode.close
     model.set_allocated_graph(graph)
-    model.set_ir_version(3)
+    model.set_ir_version(6)
 
     model.add_opset_import
-    model.opset_import(0).set_version(8)
+    model.opset_import(0).set_version(12)
 
     val outputValueInfo = graph.add_output
 

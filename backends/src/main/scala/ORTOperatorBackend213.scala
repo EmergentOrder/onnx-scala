@@ -116,6 +116,13 @@ trait ORTOperatorBackend
           buff.get(x)
         }.toArray
       }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_BOOL =>{
+        val point = value.GetTensorMutableDataBool.capacity(size)
+        val booleanPoint = new BooleanPointer(point.asByteBuffer) //C++ bool size is not defined, could cause problems on some platforms
+        (0 until booleanPoint.capacity().toInt).map { x =>
+          booleanPoint.get(x)
+        }.toArray
+      }
     }
     TensorFactory.getTensor(arr, shape)
   }

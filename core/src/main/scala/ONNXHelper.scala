@@ -28,7 +28,7 @@ import java.io.File
 import scala.reflect.io.Streamable
 import org.bytedeco.javacpp._
 import org.bytedeco.onnx._
-import org.bytedeco.onnx.global.onnx.ParseProtoFromBytes
+import org.bytedeco.onnx.global.onnx.{ParseProtoFromBytes,check_model}
 
 class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
@@ -45,7 +45,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
       bytes,
       byteArray.length.toLong
     )
-//    bytes.close
+    check_model(r)
     r
   }
 

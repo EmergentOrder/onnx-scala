@@ -175,8 +175,8 @@ package object onnx {
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
@@ -217,8 +217,8 @@ package object onnx {
       ](name, "Abs", allInputs, map))
     }
 
-    def Abs6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-        implicit evT: Contains[
+    def Abs6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
@@ -261,8 +261,8 @@ package object onnx {
   }
   trait Acos extends Operator {
 
-    def Acos7[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Acos7[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -300,8 +300,8 @@ package object onnx {
   }
   trait Acosh extends Operator {
 
-    def Acosh9[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Acosh9[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -346,8 +346,8 @@ package object onnx {
         consumed_inputs: Option[(Array[Int])] = None,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -393,8 +393,8 @@ package object onnx {
         broadcast: Option[(Int)] = None,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -434,7 +434,8 @@ package object onnx {
     }
 
     def Add7[@sp T: Numeric: ClassTag](name: String, A: Option[Tensor[T]], B: Option[Tensor[T]])(
-        implicit evT: Contains[
+        implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -481,8 +482,8 @@ package object onnx {
         broadcast: Option[(Int)] = None,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Boolean]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Boolean]#or[UNil]#create],
         evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
     ): (Tensor[T1]) = {
       val map: Map[String, Any] = Map("axis" -> axis, "broadcast" -> broadcast)
@@ -523,8 +524,8 @@ package object onnx {
         name: String,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Boolean]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Boolean]#or[UNil]#create],
         evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
     ): (Tensor[T1]) = {
       val map: Map[String, Any] = Map()
@@ -568,8 +569,8 @@ package object onnx {
         axis: Option[(Int)] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[Long]) = {
@@ -612,8 +613,8 @@ package object onnx {
         axis: Option[(Int)] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[Long]) = {
@@ -658,8 +659,8 @@ package object onnx {
         axis: Option[(Int)] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[Long]) = {
@@ -702,8 +703,8 @@ package object onnx {
         axis: Option[(Int)] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[Long]) = {
@@ -747,8 +748,8 @@ package object onnx {
         name: String,
         X: Option[Tensor[T]],
         Y: Option[Tensor[Long]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float]#or[Double]#or[Long]#or[Int]#or[String]#or[UNil]#create
         ]
@@ -779,8 +780,8 @@ package object onnx {
   }
   trait Asin extends Operator {
 
-    def Asin7[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Asin7[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -818,8 +819,8 @@ package object onnx {
   }
   trait Asinh extends Operator {
 
-    def Asinh9[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Asinh9[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -857,8 +858,8 @@ package object onnx {
   }
   trait Atan extends Operator {
 
-    def Atan7[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Atan7[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -896,8 +897,8 @@ package object onnx {
   }
   trait Atanh extends Operator {
 
-    def Atanh9[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Atanh9[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -942,8 +943,8 @@ package object onnx {
         pads: Option[(Array[Int])] = None,
         strides: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
         "auto_pad"     -> auto_pad,
@@ -992,8 +993,8 @@ package object onnx {
         pads: Option[(Array[Int])] = None,
         strides: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
         "auto_pad"          -> auto_pad,
@@ -1044,8 +1045,8 @@ package object onnx {
         pads: Option[(Array[Int])] = None,
         strides: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
         "auto_pad"          -> auto_pad,
@@ -1097,8 +1098,8 @@ package object onnx {
         pads: Option[(Array[Int])] = None,
         strides: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
         "auto_pad"          -> auto_pad,
@@ -1155,8 +1156,8 @@ package object onnx {
         B: Option[Tensor[T]],
         mean: Option[Tensor[T]],
         someVar: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
         "consumed_inputs" -> consumed_inputs,
@@ -1216,8 +1217,8 @@ package object onnx {
         B: Option[Tensor[T]],
         mean: Option[Tensor[T]],
         someVar: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
         "epsilon"  -> epsilon,
@@ -1275,8 +1276,8 @@ package object onnx {
         B: Option[Tensor[T]],
         mean: Option[Tensor[T]],
         someVar: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] =
         Map("epsilon" -> epsilon, "momentum" -> momentum, "spatial" -> spatial)
@@ -1329,8 +1330,8 @@ package object onnx {
         B: Option[Tensor[T]],
         mean: Option[Tensor[T]],
         someVar: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("epsilon" -> epsilon, "momentum" -> momentum)
       val allInputs = (
@@ -1379,8 +1380,8 @@ package object onnx {
         name: String,
         threshold: Option[(Float)] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("threshold" -> threshold)
       val allInputs = (
@@ -1423,8 +1424,8 @@ package object onnx {
         direction: Option[(String)],
         X: Option[Tensor[T]],
         Y: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("direction" -> direction)
       val allInputs = (
@@ -1466,8 +1467,8 @@ package object onnx {
         name: String,
         to: Option[(String)],
         input: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[
+    )(implicit
+        evT1: Contains[
           T1,
           Union[Float16]#or[Float]#or[Double]#or[Byte]#or[Short]#or[Int]#or[Long]#or[UByte]#or[
             UShort
@@ -1518,8 +1519,8 @@ package object onnx {
         name: String,
         to: Option[(Int)],
         input: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[
+    )(implicit
+        evT1: Contains[
           T1,
           Union[Float16]#or[Float]#or[Double]#or[Byte]#or[Short]#or[Int]#or[Long]#or[UByte]#or[
             UShort
@@ -1570,8 +1571,8 @@ package object onnx {
         name: String,
         to: Option[(Int)],
         input: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[
+    )(implicit
+        evT1: Contains[
           T1,
           Union[Float16]#or[Float]#or[Double]#or[Byte]#or[Short]#or[Int]#or[Long]#or[UByte]#or[
             UShort
@@ -1626,8 +1627,8 @@ package object onnx {
         map_form: Option[(String)] = None,
         max_map: Option[(Int)] = None,
         X: Option[T1]
-    )(
-        implicit evT1: Contains[T1, Union[Map[Long, String]]#or[Map[Long, Float]]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Map[Long, String]]#or[Map[Long, Float]]#or[UNil]#create],
         evT2: Contains[T2, Union[String]#or[Float]#or[Long]#or[UNil]#create]
     ): (Tensor[T2]) = {
       val map: Map[String, Any] =
@@ -1674,8 +1675,8 @@ package object onnx {
         default_int64: Option[(Int)] = None,
         default_string: Option[(String)] = None,
         X: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[T1, Union[String]#or[Long]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[String]#or[Long]#or[UNil]#create],
         evT2: Contains[T2, Union[String]#or[Long]#or[UNil]#create]
     ): (Tensor[T2]) = {
       val map: Map[String, Any] = Map(
@@ -1723,8 +1724,8 @@ package object onnx {
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
       val allInputs = (
@@ -1760,8 +1761,8 @@ package object onnx {
       ](name, "Ceil", allInputs, map))
     }
 
-    def Ceil6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Ceil6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -1805,8 +1806,8 @@ package object onnx {
         max: Option[(Float)] = None,
         min: Option[(Float)] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] =
         Map("consumed_inputs" -> consumed_inputs, "max" -> max, "min" -> min)
@@ -1848,8 +1849,8 @@ package object onnx {
         max: Option[(Float)] = None,
         min: Option[(Float)] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("max" -> max, "min" -> min)
       val allInputs = (
@@ -1890,8 +1891,8 @@ package object onnx {
         input: Option[Tensor[T]],
         min: Option[Tensor[T]] = None,
         max: Option[Tensor[T]] = None
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -1941,8 +1942,8 @@ package object onnx {
         axis: Option[(Int)] = None,
         input: Option[Tensor[T]],
         condition: Option[Tensor[T1]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -1988,8 +1989,8 @@ package object onnx {
         axis: Option[(Int)] = None,
         input: Option[Tensor[T]],
         condition: Option[Tensor[T1]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -2036,12 +2037,14 @@ package object onnx {
         name: String,
         axis: Option[(Int)] = None,
         inputs: Seq[Option[Tensor[T]]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis)
@@ -2089,12 +2092,14 @@ package object onnx {
         name: String,
         axis: Option[(Int)],
         inputs: Seq[Option[Tensor[T]]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis)
@@ -2142,12 +2147,14 @@ package object onnx {
         name: String,
         axis: Option[(Int)],
         inputs: Seq[Option[Tensor[T]]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis)
@@ -2198,8 +2205,8 @@ package object onnx {
         axis: Option[(Int)],
         new_axis: Option[(Int)] = None,
         input_sequence: Option[S]
-    )(
-        implicit evS: Contains[
+    )(implicit
+        evS: Contains[
           S,
           Union[Seq[Tensor[UByte]]]#or[Seq[Tensor[UShort]]]#or[Seq[Tensor[UInt]]]#or[Seq[Tensor[
             ULong
@@ -2253,12 +2260,14 @@ package object onnx {
   }
   trait Constant extends Operator {
 
-    def Constant1[@sp T: Numeric: ClassTag](name: String, value: Option[(Tensor[T])])(
-        implicit evT: Contains[
+    def Constant1[@sp T: Numeric: ClassTag](name: String, value: Option[(Tensor[T])])(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("value" -> value)
@@ -2295,12 +2304,14 @@ package object onnx {
       ](name, "Constant", allInputs, map))
     }
 
-    def Constant9[@sp T: Numeric: ClassTag](name: String, value: Option[(Tensor[T])])(
-        implicit evT: Contains[
+    def Constant9[@sp T: Numeric: ClassTag](name: String, value: Option[(Tensor[T])])(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("value" -> value)
@@ -2341,12 +2352,14 @@ package object onnx {
         name: String,
         sparse_value: Option[(SparseTensor[T])] = None,
         value: Option[(Tensor[T])] = None
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("sparse_value" -> sparse_value, "value" -> value)
@@ -2389,8 +2402,8 @@ package object onnx {
         name: String,
         value: Option[(Tensor[T2])] = None,
         input: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[T1, Union[Long]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Long]#or[UNil]#create],
         evT2: Contains[
           T2,
           Union[Float16]#or[Float]#or[Double]#or[Byte]#or[Short]#or[Int]#or[Long]#or[UByte]#or[
@@ -2445,8 +2458,8 @@ package object onnx {
         X: Option[Tensor[T]],
         W: Option[Tensor[T]],
         B: Option[Tensor[T]] = None
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
         "auto_pad"     -> auto_pad,
@@ -2507,8 +2520,8 @@ package object onnx {
         X: Option[Tensor[T]],
         W: Option[Tensor[T]],
         B: Option[Tensor[T]] = None
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
         "auto_pad"     -> auto_pad,
@@ -2576,8 +2589,8 @@ package object onnx {
         w: Option[Tensor[T2]],
         x_zero_point: Option[Tensor[T1]] = None,
         w_zero_point: Option[Tensor[T2]] = None
-    )(
-        implicit evT1: Contains[T1, Union[Byte]#or[UByte]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Byte]#or[UByte]#or[UNil]#create],
         evT2: Contains[T2, Union[Byte]#or[UByte]#or[UNil]#create],
         evT3: Contains[T3, Union[Int]#or[UNil]#create]
     ): (Tensor[T3]) = {
@@ -2644,8 +2657,8 @@ package object onnx {
         X: Option[Tensor[T]],
         W: Option[Tensor[T]],
         B: Option[Tensor[T]] = None
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
         "auto_pad"       -> auto_pad,
@@ -2710,8 +2723,8 @@ package object onnx {
         X: Option[Tensor[T]],
         W: Option[Tensor[T]],
         B: Option[Tensor[T]] = None
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
         "auto_pad"       -> auto_pad,
@@ -2765,8 +2778,8 @@ package object onnx {
   }
   trait Cos extends Operator {
 
-    def Cos7[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Cos7[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -2804,8 +2817,8 @@ package object onnx {
   }
   trait Cosh extends Operator {
 
-    def Cosh9[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Cosh9[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -2849,8 +2862,8 @@ package object onnx {
         reverse: Option[(Int)] = None,
         x: Option[Tensor[T]],
         axis: Option[Tensor[T2]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float]#or[Double]#or[UNil]#create
         ],
@@ -2896,8 +2909,8 @@ package object onnx {
         name: String,
         blocksize: Option[(Int)],
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -2942,8 +2955,8 @@ package object onnx {
         blocksize: Option[(Int)],
         mode: Option[(String)] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -3034,8 +3047,8 @@ package object onnx {
   }
   trait Det extends Operator {
 
-    def Det11[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Det11[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -3078,8 +3091,8 @@ package object onnx {
         int64_vocabulary: Option[(Array[Int])] = None,
         string_vocabulary: Option[(Array[String])] = None,
         X: Option[T1]
-    )(
-        implicit evT1: Contains[T1, Union[Map[String, Long]]#or[Map[Long, String]]#or[Map[
+    )(implicit
+        evT1: Contains[T1, Union[Map[String, Long]]#or[Map[Long, String]]#or[Map[
           Long,
           Float
         ]]#or[Map[Long, Double]]#or[Map[String, Float]]#or[Map[String, Double]]#or[UNil]#create],
@@ -3129,8 +3142,8 @@ package object onnx {
         consumed_inputs: Option[(Array[Int])] = None,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -3176,8 +3189,8 @@ package object onnx {
         broadcast: Option[(Int)] = None,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -3217,7 +3230,8 @@ package object onnx {
     }
 
     def Div7[@sp T: Numeric: ClassTag](name: String, A: Option[Tensor[T]], B: Option[Tensor[T]])(
-        implicit evT: Contains[
+        implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -3264,8 +3278,8 @@ package object onnx {
         is_test: Option[(Int)] = None,
         ratio: Option[(Float)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] =
         Map("consumed_inputs" -> consumed_inputs, "is_test" -> is_test, "ratio" -> ratio)
@@ -3307,8 +3321,8 @@ package object onnx {
         is_test: Option[(Int)] = None,
         ratio: Option[(Float)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("is_test" -> is_test, "ratio" -> ratio)
       val allInputs = (
@@ -3348,8 +3362,8 @@ package object onnx {
         name: String,
         ratio: Option[(Float)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("ratio" -> ratio)
       val allInputs = (
@@ -3389,8 +3403,8 @@ package object onnx {
         name: String,
         ratio: Option[(Float)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("ratio" -> ratio)
@@ -3432,8 +3446,8 @@ package object onnx {
     def DynamicQuantizeLinear11[@sp T1: Numeric: ClassTag, @sp T2: Numeric: ClassTag](
         name: String,
         x: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[T1, Union[Float]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Float]#or[UNil]#create],
         evT2: Contains[T2, Union[UByte]#or[UNil]#create]
     ): (Tensor[T2]) = {
       val map: Map[String, Any] = Map()
@@ -3467,8 +3481,8 @@ package object onnx {
         alpha: Option[(Float)] = None,
         consumed_inputs: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("alpha" -> alpha, "consumed_inputs" -> consumed_inputs)
       val allInputs = (
@@ -3508,8 +3522,8 @@ package object onnx {
         name: String,
         alpha: Option[(Float)] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("alpha" -> alpha)
       val allInputs = (
@@ -3553,8 +3567,8 @@ package object onnx {
         broadcast: Option[(Int)] = None,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
+    )(implicit
+        evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
           ULong
         ]#or[Byte]#or[Short]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
@@ -3597,8 +3611,8 @@ package object onnx {
         name: String,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
+    )(implicit
+        evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
           ULong
         ]#or[Byte]#or[Short]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
@@ -3641,8 +3655,8 @@ package object onnx {
         name: String,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
+    )(implicit
+        evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
           ULong
         ]#or[Byte]#or[Short]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
@@ -3683,8 +3697,8 @@ package object onnx {
   }
   trait Erf extends Operator {
 
-    def Erf9[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    def Erf9[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
@@ -3728,8 +3742,8 @@ package object onnx {
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
       val allInputs = (
@@ -3765,8 +3779,8 @@ package object onnx {
       ](name, "Exp", allInputs, map))
     }
 
-    def Exp6[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Exp6[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -3808,8 +3822,8 @@ package object onnx {
         name: String,
         input: Option[Tensor[T]],
         shapeInput: Option[Tensor[Long]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -3856,8 +3870,8 @@ package object onnx {
         dtype: Option[(Int)] = None,
         k: Option[(Int)] = None,
         input: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[
+    )(implicit
+        evT1: Contains[
           T1,
           Union[Float16]#or[Float]#or[Double]#or[Byte]#or[Short]#or[Int]#or[Long]#or[UByte]#or[
             UShort
@@ -3910,8 +3924,8 @@ package object onnx {
         name: String,
         inputdimensions: Option[(Array[Int])] = None,
         X: Seq[Option[Tensor[T1]]]
-    )(
-        implicit evT1: Contains[T1, Union[Int]#or[Long]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT1: Contains[T1, Union[Int]#or[Long]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[Float]) = {
       val map: Map[String, Any] = Map("inputdimensions" -> inputdimensions)
       val allInputs = (
@@ -3960,12 +3974,14 @@ package object onnx {
         name: String,
         axis: Option[(Int)] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis)
@@ -4006,12 +4022,14 @@ package object onnx {
         name: String,
         axis: Option[(Int)] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis)
@@ -4052,12 +4070,14 @@ package object onnx {
         name: String,
         axis: Option[(Int)] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis)
@@ -4100,8 +4120,8 @@ package object onnx {
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
       val allInputs = (
@@ -4137,8 +4157,8 @@ package object onnx {
       ](name, "Floor", allInputs, map))
     }
 
-    def Floor6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Floor6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -4191,8 +4211,8 @@ package object onnx {
         B: Option[Tensor[T]] = None,
         sequence_lens: Option[Tensor[T1]] = None,
         initial_h: Option[Tensor[T]] = None
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT1: Contains[T1, Union[Int]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
@@ -4260,8 +4280,8 @@ package object onnx {
         B: Option[Tensor[T]] = None,
         sequence_lens: Option[Tensor[T1]] = None,
         initial_h: Option[Tensor[T]] = None
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT1: Contains[T1, Union[Int]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
@@ -4329,8 +4349,8 @@ package object onnx {
         B: Option[Tensor[T]] = None,
         sequence_lens: Option[Tensor[T1]] = None,
         initial_h: Option[Tensor[T]] = None
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT1: Contains[T1, Union[Int]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
@@ -4389,8 +4409,8 @@ package object onnx {
         axis: Option[(Int)] = None,
         data: Option[Tensor[T]],
         indices: Option[Tensor[Tind]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -4436,8 +4456,8 @@ package object onnx {
         axis: Option[(Int)] = None,
         data: Option[Tensor[T]],
         indices: Option[Tensor[Tind]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -4485,8 +4505,8 @@ package object onnx {
         axis: Option[(Int)] = None,
         data: Option[Tensor[T]],
         indices: Option[Tensor[Tind]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -4523,8 +4543,8 @@ package object onnx {
         name: String,
         data: Option[Tensor[T]],
         indices: Option[Tensor[Long]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -4576,8 +4596,8 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]],
         C: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -4639,8 +4659,8 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]],
         C: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -4701,8 +4721,8 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]],
         C: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -4758,8 +4778,8 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]],
         C: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -4815,8 +4835,8 @@ package object onnx {
         A: Option[Tensor[T]],
         B: Option[Tensor[T]],
         C: Option[Tensor[T]] = None
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -4865,8 +4885,8 @@ package object onnx {
   }
   trait GlobalAveragePool extends Operator {
 
-    def GlobalAveragePool1[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def GlobalAveragePool1[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -4908,8 +4928,8 @@ package object onnx {
         name: String,
         p: Option[(Float)] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("p" -> p)
       val allInputs = (
@@ -4949,8 +4969,8 @@ package object onnx {
         name: String,
         p: Option[(Int)] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("p" -> p)
       val allInputs = (
@@ -4988,8 +5008,8 @@ package object onnx {
   }
   trait GlobalMaxPool extends Operator {
 
-    def GlobalMaxPool1[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def GlobalMaxPool1[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -5033,8 +5053,8 @@ package object onnx {
         broadcast: Option[(Int)] = None,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
@@ -5080,8 +5100,8 @@ package object onnx {
         name: String,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
@@ -5127,8 +5147,8 @@ package object onnx {
         name: String,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
@@ -5178,8 +5198,8 @@ package object onnx {
         beta: Option[(Float)] = None,
         consumed_inputs: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] =
         Map("alpha" -> alpha, "beta" -> beta, "consumed_inputs" -> consumed_inputs)
@@ -5221,8 +5241,8 @@ package object onnx {
         alpha: Option[(Float)] = None,
         beta: Option[(Float)] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("alpha" -> alpha, "beta" -> beta)
       val allInputs = (
@@ -5264,8 +5284,8 @@ package object onnx {
         name: String,
         axis: Option[(Int)] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis)
       val allInputs = (
@@ -5305,8 +5325,8 @@ package object onnx {
         name: String,
         axis: Option[(Int)] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis)
       val allInputs = (
@@ -5344,8 +5364,8 @@ package object onnx {
   }
   trait Identity extends Operator {
 
-    def Identity1[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    def Identity1[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -5392,8 +5412,8 @@ package object onnx {
         else_branch: Option[(Graph)],
         then_branch: Option[(Graph)],
         cond: Option[Tensor[B]]
-    )(
-        implicit evB: Contains[B, Union[Boolean]#or[UNil]#create],
+    )(implicit
+        evB: Contains[B, Union[Boolean]#or[UNil]#create],
         evV: Contains[V, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
           Long
         ]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[
@@ -5439,8 +5459,8 @@ package object onnx {
         else_branch: Option[(Graph)],
         then_branch: Option[(Graph)],
         cond: Option[Tensor[B]]
-    )(
-        implicit evB: Contains[B, Union[Boolean]#or[UNil]#create],
+    )(implicit
+        evB: Contains[B, Union[Boolean]#or[UNil]#create],
         evV: Contains[V, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
           Long
         ]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[
@@ -5490,8 +5510,8 @@ package object onnx {
         replaced_value_float: Option[(Float)] = None,
         replaced_value_int64: Option[(Int)] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
         "imputed_value_floats" -> imputed_value_floats,
@@ -5541,8 +5561,8 @@ package object onnx {
         input: Option[Tensor[T]],
         scale: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs, "epsilon" -> epsilon)
       val allInputs = (
@@ -5591,8 +5611,8 @@ package object onnx {
         input: Option[Tensor[T]],
         scale: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("epsilon" -> epsilon)
       val allInputs = (
@@ -5642,8 +5662,8 @@ package object onnx {
         detect_negative: Option[(Int)] = None,
         detect_positive: Option[(Int)] = None,
         X: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[T1, Union[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Float]#or[Double]#or[UNil]#create],
         evT2: Contains[T2, Union[Boolean]#or[UNil]#create]
     ): (Tensor[T2]) = {
       val map: Map[String, Any] =
@@ -5686,8 +5706,8 @@ package object onnx {
     def IsNaN9[@sp T1: Numeric: ClassTag, @sp T2: Numeric: ClassTag](
         name: String,
         X: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[T1, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT2: Contains[T2, Union[Boolean]#or[UNil]#create]
     ): (Tensor[T2]) = {
       val map: Map[String, Any] = Map()
@@ -5733,8 +5753,8 @@ package object onnx {
         bias: Option[(Float)] = None,
         size: Option[(Int)],
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] =
         Map("alpha" -> alpha, "beta" -> beta, "bias" -> bias, "size" -> size)
@@ -5791,8 +5811,8 @@ package object onnx {
         initial_h: Option[Tensor[T]] = None,
         initial_c: Option[Tensor[T]] = None,
         P: Option[Tensor[T]] = None
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT1: Contains[T1, Union[Int]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
@@ -5852,8 +5872,8 @@ package object onnx {
         initial_h: Option[Tensor[T]] = None,
         initial_c: Option[Tensor[T]] = None,
         P: Option[Tensor[T]] = None
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT1: Contains[T1, Union[Int]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
@@ -5903,8 +5923,8 @@ package object onnx {
         default_int64: Option[(Int)] = None,
         default_string: Option[(String)] = None,
         X: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[T1, Union[String]#or[Long]#or[Float]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[String]#or[Long]#or[Float]#or[UNil]#create],
         evT2: Contains[T2, Union[String]#or[Long]#or[Float]#or[UNil]#create]
     ): (Tensor[T2]) = {
       val map: Map[String, Any] = Map(
@@ -5957,8 +5977,8 @@ package object onnx {
         values_int64s: Option[(Array[Int])] = None,
         values_strings: Option[(Array[String])] = None,
         X: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[T1, Union[String]#or[Long]#or[Float]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[String]#or[Long]#or[Float]#or[UNil]#create],
         evT2: Contains[T2, Union[String]#or[Long]#or[Float]#or[UNil]#create]
     ): (Tensor[T2]) = {
       val map: Map[String, Any] = Map(
@@ -6012,8 +6032,8 @@ package object onnx {
         alpha: Option[(Float)] = None,
         consumed_inputs: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("alpha" -> alpha, "consumed_inputs" -> consumed_inputs)
       val allInputs = (
@@ -6053,8 +6073,8 @@ package object onnx {
         name: String,
         alpha: Option[(Float)] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("alpha" -> alpha)
       val allInputs = (
@@ -6098,8 +6118,8 @@ package object onnx {
         broadcast: Option[(Int)] = None,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
@@ -6145,8 +6165,8 @@ package object onnx {
         name: String,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
@@ -6192,8 +6212,8 @@ package object onnx {
         name: String,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
@@ -6246,8 +6266,8 @@ package object onnx {
         multi_class: Option[(Int)] = None,
         post_transform: Option[(String)] = None,
         X: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[T1, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create],
         evT2: Contains[T2, Union[String]#or[Long]#or[UNil]#create]
     ): (Tensor[T2]) = {
       val map: Map[String, Any] = Map(
@@ -6290,8 +6310,8 @@ package object onnx {
         post_transform: Option[(String)] = None,
         targets: Option[(Int)] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create]
     ): (Tensor[Float]) = {
       val map: Map[String, Any] = Map(
         "coefficients"   -> coefficients,
@@ -6338,8 +6358,8 @@ package object onnx {
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
       val allInputs = (
@@ -6375,8 +6395,8 @@ package object onnx {
       ](name, "Log", allInputs, map))
     }
 
-    def Log6[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Log6[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -6418,8 +6438,8 @@ package object onnx {
         name: String,
         axis: Option[(Int)] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis)
       val allInputs = (
@@ -6459,8 +6479,8 @@ package object onnx {
         name: String,
         axis: Option[(Int)] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis)
       val allInputs = (
@@ -6504,8 +6524,8 @@ package object onnx {
         M: Option[Tensor[I]] = None,
         cond: Option[Tensor[B]] = None,
         v_initial: Seq[Option[Tensor[V]]]
-    )(
-        implicit evI: Contains[I, Union[Long]#or[UNil]#create],
+    )(implicit
+        evI: Contains[I, Union[Long]#or[UNil]#create],
         evB: Contains[B, Union[Boolean]#or[UNil]#create],
         evV: Contains[V, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
           Long
@@ -6560,8 +6580,8 @@ package object onnx {
         M: Option[Tensor[I]] = None,
         cond: Option[Tensor[B]] = None,
         v_initial: Seq[Option[Tensor[V]]]
-    )(
-        implicit evI: Contains[I, Union[Long]#or[UNil]#create],
+    )(implicit
+        evI: Contains[I, Union[Long]#or[UNil]#create],
         evB: Contains[B, Union[Boolean]#or[UNil]#create],
         evV: Contains[V, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
           Long
@@ -6617,8 +6637,8 @@ package object onnx {
         axis: Option[(Int)] = None,
         p: Option[(Int)] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis, "p" -> p)
       val allInputs = (
@@ -6664,8 +6684,8 @@ package object onnx {
         pads: Option[(Array[Int])] = None,
         strides: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
         "auto_pad"     -> auto_pad,
@@ -6715,8 +6735,8 @@ package object onnx {
         pads: Option[(Array[Int])] = None,
         strides: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
         "auto_pad"     -> auto_pad,
@@ -6766,8 +6786,8 @@ package object onnx {
         pads: Option[(Array[Int])] = None,
         strides: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
         "auto_pad"     -> auto_pad,
@@ -6812,7 +6832,8 @@ package object onnx {
   trait MatMul extends Operator {
 
     def MatMul1[@sp T: Numeric: ClassTag](name: String, A: Option[Tensor[T]], B: Option[Tensor[T]])(
-        implicit evT: Contains[
+        implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -6852,7 +6873,8 @@ package object onnx {
     }
 
     def MatMul9[@sp T: Numeric: ClassTag](name: String, A: Option[Tensor[T]], B: Option[Tensor[T]])(
-        implicit evT: Contains[
+        implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -6903,8 +6925,8 @@ package object onnx {
         B: Option[Tensor[T2]],
         a_zero_point: Option[Tensor[T1]] = None,
         b_zero_point: Option[Tensor[T2]] = None
-    )(
-        implicit evT1: Contains[T1, Union[Byte]#or[UByte]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Byte]#or[UByte]#or[UNil]#create],
         evT2: Contains[T2, Union[Byte]#or[UByte]#or[UNil]#create],
         evT3: Contains[T3, Union[Int]#or[UNil]#create]
     ): (Tensor[T3]) = {
@@ -6955,8 +6977,8 @@ package object onnx {
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
         data_0: Seq[Option[Tensor[T]]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
       val allInputs = (
@@ -6999,8 +7021,8 @@ package object onnx {
       )
     }
 
-    def Max6[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Max6[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -7043,8 +7065,8 @@ package object onnx {
       )
     }
 
-    def Max8[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Max8[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -7096,8 +7118,8 @@ package object onnx {
         pads: Option[(Array[Int])] = None,
         strides: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
         "auto_pad"     -> auto_pad,
@@ -7146,8 +7168,8 @@ package object onnx {
         storage_order: Option[(Int)] = None,
         strides: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evI: Contains[I, Union[Long]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
@@ -7200,8 +7222,8 @@ package object onnx {
         storage_order: Option[(Int)] = None,
         strides: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evI: Contains[I, Union[Long]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
@@ -7256,8 +7278,8 @@ package object onnx {
         storage_order: Option[(Int)] = None,
         strides: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evI: Contains[I, Union[Long]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
@@ -7310,8 +7332,8 @@ package object onnx {
         spatial_scaleAttr: Option[(Float)] = None,
         X: Option[Tensor[T]],
         rois: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] =
         Map("pooled_shape" -> pooled_shape, "spatial_scaleAttr" -> spatial_scaleAttr)
@@ -7358,8 +7380,8 @@ package object onnx {
         X: Option[Tensor[T1]],
         I: Option[Tensor[T2]],
         output_shapeInput: Option[Tensor[T2]] = None
-    )(
-        implicit evT1: Contains[T1, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT2: Contains[T2, Union[Long]#or[UNil]#create]
     ): (Tensor[T1]) = {
       val map: Map[String, Any] =
@@ -7412,8 +7434,8 @@ package object onnx {
         X: Option[Tensor[T1]],
         I: Option[Tensor[T2]],
         output_shapeInput: Option[Tensor[T2]] = None
-    )(
-        implicit evT1: Contains[T1, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT2: Contains[T2, Union[Long]#or[UNil]#create]
     ): (Tensor[T1]) = {
       val map: Map[String, Any] =
@@ -7464,8 +7486,8 @@ package object onnx {
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
         data_0: Seq[Option[Tensor[T]]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
       val allInputs = (
@@ -7508,8 +7530,8 @@ package object onnx {
       )
     }
 
-    def Mean6[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Mean6[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -7552,8 +7574,8 @@ package object onnx {
       )
     }
 
-    def Mean8[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Mean8[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -7602,8 +7624,8 @@ package object onnx {
         name: String,
         axes: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axes" -> axes)
       val allInputs = (
@@ -7645,8 +7667,8 @@ package object onnx {
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
         data_0: Seq[Option[Tensor[T]]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
       val allInputs = (
@@ -7689,8 +7711,8 @@ package object onnx {
       )
     }
 
-    def Min6[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Min6[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -7733,8 +7755,8 @@ package object onnx {
       )
     }
 
-    def Min8[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Min8[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -7784,8 +7806,8 @@ package object onnx {
         fmod: Option[(Int)] = None,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
@@ -7832,8 +7854,8 @@ package object onnx {
         consumed_inputs: Option[(Array[Int])] = None,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -7879,8 +7901,8 @@ package object onnx {
         broadcast: Option[(Int)] = None,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -7920,7 +7942,8 @@ package object onnx {
     }
 
     def Mul7[@sp T: Numeric: ClassTag](name: String, A: Option[Tensor[T]], B: Option[Tensor[T]])(
-        implicit evT: Contains[
+        implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -7967,8 +7990,8 @@ package object onnx {
         sample_size: Option[(Int)] = None,
         seed: Option[(Float)] = None,
         input: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[T1, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT2: Contains[T2, Union[Int]#or[Long]#or[UNil]#create]
     ): (Tensor[T2]) = {
       val map: Map[String, Any] =
@@ -8012,8 +8035,8 @@ package object onnx {
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[Int]#or[Byte]#or[Short]#or[Long]#or[UNil]#create
         ]
@@ -8052,8 +8075,8 @@ package object onnx {
       ](name, "Neg", allInputs, map))
     }
 
-    def Neg6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-        implicit evT: Contains[
+    def Neg6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[Int]#or[Byte]#or[Short]#or[Long]#or[UNil]#create
         ]
@@ -8196,8 +8219,8 @@ package object onnx {
   }
   trait NonZero extends Operator {
 
-    def NonZero9[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    def NonZero9[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -8243,8 +8266,8 @@ package object onnx {
         name: String,
         norm: Option[(String)] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create]
     ): (Tensor[Float]) = {
       val map: Map[String, Any] = Map("norm" -> norm)
       val allInputs = (
@@ -8282,8 +8305,8 @@ package object onnx {
   }
   trait Not extends Operator {
 
-    def Not1[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Boolean]#or[UNil]#create]
+    def Not1[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Boolean]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -8327,8 +8350,8 @@ package object onnx {
         indices: Option[Tensor[T1]],
         depth: Option[Tensor[T2]],
         values: Option[Tensor[T3]]
-    )(
-        implicit evT1: Contains[
+    )(implicit
+        evT1: Contains[
           T1,
           Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
             Int
@@ -8390,8 +8413,8 @@ package object onnx {
         indices: Option[Tensor[T1]],
         depth: Option[Tensor[T2]],
         values: Option[Tensor[T3]]
-    )(
-        implicit evT1: Contains[
+    )(implicit
+        evT1: Contains[
           T1,
           Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
             Int
@@ -8455,8 +8478,8 @@ package object onnx {
         cats_strings: Option[(Array[String])] = None,
         zeros: Option[(Int)] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[String]#or[Long]#or[Int]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -8504,8 +8527,8 @@ package object onnx {
         broadcast: Option[(Int)] = None,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Boolean]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Boolean]#or[UNil]#create],
         evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
     ): (Tensor[T1]) = {
       val map: Map[String, Any] = Map("axis" -> axis, "broadcast" -> broadcast)
@@ -8546,8 +8569,8 @@ package object onnx {
         name: String,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Boolean]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Boolean]#or[UNil]#create],
         evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
     ): (Tensor[T1]) = {
       val map: Map[String, Any] = Map()
@@ -8591,8 +8614,8 @@ package object onnx {
         consumed_inputs: Option[(Array[Int])] = None,
         X: Option[Tensor[T]],
         slope: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -8635,8 +8658,8 @@ package object onnx {
         name: String,
         X: Option[Tensor[T]],
         slope: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -8679,8 +8702,8 @@ package object onnx {
         name: String,
         X: Option[Tensor[T]],
         slope: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -8723,8 +8746,8 @@ package object onnx {
         name: String,
         X: Option[Tensor[T]],
         slope: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -8771,8 +8794,8 @@ package object onnx {
         paddings: Option[(Array[Int])],
         value: Option[(Float)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
@@ -8819,8 +8842,8 @@ package object onnx {
         pads: Option[(Array[Int])],
         value: Option[(Float)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
@@ -8867,8 +8890,8 @@ package object onnx {
         data: Option[Tensor[T]],
         pads: Option[Tensor[Long]],
         constant_value: Option[Tensor[T]] = None
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
@@ -8924,8 +8947,8 @@ package object onnx {
         broadcast: Option[(Int)] = None,
         X: Option[Tensor[T]],
         Y: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis, "broadcast" -> broadcast)
       val allInputs = (
@@ -9022,8 +9045,8 @@ package object onnx {
         y_scale: Option[Tensor[Float]],
         y_zero_point: Option[Tensor[T3]],
         B: Option[Tensor[T4]] = None
-    )(
-        implicit evT1: Contains[T1, Union[Byte]#or[UByte]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Byte]#or[UByte]#or[UNil]#create],
         evT2: Contains[T2, Union[Byte]#or[UByte]#or[UNil]#create],
         evT3: Contains[T3, Union[Byte]#or[UByte]#or[UNil]#create],
         evT4: Contains[T4, Union[Int]#or[UNil]#create]
@@ -9082,8 +9105,8 @@ package object onnx {
         b_zero_point: Option[Tensor[T2]],
         y_scale: Option[Tensor[Float]],
         y_zero_point: Option[Tensor[T3]]
-    )(
-        implicit evT1: Contains[T1, Union[Byte]#or[UByte]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Byte]#or[UByte]#or[UNil]#create],
         evT2: Contains[T2, Union[Byte]#or[UByte]#or[UNil]#create],
         evT3: Contains[T3, Union[Byte]#or[UByte]#or[UNil]#create]
     ): (Tensor[T3]) = {
@@ -9135,8 +9158,8 @@ package object onnx {
         x: Option[Tensor[T1]],
         y_scale: Option[Tensor[Float]],
         y_zero_point: Option[Tensor[T2]] = None
-    )(
-        implicit evT1: Contains[T1, Union[Float]#or[Int]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Float]#or[Int]#or[UNil]#create],
         evT2: Contains[T2, Union[Byte]#or[UByte]#or[UNil]#create]
     ): (Tensor[T2]) = {
       val map: Map[String, Any] = Map()
@@ -9197,8 +9220,8 @@ package object onnx {
         B: Option[Tensor[T]] = None,
         sequence_lens: Option[Tensor[T1]] = None,
         initial_h: Option[Tensor[T]] = None
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT1: Contains[T1, Union[Int]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
@@ -9264,8 +9287,8 @@ package object onnx {
         B: Option[Tensor[T]] = None,
         sequence_lens: Option[Tensor[T1]] = None,
         initial_h: Option[Tensor[T]] = None
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT1: Contains[T1, Union[Int]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
@@ -9325,8 +9348,8 @@ package object onnx {
         scaleAttr: Option[(Float)] = None,
         seed: Option[(Float)] = None,
         shape: Option[(Array[Int])]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
         "dtype"     -> dtype,
@@ -9377,8 +9400,8 @@ package object onnx {
         scaleAttr: Option[(Float)] = None,
         seed: Option[(Float)] = None,
         input: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[
+    )(implicit
+        evT1: Contains[
           T1,
           Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
             Int
@@ -9432,8 +9455,8 @@ package object onnx {
         low: Option[(Float)] = None,
         seed: Option[(Float)] = None,
         shape: Option[(Array[Int])]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] =
         Map("dtype" -> dtype, "high" -> high, "low" -> low, "seed" -> seed, "shape" -> shape)
@@ -9479,8 +9502,8 @@ package object onnx {
         low: Option[(Float)] = None,
         seed: Option[(Float)] = None,
         input: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[
+    )(implicit
+        evT1: Contains[
           T1,
           Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
             Int
@@ -9532,8 +9555,9 @@ package object onnx {
         start: Option[Tensor[T]],
         limit: Option[Tensor[T]],
         delta: Option[Tensor[T]]
-    )(implicit evT: Contains[T, Union[Float]#or[Double]#or[Short]#or[Int]#or[Long]#or[UNil]#create])
-        : (Tensor[T]) = {
+    )(implicit
+        evT: Contains[T, Union[Float]#or[Double]#or[Short]#or[Int]#or[Long]#or[UNil]#create]
+    ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
         start,
@@ -9581,8 +9605,8 @@ package object onnx {
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
       val allInputs = (
@@ -9618,8 +9642,8 @@ package object onnx {
       ](name, "Reciprocal", allInputs, map))
     }
 
-    def Reciprocal6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Reciprocal6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -9662,8 +9686,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -9707,8 +9731,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -9754,8 +9778,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -9799,8 +9823,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -9846,8 +9870,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -9891,8 +9915,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -9938,8 +9962,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -9983,8 +10007,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -10030,8 +10054,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -10075,8 +10099,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -10122,8 +10146,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -10167,8 +10191,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -10214,8 +10238,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -10259,8 +10283,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -10306,8 +10330,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -10351,8 +10375,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -10398,8 +10422,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -10443,8 +10467,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -10490,8 +10514,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -10535,8 +10559,8 @@ package object onnx {
         axes: Option[(Array[Int])] = None,
         keepdims: Option[(Int)] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
         ]
@@ -10581,8 +10605,8 @@ package object onnx {
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
       val allInputs = (
@@ -10618,8 +10642,8 @@ package object onnx {
       ](name, "Relu", allInputs, map))
     }
 
-    def Relu6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Relu6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -10662,12 +10686,14 @@ package object onnx {
         consumed_inputs: Option[(Array[Int])] = None,
         shape: Option[(Array[Int])] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs, "shape" -> shape)
@@ -10708,12 +10734,14 @@ package object onnx {
         name: String,
         data: Option[Tensor[T]],
         shapeInput: Option[Tensor[Long]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
@@ -10757,8 +10785,8 @@ package object onnx {
         mode: Option[(String)] = None,
         X: Option[Tensor[T]],
         scales: Option[Tensor[Float]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -10793,8 +10821,8 @@ package object onnx {
         roi: Option[Tensor[T2]],
         scales: Option[Tensor[Float]],
         sizes: Option[Tensor[Long]] = None
-    )(
-        implicit evT1: Contains[
+    )(implicit
+        evT1: Contains[
           T1,
           Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
             Int
@@ -10860,8 +10888,8 @@ package object onnx {
         time_axis: Option[(Int)] = None,
         input: Option[Tensor[T]],
         sequence_lens: Option[Tensor[Long]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -10903,8 +10931,8 @@ package object onnx {
         X: Option[Tensor[T1]],
         rois: Option[Tensor[T1]],
         batch_indices: Option[Tensor[T2]]
-    )(
-        implicit evT1: Contains[T1, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
         evT2: Contains[T2, Union[Long]#or[UNil]#create]
     ): (Tensor[T1]) = {
       val map: Map[String, Any] = Map(
@@ -10956,8 +10984,8 @@ package object onnx {
   }
   trait Round extends Operator {
 
-    def Round11[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Round11[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -11009,8 +11037,8 @@ package object onnx {
         support_vectors: Option[(Array[Float])] = None,
         vectors_per_class: Option[(Array[Int])] = None,
         X: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[T1, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create],
         evT2: Contains[T2, Union[String]#or[Long]#or[UNil]#create]
     ): (Tensor[T2]) = {
       val map: Map[String, Any] = Map(
@@ -11072,8 +11100,8 @@ package object onnx {
         rho: Option[(Array[Float])] = None,
         support_vectors: Option[(Array[Float])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create]
     ): (Tensor[Float]) = {
       val map: Map[String, Any] = Map(
         "coefficients"    -> coefficients,
@@ -11125,8 +11153,8 @@ package object onnx {
         offset: Option[(Array[Float])] = None,
         scaleAttr: Option[(Array[Float])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create]
     ): (Tensor[Float]) = {
       val map: Map[String, Any] = Map("offset" -> offset, "scaleAttr" -> scaleAttr)
       val allInputs = (
@@ -11171,8 +11199,8 @@ package object onnx {
         num_scan_inputs: Option[(Int)],
         sequence_lens: Option[Tensor[I]] = None,
         initial_state_and_scan_inputs: Seq[Option[Tensor[V]]]
-    )(
-        implicit evI: Contains[I, Union[Long]#or[UNil]#create],
+    )(implicit
+        evI: Contains[I, Union[Long]#or[UNil]#create],
         evV: Contains[V, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
           Long
         ]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[
@@ -11230,8 +11258,8 @@ package object onnx {
         scan_output_axes: Option[(Array[Int])] = None,
         scan_output_directions: Option[(Array[Int])] = None,
         initial_state_and_scan_inputs: Seq[Option[Tensor[V]]]
-    )(
-        implicit evV: Contains[V, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evV: Contains[V, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -11294,8 +11322,8 @@ package object onnx {
         scan_output_axes: Option[(Array[Int])] = None,
         scan_output_directions: Option[(Array[Int])] = None,
         initial_state_and_scan_inputs: Seq[Option[Tensor[V]]]
-    )(
-        implicit evV: Contains[V, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evV: Contains[V, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -11357,8 +11385,8 @@ package object onnx {
         data: Option[Tensor[T]],
         indices: Option[Tensor[Tind]],
         updates: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -11412,8 +11440,8 @@ package object onnx {
         data: Option[Tensor[T]],
         indices: Option[Tensor[Tind]],
         updates: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -11469,8 +11497,8 @@ package object onnx {
         data: Option[Tensor[T]],
         indices: Option[Tensor[Tind]],
         updates: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -11525,8 +11553,8 @@ package object onnx {
         data: Option[Tensor[T]],
         indices: Option[Tensor[Long]],
         updates: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -11581,8 +11609,8 @@ package object onnx {
         consumed_inputs: Option[(Array[Int])] = None,
         gamma: Option[(Float)] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] =
         Map("alpha" -> alpha, "consumed_inputs" -> consumed_inputs, "gamma" -> gamma)
@@ -11624,8 +11652,8 @@ package object onnx {
         alpha: Option[(Float)] = None,
         gamma: Option[(Float)] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("alpha" -> alpha, "gamma" -> gamma)
       val allInputs = (
@@ -11667,8 +11695,8 @@ package object onnx {
         name: String,
         input_sequence: Option[S],
         position: Option[Tensor[I]]
-    )(
-        implicit evS: Contains[
+    )(implicit
+        evS: Contains[
           S,
           Union[Seq[Tensor[UByte]]]#or[Seq[Tensor[UShort]]]#or[Seq[Tensor[UInt]]]#or[Seq[Tensor[
             ULong
@@ -11726,8 +11754,8 @@ package object onnx {
     def SequenceConstruct11[@sp T: Numeric: ClassTag, @sp S: Numeric: ClassTag](
         name: String,
         inputs: Seq[Option[Tensor[T]]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -11789,7 +11817,8 @@ package object onnx {
   trait SequenceEmpty extends Operator {
 
     def SequenceEmpty11[@sp S: Numeric: ClassTag](name: String, dtype: Option[(Int)] = None)(
-        implicit evS: Contains[
+        implicit
+        evS: Contains[
           S,
           Union[Seq[Tensor[UByte]]]#or[Seq[Tensor[UShort]]]#or[Seq[Tensor[UInt]]]#or[Seq[Tensor[
             ULong
@@ -11842,8 +11871,8 @@ package object onnx {
         name: String,
         input_sequence: Option[S],
         position: Option[Tensor[I]] = None
-    )(
-        implicit evS: Contains[
+    )(implicit
+        evS: Contains[
           S,
           Union[Seq[Tensor[UByte]]]#or[Seq[Tensor[UShort]]]#or[Seq[Tensor[UInt]]]#or[Seq[Tensor[
             ULong
@@ -11902,8 +11931,8 @@ package object onnx {
         input_sequence: Option[S],
         tensor: Option[Tensor[T]],
         position: Option[Tensor[I]] = None
-    )(
-        implicit evS: Contains[
+    )(implicit
+        evS: Contains[
           S,
           Union[Seq[Tensor[UByte]]]#or[Seq[Tensor[UShort]]]#or[Seq[Tensor[UInt]]]#or[Seq[Tensor[
             ULong
@@ -11961,8 +11990,8 @@ package object onnx {
     def SequenceLength11[@sp S: Numeric: ClassTag, @sp I: Numeric: ClassTag](
         name: String,
         input_sequence: Option[S]
-    )(
-        implicit evS: Contains[
+    )(implicit
+        evS: Contains[
           S,
           Union[Seq[Tensor[UByte]]]#or[Seq[Tensor[UShort]]]#or[Seq[Tensor[UInt]]]#or[Seq[Tensor[
             ULong
@@ -12015,8 +12044,8 @@ package object onnx {
     def Shape1[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -12064,8 +12093,8 @@ package object onnx {
         bias: Option[(Float)] = None,
         lambd: Option[(Float)] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
@@ -12109,8 +12138,8 @@ package object onnx {
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
       val allInputs = (
@@ -12146,8 +12175,8 @@ package object onnx {
       ](name, "Sigmoid", allInputs, map))
     }
 
-    def Sigmoid6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Sigmoid6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -12185,8 +12214,8 @@ package object onnx {
   }
   trait Sign extends Operator {
 
-    def Sign9[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    def Sign9[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
@@ -12226,8 +12255,8 @@ package object onnx {
   }
   trait Sin extends Operator {
 
-    def Sin7[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Sin7[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -12265,8 +12294,8 @@ package object onnx {
   }
   trait Sinh extends Operator {
 
-    def Sinh9[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Sinh9[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -12307,8 +12336,8 @@ package object onnx {
     def Size1[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
         name: String,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -12357,8 +12386,8 @@ package object onnx {
         ends: Option[(Array[Int])],
         starts: Option[(Array[Int])],
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -12405,8 +12434,8 @@ package object onnx {
         ends: Option[Tensor[Tind]],
         axes: Option[Tensor[Tind]] = None,
         steps: Option[Tensor[Tind]] = None
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -12461,8 +12490,8 @@ package object onnx {
         ends: Option[Tensor[Tind]],
         axes: Option[Tensor[Tind]] = None,
         steps: Option[Tensor[Tind]] = None
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -12516,8 +12545,8 @@ package object onnx {
         name: String,
         axis: Option[(Int)] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis)
       val allInputs = (
@@ -12557,8 +12586,8 @@ package object onnx {
         name: String,
         axis: Option[(Int)] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis)
       val allInputs = (
@@ -12596,8 +12625,8 @@ package object onnx {
   }
   trait Softplus extends Operator {
 
-    def Softplus1[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Softplus1[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -12635,8 +12664,8 @@ package object onnx {
   }
   trait Softsign extends Operator {
 
-    def Softsign1[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Softsign1[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -12678,8 +12707,8 @@ package object onnx {
         name: String,
         blocksize: Option[(Int)],
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -12727,12 +12756,14 @@ package object onnx {
         splitAttr: Option[(Array[Int])] = None,
         input: Option[Tensor[T]],
         split: Option[Tensor[T]] = None
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis, "splitAttr" -> splitAttr)
@@ -12774,12 +12805,14 @@ package object onnx {
         axis: Option[(Int)] = None,
         splitAttr: Option[(Array[Int])] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis, "splitAttr" -> splitAttr)
@@ -12821,12 +12854,14 @@ package object onnx {
         axis: Option[(Int)] = None,
         splitAttr: Option[(Array[Int])] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("axis" -> axis, "splitAttr" -> splitAttr)
@@ -12875,8 +12910,8 @@ package object onnx {
         keepdims: Option[(Int)] = None,
         input: Option[Tensor[T]],
         split: Option[Tensor[I]] = None
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -12935,8 +12970,8 @@ package object onnx {
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
       val allInputs = (
@@ -13000,8 +13035,8 @@ package object onnx {
         name: String,
         axes: Option[(Array[Int])] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -13045,8 +13080,8 @@ package object onnx {
         name: String,
         axes: Option[(Array[Int])] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -13144,8 +13179,8 @@ package object onnx {
         consumed_inputs: Option[(Array[Int])] = None,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -13191,8 +13226,8 @@ package object onnx {
         broadcast: Option[(Int)] = None,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -13232,7 +13267,8 @@ package object onnx {
     }
 
     def Sub7[@sp T: Numeric: ClassTag](name: String, A: Option[Tensor[T]], B: Option[Tensor[T]])(
-        implicit evT: Contains[
+        implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
         ]
@@ -13277,8 +13313,8 @@ package object onnx {
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
         data_0: Seq[Option[Tensor[T]]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
       val allInputs = (
@@ -13321,8 +13357,8 @@ package object onnx {
       )
     }
 
-    def Sum6[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Sum6[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -13365,8 +13401,8 @@ package object onnx {
       )
     }
 
-    def Sum8[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Sum8[@sp T: Numeric: ClassTag](name: String, data_0: Seq[Option[Tensor[T]]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -13411,8 +13447,8 @@ package object onnx {
   }
   trait Tan extends Operator {
 
-    def Tan7[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Tan7[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -13454,8 +13490,8 @@ package object onnx {
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
         input: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs)
       val allInputs = (
@@ -13491,8 +13527,8 @@ package object onnx {
       ](name, "Tanh", allInputs, map))
     }
 
-    def Tanh6[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    def Tanh6[@sp T: Numeric: ClassTag](name: String, input: Option[Tensor[T]])(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
@@ -13542,8 +13578,8 @@ package object onnx {
         pool_strings: Option[(Array[String])] = None,
         weights: Option[(Array[Float])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[String]#or[Int]#or[Long]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[String]#or[Int]#or[Long]#or[UNil]#create],
         evT1: Contains[T1, Union[Float]#or[UNil]#create]
     ): (Tensor[T1]) = {
       val map: Map[String, Any] = Map(
@@ -13596,8 +13632,8 @@ package object onnx {
         name: String,
         alpha: Option[(Float)] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("alpha" -> alpha)
       val allInputs = (
@@ -13640,12 +13676,14 @@ package object onnx {
         input: Option[Tensor[T]],
         tiles: Option[Tensor[T]],
         axis: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
@@ -13693,12 +13731,14 @@ package object onnx {
         name: String,
         input: Option[Tensor[T]],
         repeats: Option[Tensor[T1]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ],
         evT1: Contains[T1, Union[Long]#or[UNil]#create]
     ): (Tensor[T]) = {
@@ -13743,8 +13783,8 @@ package object onnx {
         axis: Option[(Int)] = None,
         k: Option[(Int)],
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
@@ -13791,8 +13831,8 @@ package object onnx {
         axis: Option[(Int)] = None,
         X: Option[Tensor[T]],
         K: Option[Tensor[Long]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
@@ -13841,8 +13881,8 @@ package object onnx {
         sorted: Option[(Int)] = None,
         X: Option[Tensor[T]],
         K: Option[Tensor[Long]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
             Short
@@ -13890,8 +13930,8 @@ package object onnx {
         name: String,
         perm: Option[(Array[Int])] = None,
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -13953,8 +13993,8 @@ package object onnx {
         nodes_values: Option[(Array[Float])] = None,
         post_transform: Option[(String)] = None,
         X: Option[Tensor[T1]]
-    )(
-        implicit evT1: Contains[T1, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create],
+    )(implicit
+        evT1: Contains[T1, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create],
         evT2: Contains[T2, Union[String]#or[Long]#or[UNil]#create]
     ): (Tensor[T2]) = {
       val map: Map[String, Any] = Map(
@@ -14021,8 +14061,8 @@ package object onnx {
         target_treeids: Option[(Array[Int])] = None,
         target_weights: Option[(Array[Float])] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create]
+    )(implicit
+        evT: Contains[T, Union[Float]#or[Double]#or[Long]#or[Int]#or[UNil]#create]
     ): (Tensor[Float]) = {
       val map: Map[String, Any] = Map(
         "aggregate_function"              -> aggregate_function,
@@ -14083,8 +14123,8 @@ package object onnx {
         axis: Option[(Int)] = None,
         sorted: Option[(Int)] = None,
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -14137,8 +14177,8 @@ package object onnx {
         name: String,
         axes: Option[(Array[Int])],
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -14182,8 +14222,8 @@ package object onnx {
         name: String,
         axes: Option[(Array[Int])],
         data: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+    )(implicit
+        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
           Int
         ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
           Complex[Double]
@@ -14231,12 +14271,14 @@ package object onnx {
         mode: Option[(String)] = None,
         width_scaleAttr: Option[(Float)],
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Boolean]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[
             UInt
-          ]#or[ULong]#or[Byte]#or[Short]#or[String]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[ULong]#or[Byte]#or[Short]#or[String]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map(
@@ -14282,12 +14324,14 @@ package object onnx {
         mode: Option[(String)] = None,
         scaleAttrs: Option[(Array[Float])],
         X: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Boolean]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[
             UInt
-          ]#or[ULong]#or[Byte]#or[Short]#or[String]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[ULong]#or[Byte]#or[Short]#or[String]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("mode" -> mode, "scaleAttrs" -> scaleAttrs)
@@ -14329,12 +14373,14 @@ package object onnx {
         mode: Option[(String)] = None,
         X: Option[Tensor[T]],
         scales: Option[Tensor[Float]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Boolean]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[
             UInt
-          ]#or[ULong]#or[Byte]#or[Short]#or[String]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[ULong]#or[Byte]#or[Short]#or[String]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("mode" -> mode)
@@ -14359,12 +14405,14 @@ package object onnx {
         mode: Option[(String)] = None,
         X: Option[Tensor[T]],
         scales: Option[Tensor[Float]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Boolean]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[
             UInt
-          ]#or[ULong]#or[Byte]#or[Short]#or[String]#or[Complex[Float]]#or[Complex[Double]]#or[UNil]#create
+          ]#or[ULong]#or[Byte]#or[Short]#or[String]#or[Complex[Float]]#or[Complex[Double]]#or[
+            UNil
+          ]#create
         ]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map("mode" -> mode)
@@ -14386,13 +14434,13 @@ package object onnx {
   }
   trait Where extends Operator {
 
-    def Where9[@sp B: Numeric: ClassTag, @sp T: Numeric: ClassTag](
+    def Where9[@sp B: ClassTag, @sp T: Numeric: ClassTag](
         name: String,
         condition: Option[Tensor[B]],
         X: Option[Tensor[T]],
         Y: Option[Tensor[T]]
-    )(
-        implicit evB: Contains[B, Union[Boolean]#or[UNil]#create],
+    )(implicit
+        evB: Contains[B, Union[Boolean]#or[UNil]#create],
         evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[Int]#or[
           Long
         ]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[
@@ -14448,8 +14496,8 @@ package object onnx {
         broadcast: Option[(Int)] = None,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Boolean]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Boolean]#or[UNil]#create],
         evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
     ): (Tensor[T1]) = {
       val map: Map[String, Any] = Map("axis" -> axis, "broadcast" -> broadcast)
@@ -14490,8 +14538,8 @@ package object onnx {
         name: String,
         A: Option[Tensor[T]],
         B: Option[Tensor[T]]
-    )(
-        implicit evT: Contains[T, Union[Boolean]#or[UNil]#create],
+    )(implicit
+        evT: Contains[T, Union[Boolean]#or[UNil]#create],
         evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
     ): (Tensor[T1]) = {
       val map: Map[String, Any] = Map()
@@ -14535,8 +14583,8 @@ package object onnx {
         classlabels_int64s: Option[(Array[Int])] = None,
         classlabels_strings: Option[(Array[String])] = None,
         X: Option[Tensor[Float]]
-    )(
-        implicit evT: Contains[
+    )(implicit
+        evT: Contains[
           T,
           Union[Seq[Map[String, Float]]]#or[Seq[Map[Long, Float]]]#or[UNil]#create
         ]

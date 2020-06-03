@@ -9,7 +9,6 @@ import org.bytedeco.onnxruntime.global.onnxruntime._
 
 import org.emergentorder.onnx._
 
-
 //TODO: Clean up, remove asInstaceOf, multiple inputs, etc.
 class ORTModelBackend(onnxBytes: Array[Byte])
     extends Model(onnxBytes)
@@ -56,27 +55,27 @@ class ORTModelBackend(onnxBytes: Array[Byte])
   val allNodeNamesAndDims = getInputAndOutputNodeNamesAndDims(session)
 
   override def fullModel[
-        T: ClassTag,
-        T1: ClassTag,
-        T2: ClassTag,
-        T3: ClassTag,
-        T4: ClassTag,
-        T5: ClassTag,
-        T6: ClassTag,
-        T7: ClassTag,
-        T8: ClassTag,
-        T9: ClassTag,
-        T10: ClassTag,
-        T11: ClassTag,
-        T12: ClassTag,
-        T13: ClassTag,
-        T14: ClassTag,
-        T15: ClassTag,
-        T16: ClassTag,
-        T17: ClassTag
-    ](
-        inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8]
-    ): (T9) = {
+      T: ClassTag,
+      T1: ClassTag,
+      T2: ClassTag,
+      T3: ClassTag,
+      T4: ClassTag,
+      T5: ClassTag,
+      T6: ClassTag,
+      T7: ClassTag,
+      T8: ClassTag,
+      T9: ClassTag,
+      T10: ClassTag,
+      T11: ClassTag,
+      T12: ClassTag,
+      T13: ClassTag,
+      T14: ClassTag,
+      T15: ClassTag,
+      T16: ClassTag,
+      T17: ClassTag
+  ](
+      inputs: Tuple9[T, T1, T2, T3, T4, T5, T6, T7, T8]
+  ): (T9) = {
 
     val inputTensors = Array(
       getInput(inputs._1),
@@ -100,20 +99,20 @@ class ORTModelBackend(onnxBytes: Array[Byte])
 //    val outputPointer = out.get(0).GetTensorMutableDataFloat().capacity(inputs.GetTensorTypeAndShapeInfo().GetElementCount());
 
 //    println(outputPointer.get(0).IsTensor())
-     
+
     output.asInstanceOf[T9]
   }
 
   def getInput[T: ClassTag](
-        input: T
-    ): Option[Value] = {
-     input match {
-        case tensorOpt: Option[Tensor[Any]] => {
-          tensorOpt match {
-            case Some(x) => Some(getTensor(x))
-            case None    => None
-          }
+      input: T
+  ): Option[Value] = {
+    input match {
+      case tensorOpt: Option[Tensor[Any]] => {
+        tensorOpt match {
+          case Some(x) => Some(getTensor(x))
+          case None    => None
         }
+      }
       case tensor: Tensor[Any] => {
         Some(getTensor(tensor))
       }

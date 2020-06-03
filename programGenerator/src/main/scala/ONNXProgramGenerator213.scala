@@ -53,10 +53,9 @@ object ONNXProgramGenerator {
     val scalaCollSchemas = (0 until schemasSize.toInt).map(x => schemas.get(x))
     val schemaMap = scalaCollSchemas
       .filter(x => x.since_version <= maxOpsetVersion)
-      .map(
-        x =>
-          x.Name.getString ->
-            (x.inputs, x.since_version)
+      .map(x =>
+        x.Name.getString ->
+          (x.inputs, x.since_version)
       )
       .toMap
 
@@ -163,7 +162,9 @@ object ONNXProgramGenerator {
                                  "inputData" + x._1 + ": " + (if (useZIO)
                                                                 "Task["
                                                               else
-                                                                "") + "Tensor[" + x._2 + "]" + (if (useZIO)
+                                                                "") + "Tensor[" + x._2 + "]" + (if (
+                                                                                                  useZIO
+                                                                                                )
                                                                                                   "]"
                                                                                                 else
                                                                                                   "")
@@ -178,7 +179,8 @@ object ONNXProgramGenerator {
         graphInputs
           .map { x =>
             "      node" + x._1.replaceAll("\\.", "") +
-              " <- " + (if (useZIO) "" else "List(") + "inputData" + x._1  + //"[" + replaceTypeStrings(x._2) + "]" + //"[T]" +
+              " <- " + (if (useZIO) ""
+                        else "List(") + "inputData" + x._1 + //"[" + replaceTypeStrings(x._2) + "]" + //"[T]" +
               (if (useZIO)
                  ""
                else
@@ -187,16 +189,17 @@ object ONNXProgramGenerator {
           .mkString("\n") +
         "\n" +
         params
-          .map(
-            x =>
-              "      node" + x._1.replaceAll("\\.", "") + " <- "
-                + (if (useZIO) "" else "List(") + " dataSource.getParams" + (if (useZIO)
-                                                                               "ZIO"
-                                                                             else
-                                                                               "") + "[" + x._2 + "]" + "(\"" + x._1 + "\")" + (if (useZIO)
-                                                                                                                                  ""
-                                                                                                                                else
-                                                                                                                                  ")") + "\n"
+          .map(x =>
+            "      node" + x._1.replaceAll("\\.", "") + " <- "
+              + (if (useZIO) "" else "List(") + " dataSource.getParams" + (if (useZIO)
+                                                                             "ZIO"
+                                                                           else
+                                                                             "") + "[" + x._2 + "]" + "(\"" + x._1 + "\")" + (if (
+                                                                                                                                useZIO
+                                                                                                                              )
+                                                                                                                                ""
+                                                                                                                              else
+                                                                                                                                ")") + "\n"
           )
           .mkString("") +
         (nodesInputsOpsAndOutputs zip attributes)
@@ -248,22 +251,26 @@ object ONNXProgramGenerator {
                   .mkString(",") + """))"""
               }
 
-              val tensorProtoField = x._2
+            val tensorProtoField = x._2
               .filter { y =>
                 y.has_t
               }
               .map { y =>
-                    val dimsCount    = y.t.dims_size
-                    val dimsArray = if(dimsCount == 0) Array(1) else (0 until dimsCount.toInt).map(x => y.t.dims(x)).toArray
-                    val field = onnxHelper.onnxTensorProtoToArray(y.t)
+                val dimsCount = y.t.dims_size
+                val dimsArray =
+                  if (dimsCount == 0) Array(1)
+                  else (0 until dimsCount.toInt).map(x => y.t.dims(x)).toArray
+                val field = onnxHelper.onnxTensorProtoToArray(y.t)
                 (field, dimsArray) match {
                   case arrays: (Array[_], Array[_]) =>
-                    y.name.getString + " = Some(TensorFactory.getTensor(Array(" + arrays._1.mkString(",") + ")," + 
-                      "Array(" + arrays._2.mkString(",") +")))"
+                    y.name.getString + " = Some(TensorFactory.getTensor(Array(" + arrays._1
+                      .map(x => if (x.toString.contains(".")) x.toString + "f" else x.toString)
+                      .mkString(",") + ")," +
+                      "Array(" + arrays._2.mkString(",") + ")))"
                 }
               }
 
-              val tensorProtoFields = x._2
+            val tensorProtoFields = x._2
               .filter { y =>
                 val tensorCount = y.tensors_size
                 val tensorList =
@@ -305,18 +312,17 @@ object ONNXProgramGenerator {
 
             val namedNodesOrParams = opInputs
               .filter(t => !t._2.equals(""))
-              .map(
-                t =>
-                  t._1._1
-                    .replaceAll("var", "someVar")
-                    .replaceAll("shape", "shapeInput") + " = " + (if (t._1._2)
-                                                                    t._2
-                                                                      .replaceFirst(
-                                                                        "Some",
-                                                                        "Seq(Some"
-                                                                      )
-                                                                      + ")"
-                                                                  else t._2)
+              .map(t =>
+                t._1._1
+                  .replaceAll("var", "someVar")
+                  .replaceAll("shape", "shapeInput") + " = " + (if (t._1._2)
+                                                                  t._2
+                                                                    .replaceFirst(
+                                                                      "Some",
+                                                                      "Seq(Some"
+                                                                    )
+                                                                    + ")"
+                                                                else t._2)
               )
 
             val nodeName = x._1._2(0)
@@ -324,10 +330,14 @@ object ONNXProgramGenerator {
             "      node" + nodeName.replaceAll("\\.", "") + " <- " + (if (useZIO)
                                                                         ""
                                                                       else
-                                                                        "List(") + opName + (if (useZIO)
+                                                                        "List(") + opName + (if (
+                                                                                               useZIO
+                                                                                             )
                                                                                                "ZIO"
                                                                                              else
-                                                                                               "") + "." + opName + sinceVersion + (if (useZIO)
+                                                                                               "") + "." + opName + sinceVersion + (if (
+                                                                                                                                      useZIO
+                                                                                                                                    )
                                                                                                                                       "ZIO"
                                                                                                                                     else
                                                                                                                                       "") +

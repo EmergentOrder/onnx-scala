@@ -36,12 +36,13 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
     //Note: Don't need to specify all the type params except in Dotty
     val nodeFullOutput: Tensor[Float] =
       fullNgraphHandler
-        .fullModel[Option[Tensor[Long]], Option[Tensor[Long]], Any, Any, Any, Any, Any, Any, Any, Tensor[
+        .fullModel[Option[Tensor[Long]], Option[
+          Tensor[Long]
+        ], Any, Any, Any, Any, Any, Any, Any, Tensor[
           Float
         ], Any, Any, Any, Any, Any, Any, Any, Any](
           (Some(nodeactual_input_1), Some(nodelearned_0), None, None, None, None, None, None, None)
         )
-
 
     System.runFinalization
     nodeFullOutput

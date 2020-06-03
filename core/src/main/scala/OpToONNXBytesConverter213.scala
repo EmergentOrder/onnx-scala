@@ -40,9 +40,9 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     node.set_name(name)
     node.set_op_type(opName)
     node.add_output(outName)
-   
-    def handleIntAttrs(x: Int, key: String): Unit  = {
-      val attr = node.add_attribute
+
+    def handleIntAttrs(x: Int, key: String): Unit = {
+      val attr     = node.add_attribute
       val attrName = new BytePointer(key)
       attr.set_name(attrName)
       attr.set_type(AttributeProto.INT)
@@ -51,31 +51,32 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     }
 
     def handleIntArrayAttrs(x: Array[Int], key: String): Unit = {
-      val attr = node.add_attribute
+      val attr     = node.add_attribute
       val attrName = new BytePointer(key)
       attr.set_name(attrName)
       attr.set_type(AttributeProto.INTS)
       (0 until x.size).foreach(y => attr.add_ints(x(y).toLong))
     }
 
-    def handleAttrs: Unit = attrs.foreach {
-      case (key, value) =>
-        value match {
-          case x: Int => {
-            handleIntAttrs(x, key)
+    def handleAttrs: Unit =
+      attrs.foreach {
+        case (key, value) =>
+          value match {
+            case x: Int => {
+              handleIntAttrs(x, key)
+            }
+            case Some(x: Int) => {
+              handleIntAttrs(x, key)
+            }
+            case x: Array[Int] => {
+              handleIntArrayAttrs(x, key)
+            }
+            case Some(x: Array[Int]) => {
+              handleIntArrayAttrs(x, key)
+            }
+            case None =>
           }
-          case Some(x: Int) => {
-            handleIntAttrs(x, key)
-          }
-          case x: Array[Int] => {
-            handleIntArrayAttrs(x, key)
-          }
-          case Some(x: Array[Int]) => {
-            handleIntArrayAttrs(x, key)
-          }
-          case None =>
-        }
-    }
+      }
 
     def addInput[A](input: A, inputName: String): Unit = {
       input match {
@@ -128,12 +129,12 @@ trait OpToONNXBytesConverter extends AutoCloseable {
           case Some(tens) => {
 
             val elemType = tens._1 match {
-              case f: Array[Float] => TensorProto.FLOAT
-              case i: Array[Double]   => TensorProto.DOUBLE
-              case l: Array[Byte]  => TensorProto.INT8
-              case f: Array[Short] => TensorProto.INT16
-              case i: Array[Int]   => TensorProto.INT32
-              case l: Array[Long]  => TensorProto.INT64
+              case f: Array[Float]  => TensorProto.FLOAT
+              case i: Array[Double] => TensorProto.DOUBLE
+              case l: Array[Byte]   => TensorProto.INT8
+              case f: Array[Short]  => TensorProto.INT16
+              case i: Array[Int]    => TensorProto.INT32
+              case l: Array[Long]   => TensorProto.INT64
             }
 
             val inputValueInfo = graph.add_input
@@ -190,7 +191,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
           }
         }
       }
-     */
+       */
     }
   }
 

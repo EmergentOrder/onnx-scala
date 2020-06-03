@@ -64,7 +64,7 @@ class ORTOperatorBackendAll
     with GatherV1
     with GatherV11
     with GatherElementsV11 //fails in scoreboard //passes in ORT
-    with GatherNDV11 //fails in scoreboard //passes in nGraph dev branch & ORT
+    with GatherNDV11       //fails in scoreboard //passes in nGraph dev branch & ORT
     with GemmV9
     with GemmV11
     with GlobalAveragePoolV1
@@ -82,7 +82,7 @@ class ORTOperatorBackendAll
     with InstanceNormalizationV6
 //    with InverseV12 //New in 1.7.0
     with IsInfV10 //fails in scoreboard //passes in ORT
-    with IsNaNV9 //fails in scoreboard //passes in ORT
+    with IsNaNV9  //fails in scoreboard //passes in ORT
     with LRNV1
     with LSTMV7
 //    with LabelEncoderV2 //ONNX ML, not tested for in scoreboard
@@ -113,7 +113,7 @@ class ORTOperatorBackendAll
     with NegV6
 // with NegativeLogLikelihoodLossV12 //new in 1.7.0
     with NonMaxSuppressionV11 //fails in scoreboard //passes in ORT
-    with NonZeroV9 //fails in scoreboard //passes in ORT
+    with NonZeroV9            //fails in scoreboard //passes in ORT
 //    with NormalizerV1 //ONNX ML, not tested in scoreboard
     with NotV1
     with OneHotV11 //fails in scoreboard //passes in ORT
@@ -122,7 +122,7 @@ class ORTOperatorBackendAll
     with PReluV9
     with PadV11
     with PowV7
-    with QLinearConvV10 //fails in scoreboard //passes in ORT
+    with QLinearConvV10   //fails in scoreboard //passes in ORT
     with QLinearMatMulV10 //fails in scoreboard //passes in ORT
     with QuantizeLinearV10
     with RNNV7 //fails in scoreboard //passes in ORT
@@ -148,21 +148,21 @@ class ORTOperatorBackendAll
     with ResizeV11 //fails in scoreboard //passes in ORT
     with ReverseSequenceV10
     with RoiAlignV10 //fails in scoreboard //passes in ORT
-    with RoundV11 //fails in scoreboard //passes in nGraph dev branch & ORT
+    with RoundV11    //fails in scoreboard //passes in nGraph dev branch & ORT
 //    with SVMClassifierV1 //ONNXML, not tested for in scoreboard
 //    with SVMRegressorV1 //ONNXML, not tested for in scoreboard
 //    with ScalerV1 //ONNXML, not tested for in scoreboard
-    with ScanV11 //fails in scoreboard //passes in ORT
-    with ScatterV11 //fails in scoreboard //passes in ORT
+    with ScanV11            //fails in scoreboard //passes in ORT
+    with ScatterV11         //fails in scoreboard //passes in ORT
     with ScatterElementsV11 //fails in scoreboard //passes in ORT
-    with ScatterNDV11 //fails in scoreboard //passes in nGraph dev branch & ORT
+    with ScatterNDV11       //fails in scoreboard //passes in nGraph dev branch & ORT
     with SeluV6
-    with SequenceAtV11 //fails in scoreboard //passes in ORT
+    with SequenceAtV11        //fails in scoreboard //passes in ORT
     with SequenceConstructV11 //fails in scoreboard //passes in ORT
-    with SequenceEmptyV11 //fails in scoreboard //passes in ORT
-    with SequenceEraseV11 //fails in scoreboard //passes in ORT
-    with SequenceInsertV11 //fails in scoreboard //passes in ORT
-    with SequenceLengthV11 //fails in scoreboard //passes in ORT
+    with SequenceEmptyV11     //fails in scoreboard //passes in ORT
+    with SequenceEraseV11     //fails in scoreboard //passes in ORT
+    with SequenceInsertV11    //fails in scoreboard //passes in ORT
+    with SequenceLengthV11    //fails in scoreboard //passes in ORT
     with ShapeV1
     with ShrinkV9
     with SigmoidV6
@@ -191,13 +191,13 @@ class ORTOperatorBackendAll
     with TanhV6
     with TfIdfVectorizerV9 //fails in scoreboard //passes in ORT
     with ThresholdedReluV10
-    with TileV6 //fails in scoreboard //passes in ORT
+    with TileV6  //fails in scoreboard //passes in ORT
     with TopKV11 //fails in scoreboard //passes in ORT
     with TransposeV1
 //    with TreeEnsembleClassifierV1 //ONNX ML, not tested for in scoreboard
 //    with TreeEnsembleRegressorV1 //ONNX ML, not tested for in scoreboard
     with UniqueV11 //fails in scoreboard //passes in ORT
-    with UnsqueezeV1 
+    with UnsqueezeV1
     with UnsqueezeV11
     with UpsampleV10 //fails in scoreboard //passes in ORT
     with WhereV9

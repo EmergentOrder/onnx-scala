@@ -29,48 +29,48 @@ trait OpToONNXBytesConverter extends AutoCloseable {
   //       Float] TypeOr Complex[Double])#check[T])
       : NodeProto = {
     val node = new NodeProto
-      //(new NodeProto).New()
+    //(new NodeProto).New()
 
     node.set_name(name)
     node.set_op_type(opName)
     node.add_output(outName)
 
-    def handleIntAttrs(x: Int, key: String): Unit  = {
-      val attr = node.add_attribute
-      val attrName = new BytePointer(key)      
-      attr.set_name(attrName)      
+    def handleIntAttrs(x: Int, key: String): Unit = {
+      val attr     = node.add_attribute
+      val attrName = new BytePointer(key)
+      attr.set_name(attrName)
       attr.set_type(AttributeProto.INT)
       val longVal = x.toLong
       attr.set_i(longVal)
     }
 
-    def handleIntArrayAttrs(x: Array[Int], key: String): Unit = {       
-      val attr = node.add_attribute
+    def handleIntArrayAttrs(x: Array[Int], key: String): Unit = {
+      val attr     = node.add_attribute
       val attrName = new BytePointer(key)
       attr.set_name(attrName)
       attr.set_type(AttributeProto.INTS)
       (0 until x.size).foreach(y => attr.add_ints(x(y).toLong))
     }
-   
 
-    def handleAttrs: Unit = attrs.foreach {
-      case (key, value) =>
-        value match {
-          case x: Int => {
-            handleIntAttrs(x, key)
+    def handleAttrs: Unit =
+      attrs.foreach {
+        case (key, value) =>
+          value match {
+            case x: Int => {
+              handleIntAttrs(x, key)
+            }
+            case Some(x: Int) => {
+              handleIntAttrs(x, key)
+            }
+            case x: Array[Int] => {
+              handleIntArrayAttrs(x, key)
+            }
+            case Some(x: Array[Int]) => {
+              handleIntArrayAttrs(x, key)
+            }
+            case None =>
           }
-          case Some(x: Int) => {
-            handleIntAttrs(x, key)
-          }
-          case x: Array[Int] => {
-            handleIntArrayAttrs(x, key)
-          } 
-          case Some(x: Array[Int]) => {
-            handleIntArrayAttrs(x, key)
-          }
-          case None =>
-        }
-    }
+      }
 
     def addInput[A](input: A, inputName: String): Unit = {
       input match {
@@ -119,12 +119,12 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     input match {
       case tens: Tensor[_] => {
         val elemType = tens._1 match {
-          case b: Array[Byte] => TensorProto.INT8
-          case s: Array[Short] => TensorProto.INT16
+          case b: Array[Byte]   => TensorProto.INT8
+          case s: Array[Short]  => TensorProto.INT16
           case d: Array[Double] => TensorProto.DOUBLE
-          case f: Array[Float] => TensorProto.FLOAT
-          case i: Array[Int]   => TensorProto.INT32
-          case l: Array[Long]  => TensorProto.INT64
+          case f: Array[Float]  => TensorProto.FLOAT
+          case i: Array[Int]    => TensorProto.INT32
+          case l: Array[Long]   => TensorProto.INT64
         }
 
         val inputValueInfo = graph.add_input
@@ -143,7 +143,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
           inputDim.set_dim_value(x)
 
         }
-      } 
+      }
     }
   }
 
@@ -172,7 +172,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 
     model.add_opset_import
     model.opset_import(0).set_version(12)
- 
+
     val outputValueInfo = graph.add_output
 
     outputValueInfo.set_name(outName)
@@ -181,15 +181,15 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     inputs match {
       case Some(x) => {
         val size = x.size
-        (0 until size).foreach { i => 
-        x(i) match {
-          case opt: Option[_] =>
-            opt match {
-              case Some(in) => addInputToGraph(in, i.toString, graph) 
-            }
-          case _ => addInputToGraph(x(i), i.toString, graph) 
-      
-        }
+        (0 until size).foreach { i =>
+          x(i) match {
+            case opt: Option[_] =>
+              opt match {
+                case Some(in) => addInputToGraph(in, i.toString, graph)
+              }
+            case _ => addInputToGraph(x(i), i.toString, graph)
+
+          }
         }
       }
       case None =>

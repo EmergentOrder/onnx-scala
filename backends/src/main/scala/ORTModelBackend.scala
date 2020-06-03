@@ -9,7 +9,6 @@ import org.bytedeco.onnxruntime.global.onnxruntime._
 
 import org.emergentorder.onnx._
 
-
 //TODO: Clean up, remove asInstaceOf, etc.
 class ORTModelBackend(onnxBytes: Array[Byte])
     extends Model(onnxBytes)
@@ -63,29 +62,29 @@ class ORTModelBackend(onnxBytes: Array[Byte])
 
     inputs match {
       case Some(x) => {
-    
+
         val size = x.size
-        val inputTensors = (0 until size).map{i =>
-          val tens = x.apply(i)
+        val inputTensors = (0 until size).map { i =>
+          val tens               = x.apply(i)
           val inputTensor: Value = getTensor(tens)
           inputTensor
         }.toArray
 
-    val output = runModel(
-      session,
-      inputTensors,
-      allNodeNamesAndDims._1,
-      allNodeNamesAndDims._2,
-      allNodeNamesAndDims._3
-    )
+        val output = runModel(
+          session,
+          inputTensors,
+          allNodeNamesAndDims._1,
+          allNodeNamesAndDims._2,
+          allNodeNamesAndDims._3
+        )
 //    val outputPointer = out.get(0).GetTensorMutableDataFloat().capacity(inputs.GetTensorTypeAndShapeInfo().GetElementCount());
 
 //    println(outputPointer.get(0).IsTensor())
 
-    Tuple1(output.asInstanceOf[T])
-      }  
+        Tuple1(output.asInstanceOf[T])
+      }
       case None => Tuple1(TensorFactory.getTensor(Array(), Array[Int]()).asInstanceOf[T])
-   
+
     }
   }
 

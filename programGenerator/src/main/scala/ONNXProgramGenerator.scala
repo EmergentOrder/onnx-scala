@@ -90,8 +90,8 @@ object ONNXProgramGenerator {
     //"Note: As of the publication of this document, no ONNX implementation is known to process operator set documents." - backlog
 
     def fullSource = {
-      val params     = onnxHelper.params
-      val nodeInputs = onnxHelper.nodeInputs
+      val params       = onnxHelper.params
+      val nodeInputs   = onnxHelper.nodeInputs
       val graphInputs  = onnxHelper.graphInputs
       val graphOutputs = onnxHelper.graphOutputs
 
@@ -150,10 +150,12 @@ object ONNXProgramGenerator {
         "\n" +
         distinctOps
           .map { x =>
-            "  val " + x + (if (useZIO) "ZIO" else "") + ": " + x.capitalize + "V" + schemaMap(x)._2.toString + (if (useZIO)
-                                                                                                                   "ZIO"
-                                                                                                                 else
-                                                                                                                   "") +
+            "  val " + x + (if (useZIO) "ZIO" else "") + ": " + x.capitalize + "V" + schemaMap(
+              x
+            )._2.toString + (if (useZIO)
+                               "ZIO"
+                             else
+                               "") +
               " = backend" +
               "\n"
           } //TODO: inject op/backend implementations
@@ -161,40 +163,47 @@ object ONNXProgramGenerator {
         "  val dataSource: DataSource" + (" = bytesDataSource") + "\n" +
 //    "  import cats.implicits._\n" +
         //Omit return type here for now
-        "  def program" + (if (graphInputs.size > 0) "(" else "") + graphInputs.map { x => 
-          "inputData" + x._1 + 
-          ": " + (if (useZIO)"Task[" else "") + "Tensor[" + x._2.toString + "]" + (if (useZIO) "]" else "")  
-        }.toArray.mkString(",") + (if (graphInputs.size > 0) ")" else "") +
+        "  def program" + (if (graphInputs.size > 0) "(" else "") + graphInputs
+        .map { x =>
+          "inputData" + x._1 +
+            ": " + (if (useZIO) "Task[" else "") + "Tensor[" + x._2.toString + "]" + (if (useZIO)
+                                                                                        "]"
+                                                                                      else "")
+        }
+        .toArray
+        .mkString(",") + (if (graphInputs.size > 0) ")" else "") +
         (if (useZIO)
            ": Task[Tensor[" + graphOutputType + "]] " //TODO: Fix graphOutputType for multiple outputs
          else
-           ": List[Tensor[" + graphOutputType + "]] ") + " = \n" +
+           ": Tensor[" + graphOutputType + "] ") + " = \n" +
         //Body of program generated here
-        "    for {\n" +
+        "   { \n" +
         graphInputs
           .map { x =>
-            "      node" + x._1.replaceAll("\\.", "") +
-              " <- " + (if (useZIO) "" else "List(") + "inputData" + x._1 + (if (useZIO)
-                                                                               ""
-                                                                             else
-                                                                               "") + //"[" + replaceTypeStrings(x._2) + "]" + //"[T]" +
+            "    val node" + x._1.replaceAll("\\.", "") +
+              " = " + (if (useZIO) "" else "") + "inputData" + x._1 + (if (useZIO)
+                                                                         ""
+                                                                       else
+                                                                         "") + //"[" + replaceTypeStrings(x._2) + "]" + //"[T]" +
               (if (useZIO)
                  ""
                else
-                 ")")
+                 "")
           }
           .mkString("\n") +
         "\n" +
         params
           .map(x =>
-            "      node" + x._1.replaceAll("\\.", "") + " <- "
-              + (if (useZIO) "" else "List(") + " dataSource.getParams" + (if (useZIO)
-                                                                             "ZIO"
-                                                                           else
-                                                                             "") + "[" + x._2 + "]" + "(\"" + x._1 + "\")" + (if (useZIO)
-                                                                                                                                ""
-                                                                                                                              else
-                                                                                                                                ")") + "\n"
+            "     val node" + x._1.replaceAll("\\.", "") + " = "
+              + (if (useZIO) "" else "") + " dataSource.getParams" + (if (useZIO)
+                                                                        "ZIO"
+                                                                      else
+                                                                        "") + "[" + x._2 + "]" + "(\"" + x._1 + "\")" + (if (
+                                                                                                                           useZIO
+                                                                                                                         )
+                                                                                                                           ""
+                                                                                                                         else
+                                                                                                                           "") + "\n"
           )
           .mkString("") +
         (nodesInputsOpsAndOutputs zip attributes)
@@ -249,24 +258,27 @@ object ONNXProgramGenerator {
                   .mkString(",") + """))"""
               }
 
-              val tensorProtoField = x._2
+            val tensorProtoField = x._2
               .filter { y =>
                 y.has_t
               }
-               .map { y =>
-                    val dimsCount    = y.t.dims_size
-                    val dimsArray = if(dimsCount == 0) Array(1) else (0 until dimsCount.toInt).map(x => y.t.dims(x)).toArray
-                    val field = onnxHelper.onnxTensorProtoToArray(y.t)
+              .map { y =>
+                val dimsCount = y.t.dims_size
+                val dimsArray =
+                  if (dimsCount == 0) Array(1)
+                  else (0 until dimsCount.toInt).map(x => y.t.dims(x)).toArray
+                val field = onnxHelper.onnxTensorProtoToArray(y.t)
                 (field, dimsArray) match {
                   case arrays: (Array[_], Array[_]) =>
-                    y.name.getString + 
-                    (if (schemaMap(opName)._3.get(y.name).required) " = (TensorFactory.getTensor((" 
-                      else " = Some(TensorFactory.getTensor(Array(") +
-                    arrays._1.mkString(",") + ")," + "Array(" + arrays._2.mkString(",") +")))"
+                    y.name.getString +
+                      (if (schemaMap(opName)._3.get(y.name).required)
+                         " = (TensorFactory.getTensor(("
+                       else " = Some(TensorFactory.getTensor(Array(") +
+                      arrays._1.mkString(",") + ")," + "Array(" + arrays._2.mkString(",") + ")))"
                 }
               }
 
-              val tensorProtoFields = x._2
+            val tensorProtoFields = x._2
               .filter { y =>
                 val tensorCount = y.tensors_size
                 val tensorList =
@@ -325,16 +337,20 @@ object ONNXProgramGenerator {
 
             val nodeName = x._1._2(0)
 
-            "      node" + nodeName.replaceAll("\\.", "") + " <- " + (if (useZIO)
-                                                                        ""
-                                                                      else
-                                                                        "List(") + opName + (if (useZIO)
-                                                                                               "ZIO"
-                                                                                             else
-                                                                                               "") + "." + opName + "V" + sinceVersion + (if (useZIO)
-                                                                                                                                            "ZIO"
-                                                                                                                                          else
-                                                                                                                                            "") +
+            "     val node" + nodeName.replaceAll("\\.", "") + " = " + (if (useZIO)
+                                                                          ""
+                                                                        else
+                                                                          "") + opName + (if (
+                                                                                            useZIO
+                                                                                          )
+                                                                                            "ZIO"
+                                                                                          else
+                                                                                            "") + "." + opName + "V" + sinceVersion + (if (
+                                                                                                                                         useZIO
+                                                                                                                                       )
+                                                                                                                                         "ZIO"
+                                                                                                                                       else
+                                                                                                                                         "") +
 //               "[" + x._2 + "]" +
               //(if (nodeName.contains("output")) "[" + graphOutputType + "]"
               // else "") +
@@ -354,12 +370,13 @@ object ONNXProgramGenerator {
               namedNodesOrParams.mkString(",") +
               ").apply(0)" + (if (useZIO) ""
                               // "}"
-                              else ")") + "\n"
+                              else "") + "\n"
           }
           .mkString("") +
-        "    } yield (" +
-        outputs.map(x => "node" + x).mkString(",") +
-        ")\n" +
+        "   return " +
+        "node" + outputs(0) +
+        //outputs.map(x => "node" + x).mkString(",") +
+        "\n}" +
         "\n" +
         """  override def close(): Unit = {
     backend.close

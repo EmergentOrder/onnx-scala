@@ -14,6 +14,7 @@ import scala.reflect.ClassTag
 import org.bytedeco.onnx.ModelProto
 package object onnx {
 
+  //TODO: Remove requirement to be Numeric for ops with non-numeric outputs / inputs
   //TODO: Encode node names as types
   //TODO: fix encoding of type constraints, use Tensor as part of definition of types
   sealed trait Operator {
@@ -551,7 +552,10 @@ package object onnx {
   }
 
   trait CastMapV1 extends Operator {
-    def CastMapV1[@sp T1 <: Map[Long, String] | Map[Long, Float]: Numeric: ClassTag, @sp T2 <: String | Float | Long: Numeric: ClassTag](
+    def CastMapV1[@sp T1 <: Map[Long, String] | Map[
+      Long,
+      Float
+    ]: Numeric: ClassTag, @sp T2 <: String | Float | Long: Numeric: ClassTag](
         name: String,
         cast_to: Option[(String)] = None,
         map_form: Option[(String)] = None,
@@ -755,13 +759,17 @@ package object onnx {
   }
 
   trait ConcatFromSequenceV11 extends Operator {
-    def ConcatFromSequenceV11[@sp S <: Seq[Tensor[UByte]] | Seq[Tensor[UShort]] | Seq[Tensor[UInt]] | Seq[
+    def ConcatFromSequenceV11[@sp S <: Seq[Tensor[UByte]] | Seq[Tensor[UShort]] | Seq[
+      Tensor[UInt]
+    ] | Seq[
       Tensor[ULong]
     ] | Seq[Tensor[Byte]] | Seq[Tensor[Short]] | Seq[Tensor[Int]] | Seq[Tensor[Long]] | Seq[
       Tensor[Float16]
     ] | Seq[Tensor[Float]] | Seq[Tensor[Double]] | Seq[Tensor[String]] | Seq[Tensor[Boolean]] | Seq[
       Tensor[Complex[Float]]
-    ] | Seq[Tensor[Complex[Double]]]: Numeric: ClassTag, @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+    ] | Seq[
+      Tensor[Complex[Double]]
+    ]: Numeric: ClassTag, @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
       Float
     ] | Complex[Double]: Numeric: ClassTag](
         name: String,
@@ -1132,7 +1140,10 @@ package object onnx {
     def DictVectorizerV1[@sp T1 <: Map[String, Long] | Map[Long, String] | Map[Long, Float] | Map[
       Long,
       Double
-    ] | Map[String, Float] | Map[String, Double]: Numeric: ClassTag, @sp T2 <: Long | Float | Double | String: Numeric: ClassTag](
+    ] | Map[String, Float] | Map[
+      String,
+      Double
+    ]: Numeric: ClassTag, @sp T2 <: Long | Float | Double | String: Numeric: ClassTag](
         name: String,
         int64_vocabulary: Option[(Array[Int])] = None,
         string_vocabulary: Option[(Array[String])] = None,
@@ -1304,7 +1315,7 @@ package object onnx {
   trait EqualV11 extends Operator {
     def EqualV11[
         @sp T <: Boolean | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric: ClassTag,
-        @sp T1 <: Boolean: Numeric: ClassTag
+        @sp T1 <: Boolean: ClassTag
     ](name: String, A: Tensor[T], B: Tensor[T]): Tuple1[Tensor[T1]] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Some(Tuple2(A, B))
@@ -4328,7 +4339,9 @@ package object onnx {
       Tensor[Float16]
     ] | Seq[Tensor[Float]] | Seq[Tensor[Double]] | Seq[Tensor[String]] | Seq[Tensor[Boolean]] | Seq[
       Tensor[Complex[Float]]
-    ] | Seq[Tensor[Complex[Double]]]: Numeric: ClassTag, @sp I <: Int | Long: Numeric: ClassTag, @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+    ] | Seq[
+      Tensor[Complex[Double]]
+    ]: Numeric: ClassTag, @sp I <: Int | Long: Numeric: ClassTag, @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
       Float
     ] | Complex[Double]: Numeric: ClassTag](
         name: String,
@@ -4346,7 +4359,9 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]: Numeric: ClassTag,
-        @sp S <: Seq[Tensor[UByte]] | Seq[Tensor[UShort]] | Seq[Tensor[UInt]] | Seq[Tensor[ULong]] | Seq[
+        @sp S <: Seq[Tensor[UByte]] | Seq[Tensor[UShort]] | Seq[Tensor[UInt]] | Seq[
+          Tensor[ULong]
+        ] | Seq[
           Tensor[Byte]
         ] | Seq[Tensor[Short]] | Seq[Tensor[Int]] | Seq[Tensor[Long]] | Seq[Tensor[Float16]] | Seq[
           Tensor[Float]
@@ -4361,7 +4376,9 @@ package object onnx {
   }
 
   trait SequenceEmptyV11 extends Operator {
-    def SequenceEmptyV11[@sp S <: Seq[Tensor[UByte]] | Seq[Tensor[UShort]] | Seq[Tensor[UInt]] | Seq[
+    def SequenceEmptyV11[@sp S <: Seq[Tensor[UByte]] | Seq[Tensor[UShort]] | Seq[
+      Tensor[UInt]
+    ] | Seq[
       Tensor[ULong]
     ] | Seq[Tensor[Byte]] | Seq[Tensor[Short]] | Seq[Tensor[Int]] | Seq[Tensor[Long]] | Seq[
       Tensor[Float16]
@@ -4378,7 +4395,9 @@ package object onnx {
   }
 
   trait SequenceEraseV11 extends Operator {
-    def SequenceEraseV11[@sp S <: Seq[Tensor[UByte]] | Seq[Tensor[UShort]] | Seq[Tensor[UInt]] | Seq[
+    def SequenceEraseV11[@sp S <: Seq[Tensor[UByte]] | Seq[Tensor[UShort]] | Seq[
+      Tensor[UInt]
+    ] | Seq[
       Tensor[ULong]
     ] | Seq[Tensor[Byte]] | Seq[Tensor[Short]] | Seq[Tensor[Int]] | Seq[Tensor[Long]] | Seq[
       Tensor[Float16]
@@ -4396,13 +4415,17 @@ package object onnx {
   }
 
   trait SequenceInsertV11 extends Operator {
-    def SequenceInsertV11[@sp S <: Seq[Tensor[UByte]] | Seq[Tensor[UShort]] | Seq[Tensor[UInt]] | Seq[
+    def SequenceInsertV11[@sp S <: Seq[Tensor[UByte]] | Seq[Tensor[UShort]] | Seq[
+      Tensor[UInt]
+    ] | Seq[
       Tensor[ULong]
     ] | Seq[Tensor[Byte]] | Seq[Tensor[Short]] | Seq[Tensor[Int]] | Seq[Tensor[Long]] | Seq[
       Tensor[Float16]
     ] | Seq[Tensor[Float]] | Seq[Tensor[Double]] | Seq[Tensor[String]] | Seq[Tensor[Boolean]] | Seq[
       Tensor[Complex[Float]]
-    ] | Seq[Tensor[Complex[Double]]]: Numeric: ClassTag, @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+    ] | Seq[
+      Tensor[Complex[Double]]
+    ]: Numeric: ClassTag, @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
       Float
     ] | Complex[Double]: Numeric: ClassTag, @sp I <: Int | Long: Numeric: ClassTag](
         name: String,
@@ -4417,7 +4440,9 @@ package object onnx {
   }
 
   trait SequenceLengthV11 extends Operator {
-    def SequenceLengthV11[@sp S <: Seq[Tensor[UByte]] | Seq[Tensor[UShort]] | Seq[Tensor[UInt]] | Seq[
+    def SequenceLengthV11[@sp S <: Seq[Tensor[UByte]] | Seq[Tensor[UShort]] | Seq[
+      Tensor[UInt]
+    ] | Seq[
       Tensor[ULong]
     ] | Seq[Tensor[Byte]] | Seq[Tensor[Short]] | Seq[Tensor[Int]] | Seq[Tensor[Long]] | Seq[
       Tensor[Float16]
@@ -4668,7 +4693,9 @@ package object onnx {
           Float
         ] | Complex[Double]: Numeric: ClassTag,
         @sp I <: Int | Long: Numeric: ClassTag,
-        @sp S <: Seq[Tensor[UByte]] | Seq[Tensor[UShort]] | Seq[Tensor[UInt]] | Seq[Tensor[ULong]] | Seq[
+        @sp S <: Seq[Tensor[UByte]] | Seq[Tensor[UShort]] | Seq[Tensor[UInt]] | Seq[
+          Tensor[ULong]
+        ] | Seq[
           Tensor[Byte]
         ] | Seq[Tensor[Short]] | Seq[Tensor[Int]] | Seq[Tensor[Long]] | Seq[Tensor[Float16]] | Seq[
           Tensor[Float]
@@ -5277,7 +5304,7 @@ package object onnx {
 
   trait WhereV9 extends Operator {
     def WhereV9[
-        @sp B <: Boolean: Numeric: ClassTag,
+        @sp B <: Boolean: ClassTag,
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]: Numeric: ClassTag

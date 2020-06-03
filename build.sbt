@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 val dottyVersion = "0.23.0"
 val scala213Version = "2.13.2"
 val spireVersion = "0.17.0-M1"
-val scalametaVersion = "4.3.13"
+val scalametaVersion = "4.3.14"
 val onnxJavaCPPPresetVersion = "1.7.0-1.5.4-SNAPSHOT"
 
   

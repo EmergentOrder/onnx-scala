@@ -5045,6 +5045,57 @@ package object onnx {
       ](name, "GlobalMaxPool", allInputs, map))
     }
   }
+
+  trait GreaterOrEqual extends Operator {
+    def GreaterOrEqual12[
+        @sp T : Numeric: ClassTag,
+        @sp T1 : ClassTag
+    ](name: String, A: Option[Tensor[T]], B: Option[Tensor[T]]) 
+        (implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+            Short
+          ]#or[Int]#or[Long]#or[UNil]#create
+        ], 
+        evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
+    ): (Tensor[T1]) = {
+      val map: Map[String, Any] = Map()
+      val allInputs = (
+        A,
+        B,
+        None: Option[Any],
+        None: Option[Any],
+        None: Option[Any],
+        None: Option[Any],
+        None: Option[Any],
+        None: Option[Any],
+        None: Option[Any]
+      ) 
+      (callOp[
+        Option[Tensor[T]],
+        Option[Tensor[T]],
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Tensor[T1],
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any
+      ](name, "GreaterOrEqual", allInputs, map))
+    }
+  }
+
+
+
   trait Greater extends Operator {
 
     def Greater1[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
@@ -6110,6 +6161,55 @@ package object onnx {
       ](name, "LeakyRelu", allInputs, map))
     }
   }
+
+  trait LessOrEqual extends Operator {
+    def LessOrEqual12[
+        @sp T : Numeric: ClassTag,
+        @sp T1 : ClassTag
+    ](name: String, A: Option[Tensor[T]], B: Option[Tensor[T]]) 
+        (implicit evT: Contains[
+          T,
+          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+            Short
+          ]#or[Int]#or[Long]#or[UNil]#create
+        ], 
+        evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
+    ): (Tensor[T1]) = {
+      val map: Map[String, Any] = Map()
+      val allInputs = (
+        A,
+        B,
+        None: Option[Any],
+        None: Option[Any],
+        None: Option[Any],
+        None: Option[Any],
+        None: Option[Any],
+        None: Option[Any],
+        None: Option[Any]
+      ) 
+      (callOp[
+        Option[Tensor[T]],
+        Option[Tensor[T]],
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Tensor[T1],
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any
+      ](name, "LessOrEqual", allInputs, map))
+    }
+  }
+
   trait Less extends Operator {
 
     def Less1[@sp T: Numeric: ClassTag, @sp T1: Numeric: ClassTag](
@@ -8305,7 +8405,7 @@ package object onnx {
   }
   trait Not extends Operator {
 
-    def Not1[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(implicit
+    def Not1[@sp T: ClassTag](name: String, X: Option[Tensor[T]])(implicit
         evT: Contains[T, Union[Boolean]#or[UNil]#create]
     ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()

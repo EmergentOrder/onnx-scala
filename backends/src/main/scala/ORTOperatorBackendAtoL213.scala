@@ -61,6 +61,7 @@ class ORTOperatorBackendAtoL
 //    with GlobalLpPool
     with GlobalMaxPool
     with Greater
+    with GreaterOrEqual
     with HardSigmoid
     with Hardmax
     with Identity
@@ -74,6 +75,7 @@ class ORTOperatorBackendAtoL
 //    with LabelEncoder
     with LeakyRelu
     with Less
+    with LessOrEqual
 //    with LinearClassifier
 //    with LinearRegressor
     with Log

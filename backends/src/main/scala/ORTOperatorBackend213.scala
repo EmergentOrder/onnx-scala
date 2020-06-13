@@ -146,6 +146,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
               case f: Array[Float]  => getTensorFloat(tens)
               case i: Array[Int]    => getTensorInt(tens)
               case l: Array[Long]   => getTensorLong(tens)
+              case b: Array[Boolean] => getTensorBoolean(tens)
             }
             value
           }
@@ -163,6 +164,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
               case f: Array[Float]  => getTensorFloat(tens)
               case i: Array[Int]    => getTensorInt(tens)
               case l: Array[Long]   => getTensorLong(tens)
+              case b: Array[Boolean] => getTensorBoolean(tens)
             }
             value
           }
@@ -182,7 +184,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
     }
 
     val size: Long      = dims.capacity
-    val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_ * _)
+    val inputTensorSize = tens._1.size 
 
     val inputTensor: Value = Value.CreateTensorByte(
       memory_info.asOrtMemoryInfo,
@@ -204,7 +206,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
     }
 
     val size: Long      = dims.capacity
-    val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_ * _)
+    val inputTensorSize = tens._1.size 
 
     val inputTensor: Value = Value.CreateTensorShort(
       memory_info.asOrtMemoryInfo,
@@ -226,7 +228,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
     }
 
     val size: Long      = dims.capacity
-    val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_ * _)
+    val inputTensorSize = tens._1.size 
 
     val inputTensor: Value = Value.CreateTensorDouble(
       memory_info.asOrtMemoryInfo,
@@ -248,7 +250,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
     }
 
     val size: Long      = dims.capacity
-    val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_ * _)
+    val inputTensorSize = tens._1.size 
 
     val inputTensor: Value = Value.CreateTensorInt(
       memory_info.asOrtMemoryInfo,
@@ -270,7 +272,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
     }
 
     val size: Long      = dims.capacity
-    val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_ * _)
+    val inputTensorSize = tens._1.size 
 
     val inputTensor: Value = Value.CreateTensorLong(
       memory_info.asOrtMemoryInfo,
@@ -296,9 +298,35 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
     }
 
     val size: Long      = dims.capacity
-    val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_ * _)
+    val inputTensorSize = tens._1.size 
 
     val inputTensor: Value = Value.CreateTensorFloat(
+      memory_info.asOrtMemoryInfo,
+      inputPointer,
+      inputTensorSize,
+      dims,
+      size
+    )
+    inputTensor
+  }
+
+  def getTensorBoolean(tens: Tensor[Boolean]): Value = {
+
+    val inputArray = tens._1
+
+    val inputPointer = new BoolPointer(new BooleanPointer(inputArray: _*))
+
+//          input_node_names.put(i,new BytePointer(i.toString))
+
+    val dims = new LongPointer(tens._2.size)
+    (0 until tens._2.size).map { i =>
+      dims.put(i, tens._2(i))
+    }
+
+    val size: Long      = dims.capacity
+    val inputTensorSize = tens._1.size 
+
+    val inputTensor: Value = Value.CreateTensorBool(
       memory_info.asOrtMemoryInfo,
       inputPointer,
       inputTensorSize,

@@ -91,7 +91,7 @@ package object onnx {
 
     def getTensor[T](data: Array[T], t: Array[Int]): Tensor[T] = {
       val shape: Array[XInt] = t.map(z => z: XInt)
-      require(data.size == shape.foldLeft(1)(_ * _))
+      require((data.size == 1 && (shape sameElements Array[XInt]())) || (data.size == shape.foldLeft(1)(_ * _)))
       (data, t, AxesFactory.getAxes(shape, Array.fill(shape.size) { new Dim {} }))
     }
     def getTypesafeTensor[T, A <: Axes](data: Array[T], axes: A): TypesafeTensor[T, A] = {

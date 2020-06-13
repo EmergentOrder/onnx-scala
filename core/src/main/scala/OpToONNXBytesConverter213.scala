@@ -135,6 +135,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
               case f: Array[Short]  => TensorProto.INT16
               case i: Array[Int]    => TensorProto.INT32
               case l: Array[Long]   => TensorProto.INT64
+              case b: Array[Boolean]   => TensorProto.BOOL
             }
 
             val inputValueInfo = graph.add_input

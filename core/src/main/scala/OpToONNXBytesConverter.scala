@@ -78,7 +78,6 @@ trait OpToONNXBytesConverter extends AutoCloseable {
         case tensor: Some[_] => {
           node.add_input(inputName)
         }
-
         case tensor: Tensor[_] => {
           node.add_input(inputName)
         }
@@ -96,7 +95,8 @@ trait OpToONNXBytesConverter extends AutoCloseable {
           }
         }
          */
-        case _ => ??? //TODO: Handle non-tensors / don't assume tensor here
+       case None => 
+       case _ => ??? //TODO: Handle non-tensors / don't assume tensor here
 
       }
 
@@ -115,7 +115,6 @@ trait OpToONNXBytesConverter extends AutoCloseable {
   }
 
   protected def addInputToGraph[A](input: A, inputName: String, graph: GraphProto): Unit = {
-
     input match {
       case tens: Tensor[_] => {
         val elemType = tens._1 match {
@@ -125,6 +124,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
           case f: Array[Float]  => TensorProto.FLOAT
           case i: Array[Int]    => TensorProto.INT32
           case l: Array[Long]   => TensorProto.INT64
+          case b: Array[Boolean] => TensorProto.BOOL
         }
 
         val inputValueInfo = graph.add_input
@@ -186,8 +186,9 @@ trait OpToONNXBytesConverter extends AutoCloseable {
             case opt: Option[_] =>
               opt match {
                 case Some(in) => addInputToGraph(in, i.toString, graph)
+                case None =>
               }
-            case _ => addInputToGraph(x(i), i.toString, graph)
+            case _ => {addInputToGraph(x(i), i.toString, graph)}
 
           }
         }

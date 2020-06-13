@@ -35,8 +35,7 @@ trait ORTOperatorBackend
   def runModel(
       sess: Session,
       input_tensor_values: Array[Value],
-      inputNames: PointerPointer[BytePointer],
-      nodeDims: Array[LongPointer],
+      inputNames: PointerPointer[BytePointer], 
       outputNames: PointerPointer[BytePointer] 
   ) = {
 
@@ -142,6 +141,7 @@ trait ORTOperatorBackend
               case f: Array[Float] => getTensorFloat(tens)
               case i: Array[Int]   => getTensorInt(tens)
               case l: Array[Long]  => getTensorLong(tens)
+              case b: Array[Boolean] => getTensorBoolean(tens)
             }
             value
           }
@@ -159,6 +159,7 @@ trait ORTOperatorBackend
               case f: Array[Float] => getTensorFloat(tens)
               case i: Array[Int]   => getTensorInt(tens)
               case l: Array[Long]  => getTensorLong(tens)
+              case b: Array[Boolean] => getTensorBoolean(tens)
             }
             value
           }
@@ -178,7 +179,7 @@ trait ORTOperatorBackend
       }
 
       val size: Long = dims.capacity
-      val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_*_)
+      val inputTensorSize = tens._1.size 
 
       val inputTensor: Value = Value.CreateTensorByte(
             memory_info.asOrtMemoryInfo,
@@ -200,7 +201,7 @@ trait ORTOperatorBackend
       }
 
       val size: Long = dims.capacity
-      val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_*_)
+      val inputTensorSize = tens._1.size 
 
       val inputTensor: Value = Value.CreateTensorShort(
             memory_info.asOrtMemoryInfo,
@@ -222,7 +223,7 @@ trait ORTOperatorBackend
       }
 
       val size: Long = dims.capacity
-      val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_*_)
+      val inputTensorSize = tens._1.size 
 
       val inputTensor: Value = Value.CreateTensorDouble(
             memory_info.asOrtMemoryInfo,
@@ -244,7 +245,7 @@ trait ORTOperatorBackend
       }
 
       val size: Long = dims.capacity
-      val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_*_)
+      val inputTensorSize = tens._1.size 
 
       val inputTensor: Value = Value.CreateTensorInt(
             memory_info.asOrtMemoryInfo,
@@ -266,7 +267,7 @@ trait ORTOperatorBackend
       }
 
       val size: Long = dims.capacity
-      val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_*_)
+      val inputTensorSize = tens._1.size 
 
       val inputTensor: Value = Value.CreateTensorLong(
             memory_info.asOrtMemoryInfo,
@@ -293,7 +294,7 @@ trait ORTOperatorBackend
 
 
       val size: Long = dims.capacity
-      val inputTensorSize = (0 until size.toInt).map(j => dims.get(j)).reduce(_*_)
+      val inputTensorSize = tens._1.size 
 
       val inputTensor: Value = Value.CreateTensorFloat(
             memory_info.asOrtMemoryInfo,
@@ -305,6 +306,31 @@ trait ORTOperatorBackend
       inputTensor
   }
 
+  def getTensorBoolean(tens: Tensor[Boolean]): Value = {
+
+    val inputArray = tens._1
+
+    val inputPointer = new BoolPointer(new BooleanPointer(inputArray: _*))
+
+//          input_node_names.put(i,new BytePointer(i.toString))
+
+    val dims = new LongPointer(tens._2.size)
+    (0 until tens._2.size).map { i =>
+      dims.put(i, tens._2(i))
+    }
+
+    val size: Long      = dims.capacity
+    val inputTensorSize = tens._1.size 
+
+    val inputTensor: Value = Value.CreateTensorBool(
+      memory_info.asOrtMemoryInfo,
+      inputPointer,
+      inputTensorSize,
+      dims,
+      size
+    )
+    inputTensor
+  }
 
   def callByteArrayOp[
       T: ClassTag
@@ -324,22 +350,24 @@ trait ORTOperatorBackend
     val output_node_names = new PointerPointer[BytePointer](1) 
  
 
-    val inputDimsAndValues: Array[Tuple2[LongPointer, Value]] = (0 until x.size).map{i => 
+    val inputDimsAndValues: Array[Value] = (0 until x.size).map{i => 
      
+      val tens = x(i)
 
-      input_node_names.put(i,new BytePointer(i.toString))
-
-      (null, getTensor(x(i)))
-    }.toArray
+      tens match {
+        case None => None
+        case _ =>
+          input_node_names.put(i,new BytePointer(i.toString))
+          Some(getTensor(tens))
+      }
+    }.toArray.flatten
 
     output_node_names.put(0l,new BytePointer("outName"))
     
-    //println(tens._2(0))
     val output = runModel(
       sess, 
-      inputDimsAndValues.map(_._2),
+      inputDimsAndValues,
       input_node_names,
-      inputDimsAndValues.map(_._1),
       output_node_names
     )
 

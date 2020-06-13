@@ -19,12 +19,12 @@ class ORTModelBackend(onnxBytes: Array[Byte])
     val num_input_nodes  = session.GetInputCount();
     val input_node_names = new PointerPointer[BytePointer](num_input_nodes);
 
-//    System.out.println("Number of inputs = " + num_input_nodes);
+
 
     val inputNodeDims = (0 until num_input_nodes.toInt).map { i =>
       // print input node names
       val input_name = session.GetInputName(i, allocator.asOrtAllocator())
-//      println("Input " + i + " : name=" + input_name.getString())
+
       input_node_names.put(i, input_name)
 
       // print input node types
@@ -32,11 +32,10 @@ class ORTModelBackend(onnxBytes: Array[Byte])
       val tensor_info = type_info.GetTensorTypeAndShapeInfo()
 
 //        val type = tensor_info.GetElementType()
-//        println("Input " + i + " : type=" + type)
+
 
       // print input shapes/dims
       tensor_info.GetShape()
-      //println("Input " + i + " : num_dims=" + input_node_dims.capacity())
 
     }
 
@@ -74,12 +73,8 @@ class ORTModelBackend(onnxBytes: Array[Byte])
           session,
           inputTensors,
           allNodeNamesAndDims._1,
-          allNodeNamesAndDims._2,
           allNodeNamesAndDims._3
         )
-//    val outputPointer = out.get(0).GetTensorMutableDataFloat().capacity(inputs.GetTensorTypeAndShapeInfo().GetElementCount());
-
-//    println(outputPointer.get(0).IsTensor())
 
         Tuple1(output.asInstanceOf[T])
       }

@@ -8,7 +8,7 @@
 Add this to the build.sbt in your project:
 
 ```scala
-libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala-backends" % "0.4.0"
+libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala-backends" % "0.5.0"
 ```
 
 As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the latest, build and publish locally from master.

@@ -31,8 +31,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
   def runModel(
       sess: Session,
       input_tensor_values: Array[Value],
-      inputNames: PointerPointer[BytePointer],
-      nodeDims: Array[LongPointer],
+      inputNames: PointerPointer[BytePointer], 
       outputNames: PointerPointer[BytePointer]
   ) = {
 
@@ -393,8 +392,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       inputs._9.asInstanceOf[Option[Tensor[_]]]
     ).flatten
 
-    val inputDimsAndValues: Array[Tuple2[LongPointer, Value]] =
-      inputArr.map(x => (new LongPointer(), getTensor(x)))
+    val inputDimsAndValues: Array[Value] =
+      inputArr.map(x => getTensor(x))
 
     /*
       (0 until 9).map{i =>
@@ -414,9 +413,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
     //println(tens._2(0))
     val output = runModel(
       sess,
-      inputDimsAndValues.map(_._2),
+      inputDimsAndValues,
       input_node_names,
-      inputDimsAndValues.map(_._1),
       output_node_names
     )
 

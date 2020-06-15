@@ -93,7 +93,6 @@ class ORTModelBackend(onnxBytes: Array[Byte])
       session,
       inputTensors,
       allNodeNamesAndDims._1,
-      allNodeNamesAndDims._2,
       allNodeNamesAndDims._3
     )
 //    val outputPointer = out.get(0).GetTensorMutableDataFloat().capacity(inputs.GetTensorTypeAndShapeInfo().GetElementCount());

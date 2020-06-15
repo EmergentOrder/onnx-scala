@@ -12,7 +12,7 @@ import org.bytedeco.javacpp.BytePointer
 
 trait OpToONNXBytesConverter extends AutoCloseable {
 
-  private val scope = new PointerScope()
+//  private val scope = new PointerScope()
 
   protected def opToNode[
       T: ClassTag,
@@ -35,7 +35,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 //        implicit evT:  (UNil TypeOr Float16 TypeOr Float TypeOr Double TypeOr UByte TypeOr UShort TypeOr UInt TypeOr ULong TypeOr Byte TypeOr Short TypeOr Int TypeOr Long TypeOr Float16 TypeOr Float TypeOr Double TypeOr String TypeOr Boolean TypeOr Complex[
   //       Float] TypeOr Complex[Double])#check[T])
       : NodeProto = {
-    val node = (new NodeProto).New()
+    val node = new NodeProto
 
     node.set_name(name)
     node.set_op_type(opName)
@@ -256,7 +256,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
   }
 
   override def close(): Unit = {
-    scope.close
+//    scope.close
   }
 
 }

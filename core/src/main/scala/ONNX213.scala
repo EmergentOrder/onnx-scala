@@ -14,6 +14,7 @@ import scala.reflect.ClassTag
 import org.bytedeco.onnx.ModelProto
 package object onnx {
 
+  //Warning: Some data types not supported by ORT: eg Cos, Double
   type ![A]  = A => Nothing
   type !![A] = ![![A]]
 

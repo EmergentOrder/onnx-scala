@@ -16,7 +16,7 @@ class ORTOperatorBackendAtoL
     with Asin
     with Asinh
     with Atan
-// Missing op: Atanh
+    with Atanh
     with AveragePool
     with BatchNormalization
 //    with Binarizer

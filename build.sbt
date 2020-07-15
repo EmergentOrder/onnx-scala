@@ -1,6 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
-val dottyVersion = "0.23.0"
-val scala213Version = "2.13.2"
+
+val dottyVersion = "0.24.0"
+val scala213Version = "2.13.3"
 val spireVersion = "0.17.0-RC1"
 val scalametaVersion = "4.3.20"
 val onnxJavaCPPPresetVersion = "1.7.0-1.5.4-SNAPSHOT"
@@ -10,7 +11,7 @@ scalaVersion := scala213Version
 lazy val commonSettings = Seq(
 //  scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
-  version := "0.5.0",
+  version := "0.6.0",
   scalaVersion := scala213Version,
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",

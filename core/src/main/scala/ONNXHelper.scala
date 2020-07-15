@@ -25,7 +25,6 @@ import scala.reflect.ClassTag
 import scala.language.implicitConversions
 
 import java.io.File
-import scala.reflect.io.Streamable
 import org.bytedeco.javacpp._
 import org.bytedeco.onnx._
 import org.bytedeco.onnx.global.onnx.{ParseProtoFromBytes, check_model}

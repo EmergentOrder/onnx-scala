@@ -11,7 +11,6 @@ import spire.algebra.Field
 import spire.math.Numeric
 import scala.language.higherKinds
 import scala.io.Source
-import scala.reflect.io.Streamable
 import org.bytedeco.javacpp.PointerScope
 
 //TODO: Add changes to generator; Generate both full model and layerwise programs each time

@@ -3,7 +3,7 @@ val dottyVersion = "0.24.0"
 val scala213Version = "2.13.3"
 val spireVersion = "0.17.0-RC1"
 val scalametaVersion = "4.3.21"
-val onnxJavaCPPPresetVersion = "1.7.0-1.5.4-SNAPSHOT"
+val onnxJavaCPPPresetVersion = "1.7.0-1.5.5-SNAPSHOT"
 
   
 scalaVersion := scala213Version 

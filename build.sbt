@@ -89,7 +89,7 @@ lazy val backends = (crossProject(JVMPlatform)
     ),
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "onnxruntime-platform" % "1.3.0-1.5.4-SNAPSHOT"
+      "org.bytedeco" % "onnxruntime-platform" % "1.4.0-1.5.4"
     ),
   )
   .jvmSettings(

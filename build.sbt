@@ -1,5 +1,5 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
-val dottyVersion = "0.24.0"
+val dottyVersion = "0.27.0-RC1"
 val scala213Version = "2.13.3"
 val spireVersion = "0.17.0-RC1"
 val scalametaVersion = "4.3.22"
@@ -50,7 +50,7 @@ lazy val programGenerator = (crossProject(JVMPlatform)
     )
   )
   .jvmSettings(
-    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil }, 
+    scalacOptions ++= { if (isDotty.value) Seq("-source 3.0-migration") else Nil },
     libraryDependencies ++= (CrossVersion
     .partialVersion(scalaVersion.value) match {
      case Some((2,_)) =>

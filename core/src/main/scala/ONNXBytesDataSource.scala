@@ -8,6 +8,7 @@ class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends AutoCloseable with Dat
 
   val onnxHelper = new ONNXHelper(onnxBytes)
 
+  //TODO: return non-tensor params
   override def getParams[T: Numeric: ClassTag](name: String): Tensor[T] = {
     val params = onnxHelper.params.filter(x => x._1 == name).headOption
     params match {

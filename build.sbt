@@ -91,7 +91,7 @@ lazy val backends = (crossProject(JVMPlatform)
     ),
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= Seq(
-        "com.microsoft.onnxruntime" % "onnxruntime_gpu" % "1.4.0"
+        "com.microsoft.onnxruntime" % "onnxruntime_gpu" % "1.5.2"
 //      "org.bytedeco" % "onnxruntime-platform" % "1.5.1-1.5.5-SNAPSHOT"
     ),
   )

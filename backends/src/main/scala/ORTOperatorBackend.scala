@@ -1,140 +1,99 @@
 package org.emergentorder.onnx.backends
 
+import java.nio._
+import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 import scala.language.implicitConversions
 import org.bytedeco.javacpp._
-import org.bytedeco.onnxruntime._
-import org.bytedeco.onnxruntime.global.onnxruntime._
-
+import ai.onnxruntime._
+import ai.onnxruntime.TensorInfo.OnnxTensorType._
 import org.emergentorder.onnx._
-
-  
-val env = new Env(ORT_LOGGING_LEVEL_WARNING, "onnx-scala" + System.currentTimeMillis)
+import org.emergentorder.onnx.Tensors._
+import org.bytedeco.javacpp.BooleanPointer
 
 trait ORTOperatorBackend
     extends OpToONNXBytesConverter
     with AutoCloseable {
 
-  val allocator = new AllocatorWithDefaultOptions()
-
-  val memory_info = MemoryInfo.CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)
+  val env = OrtEnvironment.getEnvironment()
 
   def getSession(bytes: Array[Byte]) = { 
-    val session_options = new SessionOptions
 
-//    session_options.SetIntraOpNumThreads(1)
-    //Using DNNL
+//    val session_options = new OrtSession.SessionOptions()
+
+    //Using DNNL - TODO
 //    OrtSessionOptionsAppendExecutionProvider_Dnnl(session_options.asOrtSessionOptions(), 1)
-    val modelString = new BytePointer(bytes: _*).capacity(bytes.size)
-
-
-    new Session(env, modelString, bytes.size, session_options)
-
+    //Bug in ORT w/ sessions options (link error)
+    env.createSession(bytes)
   }
 
   def runModel(
-      sess: Session,
-      input_tensor_values: Array[Value],
-      inputNames: PointerPointer[BytePointer], 
-      outputNames: PointerPointer[BytePointer] 
-  ) = {
-
-    val value = new Value(input_tensor_values.size)
-
-    val input_tensor_size = (0 until input_tensor_values.size).foreach{i =>
-/*
-      val size: Long = nodeDims(i).capacity
-      val inputTensorSize = (0 until size.toInt).map(j => nodeDims(i).get(j)).reduce(_*_)
-      
-      val inputTensor: Value = Value.CreateTensorFloat(
-            memory_info.asOrtMemoryInfo,
-            input_tensor_values(i),
-            inputTensorSize,
-            nodeDims(i),
-            size
-          )
-  */    
-      value.position(i).put(input_tensor_values(i)) 
-    }
-
-
-    val output_tensor = sess.Run(new RunOptions(), inputNames, value.position(0), input_tensor_values.size, outputNames, 1) 
+      sess: OrtSession,
+      input_tensor_values: Array[OnnxTensor],
+      inputNames: List[String],
+      outputNames: List[String] 
+  ) = { 
+    val inputs = (inputNames zip input_tensor_values).toMap
+    val output_tensor = sess.run(inputs.asJava, new OrtSession.RunOptions())
 
     //TODO: More outputs
     val firstOut = output_tensor.get(0)
 
-    val size: Long = firstOut.GetTensorTypeAndShapeInfo.GetElementCount
-    val shape: LongPointer = firstOut.GetTensorTypeAndShapeInfo.GetShape()
+    val shape = firstOut.getInfo.asInstanceOf[TensorInfo].getShape
+    val out = getTensorFromValue(firstOut.asInstanceOf[OnnxTensor], shape)
+//    firstOut.close
+    output_tensor.close
 
-    getTensorFromValue(firstOut, shape)
+    out
+
   }
 
-  def getTensorFromValue(value: Value, shapePointer: LongPointer) = {
-    val dtype = value.GetTensorTypeAndShapeInfo.GetElementType
-    val size = value.GetTensorTypeAndShapeInfo.GetElementCount
-    val shape = (0 until shapePointer.capacity.toInt).map(x => shapePointer.get(x).toInt).toArray
+  def getTensorFromValue(value: OnnxTensor, shape: Array[Long]) = {
+    val dtype = value.getInfo.asInstanceOf[TensorInfo].onnxType
     val arr = dtype match {
-      case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT =>{
-        val point = value.GetTensorMutableDataFloat.capacity(size)
-        val buff = point.asByteBuffer.asFloatBuffer
-        (0 until buff.capacity).map { x =>
-          buff.get(x)
-        }.toArray
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT =>{      
+        value.getFloatBuffer.array() 
       }
       case ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE =>{
-        val point = value.GetTensorMutableDataDouble.capacity(size)
-        val buff = point.asByteBuffer.asDoubleBuffer
-        (0 until buff.capacity).map { x =>
-          buff.get(x)
-        }.toArray
+        value.getDoubleBuffer.array()
+        
       }
       case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8 =>{
-        val point = value.GetTensorMutableDataByte.capacity(size)
-        val buff = point.asByteBuffer
-        (0 until buff.capacity).map { x =>
-          buff.get(x)
-        }.toArray
+        value.getByteBuffer.array()
+        
       }
       case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16 =>{
-        val point = value.GetTensorMutableDataShort.capacity(size)
-        val buff = point.asByteBuffer.asShortBuffer
-        (0 until buff.capacity).map { x =>
-          buff.get(x)
-        }.toArray
+        value.getShortBuffer.array()
+        
       }
       case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32 =>{
-        val point = value.GetTensorMutableDataInt.capacity(size)
-        val buff = point.asByteBuffer.asIntBuffer
-        (0 until buff.capacity).map { x =>
-          buff.get(x)
-        }.toArray
+        value.getIntBuffer.array()
+        
       }
       case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64 =>{
-        val point = value.GetTensorMutableDataLong.capacity(size)
-        val buff = point.asByteBuffer.asLongBuffer
-        (0 until buff.capacity).map { x =>
-          buff.get(x)
-        }.toArray
+        value.getLongBuffer.array()
+        
       }
       case ONNX_TENSOR_ELEMENT_DATA_TYPE_BOOL =>{
-        val point = value.GetTensorMutableDataBool.capacity(size)
-        val booleanPoint = new BooleanPointer(point.asByteBuffer) //C++ bool size is not defined, could cause problems on some platforms
+        val booleanPoint =
+          new BooleanPointer(
+            value.getByteBuffer
+          ) //C++ bool size is not defined, could cause problems on some platforms
         (0 until booleanPoint.capacity().toInt).map { x =>
           booleanPoint.get(x)
         }.toArray
       }
     }
-    TensorFactory.getTensor(arr, shape)
+    TensorFactory.getTensor(arr, shape.map(_.toInt))
   }
-
-  def getTensor[T:ClassTag](input: T): Value = {
+  
+  def getTensor[T:ClassTag](input: T): OnnxTensor = {
 
     input match{
-
       case tensorOpt: Option[_] => {
         tensorOpt match {
           case Some(tens: Tensor[_]) => {
-            val value: Value = tens._1 match {
+            val value: OnnxTensor = tens._1 match {
               case b: Array[Byte] => getTensorByte(tens)
               case s: Array[Short] => getTensorShort(tens)
               case d: Array[Double] => getTensorDouble(tens)
@@ -145,14 +104,14 @@ trait ORTOperatorBackend
             }
             value
           }
-          case None =>  new Value()
+          case None =>  OnnxTensor.createTensor(env, Array())
         }
       }
 
       case tensorOpt: Tensor[_] => {
         tensorOpt match {
           case tens => {
-            val value: Value = tens._1 match {
+            val value: OnnxTensor = tens._1 match {
               case b: Array[Byte] => getTensorByte(tens)
               case s: Array[Short] => getTensorShort(tens)
               case d: Array[Double] => getTensorDouble(tens)
@@ -169,167 +128,39 @@ trait ORTOperatorBackend
     }
   }
 
-  def getTensorByte(tens: Tensor[Byte]): Value = {
-          val inputArray = tens._1
-          val inputPointer = new BytePointer(inputArray: _*)
-//          input_node_names.put(i,new BytePointer(i.toString))
-          val dims = new LongPointer(tens._2.size)
-          (0 until tens._2.size).map{i =>
-            dims.put(i, tens._2(i))
-      }
-
-      val size: Long = dims.capacity
-      val inputTensorSize = tens._1.size 
-
-      val inputTensor: Value = Value.CreateTensorByte(
-            memory_info.asOrtMemoryInfo,
-            inputPointer,
-            inputTensorSize,
-            dims,
-            size
-          )
-      inputTensor
+  def getTensorByte(tens: Tensor[Byte]): OnnxTensor = {
+    val buff = ByteBuffer.wrap(tens._1)
+    OnnxTensor.createTensor(env,buff,tens._2.map(_.toLong))
   }
 
-  def getTensorShort(tens: Tensor[Short]): Value = {
-          val inputArray = tens._1
-          val inputPointer = new ShortPointer(inputArray: _*)
-//          input_node_names.put(i,new BytePointer(i.toString))
-          val dims = new LongPointer(tens._2.size)
-          (0 until tens._2.size).map{i =>
-            dims.put(i, tens._2(i))
-      }
-
-      val size: Long = dims.capacity
-      val inputTensorSize = tens._1.size 
-
-      val inputTensor: Value = Value.CreateTensorShort(
-            memory_info.asOrtMemoryInfo,
-            inputPointer,
-            inputTensorSize,
-            dims,
-            size
-          )
-      inputTensor
+  def getTensorShort(tens: Tensor[Short]): OnnxTensor = {
+    val buff = ShortBuffer.wrap(tens._1)
+    OnnxTensor.createTensor(env,buff,tens._2.map(_.toLong))
   }
 
-  def getTensorDouble(tens: Tensor[Double]): Value = {
-          val inputArray = tens._1
-          val inputPointer = new DoublePointer(inputArray: _*)
-//          input_node_names.put(i,new BytePointer(i.toString))
-          val dims = new LongPointer(tens._2.size)
-          (0 until tens._2.size).map{i =>
-            dims.put(i, tens._2(i))
-      }
-
-      val size: Long = dims.capacity
-      val inputTensorSize = tens._1.size 
-
-      val inputTensor: Value = Value.CreateTensorDouble(
-            memory_info.asOrtMemoryInfo,
-            inputPointer,
-            inputTensorSize,
-            dims,
-            size
-          )
-      inputTensor
+  def getTensorDouble(tens: Tensor[Double]): OnnxTensor = {      
+    val buff = DoubleBuffer.wrap(tens._1)
+    OnnxTensor.createTensor(env,buff,tens._2.map(_.toLong))
   }
 
-  def getTensorInt(tens: Tensor[Int]): Value = {
-          val inputArray = tens._1
-          val inputPointer = new IntPointer(inputArray: _*)
-//          input_node_names.put(i,new BytePointer(i.toString))
-          val dims = new LongPointer(tens._2.size)
-          (0 until tens._2.size).map{i =>
-            dims.put(i, tens._2(i))
-      }
-
-      val size: Long = dims.capacity
-      val inputTensorSize = tens._1.size 
-
-      val inputTensor: Value = Value.CreateTensorInt(
-            memory_info.asOrtMemoryInfo,
-            inputPointer,
-            inputTensorSize,
-            dims,
-            size
-          )
-      inputTensor
+  def getTensorInt(tens: Tensor[Int]): OnnxTensor = {
+    val buff = IntBuffer.wrap(tens._1)
+    OnnxTensor.createTensor(env,buff,tens._2.map(_.toLong))
   }
 
-  def getTensorLong(tens: Tensor[Long]): Value = {
-          val inputArray = tens._1
-          val inputPointer = new LongPointer(inputArray: _*)
-//          input_node_names.put(i,new BytePointer(i.toString))
-          val dims = new LongPointer(tens._2.size)
-          (0 until tens._2.size).map{i =>
-            dims.put(i, tens._2(i))
-      }
-
-      val size: Long = dims.capacity
-      val inputTensorSize = tens._1.size 
-
-      val inputTensor: Value = Value.CreateTensorLong(
-            memory_info.asOrtMemoryInfo,
-            inputPointer,
-            inputTensorSize,
-            dims,
-            size
-          )
-      inputTensor
+  def getTensorLong(tens: Tensor[Long]): OnnxTensor = {
+    val buff = LongBuffer.wrap(tens._1)
+    OnnxTensor.createTensor(env,buff,tens._2.map(_.toLong))
   }
 
-  def getTensorFloat(tens: Tensor[Float]): Value = {
-        
-          val inputArray = tens._1
-
-          val inputPointer = new FloatPointer(inputArray: _*)
-
-//          input_node_names.put(i,new BytePointer(i.toString))
-
-          val dims = new LongPointer(tens._2.size)
-          (0 until tens._2.size).map{i =>
-            dims.put(i, tens._2(i))
-      }
-
-
-      val size: Long = dims.capacity
-      val inputTensorSize = tens._1.size 
-
-      val inputTensor: Value = Value.CreateTensorFloat(
-            memory_info.asOrtMemoryInfo,
-            inputPointer,
-            inputTensorSize,
-            dims,
-            size
-          )
-      inputTensor
+  def getTensorFloat(tens: Tensor[Float]): OnnxTensor = {
+    val buff = FloatBuffer.wrap(tens._1)
+    OnnxTensor.createTensor(env,buff,tens._2.map(_.toLong))
   }
 
-  def getTensorBoolean(tens: Tensor[Boolean]): Value = {
-
-    val inputArray = tens._1
-
-    val inputPointer = new BoolPointer(new BooleanPointer(inputArray: _*))
-
-//          input_node_names.put(i,new BytePointer(i.toString))
-
-    val dims = new LongPointer(tens._2.size)
-    (0 until tens._2.size).map { i =>
-      dims.put(i, tens._2(i))
-    }
-
-    val size: Long      = dims.capacity
-    val inputTensorSize = tens._1.size 
-
-    val inputTensor: Value = Value.CreateTensorBool(
-      memory_info.asOrtMemoryInfo,
-      inputPointer,
-      inputTensorSize,
-      dims,
-      size
-    )
-    inputTensor
+  def getTensorBoolean(tens: Tensor[Boolean]): OnnxTensor = {
+    val tensorIn = OrtUtil.reshape(tens._1, tens._2.map(_.toLong))
+    OnnxTensor.createTensor(env,tensorIn)
   }
 
   def callByteArrayOp[
@@ -337,45 +168,45 @@ trait ORTOperatorBackend
   ](
       opModel: Array[Byte],
       inputs: Option[NonEmptyTuple]
-  ): (Tuple1[T]) = {
+  ): T = {
 
     val sess = getSession(opModel) 
 
-    inputs match{
+    val out = inputs match{
       case Some(x) => {
 
-    val input_node_names = new PointerPointer[BytePointer](x.size)
+    val input_node_names = List("0", "1", "2", "3", "4", "5", "6", "7", "8")
    
     //TODO: more outputs
-    val output_node_names = new PointerPointer[BytePointer](1) 
- 
+    val output_node_names = List("outName") 
 
-    val inputDimsAndValues: Array[Value] = (0 until x.size).map{i => 
+    val inputDimsAndValues: Array[OnnxTensor] = (0 until x.size).map{i => 
      
       val tens = x(i)
 
       tens match {
         case None => None
         case _ =>
-          input_node_names.put(i,new BytePointer(i.toString))
           Some(getTensor(tens))
       }
     }.toArray.flatten
-
-    output_node_names.put(0l,new BytePointer("outName"))
-    
+   
+  //  val filteredInputNodeNames = input_node_names.take(x.size)
     val output = runModel(
       sess, 
       inputDimsAndValues,
       input_node_names,
       output_node_names
     )
-
-    Tuple1(output.asInstanceOf[T])
+    inputDimsAndValues.foreach(_.close) 
+    output.asInstanceOf[T]
       } 
-      case None => Tuple1(TensorFactory.getTensor(Array(), Array[Int]()).asInstanceOf[T])
+      case None => TensorFactory.getTensor(Array(), Array[Int]()).asInstanceOf[T]
     
     }
+    sess.close
+    
+    out
   }
 
   def callOp[
@@ -385,7 +216,7 @@ trait ORTOperatorBackend
       inputs: Option[NonEmptyTuple],
       //    outName: String,
       attrs: Map[String, Any]
-  ): (Tuple1[T]) = {
+  ): T = {
     val bytes = opToONNXBytes(name, opName, inputs, "outName", attrs)
     callByteArrayOp[T](
       bytes,

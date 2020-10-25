@@ -9,6 +9,7 @@ import org.bytedeco.onnx.TensorProto
 import org.bytedeco.onnx.AttributeProto
 import org.bytedeco.javacpp.PointerScope
 import org.bytedeco.javacpp.BytePointer
+import org.emergentorder.onnx.Tensors._
 
 trait OpToONNXBytesConverter extends AutoCloseable {
 
@@ -233,7 +234,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 
     val outputValueInfo = graph.add_output
 
-    outputValueInfo.set_name(outName)
+    outputValueInfo.set_name(outName) 
 
     //Dummy names
     addInputToGraph(inputs._1, "A", graph)
@@ -244,14 +245,16 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     addInputToGraph(inputs._6, "F", graph)
     addInputToGraph(inputs._7, "G", graph)
     addInputToGraph(inputs._8, "H", graph)
-    addInputToGraph(inputs._9, "I", graph)
+    addInputToGraph(inputs._9, "I", graph) 
 
     val modelString = model.SerializeAsString
 
+    node.close
+    graph.close
     model.close
+   
     val modelStringBytes = modelString.getStringBytes
     modelString.close
-
     (modelStringBytes)
   }
 

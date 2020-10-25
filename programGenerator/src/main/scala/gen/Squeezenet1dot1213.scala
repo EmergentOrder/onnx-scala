@@ -1,6 +1,7 @@
 package org.emergentorder.onnx
 
 import org.emergentorder.onnx._
+import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.backends._
 import org.emergentorder.union._
 import scala.reflect.ClassTag

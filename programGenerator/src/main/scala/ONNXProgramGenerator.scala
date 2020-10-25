@@ -368,7 +368,7 @@ object ONNXProgramGenerator {
               longFields.mkString(",") +
               (if (namedNodesOrParams.size > 0) "," else "") +
               namedNodesOrParams.mkString(",") +
-              ").apply(0)" + (if (useZIO) ""
+              ")" + (if (useZIO) ""
                               // "}"
                               else "") + "\n"
           }

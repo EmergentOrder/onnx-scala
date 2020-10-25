@@ -1,6 +1,7 @@
 package org.emergentorder.onnx
 
 import org.emergentorder.onnx._
+import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.backends._
 import scala.reflect.ClassTag
 import spire.implicits._
@@ -34,7 +35,7 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
       TensorFactory.getTensor(inputDatalearned_0._1.map(y => itemIdsMap(y)), inputDatalearned_0._2)
 
     //Note: Don't need to specify all the type params except in Dotty
-    val nodeFullOutput: Tuple1[Tensor[Float]] =
+    val nodeFullOutput: Tensor[Float] =
       fullNgraphHandler
         .fullModel[Tensor[Float]](
           //TODO: testing less than enough inputs
@@ -43,7 +44,7 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
 
     //    scope.close
     System.runFinalization
-    nodeFullOutput(0) //.asInstanceOf[Tensor[Float]] //Bad
+    nodeFullOutput //.asInstanceOf[Tensor[Float]] //Bad
   }
 
   override def close(): Unit = {

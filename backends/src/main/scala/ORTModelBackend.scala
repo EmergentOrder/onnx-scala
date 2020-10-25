@@ -4,10 +4,11 @@ import scala.reflect.ClassTag
 import scala.language.implicitConversions
 import org.bytedeco.javacpp._
 import org.bytedeco.javacpp.indexer.FloatIndexer
-import org.bytedeco.onnxruntime._
-import org.bytedeco.onnxruntime.global.onnxruntime._
+import ai.onnxruntime._
+import scala.jdk.CollectionConverters._
 
 import org.emergentorder.onnx._
+import org.emergentorder.onnx.Tensors._
 
 //TODO: Clean up, remove asInstaceOf, etc.
 class ORTModelBackend(onnxBytes: Array[Byte])
@@ -15,38 +16,14 @@ class ORTModelBackend(onnxBytes: Array[Byte])
     with ORTOperatorBackend
     with AutoCloseable {
 
-  def getInputAndOutputNodeNamesAndDims(sess: Session) = {
-    val num_input_nodes  = session.GetInputCount();
-    val input_node_names = new PointerPointer[BytePointer](num_input_nodes);
+  def getInputAndOutputNodeNamesAndDims(sess: OrtSession) = {
+    val input_node_names = session.getInputNames
+ 
+    val inputNodeDims = session.getInputInfo.values.asScala.map(_.getInfo.asInstanceOf[TensorInfo].getShape)
 
+    val output_node_names = session.getOutputNames
 
-
-    val inputNodeDims = (0 until num_input_nodes.toInt).map { i =>
-      // print input node names
-      val input_name = session.GetInputName(i, allocator.asOrtAllocator())
-
-      input_node_names.put(i, input_name)
-
-      // print input node types
-      val type_info   = session.GetInputTypeInfo(i)
-      val tensor_info = type_info.GetTensorTypeAndShapeInfo()
-
-//        val type = tensor_info.GetElementType()
-
-
-      // print input shapes/dims
-      tensor_info.GetShape()
-
-    }
-
-    val num_output_nodes  = session.GetOutputCount()
-    val output_node_names = new PointerPointer[BytePointer](num_output_nodes)
-    (0 until num_output_nodes.toInt).map { i =>
-      val outputName = session.GetOutputName(i, allocator.asOrtAllocator());
-      output_node_names.put(i, outputName);
-    }
-
-    (input_node_names, inputNodeDims.toArray, output_node_names)
+    (input_node_names.asScala.toList, inputNodeDims.toArray, output_node_names.asScala.toList)
   }
 
   val session = getSession(onnxBytes)
@@ -57,7 +34,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
       T: ClassTag
   ](
       inputs: Option[NonEmptyTuple]
-  ): (Tuple1[T]) = {
+  ): T = {
 
     inputs match {
       case Some(x) => {
@@ -65,7 +42,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
         val size = x.size
         val inputTensors = (0 until size).map { i =>
           val tens               = x.apply(i)
-          val inputTensor: Value = getTensor(tens)
+          val inputTensor: OnnxTensor = getTensor(tens)
           inputTensor
         }.toArray
 
@@ -76,9 +53,9 @@ class ORTModelBackend(onnxBytes: Array[Byte])
           allNodeNamesAndDims._3
         )
 
-        Tuple1(output.asInstanceOf[T])
+        output.asInstanceOf[T]
       }
-      case None => Tuple1(TensorFactory.getTensor(Array(), Array[Int]()).asInstanceOf[T])
+      case None => TensorFactory.getTensor(Array(), Array[Int]()).asInstanceOf[T]
 
     }
   }

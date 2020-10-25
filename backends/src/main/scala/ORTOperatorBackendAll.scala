@@ -26,6 +26,7 @@ class ORTOperatorBackendAll
     with CastV9
 //    with CastMapV1 //ONNX ML, not tested for in scoreboard
 //    with CategoryMapperV1 //ONNX ML, not tested for in scoreboard
+    with CeilV1
     with CeilV6
 //    with CeluV12 //new in 1.7.0
     with ClipV11
@@ -59,6 +60,7 @@ class ORTOperatorBackendAll
     with EyeLikeV9
 //  with FeatureVectorizerV1 //ONNX ML, not tested for in scoreboard
     with FlattenV11
+    with FloorV1
     with FloorV6
     with GRUV7 //fails in scoreboard //passes in ORT
     with GatherV1
@@ -73,7 +75,7 @@ class ORTOperatorBackendAll
 //    with GradientV1 //Training, new in 1.7.0
 //    with GraphCallV1 //Training, new in 1.7.0
     with GreaterV9
-//    with GreaterOrEqualV12 //new in 1.7.0
+    with GreaterOrEqualV12 //new in 1.7.0
     with HardSigmoidV6
     with HardmaxV11
     with IdentityV1
@@ -88,6 +90,7 @@ class ORTOperatorBackendAll
 //    with LabelEncoderV2 //ONNX ML, not tested for in scoreboard
     with LeakyReluV6
     with LessV9
+    with LessOrEqualV12
 //    with LinearClassifierV1 //ONNX ML, not tested for in scoreboard
 //    with LinearRegressorV1 //ONNX ML, not tested for in scoreboard
     with LogV6
@@ -181,6 +184,7 @@ class ORTOperatorBackendAll
     with SplitV2
     with SplitV11
     with SplitToSequenceV11 //fails in scoreboard //passes in ORT
+    with SqrtV1
     with SqrtV6
     with SqueezeV1
     with SqueezeV11

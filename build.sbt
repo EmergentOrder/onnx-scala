@@ -1,16 +1,17 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 val dottyVersion = "0.27.0-RC1"
-val scala213Version = "2.13.3"
+val scala213Version = "2.13.4-bin-57ae2a6"
 val spireVersion = "0.17.0"
 val scalametaVersion = "4.3.24"
-val onnxJavaCPPPresetVersion = "1.7.0-1.5.4"
+val onnxJavaCPPPresetVersion = "1.7.0-1.5.5-SNAPSHOT"
 
+resolvers in Global += "scala-integration" at "https://scala-ci.typesafe.com/artifactory/scala-integration/"
   
 scalaVersion := scala213Version 
 lazy val commonSettings = Seq(
 //  scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
-  version := "0.7.0",
+  version := "0.8.0",
   scalaVersion := scala213Version,
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
@@ -81,7 +82,8 @@ lazy val backends = (crossProject(JVMPlatform)
       .partialVersion(scalaVersion.value) match {
       case Some((2, 13)) => "NCF.scala" | 
                             "ORTOperatorBackend.scala" | 
-                            "ORTOperatorBackendAll.scala" | "ORTModelBackend.scala"
+                            "ORTOperatorBackendAll.scala" | "ORTOperatorBackendAtoL.scala" |
+                            "ORTModelBackend.scala"
       case _ => "ORTModelBackend213.scala" | "NCF213.scala" |
                 "ORTOperatorBackend213.scala" | "ORTOperatorBackendAll213.scala" | 
                 "ORTOperatorBackendAtoL213.scala"
@@ -89,7 +91,8 @@ lazy val backends = (crossProject(JVMPlatform)
     ),
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= Seq(
-      "org.bytedeco" % "onnxruntime-platform" % "1.4.0-1.5.4"
+        "com.microsoft.onnxruntime" % "onnxruntime_gpu" % "1.4.0"
+//      "org.bytedeco" % "onnxruntime-platform" % "1.5.1-1.5.5-SNAPSHOT"
     ),
   )
   .jvmSettings(
@@ -105,7 +108,7 @@ lazy val core = (crossProject(JVMPlatform)
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, 13)) => "ONNX.scala" | "OpToONNXBytesConverter.scala" | "Tensor.scala"
+      case Some((2, 13)) => "ONNX.scala" | "OpToONNXBytesConverter.scala"
       case _ => "ONNX213.scala" | "OpToONNXBytesConverter213.scala"
       }
     )
@@ -119,11 +122,13 @@ lazy val core = (crossProject(JVMPlatform)
       .partialVersion(scalaVersion.value) match {
       case Some((2, n)) =>
         Seq(
-          "org.typelevel" %% "spire" % spireVersion
+          "org.typelevel" %% "spire" % spireVersion,
+          "io.kjaer" % "tf-dotty-compiletime_0.27" % "0.0.0+134-f1f8d0ba+20201020-1123-SNAPSHOT" //Not publicly published
         )
       case _ =>
         Seq(
-          ("org.typelevel" %% "spire" % spireVersion).withDottyCompat(dottyVersion)
+          ("org.typelevel" %% "spire" % spireVersion).withDottyCompat(dottyVersion),
+          "io.kjaer" % "tf-dotty-compiletime_0.27" % "0.0.0+134-f1f8d0ba+20201020-1123-SNAPSHOT" //Not publicly published
         )
     }),
     libraryDependencies ++= Seq(

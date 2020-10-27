@@ -1,12 +1,5 @@
 package org.emergentorder.onnx
 
-import spire.math.UByte
-import spire.math.UShort
-import spire.math.UInt
-import spire.math.ULong
-import spire.math.Complex
-import spire.math.Numeric
-
 import io.kjaer.compiletime._
 
 object Tensors{
@@ -69,24 +62,17 @@ object AxesFactory {
     }
   }
 
-  type Supported = Int | Long | Float | Double | Byte | Short | UByte | UShort | UInt | ULong | 
-                   Boolean | String | Float16 | Complex[Float] | Complex[Double]
-
-  type FloatSupported = Float | Double 
-
   type TypesafeTensor[T, A <: Axes] = Tuple3[Array[T], Array[Int], A]
 
-  //TODO: Use IArray
-  type Tensor[T <: Supported]       = Tuple2[Array[T], Array[Int]] //TypesafeTensor[T, Axes]
-  type SparseTensor[T <: Supported] = Tensor[T]
+  type Tensor[T]       = TypesafeTensor[T, Axes]
+  type SparseTensor[T] = Tensor[T]
 
   object TensorFactory {
 
-    def getTensor[T <: Supported](data: Array[T], t: Array[Int]): Tensor[T] = {
+    def getTensor[T](data: Array[T], t: Array[Int]): Tensor[T] = {
       val shape: Array[Dimension] = t.map(z => z: Dimension)
       require(data.size == shape.foldLeft(1)(_ * _))
-      (data, t)
-      //(data, t, AxesFactory.getAxes(shape, Array.fill(shape.size) { new DimName {} }))
+      (data, t, AxesFactory.getAxes(shape, Array.fill(shape.size) { new DimName {} }))
     }
     def getTypesafeTensor[T, A <: Axes](data: Array[T], axes: A): TypesafeTensor[T, A] = {
 
@@ -104,5 +90,4 @@ object AxesFactory {
       (data, t, axes)
     }
   }
-  
 }

@@ -37,9 +37,9 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
     //Note: Don't need to specify all the type params except in Dotty
     val nodeFullOutput: Tensor[Float] =
       fullNgraphHandler
-        .fullModel[Tensor[Float]](
+        .fullModel[Float](
           //TODO: testing less than enough inputs
-          Some((nodeactual_input_1))
+          (nodeactual_input_1)
         )
 
     //    scope.close

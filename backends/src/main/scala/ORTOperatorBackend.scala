@@ -21,10 +21,11 @@ trait ORTOperatorBackend
 
 //    val session_options = new OrtSession.SessionOptions()
 
+//    session_options.addDnnl(true)
     //Using DNNL - TODO
 //    OrtSessionOptionsAppendExecutionProvider_Dnnl(session_options.asOrtSessionOptions(), 1)
     //Bug in ORT w/ sessions options (link error)
-    env.createSession(bytes)
+    env.createSession(bytes) //, session_options)
   }
 
   def runModel(
@@ -33,19 +34,16 @@ trait ORTOperatorBackend
       inputNames: List[String],
       outputNames: List[String] 
   ) = { 
-    val inputs = (inputNames zip input_tensor_values).toMap
-    val output_tensor = sess.run(inputs.asJava, new OrtSession.RunOptions())
+    val inputs = (inputNames zip input_tensor_values).toMap.asJava
+    val output_tensor = sess.run(inputs)
 
     //TODO: More outputs
-    val firstOut = output_tensor.get(0)
+    val firstOut: OnnxTensor = output_tensor.get(0).asInstanceOf[OnnxTensor]
 
     val shape = firstOut.getInfo.asInstanceOf[TensorInfo].getShape
-    val out = getTensorFromValue(firstOut.asInstanceOf[OnnxTensor], shape)
-//    firstOut.close
+    val out = getTensorFromValue(firstOut, shape)
     output_tensor.close
-
     out
-
   }
 
   def getTensorFromValue(value: OnnxTensor, shape: Array[Long]) = {
@@ -87,44 +85,18 @@ trait ORTOperatorBackend
     TensorFactory.getTensor(arr, shape.map(_.toInt))
   }
   
-  def getTensor[T:ClassTag](input: T): OnnxTensor = {
+  def getTensor[T <: Supported](tens: Tensor[T]): OnnxTensor = {
 
-    input match{
-      case tensorOpt: Option[_] => {
-        tensorOpt match {
-          case Some(tens: Tensor[_]) => {
-            val value: OnnxTensor = tens._1 match {
-              case b: Array[Byte] => getTensorByte(tens)
-              case s: Array[Short] => getTensorShort(tens)
-              case d: Array[Double] => getTensorDouble(tens)
-              case f: Array[Float] => getTensorFloat(tens)
-              case i: Array[Int]   => getTensorInt(tens)
-              case l: Array[Long]  => getTensorLong(tens)
-              case b: Array[Boolean] => getTensorBoolean(tens)
-            }
-            value
-          }
-          case None =>  OnnxTensor.createTensor(env, Array())
-        }
-      }
-
-      case tensorOpt: Tensor[_] => {
-        tensorOpt match {
-          case tens => {
-            val value: OnnxTensor = tens._1 match {
-              case b: Array[Byte] => getTensorByte(tens)
-              case s: Array[Short] => getTensorShort(tens)
-              case d: Array[Double] => getTensorDouble(tens)
-              case f: Array[Float] => getTensorFloat(tens)
-              case i: Array[Int]   => getTensorInt(tens)
-              case l: Array[Long]  => getTensorLong(tens)
-              case b: Array[Boolean] => getTensorBoolean(tens)
-            }
-            value
-          }
-        }
-      }
-
+    tens._1 match {
+                  
+      case b: Array[Byte] => getTensorByte(tens)
+      case s: Array[Short] => getTensorShort(tens)
+      case d: Array[Double] => getTensorDouble(tens)            
+      case f: Array[Float] => getTensorFloat(tens)
+      case i: Array[Int]   => getTensorInt(tens)
+      case l: Array[Long]  => getTensorLong(tens)
+      case b: Array[Boolean] => getTensorBoolean(tens)
+                
     }
   }
 
@@ -164,32 +136,30 @@ trait ORTOperatorBackend
   }
 
   def callByteArrayOp[
-      T: ClassTag
+      T <: Supported
   ](
       opModel: Array[Byte],
-      inputs: Option[NonEmptyTuple]
-  ): T = {
+      inputs: Tuple
+  ): Tensor[T] = {
 
-    val sess = getSession(opModel) 
-
-    val out = inputs match{
-      case Some(x) => {
+    val sess = getSession(opModel)  
 
     val input_node_names = List("0", "1", "2", "3", "4", "5", "6", "7", "8")
    
     //TODO: more outputs
     val output_node_names = List("outName") 
 
-    val inputDimsAndValues: Array[OnnxTensor] = (0 until x.size).map{i => 
-     
-      val tens = x(i)
-
-      tens match {
-        case None => None
-        case _ =>
-          Some(getTensor(tens))
-      }
-    }.toArray.flatten
+    //TODO: don't mix up Options and Tensors here
+    val inputDimsAndValues: Array[OnnxTensor] = inputs.toArray.map{elem =>
+      elem match {
+            case opt: Option[Tensor[_]] =>
+              opt match{
+                case Some(x) => Some(getTensor(x))
+                case None => None
+              }
+            case tens: Tensor[_] => Some(getTensor(tens))
+          }
+      }.flatten
    
   //  val filteredInputNodeNames = input_node_names.take(x.size)
     val output = runModel(
@@ -199,24 +169,22 @@ trait ORTOperatorBackend
       output_node_names
     )
     inputDimsAndValues.foreach(_.close) 
-    output.asInstanceOf[T]
-      } 
-      case None => TensorFactory.getTensor(Array(), Array[Int]()).asInstanceOf[T]
-    
-    }
+    val out = output.asInstanceOf[Tensor[T]]
+     
     sess.close
     
     out
   }
 
   def callOp[
-      T: ClassTag](
+      T <: Supported](
       name: String,
       opName: String,
-      inputs: Option[NonEmptyTuple],
+      inputs: Tuple,
       //    outName: String,
       attrs: Map[String, Any]
-  ): T = {
+  ): Tensor[T] = {
+    //TODO: prevent passing input to opToONNXBytes
     val bytes = opToONNXBytes(name, opName, inputs, "outName", attrs)
     callByteArrayOp[T](
       bytes,
@@ -225,7 +193,7 @@ trait ORTOperatorBackend
   }
 
   override def close(): Unit = {
-//    executable.close
+      env.close
 //    super.close
   }
 }

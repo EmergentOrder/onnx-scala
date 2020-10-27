@@ -161,13 +161,14 @@ class ORTOperatorBackendAll
     with ScatterNDV11       //fails in scoreboard //passes in nGraph dev branch & ORT
     with SeluV6
     with SequenceAtV11        //fails in scoreboard //passes in ORT
-    with SequenceConstructV11 //fails in scoreboard //passes in ORT
-    with SequenceEmptyV11     //fails in scoreboard //passes in ORT
-    with SequenceEraseV11     //fails in scoreboard //passes in ORT
-    with SequenceInsertV11    //fails in scoreboard //passes in ORT
-    with SequenceLengthV11    //fails in scoreboard //passes in ORT
+//    with SequenceConstructV11 //fails in scoreboard //passes in ORT
+//    with SequenceEmptyV11     //fails in scoreboard //passes in ORT
+//    with SequenceEraseV11     //fails in scoreboard //passes in ORT
+//    with SequenceInsertV11    //fails in scoreboard //passes in ORT
+//    with SequenceLengthV11    //fails in scoreboard //passes in ORT
     with ShapeV1
     with ShrinkV9
+    with SigmoidV1
     with SigmoidV6
     with SignV9
     with SinV7
@@ -183,7 +184,7 @@ class ORTOperatorBackendAll
 //    with SpaceToDepthV1 //fails in scoreboard
     with SplitV2
     with SplitV11
-    with SplitToSequenceV11 //fails in scoreboard //passes in ORT
+//    with SplitToSequenceV11 //fails in scoreboard //passes in ORT
     with SqrtV1
     with SqrtV6
     with SqueezeV1

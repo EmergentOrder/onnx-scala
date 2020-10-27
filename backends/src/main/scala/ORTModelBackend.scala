@@ -31,19 +31,23 @@ class ORTModelBackend(onnxBytes: Array[Byte])
   val allNodeNamesAndDims = getInputAndOutputNodeNamesAndDims(session)
 
   override def fullModel[
-      T: ClassTag
+      T <: Supported
   ](
-      inputs: Option[NonEmptyTuple]
-  ): T = {
+      inputs: Tuple
+  ): Tensor[T] = {
 
-    inputs match {
-      case Some(x) => {
 
-        val size = x.size
+
+
+        val size = inputs.size
         val inputTensors = (0 until size).map { i =>
-          val tens               = x.apply(i)
-          val inputTensor: OnnxTensor = getTensor(tens)
-          inputTensor
+          val tup               = inputs.drop(i).take(1)
+          tup match {
+            case t: Tuple1[_] =>
+              t(0) match {
+                case tens: Tensor[_] => getTensor(tens)
+              }
+          }
         }.toArray
 
         val output = runModel(
@@ -53,11 +57,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
           allNodeNamesAndDims._3
         )
 
-        output.asInstanceOf[T]
-      }
-      case None => TensorFactory.getTensor(Array(), Array[Int]()).asInstanceOf[T]
-
-    }
+        output.asInstanceOf[Tensor[T]]
   }
 
   override def close(): Unit = {

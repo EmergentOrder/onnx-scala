@@ -1,7 +1,6 @@
 package org.emergentorder.onnx
 
-import scala.reflect.ClassTag
-import scala.language.implicitConversions
+//import scala.language.implicitConversions
 
 import org.bytedeco.onnx.ModelProto
 import org.bytedeco.onnx.NodeProto
@@ -17,11 +16,11 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 //  private val scope = new PointerScope()
 
   protected def opToNode[
-      T: ClassTag
+      T <: Supported
   ](
       name: String,
       opName: String,
-      inputs: Option[NonEmptyTuple],
+//      inputs: Tuple,
       outName: String,
       attrs: Map[String, Any]
   )
@@ -73,52 +72,24 @@ trait OpToONNXBytesConverter extends AutoCloseable {
           }
       }
 
-    def addInput[A](input: A, inputName: String): Unit = {
-      input match {
-
-        case tensor: Some[_] => {
-          node.add_input(inputName)
-        }
-        case tensor: Tensor[_] => {
-          node.add_input(inputName)
-        }
-        /*
-        case tensorOpt: Seq[Option[Tensor[Any]]] => {
-          tensorOpt.foreach { x =>
-            x match {
-              case tensorOpt: Option[Tensor[Any]] => {
-                tensorOpt match {
-                  case Some(y) => node.add_input(inputName)
-                  case None    =>
-                }
-              }
-            }
-          }
-        }
-         */
-       case None => 
-       case _ => ??? //TODO: Handle non-tensors / don't assume tensor here
-
-      }
-
-    }
+//    def addInput(inputName: String): Unit = { 
+//          node.add_input(inputName)
+//    }
     //Dummy names
-    inputs match {
-      case Some(x) => {
-        val size = x.size
-        (0 until size).foreach { i => addInput(x(i), i.toString) }
-      }
-      case None =>
-    }
+  
+//        (0 until inputs.size).foreach { i => addInput(i.toString) }
+    
+
+ 
     handleAttrs
 
     return node
   }
 
-  protected def addInputToGraph[A](input: A, inputName: String, graph: GraphProto): Unit = {
-    input match {
-      case tens: Tensor[_] => {
-        val elemType = tens._1 match {
+  //TODO: prevent passing the inputs all the way down here
+  protected def addInputToGraph[A <: Supported](tens: Tensor[A], inputName: String, graph: GraphProto, node: NodeProto): Unit = {
+    node.add_input(inputName)
+    val elemType = tens._1 match {
           case b: Array[Byte]   => TensorProto.INT8
           case s: Array[Short]  => TensorProto.INT16
           case d: Array[Double] => TensorProto.DOUBLE
@@ -142,18 +113,15 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 
 //              inputDim.set_dim_param("NAME?")
           inputDim.set_dim_value(x)
-
         }
-      }
-    }
   }
 
   def opToONNXBytes[
-      T: ClassTag
+      T <: Supported
   ](
       name: String,
       opName: String,
-      inputs: Option[NonEmptyTuple],
+      inputs: Tuple,
       outName: String,
       attrs: Map[String, Any]
   ): Array[Byte] = {
@@ -162,7 +130,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     model.set_producer_name("ONNX-Scala")
     graph.set_name(name)
 
-    val origNode = opToNode(name, opName, inputs, outName, attrs)
+    val origNode = opToNode(name, opName, outName, attrs)
 
     val node = graph.add_node
     node.MergeFrom(origNode)
@@ -179,23 +147,23 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     outputValueInfo.set_name(outName)
 
     //Dummy names
-    inputs match {
-      case Some(x) => {
-        val size = x.size
-        (0 until size).foreach { i =>
-          x(i) match {
-            case opt: Option[_] =>
-              opt match {
-                case Some(in) => addInputToGraph(in, i.toString, graph)
-                case None =>
-              }
-            case _ => {addInputToGraph(x(i), i.toString, graph)}
 
-          }
+        (0 until inputs.size).foreach { i =>
+          val t = inputs.drop(i).take(1)
+          t match {
+            case tup: Tuple1[_] => 
+              tup(0) match {
+                case opt: Option[Tensor[T]] =>
+                opt match {
+                  case Some(in) => addInputToGraph(in, i.toString, graph, node)
+                  case None =>
+                }
+               case tens: Tensor[T] => {
+                 addInputToGraph(tens, i.toString, graph, node)
+               } 
+              }
+          } 
         }
-      }
-      case None =>
-    }
 
     val modelString = model.SerializeAsString
 

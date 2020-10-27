@@ -91,8 +91,9 @@ lazy val backends = (crossProject(JVMPlatform)
     ),
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= Seq(
-        "com.microsoft.onnxruntime" % "onnxruntime_gpu" % "1.4.0"
-//      "org.bytedeco" % "onnxruntime-platform" % "1.5.1-1.5.5-SNAPSHOT"
+ //        "org.bytedeco" % "dnnl-platform" % "1.6.4-1.5.5-SNAPSHOT",
+        "com.microsoft.onnxruntime" % "onnxruntime" % "1.5.2"
+//      "org.bytedeco" % "onnxruntime-platform" % "1.5.2-1.5.5-SNAPSHOT"
     ),
   )
   .jvmSettings(
@@ -108,8 +109,8 @@ lazy val core = (crossProject(JVMPlatform)
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, 13)) => "ONNX.scala" | "OpToONNXBytesConverter.scala"
-      case _ => "ONNX213.scala" | "OpToONNXBytesConverter213.scala"
+      case Some((2, 13)) => "ONNX.scala" | "OpToONNXBytesConverter.scala" | "Tensors.scala" | "ONNXBytesDataSource.scala"
+      case _ => "ONNX213.scala" | "OpToONNXBytesConverter213.scala" | "Tensors213.scala" | "ONNXBytesDataSource213.scala"
       }
     )
   )

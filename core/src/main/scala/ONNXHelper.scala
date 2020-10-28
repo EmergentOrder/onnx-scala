@@ -29,13 +29,7 @@ import org.bytedeco.javacpp._
 import org.bytedeco.onnx._
 import org.bytedeco.onnx.global.onnx.{ParseProtoFromBytes, check_model}
 
-class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
-
-//  val scope = new PointerScope()
-//  val loaded =
-//    org.bytedeco.javacpp.Loader.load(classOf[org.bytedeco.onnx.global.onnx])
-
-  // println(Pointer.physicalBytes)
+class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable { 
   lazy val model = {
     val r     = (new ModelProto).New()
     val bytes = new BytePointer(byteArray: _*)
@@ -59,9 +53,9 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
   private def dimsToArray[VV: spire.math.Numeric: ClassTag](
       dimsCount: Int,
-      dimsList: List[Long]
+      dims: Array[Long]
   ): Array[VV] = {
-    val dimsArrayInt = dimsList.map(x => x.toInt).toArray
+    val dimsArrayInt = dims.map(x => x.toInt).toArray
     val arrX = dimsCount match {
       case 0 => Array.ofDim[VV](1)
       case 1 => Array.ofDim[VV](dimsArrayInt(0))
@@ -97,8 +91,8 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
     val onnxDataType = tensorProto.data_type
     val dimsCount    = tensorProto.dims_size
-    val dimsList =
-      (0 until dimsCount.toInt).map(x => tensorProto.dims(x)).toList
+    val dims =
+      (0 until dimsCount.toInt).map(x => tensorProto.dims(x)).toArray
 
     val rawData = tensorProto.raw_data
 
@@ -111,15 +105,12 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
     val array = onnxDataType match {
       case TensProtoByte => {
-        val arrX = dimsToArray[Byte](dimsCount, dimsList)
-        (0 until arrX.length).foreach {
-          if (rawData == null) { x => arrX(x) = tensorProto.int32_data(x).toByte }
-          else { x => arrX(x) = rawData.get(x) }
-        }
-        arrX.toArray
+        val arrX = dimsToArray[Byte](dimsCount, dims)
+        rawData.get(arrX)
+        arrX 
       }
       case TensProtoShort => {
-        val arrX = dimsToArray[Short](dimsCount, dimsList)
+        val arrX = dimsToArray[Short](dimsCount, dims)
         (0 until arrX.length).foreach {
           if (rawData == null) { x => arrX(x) = tensorProto.int32_data(x).toShort }
           else { x => arrX(x) = rawData.getShort(x * 2) }
@@ -127,7 +118,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
         arrX.toArray
       }
       case TensProtoInt => {
-        val arrX = dimsToArray[Int](dimsCount, dimsList)
+        val arrX = dimsToArray[Int](dimsCount, dims)
         (0 until arrX.length).foreach {
           if (rawData == null) { x => arrX(x) = tensorProto.int32_data(x) }
           else { x => arrX(x) = rawData.getInt(x * 4) }
@@ -135,7 +126,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
         arrX.toArray
       }
       case TensProtoLong => {
-        val arrX = dimsToArray[Long](dimsCount, dimsList)
+        val arrX = dimsToArray[Long](dimsCount, dims)
         (0 until arrX.length).foreach {
           if (rawData == null) { x => arrX(x) = tensorProto.int64_data(x) }
           else { x => arrX(x) = rawData.getLong(x * 8) }
@@ -143,7 +134,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
         arrX.toArray
       }
       case TensProtoFloat => {
-        val arrX = dimsToArray[Float](dimsCount, dimsList)
+        val arrX = dimsToArray[Float](dimsCount, dims)
         (0 until arrX.length).foreach {
           if (rawData == null) { x => arrX(x) = tensorProto.float_data(x) }
           else { x => arrX(x) = rawData.getFloat(x * 4) }
@@ -151,7 +142,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
         arrX.toArray
       }
       case TensProtoDouble => {
-        val arrX = dimsToArray[Double](dimsCount, dimsList)
+        val arrX = dimsToArray[Double](dimsCount, dims)
         (0 until arrX.length).foreach {
           if (rawData == null) { x => arrX(x) = tensorProto.double_data(x) }
           else { x => arrX(x) = rawData.getDouble(x * 8) }
@@ -168,7 +159,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
   }
 
   private val nodeCount = graph.node_size.toInt
-  private val node      = (0 until nodeCount).map(x => graph.node(x)).toList
+  private val node      = (0 until nodeCount).map(x => graph.node(x))
 
   val attributes =
     node.map { x =>
@@ -203,7 +194,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
     node
       .map { x =>
         val inputCount = x.input_size.toInt
-        val input      = (0 until inputCount).map(y => x.input(y)).toList
+        val input      = (0 until inputCount).map(y => x.input(y))
 
         input
       }
@@ -222,7 +213,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
     node
       .map { x =>
         val outputCount = x.output_size.toInt
-        val output      = (0 until outputCount).map(y => x.output(y)).toList
+        val output      = (0 until outputCount).map(y => x.output(y))
 
         output
       }
@@ -238,19 +229,19 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
   val globalOutputCount = graph.output_size.toInt
   val globalOutput =
-    (0 until globalOutputCount).map(x => graph.output(x)).toList
+    (0 until globalOutputCount).map(x => graph.output(x))
 
   val inputCount = graph.input_size.toInt
-  val input      = (0 until inputCount).map(x => graph.input(x)).toList
+  val input      = (0 until inputCount).map(x => graph.input(x))
 
   private val initializerCount = graph.initializer_size
   private val initializer =
-    (0 until initializerCount).map(x => graph.initializer(x)).toList
+    (0 until initializerCount).map(x => graph.initializer(x))
 
   lazy val params =
     initializer.map { x =>
       val dimsCount      = x.dims_size
-      val dimsList       = (0 until dimsCount.toInt).map(y => x.dims(y)).toList
+      val dimsList       = (0 until dimsCount.toInt).map(y => x.dims(y))
       val name           = x.name.getString.replaceAll("-", "_").replaceAll("/", "_")
       val tensorElemType = tensorElemTypeMap(x.data_type)
       val arrX           = onnxTensorProtoToArray(x)
@@ -276,7 +267,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
   lazy val graphInputs = {
     val inputCount = graph.input_size.toInt
-    val input      = (0 until inputCount).map(y => graph.input(y)).toList
+    val input      = (0 until inputCount).map(y => graph.input(y))
     input.toArray
       .map { y =>
         (
@@ -292,7 +283,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
   lazy val graphOutputs = {
     val outputCount = graph.output_size.toInt
-    val output      = (0 until outputCount).map(y => graph.output(y)).toList
+    val output      = (0 until outputCount).map(y => graph.output(y))
     output.toArray
       .map(y =>
         (

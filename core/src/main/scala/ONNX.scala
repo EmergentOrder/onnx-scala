@@ -1315,7 +1315,7 @@ package object onnx {
 
   trait EqualV11 extends Operator {
     def EqualV11[
-        @sp T <: Boolean | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric,
+        @sp T <: Boolean | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double,
         @sp T1 <: Boolean
     ](name: String, A: Tensor[T], B: Tensor[T]): Tensor[T1] = {
       val map: Map[String, Any] = Map()
@@ -3933,7 +3933,7 @@ package object onnx {
     def ReshapeV5[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
-        ] | Complex[Double]: Numeric
+        ] | Complex[Double]
     ](name: String, data: Tensor[T], shapeInput: Tensor[Long]): Tensor[T] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple2(data, shapeInput)
@@ -4346,7 +4346,9 @@ package object onnx {
       (callOp[T](name, "SequenceAt", allInputs, map))
     }
   }
-/*
+
+//Disable sequence ops for now
+  /*
   trait SequenceConstructV11 extends Operator {
     def SequenceConstructV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -4551,7 +4553,7 @@ package object onnx {
     def SliceV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
-        ] | Complex[Double]: Numeric,
+        ] | Complex[Double],
         @sp Tind <: Int | Long: Numeric
     ](
         name: String,
@@ -4790,7 +4792,7 @@ package object onnx {
     def SqueezeV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
-        ] | Complex[Double]: Numeric
+        ] | Complex[Double]
     ](name: String, axes: Option[(Array[Int])] = None, data: Tensor[T]): Tensor[T] = {
       val map: Map[String, Any] = Map("axes" -> axes)
       val allInputs             = Tuple1(data)
@@ -5059,7 +5061,7 @@ package object onnx {
     def TransposeV1[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
-        ] | Complex[Double]: Numeric
+        ] | Complex[Double]
     ](name: String, perm: Option[(Array[Int])] = None, data: Tensor[T]): Tensor[T] = {
       val map: Map[String, Any] = Map("perm" -> perm)
       val allInputs             = Tuple1(data)

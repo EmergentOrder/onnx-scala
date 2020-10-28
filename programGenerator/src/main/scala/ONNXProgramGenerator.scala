@@ -37,10 +37,10 @@ import scala.language.implicitConversions
 object ONNXProgramGenerator {
   def main(args: Array[String]): Unit = {
 
-    @SuppressWarnings(Array("org.wartremover.warts.Equals"))
-    implicit final class AnyOps[A](self: A) {
-      def ===(other: A): Boolean = self == other
-    }
+//    @SuppressWarnings(Array("org.wartremover.warts.Equals"))
+//    implicit final class AnyOps[A](self: A) {
+//      def ===(other: A): Boolean = self === other
+//    }
 
     val fileName = args(0)
 
@@ -306,12 +306,12 @@ object ONNXProgramGenerator {
 
             val opInputsIsVariadic =
               (0 until schemaMap(opName)._1.size.toInt).map { b =>
-                schemaMap(opName)._1.get(b).GetOption === 2
+                schemaMap(opName)._1.get(b).GetOption == 2
               }
 
             val opInputsIsOptional =
               (0 until schemaMap(opName)._1.size.toInt).map { b =>
-                schemaMap(opName)._1.get(b).GetOption === 1
+                schemaMap(opName)._1.get(b).GetOption == 1
               }
 
             val sinceVersion = schemaMap(opName)._2.toString

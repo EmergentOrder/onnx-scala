@@ -263,54 +263,6 @@ The Scala Native build will fail unless you apply this [PR](https://github.com/s
 
 Currently at ONNX 1.6.0.
 
-## Type-safe Tensors (Experimental, Scala 2.13 only)
-Featuring type-checked axis labels (DimName), which along with literal types (new in Scala 2.13) for dimension sizes allow for axes-typed/shape-typed (Axes) tensors (TypesafeTensor).
-Using ONNX docs for [dimension](https://github.com/onnx/onnx/blob/master/docs/DimensionDenotation.md) and [type](https://github.com/onnx/onnx/blob/master/docs/TypeDenotation.md) denotation as a reference,
-and inspired by [Nexus](https://github.com/ctongfei/nexus), [Neurocat](https://github.com/mandubian/neurocat) and [Named Tensors](https://pytorch.org/docs/stable/named_tensor.html).
-
-```scala mdoc:silent
-import org.emergentorder.onnx._
-
-trait DataBatch extends DimName
-trait DataChannel extends DimName
-trait DataFeature extends DimName
-
-val imageAxes = new TensorRank3(3, new DataChannel{}, 224, new DataFeature{},224, new DataFeature{})
-type ImageAxes = imageAxes.type
-type ImageTensor = TypesafeTensor[Float, ImageAxes]
-
-val typesafeTens: ImageTensor = TensorFactory.getTypesafeTensor(Array.fill(3*224*224){42f},imageAxes) 
-onnx.Sqrt6[Float, ImageAxes]("sqrt", Some(typesafeTens))
-onnx.Sqrt6("sqrt", Some(typesafeTens))
-
-val textAxes = (new Vec(100, new DataFeature{}))
-type TextAxes = textAxes.type
-type TextTensor = TypesafeTensor[Float, TextAxes]
-
-```
-```scala mdoc:crash
-//Fails at runtime, as designed
-val wrongSizeDataTens: ImageTensor = TensorFactory.getTypesafeTensor(Array.fill(3*224*225){42f},imageAxes)
-```
-```scala mdoc:fail
-//The rest fail to compile, as designed
-
-val wordShouldBeImageTens: TextTensor = TensorFactory.getTypesafeTensor(Array.fill(3*224*224){42f},imageAxes)
-```
-```scala mdoc:fail
-onnx.Sqrt6[Float, TextAxes]("sqrt", Some(typesafeTens))
-```
-```scala mdoc:fail
-val wrongSizedImageAxes = (new TensorRank3(15, new DataChannel{}, 224, new DataFeature{}, 224, new DataFeature{}))
-type WrongSizedImageAxes = wrongSizedImageAxes.type
-onnx.Sqrt6[Float, WrongSizedImageAxes]("sqrt", Some(typesafeTens))
-```
-```scala mdoc:fail
-val wrongDimTypeAxes = (new TensorRank3(3, new DataBatch{}, 224, new DataFeature{}, 224, new DataFeature{}))
-type WrongDimTypeAxes = wrongDimTypeAxes.type
-onnx.Sqrt6[Float, WrongDimTypeAxes]("sqrt", Some(typesafeTens))
-```
-
 ### Built With
 
 #### Core

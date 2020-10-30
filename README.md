@@ -317,6 +317,8 @@ Featuring type-checked axis labels (DimName), which along with literal types (ne
 Using ONNX docs for [dimension](https://github.com/onnx/onnx/blob/master/docs/DimensionDenotation.md) and [type](https://github.com/onnx/onnx/blob/master/docs/TypeDenotation.md) denotation as a reference,
 and inspired by [Nexus](https://github.com/ctongfei/nexus), [Neurocat](https://github.com/mandubian/neurocat) and [Named Tensors](https://pytorch.org/docs/stable/named_tensor.html).
 
+Warning: this section will be changing soon, and will no longer work as demonstrated below
+
 ```scala
 import org.emergentorder.onnx._
 

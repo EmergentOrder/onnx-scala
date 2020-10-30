@@ -7,12 +7,13 @@ import spire.math.ULong
 import spire.math.Complex
 import spire.math.Numeric
 
-import io.kjaer.compiletime._
+
 
 object Tensors{
 
 trait DimName
 type Dimension = Int with Singleton
+/*
 type VecShape[I <: Dimension] = I #: SNil
 type MatShape[I <: Dimension, J <: Dimension] = I #: J #: SNil
 type TensorRank3Shape[I <: Dimension, J <: Dimension, K <: Dimension] = I #: J #: K #: SNil
@@ -68,13 +69,13 @@ object AxesFactory {
 
     }
   }
-
+*/
   type Supported = Int | Long | Float | Double | Byte | Short | UByte | UShort | UInt | ULong | 
                    Boolean | String | Float16 | Complex[Float] | Complex[Double]
 
   type FloatSupported = Float | Double 
 
-  type TypesafeTensor[T, A <: Axes] = Tuple3[Array[T], Array[Int], A]
+//  type TypesafeTensor[T, A <: Axes] = Tuple3[Array[T], Array[Int], A]
 
   //TODO: Use IArray
   type Tensor[T <: Supported]       = Tuple2[Array[T], Array[Int]] //TypesafeTensor[T, Axes]
@@ -88,6 +89,7 @@ object AxesFactory {
       (data, t)
       //(data, t, AxesFactory.getAxes(shape, Array.fill(shape.size) { new DimName {} }))
     }
+  /*
     def getTypesafeTensor[T, A <: Axes](data: Array[T], axes: A): TypesafeTensor[T, A] = {
 
 //      val axes: A = AxesFactory.getAxes(shape, dims)
@@ -103,6 +105,7 @@ object AxesFactory {
       require(data.size == shape.foldLeft(1)(_ * _))
       (data, t, axes)
     }
+    */
   }
   
 }

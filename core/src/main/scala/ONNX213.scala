@@ -13034,10 +13034,10 @@ package object onnx {
       ](name, "Sqrt", allInputs, map))
     }
 
-//TESTING typesafe version
-    def Sqrt6[@sp T: Numeric: ClassTag, A <: Axes](name: String, X: Option[TypesafeTensor[T, A]])(
+
+    def Sqrt6[@sp T: Numeric: ClassTag](name: String, X: Option[Tensor[T]])(
         implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): (TypesafeTensor[T, A]) = {
+    ): (Tensor[T]) = {
       val map: Map[String, Any] = Map()
       val allInputs = (
         X,
@@ -13050,9 +13050,8 @@ package object onnx {
         None: Option[Any],
         None: Option[Any]
       )
-      (callOp[Option[TypesafeTensor[T, A]], Any, Any, Any, Any, Any, Any, Any, Any, TypesafeTensor[
-        T,
-        A
+      (callOp[Option[Tensor[T]], Any, Any, Any, Any, Any, Any, Any, Any, Tensor[
+        T
       ], Any, Any, Any, Any, Any, Any, Any, Any](name, "Sqrt", allInputs, map))
     }
   }

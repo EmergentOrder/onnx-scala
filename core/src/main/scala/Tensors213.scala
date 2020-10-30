@@ -1,11 +1,12 @@
 package org.emergentorder.onnx
 
-import io.kjaer.compiletime._
+
 
 object Tensors{
 
 trait DimName
 type Dimension = Int with Singleton
+/*
 type VecShape[I <: Dimension] = I #: SNil
 type MatShape[I <: Dimension, J <: Dimension] = I #: J #: SNil
 type TensorRank3Shape[I <: Dimension, J <: Dimension, K <: Dimension] = I #: J #: K #: SNil
@@ -63,17 +64,19 @@ object AxesFactory {
   }
 
   type TypesafeTensor[T, A <: Axes] = Tuple3[Array[T], Array[Int], A]
-
-  type Tensor[T]       = TypesafeTensor[T, Axes]
+*/
+  //type Tensor[T]       = TypesafeTensor[T, Axes]
+  type Tensor[T]       = Tuple2[Array[T], Array[Int]]
   type SparseTensor[T] = Tensor[T]
 
   object TensorFactory {
 
     def getTensor[T](data: Array[T], t: Array[Int]): Tensor[T] = {
-      val shape: Array[Dimension] = t.map(z => z: Dimension)
+     val shape: Array[Dimension] = t.map(z => z: Dimension)
       require(data.size == shape.foldLeft(1)(_ * _))
-      (data, t, AxesFactory.getAxes(shape, Array.fill(shape.size) { new DimName {} }))
+      (data, t) 
     }
+ /*
     def getTypesafeTensor[T, A <: Axes](data: Array[T], axes: A): TypesafeTensor[T, A] = {
 
 //      val axes: A = AxesFactory.getAxes(shape, dims)
@@ -89,5 +92,6 @@ object AxesFactory {
       require(data.size == shape.foldLeft(1)(_ * _))
       (data, t, axes)
     }
+    */
   }
 }

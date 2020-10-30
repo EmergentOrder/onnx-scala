@@ -123,13 +123,11 @@ lazy val core = (crossProject(JVMPlatform)
       .partialVersion(scalaVersion.value) match {
       case Some((2, n)) =>
         Seq(
-          "org.typelevel" %% "spire" % spireVersion,
-          "io.kjaer" % "tf-dotty-compiletime_0.27" % "0.0.0+134-f1f8d0ba+20201020-1123-SNAPSHOT" //Not publicly published
+          "org.typelevel" %% "spire" % spireVersion
         )
       case _ =>
         Seq(
-          ("org.typelevel" %% "spire" % spireVersion).withDottyCompat(dottyVersion),
-          "io.kjaer" % "tf-dotty-compiletime_0.27" % "0.0.0+134-f1f8d0ba+20201020-1123-SNAPSHOT" //Not publicly published
+          ("org.typelevel" %% "spire" % spireVersion).withDottyCompat(dottyVersion)
         )
     }),
     libraryDependencies ++= Seq(

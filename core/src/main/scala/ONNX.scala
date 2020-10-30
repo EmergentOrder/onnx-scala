@@ -15,7 +15,8 @@ import org.bytedeco.onnx.ModelProto
 import org.emergentorder.onnx.Tensors._
 
 package object onnx {
-
+ 
+  //TODO: add ORT contrib ops
   //TODO: Remove requirement to be Numeric for ops with non-numeric outputs / inputs
   //TODO: Encode node names as types
   //TODO: fix encoding of type constraints, use Tensor as part of definition of types
@@ -788,7 +789,7 @@ package object onnx {
     def ConcatV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
-        ] | Complex[Double]: Numeric
+        ] | Complex[Double]
     ](name: String, axis: (Int), inputs: Seq[Tensor[T]]): Tensor[T] = {
       val map: Map[String, Any] = Map("axis" -> axis)
       val allInputs             = Tuple.fromArray(inputs.toArray).asInstanceOf[Tuple]
@@ -800,7 +801,7 @@ package object onnx {
     def ConcatV4[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
-        ] | Complex[Double]: Numeric
+        ] | Complex[Double]
     ](name: String, axis: (Int), inputs: Seq[Tensor[T]]): Tensor[T] = {
       val map: Map[String, Any] = Map("axis" -> axis)
       val allInputs             = Tuple.fromArray(inputs.toArray).asInstanceOf[Tuple]
@@ -812,7 +813,7 @@ package object onnx {
     def ConcatV1[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
-        ] | Complex[Double]: Numeric
+        ] | Complex[Double]
     ](name: String, axis: Option[(Int)] = None, inputs: Seq[Tensor[T]]): Tensor[T] = {
       val map: Map[String, Any] = Map("axis" -> axis)
       val allInputs             = Tuple.fromArray(inputs.toArray).asInstanceOf[Tuple]

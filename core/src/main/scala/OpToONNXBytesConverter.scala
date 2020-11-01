@@ -92,7 +92,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
   //TODO: prevent passing the inputs all the way down here
   protected def addInputToGraph[A <: Supported](tens: Tensor[A], inputName: String, graph: GraphProto, node: NodeProto): Unit = {
     node.add_input(inputName)
-    val elemType = tens.onnxTensor.getInfo.onnxType match {
+    val elemType = Tensors.getOnnxTensor(tens._1, tens._2).getInfo.onnxType match {
           case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8   => TensorProto.INT8
           case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16  => TensorProto.INT16
           case ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE => TensorProto.DOUBLE
@@ -109,7 +109,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
         inputValueInfo.`type`.mutable_tensor_type
         inputValueInfo.`type`.tensor_type.set_elem_type(elemType)
 
-        val dims = tens.onnxTensor.getInfo.getShape
+        val dims = Tensors.getOnnxTensor(tens._1, tens._2).getInfo.getShape
         inputValueInfo.`type`.tensor_type.mutable_shape
         dims.foreach { x =>
           val inputDim = inputValueInfo.`type`.tensor_type.shape.add_dim

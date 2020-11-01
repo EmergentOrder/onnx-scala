@@ -22,18 +22,20 @@ object Tensors{
   type Supported = Int | Long | Float | Double | Byte | Short | UByte | UShort | UInt | ULong | 
                    Boolean | String | Float16 | Complex[Float] | Complex[Double]
 
+                   /*
   //TODO: Use IArray ? 
-  case class Tensor[T <: Supported](data: Array[T], shape: Array[Int]){
+  case class OSTensor[T <: Supported](data: Array[T], shape: Array[Int]){
     lazy val _1: Array[T] = data 
     lazy val _2: Array[Int] = shape 
     //TODO: move this out to an implicit conversion in the backend
     lazy val onnxTensor = getOnnxTensor(data,shape)
     require(data.size == shape.foldLeft(1)(_ * _))      
   }
- 
+*/
+  type Tensor[T <: Supported] = Tuple2[Array[T], Array[Int]]
   type SparseTensor[T <: Supported] = Tensor[T]
 
-  private def getOnnxTensor[T <: Supported](arr: Array[T], shape: Array[Int]): OnnxTensor = {
+  def getOnnxTensor[T <: Supported](arr: Array[T], shape: Array[Int]): OnnxTensor = {
     arr match {
       case b: Array[Byte] => getTensorByte(arr, shape)
       case s: Array[Short] => getTensorShort(arr, shape)

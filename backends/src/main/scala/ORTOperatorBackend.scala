@@ -41,7 +41,7 @@ trait ORTOperatorBackend
     val output_tensor = sess.run(inputs)
       val firstOut = output_tensor.get(0).asInstanceOf[OnnxTensor]
       val shape = firstOut.getInfo.getShape
-      val result: Tensor[T] = new Tensor(Tensors.getArrayFromOnnxTensor(firstOut), shape.map(_.toInt))  
+      val result: Tensor[T] = (Tensors.getArrayFromOnnxTensor(firstOut), shape.map(_.toInt))  
       result
   }
     
@@ -62,10 +62,10 @@ trait ORTOperatorBackend
       elem match {
             case opt: Option[Tensor[_]] =>
               opt match{
-                case Some(x) => Some(x.onnxTensor)
+                case Some(x) => Some(Tensors.getOnnxTensor(x._1, x._2))
                 case None => None
               }
-            case tens: Tensor[_] => Some(tens.onnxTensor)
+            case tens: Tensor[_] => Some(Tensors.getOnnxTensor(tens._1, tens._2))
           }
       }.flatten
 

@@ -25,152 +25,95 @@ import scala.reflect.ClassTag
 import scala.language.implicitConversions
 
 import java.io.File
-import org.bytedeco.javacpp._
-import org.bytedeco.onnx._
-import org.bytedeco.onnx.global.onnx.{ParseProtoFromBytes, check_model}
+//import org.bytedeco.javacpp._
+//import org.bytedeco.onnx._
+import org.bytedeco.onnx.global.onnx.check_model
+import onnx.onnx._
+import onnx.onnx.TensorProto.DataType._
 
 class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable { 
-  lazy val model = {
-    val r     = (new ModelProto).New()
+  lazy val model = ModelProto.parseFrom(byteArray)
+//  check_model(model.toProtoString)
+  /*
+  = {
+    val r     = (new ModelProto)
     val bytes = new BytePointer(byteArray: _*)
     ParseProtoFromBytes(
       r,
       bytes,
       byteArray.length.toLong
     )
-    check_model(r)
+    //check_model(r) //TODO: restore
     r
   }
-
+*/
+//  val testproto = TensorProto(name = "test")
   private val graph = model.graph
 
-  val maxOpsetVersion =
+  val maxOpsetVersion:Long =
     try {
-      model.opset_import(0).version
+      model.opsetImport(0).version.getOrElse(0l)
     } catch {
       case e: Exception => { 1 }
     }
 
-  private def dimsToArray[VV: spire.math.Numeric: ClassTag](
-      dimsCount: Int,
-      dims: Array[Long]
-  ): Array[VV] = {
-    val dimsArrayInt = dims.map(x => x.toInt).toArray
-    val arrX = dimsCount match {
-      case 0 => Array.ofDim[VV](1)
-      case 1 => Array.ofDim[VV](dimsArrayInt(0))
-      case 2 => Array.ofDim[VV](dimsArrayInt(0) * dimsArrayInt(1))
-      case 3 =>
-        Array
-          .ofDim[VV](dimsArrayInt(0) * dimsArrayInt(1) * dimsArrayInt(2))
-      case 4 =>
-        Array
-          .ofDim[VV](
-            dimsArrayInt(0) *
-              dimsArrayInt(1) *
-              dimsArrayInt(2) *
-              dimsArrayInt(3)
-          )
-      case 5 =>
-        Array
-          .ofDim[VV](
-            dimsArrayInt(0) *
-              dimsArrayInt(1) *
-              dimsArrayInt(2) *
-              dimsArrayInt(3) *
-              dimsArrayInt(4)
-          )
-    }
-    arrX
-  }
-
   def onnxTensorProtoToArray(tensorProto: TensorProto) = {
 
     //TODEFER: Get dim and type denotations, encode into types here in 2.13 / earlier if possible
-//    val scope = new PointerScope()
 
-    val onnxDataType = tensorProto.data_type
-    val dimsCount    = tensorProto.dims_size
+    val onnxDataType = tensorProto.dataType
+    val dimsCount    = tensorProto.dims.size
     val dims =
       (0 until dimsCount.toInt).map(x => tensorProto.dims(x)).toArray
 
-    val rawData = tensorProto.raw_data
+    val rawData = tensorProto.rawData
 
-    val TensProtoByte   = TensorProto.INT8
-    val TensProtoShort  = TensorProto.INT16
-    val TensProtoInt    = TensorProto.INT32
-    val TensProtoLong   = TensorProto.INT64
-    val TensProtoFloat  = TensorProto.FLOAT
-    val TensProtoDouble = TensorProto.DOUBLE
+    val TensProtoByte   = INT8.index
+    val TensProtoShort  = INT16.index
+    val TensProtoInt    = INT32.index
+    val TensProtoLong   = INT64.index
+    val TensProtoFloat  = FLOAT.index
+    val TensProtoDouble = DOUBLE.index
 
 
     //TODO: asXBuffer then put
-    val array = onnxDataType match {
+    val array = onnxDataType.getOrElse(1) match {
       case TensProtoByte => {
-        val arrX = dimsToArray[Byte](dimsCount, dims)
-        rawData.get(arrX)
-        arrX 
+        rawData.map(x => x.toByteArray())
       }
       case TensProtoShort => {
-        val arrX = dimsToArray[Short](dimsCount, dims)
-        (0 until arrX.length).foreach {
-          if (rawData == null) { x => arrX(x) = tensorProto.int32_data(x).toShort }
-          else { x => arrX(x) = rawData.getShort(x * 2) }
-        }
-        arrX.toArray
+        tensorProto.int32Data.toArray
       }
       case TensProtoInt => {
-        val arrX = dimsToArray[Int](dimsCount, dims)
-        (0 until arrX.length).foreach {
-          if (rawData == null) { x => arrX(x) = tensorProto.int32_data(x) }
-          else { x => arrX(x) = rawData.getInt(x * 4) }
-        }
-        arrX.toArray
+        tensorProto.int32Data.toArray
       }
       case TensProtoLong => {
-        val arrX = dimsToArray[Long](dimsCount, dims)
-        (0 until arrX.length).foreach {
-          if (rawData == null) { x => arrX(x) = tensorProto.int64_data(x) }
-          else { x => arrX(x) = rawData.getLong(x * 8) }
-        }
-        arrX.toArray
+        tensorProto.int64Data.toArray
       }
       case TensProtoFloat => {
-        val arrX = dimsToArray[Float](dimsCount, dims)
-        (0 until arrX.length).foreach {
-          if (rawData == null) { x => arrX(x) = tensorProto.float_data(x) }
-          else { x => arrX(x) = rawData.getFloat(x * 4) }
-        }
-        arrX.toArray
+        tensorProto.floatData.toArray
       }
       case TensProtoDouble => {
-        val arrX = dimsToArray[Double](dimsCount, dims)
-        (0 until arrX.length).foreach {
-          if (rawData == null) { x => arrX(x) = tensorProto.double_data(x) }
-          else { x => arrX(x) = rawData.getDouble(x * 8) }
-        }
-        arrX.toArray
+        tensorProto.doubleData.toArray
       }
     }
-    if (rawData != null) {
-//      rawData.close
-    }
-//    tensorProto.close
-//    scope.close
+
     array
   }
 
-  private val nodeCount = graph.node_size.toInt
-  private val node      = (0 until nodeCount).map(x => graph.node(x))
+  private val nodeCount = graph.map(x => x.node.size.toInt).getOrElse(0)
+  private val node      = (0 until nodeCount).map(x => graph.map(y => y.node(x)))
 
   val attributes =
-    node.map { x =>
-      val attributeCount = x.attribute_size.toInt
+    node.map { nodeOpt =>
+      nodeOpt.map { x =>
+      val attributeCount = x.attribute.size.toInt
       val attribute      = (0 until attributeCount).map(y => x.attribute(y)).toArray
       attribute
-    }.toArray
+    }
+    }.toArray.flatten
 
-  val ops = node.map(x => x.op_type.getString).toArray
+  val ops = node.map(x => x.map(y => y.opType).flatten).toArray
 
   private val tensorElemTypeMap = Map(
     org.bytedeco.onnx.TensorProto.UNDEFINED  -> "Undefined",
@@ -193,110 +136,114 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
   )
 
   val nodeInputs =
-    node
-      .map { x =>
-        val inputCount = x.input_size.toInt
+    node.map{ nodeOpt =>
+      nodeOpt.map { x =>
+        val inputCount = x.input.size.toInt
         val input      = (0 until inputCount).map(y => x.input(y))
 
         input
       }
-      .toArray
+    }
+      .toIndexedSeq.flatten
       .map { x =>
         x.toArray
           .map(y =>
-            y.getString
-              .asInstanceOf[String]
+            y
               .replaceAll("-", "_")
               .replaceAll("/", "_")
           )
       }
 
   val nodeOutputs =
-    node
-      .map { x =>
-        val outputCount = x.output_size.toInt
+    node.map{ nodeOpt =>
+      nodeOpt.map { x =>
+        val outputCount = x.output.size.toInt
         val output      = (0 until outputCount).map(y => x.output(y))
 
         output
       }
-      .toArray
+    }
+      .toIndexedSeq.flatten
       .map { x =>
         x.toArray.map(y =>
-          y.getString
-            .asInstanceOf[String]
-            .replaceAll("-", "_")
+          y.replaceAll("-", "_")
             .replaceAll("/", "_")
         )
       }
 
-  val globalOutputCount = graph.output_size.toInt
+//  val globalOutputCount: Int = graph.map(x => x.output.size.toInt).getOrElse(0)
   val globalOutput =
-    (0 until globalOutputCount).map(x => graph.output(x))
+    (0 until graph.map(x => x.output.size.toInt).getOrElse(0)).map(x => graph.map(y => y.output(x)))
 
-  val inputCount = graph.input_size.toInt
-  val input      = (0 until inputCount).map(x => graph.input(x))
+  val inputCount = graph.map(x => x.input.size.toInt).getOrElse(0)
+  val input      = (0 until inputCount).map(x => graph.map(y => y.input(x)))
 
-  private val initializerCount = graph.initializer_size
-  private val initializer =
-    (0 until initializerCount).map(x => graph.initializer(x))
+  private val initializerCount = graph.map(x => x.initializer.size).getOrElse(0)
+  private val initializer = (0 until initializerCount).map(y => graph.map(z => z.initializer(y))).toIndexedSeq.flatten
 
   lazy val params =
     initializer.map { x =>
-      val dimsCount      = x.dims_size
+      val dimsCount      = x.dims.size
       val dimsList       = (0 until dimsCount.toInt).map(y => x.dims(y))
-      val name           = x.name.getString.replaceAll("-", "_").replaceAll("/", "_")
-      val tensorElemType = tensorElemTypeMap(x.data_type)
+      val name           = x.name.map(y=> y.replaceAll("-", "_").replaceAll("/", "_")).getOrElse("none")
+      val tensorElemType = x.dataType.map(y => tensorElemTypeMap(y)).getOrElse("none")
       val arrX           = onnxTensorProtoToArray(x)
       (name, tensorElemType, arrX, dimsList.map(y => y.toInt).toArray)
     }
 
   lazy val nodes = {
-    val someNodes = input.map { x =>
-      val name = x.name.getString
+    val someNodes = input.map { inputOpt =>
+      inputOpt.map{ x =>
+      val name = x.name.getOrElse("MissingName")
       if (params exists (_._1.equals(name)))
         ("param_" + name)
       else ("input_" + name)
     } ++ nodeOutputs.flatten.map(y => ("output_" + y))
+    }
     someNodes
   }
 
   lazy val outputs = {
     val outputArray = globalOutput.toArray
-    outputArray
-      .map(x => x.name.getString.replaceAll("-", "_").replaceAll("/", "_"))
+    outputArray.map{ valueinfoOpt =>
+      valueinfoOpt.map(x => x.name.map(y => y.replaceAll("-", "_").replaceAll("/", "_")).getOrElse("MissingName"))
       .filter(x => nodes.contains("output_" + x))
+  }
   }
 
   lazy val graphInputs = {
-    val inputCount = graph.input_size.toInt
-    val input      = (0 until inputCount).map(y => graph.input(y))
+    val inputCount = graph.map(x => x.input.size.toInt).getOrElse(0)
+    val input      = (0 until inputCount).map(y => graph.map(z => z.input(y)))
     input.toArray
-      .map { y =>
+      .map { valueinfoOpt =>
+        valueinfoOpt.map{ y =>
         (
-          y.name.getString
-            .asInstanceOf[String]
+          y.name.map(z =>
+              z 
             .replaceAll("-", "_")
-            .replaceAll("/", "_"),
-          tensorElemTypeMap(y.`type`.tensor_type.elem_type)
+            .replaceAll("/", "_")).getOrElse("MissingName"),
+          tensorElemTypeMap(y.`type`.map(q => q.getTensorType.getElemType).getOrElse(0))
         )
       }
-      .filter(z => !(params exists (_._1.equals(z._1))))
+      }
+        .filter(opt => opt.map(z => !(params exists (_._1.equals(z._1)))).getOrElse(false)).flatten
   }
 
   lazy val graphOutputs = {
-    val outputCount = graph.output_size.toInt
-    val output      = (0 until outputCount).map(y => graph.output(y))
+    val outputCount = graph.map(x => x.output.size.toInt).getOrElse(0)
+    val output      = (0 until outputCount).map(y => graph.map(z => z.output(y)))
     output.toArray
-      .map(y =>
+      .map(valueInfoOpt =>
+          valueInfoOpt.map (y =>
         (
-          y.name.getString
-            .asInstanceOf[String]
-            .replaceAll("-", "_")
-            .replaceAll("/", "_"),
-          tensorElemTypeMap(y.`type`.tensor_type.elem_type)
+          y.name.map(z => 
+            z.replaceAll("-", "_")
+            .replaceAll("/", "_")).getOrElse("MissingName"),
+          tensorElemTypeMap(y.`type`.map(q => q.getTensorType.getElemType).getOrElse(0))
         )
       )
-      .filter(z => !(params exists (_._1.equals(z._1))))
+      )
+        .filter(opt => opt.map(z => !(params exists (_._1.equals(z._1)))).getOrElse(false)).flatten
   }
 
   override def close(): Unit = {

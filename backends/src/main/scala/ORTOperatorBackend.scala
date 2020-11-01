@@ -38,11 +38,11 @@ trait ORTOperatorBackend
     val inputs = (inputNames zip input_tensor_values).toMap.asJava
 
     //TODO: More outputs / handle via ONNXSequence / ONNXMap
-    Using.resource(sess.run(inputs)) { output_tensor =>
+    val output_tensor = sess.run(inputs)
       val firstOut = output_tensor.get(0).asInstanceOf[OnnxTensor]
       val shape = firstOut.getInfo.getShape
-      new Tensor(Tensors.getArrayFromOnnxTensor(firstOut), shape.map(_.toInt))  
-    }
+      val result: Tensor[T] = new Tensor(Tensors.getArrayFromOnnxTensor(firstOut), shape.map(_.toInt))  
+      result
   }
     
 // def cachedSess(bytes: Array[Byte]) = sessionCache.computeIfAbsent(java.util.Arrays.hashCode(bytes), _ => getSession(bytes))
@@ -69,18 +69,16 @@ trait ORTOperatorBackend
           }
       }.flatten
 
-      val out: Tensor[T] = Using.resource(getSession(opModel)) { sess =>  
-        runModel(
+      val sess  = getSession(opModel)
+        val res:Tensor[T] = runModel(
           sess, 
           inputTensors,
           input_node_names,
           output_node_names
         )
-      }
-      //TODO: sure we don't need these?
-      inputTensors.foreach(_.close)
-      out
-  }
+        //TODO: sure we don't need these?
+        res
+  } 
 
   def callOp[
       T <: Supported](

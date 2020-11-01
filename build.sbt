@@ -8,15 +8,11 @@ val onnxJavaCPPPresetVersion = "1.7.0-1.5.5-SNAPSHOT"
   
 scalaVersion := scala213Version 
 
-//PB.targets in Compile := Seq(
-//  scalapb.gen() -> (sourceManaged in Compile).value 
-//)
-
 lazy val commonSettings = Seq(
 //  scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
   version := "0.8.0",
-  scalaVersion := scala213Version,
+  scalaVersion := dottyVersion,
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
@@ -39,10 +35,22 @@ lazy val common = (crossProject(JVMPlatform)
     crossScalaVersions := Seq(
       dottyVersion,
       scala213Version
-    )
+    ),
+ libraryDependencies -= "com.thesamet.scalapb" %% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion,
+
+    libraryDependencies += ("com.thesamet.scalapb" %% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion).withDottyCompat(scalaVersion.value),
+    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil }, 
+
+
+  PB.targets in Compile := Seq(
+      scalapb.gen() -> (sourceManaged in Compile).value
+    ),
+    // The trick is in this line:
+    PB.protoSources in Compile := Seq(file("common/src/main/protobuf")),
   )
 
 
+/*
 lazy val programGenerator = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("programGenerator"))
   .dependsOn(backends)
@@ -76,7 +84,7 @@ lazy val programGenerator = (crossProject(JVMPlatform)
       scala213Version
     )
   )
-
+*/
 lazy val backends = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("backends"))
   .dependsOn(core)
@@ -147,7 +155,7 @@ lazy val docs = (crossProject(JVMPlatform)
       "VERSION" -> version.value
    )
   )
-  .dependsOn(programGenerator)
+  .dependsOn(backends)
   .enablePlugins(MdocPlugin)
   .jvmSettings(
     crossScalaVersions := Seq(scala213Version)

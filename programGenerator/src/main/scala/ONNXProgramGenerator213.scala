@@ -20,7 +20,7 @@ package org.emergentorder.onnx
 
 import java.nio.file._
 import scala.meta._
-import org.bytedeco.onnx.TensorProto
+import onnx.onnx._
 import collection.JavaConverters._
 
 import scala.reflect.io.Streamable
@@ -52,7 +52,7 @@ object ONNXProgramGenerator {
 
     val scalaCollSchemas = (0 until schemasSize.toInt).map(x => schemas.get(x))
     val schemaMap = scalaCollSchemas
-      .filter(x => x.since_version <= maxOpsetVersion)
+      .filter(x => x.since_version.toInt <= maxOpsetVersion)
       .map(x =>
         x.Name.getString ->
           (x.inputs, x.since_version)
@@ -145,7 +145,7 @@ object ONNXProgramGenerator {
         "\n" +
         distinctOps
           .map { x =>
-            "  val " + x + (if (useZIO) "ZIO" else "") + ": " + x.capitalize + (if (useZIO)
+            "  val " + x + (if (useZIO) "ZIO" else "") + ": " + x.getOrElse("none").capitalize + (if (useZIO)
                                                                                   "ZIO"
                                                                                 else
                                                                                   "") +
@@ -209,76 +209,72 @@ object ONNXProgramGenerator {
               "Some(node" + y.replaceAll("\\.", "") + ")"
             } // ,""" + y.name.getString + "name" + " = " + """ Some("""" + y + """")""")
 
-            val longFields = x._2
-              .filter { y =>
-                y.has_i
-              }
+            val longFields = x._2 
               .map { y =>
                 val field = y.i.asInstanceOf[Long]
-                y.name.getString + """ = Some((""" + field.toInt + """))"""
+                y.name.getOrElse("none") + """ = Some((""" + field.toInt + """))"""
               }
 
             val longListFields = x._2
               .filter { y =>
-                val longListCount = y.ints_size
+                val longListCount = y.ints.size
                 val longListList =
                   (0 until longListCount.toInt).map(z => y.ints(z)).toList
                 !longListList.isEmpty
               }
               .map { y =>
-                val longListCount = y.ints_size
+                val longListCount = y.ints.size
                 val longListList =
                   (0 until longListCount.toInt).map(z => y.ints(z)).toList
                 val field = longListList.toVector.asInstanceOf[Vector[Long]]
-                y.name.getString + """ = Some((Array(""" + field.mkString(",") + """)))"""
+                y.name.getOrElse("none") + """ = Some((Array(""" + field.mkString(",") + """)))"""
               }
             val stringFields = x._2
               .filter { y =>
-                val stringCount = y.strings_size
+                val stringCount = y.strings.size
                 val stringList =
                   (0 until stringCount.toInt).map(z => y.strings(z)).toList
                 !stringList.isEmpty
               }
               .map { y =>
-                val stringCount = y.strings_size
+                val stringCount = y.strings.size
                 val stringList =
                   (0 until stringCount.toInt)
-                    .map(z => y.strings(z).getString)
+                    .map(z => y.strings(z).toStringUtf8)
                     .toList
                 val field = stringList
-                y.name.getString + """ = Some(Array(""" + field
+                y.name.getOrElse("none") + """ = Some(Array(""" + field
                   .map(z => "\"" + z + "\"")
                   .mkString(",") + """))"""
               }
 
-            val tensorProtoField = x._2
-              .filter { y =>
-                y.has_t
-              }
+            val tensorProtoField = x._2 
               .map { y =>
-                val dimsCount = y.t.dims_size
+                y.t.map { t =>
+                val dimsCount = t.dims.size
                 val dimsArray =
                   if (dimsCount == 0) Array(1)
-                  else (0 until dimsCount.toInt).map(x => y.t.dims(x)).toArray
-                val field = onnxHelper.onnxTensorProtoToArray(y.t)
+                  else (0 until dimsCount.toInt).map(x => t.dims(x)).toArray
+                val field = onnxHelper.onnxTensorProtoToArray(t)
                 (field, dimsArray) match {
                   case arrays: (Array[_], Array[_]) =>
-                    y.name.getString + " = Some(TensorFactory.getTensor(Array(" + arrays._1
+                    y.name.getOrElse("none") + " = Some(TensorFactory.getTensor(Array(" + arrays._1
                       .map(x => if (x.toString.contains(".")) x.toString + "f" else x.toString)
                       .mkString(",") + ")," +
                       "Array(" + arrays._2.mkString(",") + ")))"
+                }
                 }
               }
 
             val tensorProtoFields = x._2
               .filter { y =>
-                val tensorCount = y.tensors_size
+                val tensorCount = y.tensors.size
                 val tensorList =
                   (0 until tensorCount.toInt).map(z => y.tensors(z)).toList
                 !tensorList.isEmpty
               }
               .map { y =>
-                val tensorCount = y.tensors_size
+                val tensorCount = y.tensors.size
                 val tensorList =
                   (0 until tensorCount.toInt).map(z => y.tensors(z)).toList
                 val field = onnxHelper.onnxTensorProtoToArray(
@@ -286,23 +282,23 @@ object ONNXProgramGenerator {
                 )
                 field match {
                   case array: Array[_] =>
-                    y.name.getString + " = Some((Array(" + array.mkString(",") + ")))"
+                    y.name.getOrElse("none") + " = Some((Array(" + array.mkString(",") + ")))"
 
                 }
               }
 
             val opName = x._1._1._2
 
-            val opInputsNames = (0 until schemaMap(opName)._1.size.toInt).map { b =>
-              schemaMap(opName)._1.get(b).GetName.getString
+            val opInputsNames = (0 until schemaMap(opName.getOrElse("none"))._1.size.toInt).map { b =>
+              schemaMap(opName.getOrElse("none"))._1.get(b).GetName.getString
             }
 
             val opInputsIsVariadic =
-              (0 until schemaMap(opName)._1.size.toInt).map { b =>
-                schemaMap(opName)._1.get(b).GetOption === 2
+              (0 until schemaMap(opName.getOrElse("none"))._1.size.toInt).map { b =>
+                schemaMap(opName.getOrElse("none"))._1.get(b).GetOption === 2
               }
 
-            val sinceVersion = schemaMap(opName)._2.toString
+            val sinceVersion = schemaMap(opName.getOrElse("none"))._2.toString
 
             val groupedNodesOrParams: Array[String] = nodesOrParams.take(
               opInputsNames.size - 1

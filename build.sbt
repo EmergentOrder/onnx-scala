@@ -8,9 +8,9 @@ val onnxJavaCPPPresetVersion = "1.7.0-1.5.5-SNAPSHOT"
   
 scalaVersion := scala213Version 
 
-PB.targets in Compile := Seq(
-  scalapb.gen() -> (sourceManaged in Compile).value 
-)
+//PB.targets in Compile := Seq(
+//  scalapb.gen() -> (sourceManaged in Compile).value 
+//)
 
 lazy val commonSettings = Seq(
 //  scalaJSUseMainModuleInitializer := true, //Test only

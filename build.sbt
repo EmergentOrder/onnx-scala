@@ -147,7 +147,7 @@ lazy val docs = (crossProject(JVMPlatform)
       "VERSION" -> version.value
    )
   )
-  .dependsOn(backends)
+  .dependsOn(programGenerator)
   .enablePlugins(MdocPlugin)
   .jvmSettings(
     crossScalaVersions := Seq(scala213Version)

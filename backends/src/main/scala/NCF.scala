@@ -26,13 +26,12 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
       inputDatalearned_0: Tensor[Long]
   ): Tensor[Float] = {
 //    val scope = new PointerScope()
-    val nodeactual_input_1 = TensorFactory.getTensor(
+    val nodeactual_input_1 = Tensor(
       inputDataactual_input_1._1.map(y => userIdsMap(y)),
       inputDataactual_input_1._2
     )
 
-    val nodelearned_0 =
-      TensorFactory.getTensor(inputDatalearned_0._1.map(y => itemIdsMap(y)), inputDatalearned_0._2)
+    val nodelearned_0 = Tensor(inputDatalearned_0._1.map(y => itemIdsMap(y)), inputDatalearned_0._2)
 
     //Note: Don't need to specify all the type params except in Dotty
     val nodeFullOutput: Tensor[Float] =

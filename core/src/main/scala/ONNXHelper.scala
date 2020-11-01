@@ -103,6 +103,8 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
     val TensProtoFloat  = TensorProto.FLOAT
     val TensProtoDouble = TensorProto.DOUBLE
 
+
+    //TODO: asXBuffer then put
     val array = onnxDataType match {
       case TensProtoByte => {
         val arrX = dimsToArray[Byte](dimsCount, dims)

@@ -45,7 +45,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
           tup match {
             case t: Tuple1[_] =>
               t(0) match {
-                case tens: Tensor[_] => getTensor(tens)
+                case tens: Tensor[_] => tens.onnxTensor
               }
           }
         }.toArray

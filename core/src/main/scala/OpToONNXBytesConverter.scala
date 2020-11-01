@@ -10,6 +10,7 @@ import org.bytedeco.onnx.AttributeProto
 import org.bytedeco.javacpp.PointerScope
 import org.bytedeco.javacpp.BytePointer
 import org.emergentorder.onnx.Tensors._
+import ai.onnxruntime.TensorInfo.OnnxTensorType._
 
 trait OpToONNXBytesConverter extends AutoCloseable {
 
@@ -42,6 +43,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
       attr.set_type(AttributeProto.INT)
       val longVal = x.toLong
       attr.set_i(longVal)
+   
     }
 
     def handleIntArrayAttrs(x: Array[Int], key: String): Unit = {
@@ -50,6 +52,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
       attr.set_name(attrName)
       attr.set_type(AttributeProto.INTS)
       (0 until x.size).foreach(y => attr.add_ints(x(y).toLong))
+  
     }
 
     def handleAttrs: Unit =
@@ -89,14 +92,14 @@ trait OpToONNXBytesConverter extends AutoCloseable {
   //TODO: prevent passing the inputs all the way down here
   protected def addInputToGraph[A <: Supported](tens: Tensor[A], inputName: String, graph: GraphProto, node: NodeProto): Unit = {
     node.add_input(inputName)
-    val elemType = tens._1 match {
-          case b: Array[Byte]   => TensorProto.INT8
-          case s: Array[Short]  => TensorProto.INT16
-          case d: Array[Double] => TensorProto.DOUBLE
-          case f: Array[Float]  => TensorProto.FLOAT
-          case i: Array[Int]    => TensorProto.INT32
-          case l: Array[Long]   => TensorProto.INT64
-          case b: Array[Boolean] => TensorProto.BOOL
+    val elemType = tens.onnxTensor.getInfo.onnxType match {
+          case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8   => TensorProto.INT8
+          case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16  => TensorProto.INT16
+          case ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE => TensorProto.DOUBLE
+          case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT  => TensorProto.FLOAT
+          case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32    => TensorProto.INT32
+          case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64   => TensorProto.INT64
+          case ONNX_TENSOR_ELEMENT_DATA_TYPE_BOOL => TensorProto.BOOL
         }
 
         val inputValueInfo = graph.add_input
@@ -106,7 +109,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
         inputValueInfo.`type`.mutable_tensor_type
         inputValueInfo.`type`.tensor_type.set_elem_type(elemType)
 
-        val dims = tens._2
+        val dims = tens.onnxTensor.getInfo.getShape
         inputValueInfo.`type`.tensor_type.mutable_shape
         dims.foreach { x =>
           val inputDim = inputValueInfo.`type`.tensor_type.shape.add_dim
@@ -114,6 +117,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 //              inputDim.set_dim_param("NAME?")
           inputDim.set_dim_value(x)
         }
+ 
   }
 
   def opToONNXBytes[
@@ -166,6 +170,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
         }
 
     val modelString = model.SerializeAsString
+
 
     node.close
     model.close

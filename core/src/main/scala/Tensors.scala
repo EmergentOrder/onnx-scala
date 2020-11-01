@@ -1,5 +1,6 @@
 package org.emergentorder.onnx
 
+import java.nio._
 import spire.math.UByte
 import spire.math.UShort
 import spire.math.UInt
@@ -7,105 +8,116 @@ import spire.math.ULong
 import spire.math.Complex
 import spire.math.Numeric
 
+import org.bytedeco.javacpp.BooleanPointer
 
+import ai.onnxruntime.OnnxTensor
+import ai.onnxruntime.OrtEnvironment
+import ai.onnxruntime.OrtUtil
+import ai.onnxruntime.TensorInfo.OnnxTensorType._
 
 object Tensors{
 
-trait DimName
-type Dimension = Int with Singleton
-/*
-type VecShape[I <: Dimension] = I #: SNil
-type MatShape[I <: Dimension, J <: Dimension] = I #: J #: SNil
-type TensorRank3Shape[I <: Dimension, J <: Dimension, K <: Dimension] = I #: J #: K #: SNil
+  val env = OrtEnvironment.getEnvironment()
 
-sealed trait Axes
-
-
-sealed case class Scalar()                             extends Axes
-sealed case class Vec[I <: Dimension, T <: DimName, Q <: VecShape[I]](i: I, t: T) extends Axes
-sealed case class Mat[I <: Dimension, T <: DimName, J <: Dimension, U <: DimName, Q <: MatShape[I,J]](i: I, t: T, j: J, u: U)
-      extends Axes
-sealed case class TensorRank3[I <: Dimension, T <: DimName, J <: Dimension, U <: DimName, K <: Dimension, V <: DimName, 
-  Q <: TensorRank3Shape[I,J,K]](
-      i: I,
-      t: T,
-      j: J,
-      u: U,
-      k: K,
-      v: V
-) extends Axes
-//TODO: 4+ dimensional
-
-object AxesFactory {
-  //TODO: make more specific
-    def getAxes[A <: Axes](shape: Array[Dimension], dims: Array[DimName]): Axes = {
-      if (shape.length == 3) {
-        val t0 = shape(0)
-        val d0 = dims(0)
-        val t1 = shape(1)
-        val d1 = dims(1)
-        val t2 = shape(2)
-        val d2 = dims(2)
-        new TensorRank3[t0.type, d0.type, t1.type, d1.type, t2.type, d2.type, TensorRank3Shape[t0.type, t1.type, t2.type]](
-          t0,
-          d0,
-          t1,
-          d1,
-          t2,
-          d2
-        )
-      } else if (shape.length == 1) {
-        val t0 = shape(0)
-        val d0 = dims(0)
-        new Vec[t0.type, d0.type, VecShape[t0.type]](t0, d0)
-      } else if (shape.length == 0) (new Scalar)
-      else {
-        val t0 = shape(0)
-        val d0 = dims(0)
-        val t1 = shape(1)
-        val d1 = dims(1)
-        new Mat[t0.type, d0.type, t1.type, d1.type, MatShape[t0.type, t1.type]](t0, d0, t1, d1)
-      }
-
-    }
-  }
-*/
   type Supported = Int | Long | Float | Double | Byte | Short | UByte | UShort | UInt | ULong | 
                    Boolean | String | Float16 | Complex[Float] | Complex[Double]
 
-  type FloatSupported = Float | Double 
-
-//  type TypesafeTensor[T, A <: Axes] = Tuple3[Array[T], Array[Int], A]
-
-  //TODO: Use IArray
-  type Tensor[T <: Supported]       = Tuple2[Array[T], Array[Int]] //TypesafeTensor[T, Axes]
+  //TODO: Use IArray ? 
+  case class Tensor[T <: Supported](data: Array[T], shape: Array[Int]){
+    lazy val _1: Array[T] = data 
+    lazy val _2: Array[Int] = shape 
+    //TODO: move this out to an implicit conversion in the backend
+    lazy val onnxTensor = getOnnxTensor(data,shape)
+    require(data.size == shape.foldLeft(1)(_ * _))      
+  }
+ 
   type SparseTensor[T <: Supported] = Tensor[T]
 
-  object TensorFactory {
-
-    def getTensor[T <: Supported](data: Array[T], t: Array[Int]): Tensor[T] = {
-      val shape: Array[Dimension] = t.map(z => z: Dimension)
-      require(data.size == shape.foldLeft(1)(_ * _))
-      (data, t)
-      //(data, t, AxesFactory.getAxes(shape, Array.fill(shape.size) { new DimName {} }))
+  private def getOnnxTensor[T <: Supported](arr: Array[T], shape: Array[Int]): OnnxTensor = {
+    arr match {
+      case b: Array[Byte] => getTensorByte(arr, shape)
+      case s: Array[Short] => getTensorShort(arr, shape)
+      case d: Array[Double] => getTensorDouble(arr, shape)
+      case f: Array[Float] => getTensorFloat(arr, shape)
+      case i: Array[Int]   => getTensorInt(arr, shape)
+      case l: Array[Long]  => getTensorLong(arr, shape)
+      case b: Array[Boolean] => getTensorBoolean(arr, shape)
     }
-  /*
-    def getTypesafeTensor[T, A <: Axes](data: Array[T], axes: A): TypesafeTensor[T, A] = {
-
-//      val axes: A = AxesFactory.getAxes(shape, dims)
-      val t: Array[Int] = axes match {
-        case Scalar()                      => Array()
-        case Vec(i, _)                     => Array(i)
-        case Mat(i, _, j, _)               => Array(i, j)
-        case TensorRank3(i, _, j, _, k, _) => Array(i, j, k)
-      }
-
-      val shape: Array[Dimension] = t.map(z => z: Dimension)
-
-      require(data.size == shape.foldLeft(1)(_ * _))
-      (data, t, axes)
-    }
-    */
   }
+
+  private def getTensorByte(arr: Array[Byte], shape: Array[Int]): OnnxTensor = {
+    val buff = ByteBuffer.wrap(arr)
+    OnnxTensor.createTensor(env,buff,shape.map(_.toLong))
+  }
+
+  private def getTensorShort(arr: Array[Short], shape: Array[Int]): OnnxTensor = {
+    val buff = ShortBuffer.wrap(arr)
+    OnnxTensor.createTensor(env,buff,shape.map(_.toLong))
+  }
+
+  private def getTensorDouble(arr: Array[Double], shape: Array[Int]): OnnxTensor = {
+    val buff = DoubleBuffer.wrap(arr)
+    OnnxTensor.createTensor(env,buff,shape.map(_.toLong))
+  }
+
+  private def getTensorInt(arr: Array[Int], shape: Array[Int]): OnnxTensor = {
+    val buff = IntBuffer.wrap(arr)
+    OnnxTensor.createTensor(env,buff,shape.map(_.toLong))
+  }
+
+  private def getTensorLong(arr: Array[Long], shape: Array[Int]): OnnxTensor = {
+    val buff = LongBuffer.wrap(arr)
+    OnnxTensor.createTensor(env,buff,shape.map(_.toLong))
+  }
+
+  private def getTensorFloat(arr: Array[Float], shape: Array[Int]): OnnxTensor = {
+    val buff = FloatBuffer.wrap(arr)
+    OnnxTensor.createTensor(env,buff,shape.map(_.toLong))
+  }
+
+  private def getTensorBoolean(arr: Array[Boolean], shape: Array[Int]): OnnxTensor = {
+    val tensorIn = OrtUtil.reshape(arr, shape.map(_.toLong))
+    OnnxTensor.createTensor(env,tensorIn)
+  }
+
+  def getArrayFromOnnxTensor[T <: Supported] (value: OnnxTensor): Array[T] = {
+    val dtype = value.getInfo.onnxType
+    val arr = dtype match {
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT =>{      
+        value.getFloatBuffer.array() 
+      }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE =>{
+        value.getDoubleBuffer.array()
+        
+      }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8 =>{
+        value.getByteBuffer.array()
+        
+      }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16 =>{
+        value.getShortBuffer.array()
+        
+      }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32 =>{
+        value.getIntBuffer.array()
+        
+      }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64 =>{
+        value.getLongBuffer.array()
+        
+      }
+      case ONNX_TENSOR_ELEMENT_DATA_TYPE_BOOL =>{
+        val booleanPoint =
+          new BooleanPointer(
+            value.getByteBuffer
+          ) //C++ bool size is not defined, could cause problems on some platforms
+        (0l until (booleanPoint.capacity(): Long)).map { x =>
+          booleanPoint.get(x)
+        }.toArray
+      }
+    }
+    value.close
+    arr.asInstanceOf[Array[T]]
+  } 
   
 }

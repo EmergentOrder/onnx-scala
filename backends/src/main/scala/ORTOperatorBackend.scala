@@ -76,7 +76,7 @@ trait ORTOperatorBackend
           input_node_names,
           output_node_names
         )
-        //TODO: sure we don't need these?
+      sess.close
         res
   } 
 

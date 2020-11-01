@@ -66,7 +66,7 @@ lazy val programGenerator = (crossProject(JVMPlatform)
       case _ => "ONNXProgramGenerator213.scala" | "Squeezenet1dot1213.scala"
       }
     ),
-    scalacOptions ++= { if (isDotty.value) Seq("-source 3.0-migration") else Nil },
+    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= (CrossVersion
     .partialVersion(scalaVersion.value) match {
      case Some((2,_)) =>
@@ -102,7 +102,7 @@ lazy val backends = (crossProject(JVMPlatform)
                 "ORTOperatorBackendAtoL213.scala"
       }
     ),
-    scalacOptions ++= { if (isDotty.value) Seq("-source 3.0-migration") else Nil },
+    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= Seq(
  //        "org.bytedeco" % "dnnl-platform" % "1.6.4-1.5.5-SNAPSHOT",
         "com.microsoft.onnxruntime" % "onnxruntime" % "1.5.2"
@@ -118,7 +118,7 @@ lazy val core = (crossProject(JVMPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala",
-    scalacOptions ++= { if (isDotty.value) Seq("-source 3.0-migration") else Nil },
+    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
       case Some((2, 13)) => "ONNX.scala" | "OpToONNXBytesConverter.scala" | "Tensors.scala" | "ONNXBytesDataSource.scala"

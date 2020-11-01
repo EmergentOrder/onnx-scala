@@ -12,7 +12,7 @@ lazy val commonSettings = Seq(
 //  scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
   version := "0.8.0",
-  scalaVersion := dottyVersion,
+  scalaVersion := scala213Version,
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
@@ -50,7 +50,7 @@ lazy val common = (crossProject(JVMPlatform)
   )
 
 
-/*
+
 lazy val programGenerator = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("programGenerator"))
   .dependsOn(backends)
@@ -84,7 +84,7 @@ lazy val programGenerator = (crossProject(JVMPlatform)
       scala213Version
     )
   )
-*/
+
 lazy val backends = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("backends"))
   .dependsOn(core)
@@ -155,7 +155,7 @@ lazy val docs = (crossProject(JVMPlatform)
       "VERSION" -> version.value
    )
   )
-  .dependsOn(backends)
+  .dependsOn(programGenerator)
   .enablePlugins(MdocPlugin)
   .jvmSettings(
     crossScalaVersions := Seq(scala213Version)

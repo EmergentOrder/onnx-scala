@@ -36,6 +36,21 @@ lazy val common = (crossProject(JVMPlatform)
       dottyVersion,
       scala213Version
     ),
+    excludeFilter in unmanagedSources := (CrossVersion
+      .partialVersion(scalaVersion.value) match {
+      case Some((2, 13)) => "Shape.scala" | "Indices.scala"
+      case _ => "" 
+      }
+    ),
+)
+
+lazy val proto = (crossProject(JVMPlatform)
+  .crossType(CrossType.Pure) in file("proto"))
+  .settings(commonSettings, name := "onnx-scala-proto",
+    crossScalaVersions := Seq(
+      dottyVersion,
+      scala213Version
+    ),
  libraryDependencies -= "com.thesamet.scalapb" %% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion,
 
     libraryDependencies += ("com.thesamet.scalapb" %% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion).withDottyCompat(scalaVersion.value),
@@ -46,7 +61,7 @@ lazy val common = (crossProject(JVMPlatform)
       scalapb.gen() -> (sourceManaged in Compile).value
     ),
     // The trick is in this line:
-    PB.protoSources in Compile := Seq(file("common/src/main/protobuf")),
+    PB.protoSources in Compile := Seq(file("proto/src/main/protobuf")),
   )
 
 
@@ -96,7 +111,7 @@ lazy val backends = (crossProject(JVMPlatform)
       case Some((2, 13)) => "NCF.scala" | 
                             "ORTOperatorBackend.scala" | 
                             "ORTOperatorBackendAll.scala" | "ORTOperatorBackendAtoL.scala" |
-                            "ORTModelBackend.scala"
+                            "ORTModelBackend.scala" | "ORTTensorUtils.scala"
       case _ => "ORTModelBackend213.scala" | "NCF213.scala" |
                 "ORTOperatorBackend213.scala" | "ORTOperatorBackendAll213.scala" | 
                 "ORTOperatorBackendAtoL213.scala"
@@ -115,6 +130,7 @@ lazy val core = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("core"))
   .dependsOn(common)
   .dependsOn(onnx)
+  .dependsOn(proto)
   .settings(
     commonSettings,
     name := "onnx-scala",
@@ -137,11 +153,11 @@ lazy val core = (crossProject(JVMPlatform)
         )
       case _ =>
         Seq(
+//           "io.kjaer" %% "tf-dotty-compiletime" % "0.0.0+134-f1f8d0ba+20201102-1209-SNAPSHOT",
           ("org.typelevel" %% "spire" % spireVersion).withDottyCompat(dottyVersion),
         )
     }),
     libraryDependencies ++= Seq(
-        "com.microsoft.onnxruntime" % "onnxruntime" % "1.5.2",
         "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion,
 //      "org.osgi" % "org.osgi.annotation.versioning" % "1.1.0"
     )

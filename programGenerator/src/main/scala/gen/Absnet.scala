@@ -12,7 +12,7 @@ import spire.math.Numeric
 
 class Absnet() {
   val Abs: AbsV6 = new ORTOperatorBackendAll()
-  def program(inputDatax: Tensor[Float]): List[Tensor[Float]] =
+  def program(inputDatax: Tensor[Float, ?]): List[Tensor[Float, ?]] =
     for {
       nodex <- List(inputDatax)
       nodey <- List(Abs.AbsV6("y", X = nodex))

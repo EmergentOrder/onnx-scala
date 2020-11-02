@@ -11,6 +11,7 @@ import spire.math.UShort
 import spire.math.Complex
 import spire.math.Numeric
 
+//TODO: Make this work with typed shapes
 class Squeezenet1dot1(byteArray: Array[Byte]) extends AutoCloseable {
   val backend                    = new ORTOperatorBackendAll()
   val bytesDataSource            = new ONNXBytesDataSource(byteArray)
@@ -22,7 +23,7 @@ class Squeezenet1dot1(byteArray: Array[Byte]) extends AutoCloseable {
   val AveragePool: AveragePoolV7 = backend
   val Reshape: ReshapeV5         = backend
   val dataSource: DataSource     = bytesDataSource
-  def program(inputDatadata: Tensor[Float]): Tensor[Float] = {
+  def program[Ax <: Axes, Bx <: Axes](inputDatadata: Tensor[Float, Ax]): Tensor[Float, ?] = {
     val nodedata                      = inputDatadata
     val nodesqueezenet0_conv0_weight  = dataSource.getParams[Float]("squeezenet0_conv0_weight")
     val nodesqueezenet0_conv0_bias    = dataSource.getParams[Float]("squeezenet0_conv0_bias")

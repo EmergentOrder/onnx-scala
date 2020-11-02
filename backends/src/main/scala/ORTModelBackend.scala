@@ -1,6 +1,5 @@
 package org.emergentorder.onnx.backends
 
-import scala.reflect.ClassTag
 import scala.language.implicitConversions
 import org.bytedeco.javacpp._
 import org.bytedeco.javacpp.indexer.FloatIndexer
@@ -9,6 +8,7 @@ import scala.jdk.CollectionConverters._
 
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
+import ORTTensorUtils._
 
 //TODO: Clean up, remove asInstaceOf, etc.
 class ORTModelBackend(onnxBytes: Array[Byte])
@@ -31,10 +31,11 @@ class ORTModelBackend(onnxBytes: Array[Byte])
   val allNodeNamesAndDims = getInputAndOutputNodeNamesAndDims(session)
 
   override def fullModel[
-      T <: Supported
+      T <: Supported,
+      Ax <: Axes
   ](
       inputs: Tuple
-  ): Tensor[T] = {
+  ): Tensor[T, Ax] = {
 
 
 
@@ -45,7 +46,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
           tup match {
             case t: Tuple1[_] =>
               t(0) match {
-                case tens: Tensor[_] => Tensors.getOnnxTensor(tens._1, tens._2)
+                case tens: Tensor[?,?] => getOnnxTensor(tens._1, tens._2, env)
               }
           }
         }.toArray
@@ -57,7 +58,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
           allNodeNamesAndDims._3
         )
 
-        output.asInstanceOf[Tensor[T]]
+        output.asInstanceOf[Tensor[T, Ax]]
   }
 
   override def close(): Unit = {

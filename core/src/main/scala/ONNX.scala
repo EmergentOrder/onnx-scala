@@ -2544,11 +2544,11 @@ package object onnx {
 
   //TODO: Constraint
   trait MatMulV9 extends Operator {
-    def MatMulV9[@sp T <: Float16 | Float | Double | UInt | ULong | Int | Long: Numeric, Ax <: Axes](
+    def MatMulV9[@sp T <: Float16 | Float | Double | UInt | ULong | Int | Long: Numeric, Ax <: Axes, Bx <: Axes, Cx <: Axes](
         name: String,
-        A: Tensor[T, ?],
-        B: Tensor[T, ?]
-    ): Tensor[T, ?] = {
+        A: Tensor[T, Ax],
+        B: Tensor[T, Bx]
+    ): Tensor[T, Cx] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple2(A,B)
       (callOp(name, "MatMul", allInputs, map))
@@ -2942,9 +2942,9 @@ package object onnx {
   trait MulV7 extends Operator {
     def MulV7[@sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric, Ax <: Axes](
         name: String,
-        A: Tensor[T, ?],
-        B: Tensor[T, ?]
-    ): Tensor[T, ?] = {
+        A: Tensor[T, Ax],
+        B: Tensor[T, Ax]
+    ): Tensor[T, Ax] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple2(A,B)
       (callOp(name, "Mul", allInputs, map))
@@ -3940,7 +3940,7 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]
-    , Ax <: Axes](name: String, data: Tensor[T, ?], shapeInput: Tensor[Long, ?]): Tensor[T, ?] = {
+    , Ax <: Axes, Bx <: Axes](name: String, data: Tensor[T, Ax], shapeInput: Tensor[Long, ?]): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple2(data, shapeInput)
       (callOp(name, "Reshape", allInputs, map))
@@ -4563,14 +4563,14 @@ package object onnx {
           Float
         ] | Complex[Double],
         @sp Tind <: Int | Long: Numeric
-    , Ax <: Axes](
+    , Ax <: Axes, Bx <: Axes](
         name: String,
-        data: Tensor[T, ?],
+        data: Tensor[T, Ax],
         starts: Tensor[Tind, ?],
         ends: Tensor[Tind, ?],
         axes: Option[Tensor[Tind, ?]] = None,
         steps: Option[Tensor[Tind, ?]] = None
-    ): Tensor[T, ?] = {
+    ): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple5(data, starts, ends, axes, steps)
       (callOp(name, "Slice", allInputs, map))
@@ -4802,7 +4802,7 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]
-    , Ax <: Axes](name: String, axes: Option[(Array[Int])] = None, data: Tensor[T, ?]): Tensor[T, ?] = {
+    , Ax <: Axes, Bx <: Axes](name: String, axes: Option[(Array[Int])] = None, data: Tensor[T, Ax]): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map("axes" -> axes)
       val allInputs             = Tuple1(data)
       (callOp(name, "Squeeze", allInputs, map))
@@ -5072,7 +5072,7 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]
-    , Ax <: Axes](name: String, perm: Option[(Array[Int])] = None, data: Tensor[T, ?]): Tensor[T, ?] = {
+    , Ax <: Axes, Bx <: Axes](name: String, perm: Option[(Array[Int])] = None, data: Tensor[T, Ax]): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map("perm" -> perm)
       val allInputs             = Tuple1(data)
       (callOp(name, "Transpose", allInputs, map))

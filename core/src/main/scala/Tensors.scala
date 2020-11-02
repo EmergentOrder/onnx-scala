@@ -75,13 +75,13 @@ object Tensors{
 
     def apply[T <: Supported, I <: Dimension, J <: Dimension, K <: Dimension, L <: Dimension](arr: Array[T], d0: I, d1: J, d2: K, d3: L): OSTensor[T, TensorRank4[I,J,K, L, TensorRank4Shape[I,J,K, L]]] = new OSTensor(arr, TensorRank4[I,J,K,L, TensorRank4Shape[I,J,K, L]](d0,d1,d2, d3))
 
-    def create[T <: Supported](arr: Array[T], shape: Array[Int]): OSTensor[T, ?] = {
+    def create[T <: Supported](arr: Array[T], shape: Array[Int]): OSTensor[T, Axes] = {
       shape.size match {
  //     case 0 => apply(arr(0))
-      case 1 => apply(arr, shape(0).asInstanceOf[Dimension])
-      case 2 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension]) 
-      case 3 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension], shape(2).asInstanceOf[Dimension])
-      case 4 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension], shape(2).asInstanceOf[Dimension], shape(3).asInstanceOf[Dimension])
+      case 1 => apply(arr, shape(0).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Axes]]
+      case 2 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Axes]]
+      case 3 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension], shape(2).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Axes]]
+      case 4 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension], shape(2).asInstanceOf[Dimension], shape(3).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Axes]]
       case _ => ???
     }
     }

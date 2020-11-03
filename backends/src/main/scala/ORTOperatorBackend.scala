@@ -10,6 +10,7 @@ import ai.onnxruntime._
 import ai.onnxruntime.TensorInfo.OnnxTensorType._
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
+import org.emergentorder.onnx.Tensors.Tensor._
 import org.bytedeco.javacpp.BooleanPointer
 import ORTTensorUtils._
 
@@ -62,12 +63,12 @@ trait ORTOperatorBackend
     //TODO: don't mix up Options and Tensors here
     val inputTensors: Array[OnnxTensor] = inputs.toArray.map{elem =>
       elem match {
-            case opt: Option[Tensor[?, ?]] =>
+            case opt: Option[Tensor[T, Ax]] =>
               opt match{
-                case Some(x) => Some(getOnnxTensor(x._1, x._2, env))
+                case Some(x) => Some(getOnnxTensor(x.data, x.shape, env))
                 case None => None
               }
-            case tens: Tensor[?, ?] => Some(getOnnxTensor(tens._1, tens._2, env))
+            case tens: Tensor[T, Ax] => Some(getOnnxTensor(tens.data, tens.shape, env))
           }
       }.flatten
 

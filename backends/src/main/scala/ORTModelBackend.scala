@@ -8,6 +8,7 @@ import scala.jdk.CollectionConverters._
 
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
+import org.emergentorder.onnx.Tensors.Tensor._
 import ORTTensorUtils._
 
 //TODO: Clean up, remove asInstaceOf, etc.
@@ -46,7 +47,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
           tup match {
             case t: Tuple1[_] =>
               t(0) match {
-                case tens: Tensor[?,?] => getOnnxTensor(tens._1, tens._2, env)
+                case tens: Tensor[T,Ax] => getOnnxTensor(tens.data, tens.shape, env)
               }
           }
         }.toArray

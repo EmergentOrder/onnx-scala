@@ -42,7 +42,7 @@ package object onnx {
 
   trait Graph
   trait DataSource {
-    def getParams[T <: Supported : Numeric](name: String): Tensor[T, ?]
+    def getParams[T <: Supported: Numeric, Ax <: Axes](name: String): Tensor[T, Ax]
   }
   trait AbsV6 extends Operator {
     def AbsV6[
@@ -334,7 +334,7 @@ package object onnx {
   }
 
   trait AveragePoolV11 extends Operator {
-    def AveragePoolV11[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
+    def AveragePoolV11[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes, Bx <: Axes](
         name: String,
         auto_pad: Option[(String)] = None,
         ceil_mode: Option[(Int)] = None,
@@ -342,8 +342,8 @@ package object onnx {
         kernel_shape: (Array[Int]),
         pads: Option[(Array[Int])] = None,
         strides: Option[(Array[Int])] = None,
-        X: Tensor[T, ?]
-    ): Tensor[T, ?] = {
+        X: Tensor[T, Ax]
+    ): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map(
         "auto_pad"          -> auto_pad,
         "ceil_mode"         -> ceil_mode,
@@ -358,7 +358,7 @@ package object onnx {
   }
 
   trait AveragePoolV10 extends Operator {
-    def AveragePoolV10[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
+    def AveragePoolV10[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes, Bx <: Axes](
         name: String,
         auto_pad: Option[(String)] = None,
         ceil_mode: Option[(Int)] = None,
@@ -366,8 +366,8 @@ package object onnx {
         kernel_shape: (Array[Int]),
         pads: Option[(Array[Int])] = None,
         strides: Option[(Array[Int])] = None,
-        X: Tensor[T, ?]
-    ): Tensor[T, ?] = {
+        X: Tensor[T, Ax]
+    ): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map(
         "auto_pad"          -> auto_pad,
         "ceil_mode"         -> ceil_mode,
@@ -382,15 +382,15 @@ package object onnx {
   }
 
   trait AveragePoolV7 extends Operator {
-    def AveragePoolV7[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
+    def AveragePoolV7[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes, Bx <: Axes](
         name: String,
         auto_pad: Option[(String)] = None,
         count_include_pad: Option[(Int)] = None,
         kernel_shape: (Array[Int]),
         pads: Option[(Array[Int])] = None,
         strides: Option[(Array[Int])] = None,
-        X: Tensor[T, ?]
-    ): Tensor[T, ?] = {
+        X: Tensor[T, Ax]
+    ): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map(
         "auto_pad"          -> auto_pad,
         "count_include_pad" -> count_include_pad,
@@ -404,14 +404,14 @@ package object onnx {
   }
 
   trait AveragePoolV1 extends Operator {
-    def AveragePoolV1[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
+    def AveragePoolV1[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes, Bx <: Axes](
         name: String,
         auto_pad: Option[(String)] = None,
         kernel_shape: (Array[Int]),
         pads: Option[(Array[Int])] = None,
         strides: Option[(Array[Int])] = None,
-        X: Tensor[T, ?]
-    ): Tensor[T, ?] = {
+        X: Tensor[T, Ax]
+    ): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map(
         "auto_pad"     -> auto_pad,
         "kernel_shape" -> kernel_shape,
@@ -793,7 +793,7 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]
-    , Ax <: Axes](name: String, axis: (Int), inputs: Seq[Tensor[T, ?]]): Tensor[T, ?] = {
+    , Ax <: Axes, Bx <: Axes](name: String, axis: (Int), inputs: Seq[Tensor[T, Ax]]): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map("axis" -> axis)
       val allInputs             = Tuple.fromArray(inputs.toArray).asInstanceOf[Tuple]
       (callOp(name, "Concat", allInputs, map))
@@ -805,7 +805,7 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]
-    , Ax <: Axes](name: String, axis: (Int), inputs: Seq[Tensor[T, ?]]): Tensor[T, ?] = {
+    , Ax <: Axes, Bx <: Axes](name: String, axis: (Int), inputs: Seq[Tensor[T, Ax]]): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map("axis" -> axis)
       val allInputs             = Tuple.fromArray(inputs.toArray).asInstanceOf[Tuple]
       (callOp(name, "Concat", allInputs, map))
@@ -817,7 +817,7 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]
-    , Ax <: Axes](name: String, axis: Option[(Int)] = None, inputs: Seq[Tensor[T, ?]]): Tensor[T, ?] = {
+    , Ax <: Axes, Bx <: Axes](name: String, axis: Option[(Int)] = None, inputs: Seq[Tensor[T, Ax]]): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map("axis" -> axis)
       val allInputs             = Tuple.fromArray(inputs.toArray).asInstanceOf[Tuple]
       (callOp(name, "Concat", allInputs, map))
@@ -997,8 +997,9 @@ package object onnx {
     }
   }
 
+  //TODO: Constraints
   trait ConvV11 extends Operator {
-    def ConvV11[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
+    def ConvV11[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes, Bx <: Axes, Cx <: Axes, Dx <: Axes](
         name: String,
         auto_pad: Option[(String)] = None,
         dilations: Option[(Array[Int])] = None,
@@ -1006,10 +1007,10 @@ package object onnx {
         kernel_shape: Option[(Array[Int])] = None,
         pads: Option[(Array[Int])] = None,
         strides: Option[(Array[Int])] = None,
-        X: Tensor[T, ?],
-        W: Tensor[T, ?],
-        B: Option[Tensor[T, ?]] = None
-    ): Tensor[T, ?] = {
+        X: Tensor[T, Ax],
+        W: Tensor[T, Bx],
+        B: Option[Tensor[T, Cx]] = None
+    ): Tensor[T, Dx] = {
       val map: Map[String, Any] = Map(
         "auto_pad"     -> auto_pad,
         "dilations"    -> dilations,
@@ -1024,7 +1025,7 @@ package object onnx {
   }
 
   trait ConvV1 extends Operator {
-    def ConvV1[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
+    def ConvV1[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes, Bx <: Axes, Cx <: Axes, Dx <: Axes](
         name: String,
         auto_pad: Option[(String)] = None,
         dilations: Option[(Array[Int])] = None,
@@ -1032,10 +1033,10 @@ package object onnx {
         kernel_shape: Option[(Array[Int])] = None,
         pads: Option[(Array[Int])] = None,
         strides: Option[(Array[Int])] = None,
-        X: Tensor[T, ?],
-        W: Tensor[T, ?],
-        B: Option[Tensor[T, ?]] = None
-    ): Tensor[T, ?] = {
+        X: Tensor[T, Ax],
+        W: Tensor[T, Bx],
+        B: Option[Tensor[T, Cx]] = None
+    ): Tensor[T, Dx] = {
       val map: Map[String, Any] = Map(
         "auto_pad"     -> auto_pad,
         "dilations"    -> dilations,
@@ -1208,12 +1209,12 @@ package object onnx {
         @sp T <: Float16 | Float | Double: Numeric,
         @sp T1 <: Float16 | Float | Double | Boolean,
         @sp T2 <: Boolean
-    , Ax <: Axes](
+    , Ax <: Axes,Bx <: Axes](
         name: String,
         seed: Option[(Int)] = None,
-        data: Tensor[T, ?],
-        ratio: Option[Tensor[T1,?]] = None
-    ): Tensor[T, ?] = {
+        data: Tensor[T, Ax],
+        ratio: Option[Tensor[T1,Bx]] = None
+    ): Tensor[T, Ax] = {
       val map: Map[String, Any] = Map("seed" -> seed)
       val allInputs             = Tuple2(data, ratio)
       (callOp(name, "Dropout", allInputs, map))
@@ -1224,7 +1225,7 @@ package object onnx {
     def DropoutV10[
         @sp T <: Float16 | Float | Double: Numeric,
         @sp T1 <: Float16 | Float | Double | Boolean
-    , Ax <: Axes](name: String, ratio: Option[(Float)] = None, data: Tensor[T, ?]): Tensor[T, ?] = {
+    , Ax <: Axes](name: String, ratio: Option[(Float)] = None, data: Tensor[T, Ax]): Tensor[T, Ax] = {
       val map: Map[String, Any] = Map("ratio" -> ratio)
       val allInputs             = Tuple1(data)
       (callOp(name, "Dropout", allInputs, map))
@@ -1235,8 +1236,8 @@ package object onnx {
     def DropoutV7[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
         name: String,
         ratio: Option[(Float)] = None,
-        data: Tensor[T, ?]
-    ): Tensor[T, ?] = {
+        data: Tensor[T, Ax]
+    ): Tensor[T, Ax] = {
       val map: Map[String, Any] = Map("ratio" -> ratio)
       val allInputs             = Tuple1(data)
       (callOp(name, "Dropout", allInputs, map))
@@ -1248,8 +1249,8 @@ package object onnx {
         name: String,
         is_test: Option[(Int)] = None,
         ratio: Option[(Float)] = None,
-        data: Tensor[T, ?]
-    ): Tensor[T, ?] = {
+        data: Tensor[T, Ax]
+    ): Tensor[T, Ax] = {
       val map: Map[String, Any] = Map("is_test" -> is_test, "ratio" -> ratio)
       val allInputs             = Tuple1(data)
       (callOp(name, "Dropout", allInputs, map))
@@ -1262,8 +1263,8 @@ package object onnx {
         consumed_inputs: Option[(Array[Int])] = None,
         is_test: Option[(Int)] = None,
         ratio: Option[(Float)] = None,
-        data: Tensor[T, ?]
-    ): Tensor[T, ?] = {
+        data: Tensor[T, Ax]
+    ): Tensor[T, Ax] = {
       val map: Map[String, Any] =
         Map("consumed_inputs" -> consumed_inputs, "is_test" -> is_test, "ratio" -> ratio)
       val allInputs = Tuple1(data)
@@ -2567,11 +2568,12 @@ package object onnx {
     }
   }
 
+  //TODO: Constraints
   trait MaxPoolV12 extends Operator {
     def MaxPoolV12[
         @sp T <: Float16 | Float | Double | Byte | UByte: Numeric,
         @sp I <: Long: Numeric
-    , Ax <: Axes](
+    , Ax <: Axes, Bx <: Axes](
         name: String,
         auto_pad: Option[(String)] = None,
         ceil_mode: Option[(Int)] = None,
@@ -2580,8 +2582,8 @@ package object onnx {
         pads: Option[(Array[Int])] = None,
         storage_order: Option[(Int)] = None,
         strides: Option[(Array[Int])] = None,
-        X: Tensor[T, ?]
-    ): Tensor[T, ?] = {
+        X: Tensor[T, Ax]
+    ): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map(
         "auto_pad"      -> auto_pad,
         "ceil_mode"     -> ceil_mode,
@@ -2600,7 +2602,7 @@ package object onnx {
     def MaxPoolV11[
         @sp T <: Float16 | Float | Double | Byte | UByte: Numeric,
         @sp I <: Long: Numeric
-    , Ax <: Axes](
+    , Ax <: Axes, Bx <: Axes](
         name: String,
         auto_pad: Option[(String)] = None,
         ceil_mode: Option[(Int)] = None,
@@ -2609,8 +2611,8 @@ package object onnx {
         pads: Option[(Array[Int])] = None,
         storage_order: Option[(Int)] = None,
         strides: Option[(Array[Int])] = None,
-        X: Tensor[T, ?]
-    ): Tensor[T, ?] = {
+        X: Tensor[T, Ax]
+    ): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map(
         "auto_pad"      -> auto_pad,
         "ceil_mode"     -> ceil_mode,
@@ -2629,7 +2631,7 @@ package object onnx {
     def MaxPoolV10[
         @sp T <: Float16 | Float | Double | Byte | UByte: Numeric,
         @sp I <: Long: Numeric
-    , Ax <: Axes](
+    , Ax <: Axes, Bx <: Axes](
         name: String,
         auto_pad: Option[(String)] = None,
         ceil_mode: Option[(Int)] = None,
@@ -2638,8 +2640,8 @@ package object onnx {
         pads: Option[(Array[Int])] = None,
         storage_order: Option[(Int)] = None,
         strides: Option[(Array[Int])] = None,
-        X: Tensor[T, ?]
-    ): Tensor[T, ?] = {
+        X: Tensor[T, Ax]
+    ): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map(
         "auto_pad"      -> auto_pad,
         "ceil_mode"     -> ceil_mode,
@@ -2658,15 +2660,15 @@ package object onnx {
     def MaxPoolV8[
         @sp T <: Float16 | Float | Double | Byte | UByte: Numeric,
         @sp I <: Long: Numeric
-    , Ax <: Axes](
+    , Ax <: Axes, Bx <: Axes](
         name: String,
         auto_pad: Option[(String)] = None,
         kernel_shape: (Array[Int]),
         pads: Option[(Array[Int])] = None,
         storage_order: Option[(Int)] = None,
         strides: Option[(Array[Int])] = None,
-        X: Tensor[T, ?]
-    ): Tensor[T, ?] = {
+        X: Tensor[T, Ax]
+    ): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map(
         "auto_pad"      -> auto_pad,
         "kernel_shape"  -> kernel_shape,
@@ -2680,14 +2682,14 @@ package object onnx {
   }
 
   trait MaxPoolV1 extends Operator {
-    def MaxPoolV1[@sp T <: Float16 | Float | Double | Byte | UByte: Numeric, Ax <: Axes](
+    def MaxPoolV1[@sp T <: Float16 | Float | Double | Byte | UByte: Numeric, Ax <: Axes, Bx <: Axes](
         name: String,
         auto_pad: Option[(String)] = None,
         kernel_shape: (Array[Int]),
         pads: Option[(Array[Int])] = None,
         strides: Option[(Array[Int])] = None,
-        X: Tensor[T, ?]
-    ): Tensor[T, ?] = {
+        X: Tensor[T, Ax]
+    ): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map(
         "auto_pad"     -> auto_pad,
         "kernel_shape" -> kernel_shape,
@@ -3940,7 +3942,7 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]
-    , Ax <: Axes, Bx <: Axes](name: String, data: Tensor[T, Ax], shapeInput: Tensor[Long, ?]): Tensor[T, Bx] = {
+    , Ax <: Axes, Bx <: Axes, Cx <: Axes](name: String, data: Tensor[T, Ax], shapeInput: Tensor[Long, Bx]): Tensor[T, Cx] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple2(data, shapeInput)
       (callOp(name, "Reshape", allInputs, map))
@@ -3952,12 +3954,12 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]: Numeric
-    , Ax <: Axes](
+    , Ax <: Axes, Bx <: Axes](
         name: String,
         consumed_inputs: Option[(Array[Int])] = None,
         shape: Option[(Array[Int])] = None,
-        data: Tensor[T, ?]
-    ): Tensor[T, ?] = {
+        data: Tensor[T, Ax]
+    ): Tensor[T, Bx] = {
       val map: Map[String, Any] = Map("consumed_inputs" -> consumed_inputs, "shape" -> shape)
       val allInputs             = Tuple1(data)
       (callOp(name, "Reshape", allInputs, map))

@@ -10,7 +10,7 @@ import org.bytedeco.onnx.AttributeProto
 import org.bytedeco.javacpp.PointerScope
 import org.bytedeco.javacpp.BytePointer
 import org.emergentorder.onnx.Tensors._
-
+import org.emergentorder.onnx.Tensors.Tensor._
 
 trait OpToONNXBytesConverter extends AutoCloseable {
 
@@ -90,7 +90,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
   }
 
   //TODO: prevent passing the inputs all the way down here
-  protected def addInputToGraph[T <: Supported](tens: Tensor[T, ?], inputName: String, graph: GraphProto, node: NodeProto): Unit = {
+  protected def addInputToGraph[T <: Supported, Ax <: Axes](tens: Tensor[T, Ax], inputName: String, graph: GraphProto, node: NodeProto): Unit = {
     node.add_input(inputName)
     val elemType = tens._1 match {
           case b: Array[Byte]   => TensorProto.INT8
@@ -109,7 +109,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
         inputValueInfo.`type`.mutable_tensor_type
         inputValueInfo.`type`.tensor_type.set_elem_type(elemType)
 
-        val dims = tens._2 
+        val dims = tens.shape
         inputValueInfo.`type`.tensor_type.mutable_shape
         dims.foreach { x =>
           val inputDim = inputValueInfo.`type`.tensor_type.shape.add_dim

@@ -49,10 +49,13 @@ object Tensors{
 
   type SparseTensor[T <: Supported, A <: Axes] = Tensor[T, A]
 
+  //TODO: random nd access
   //Supports up to tensor rank 4 right now
   //TODO: use IArray ?
-  case class OSTensor[T <: Supported, A <: Axes](data: Array[T], axes: A){
-    val _1: Array[T] = data
+  //
+//  case class OSTensor[T <: Supported, A <: Axes](data: Array[T], axes: A){
+//    val _1: Array[T] = data
+/*
     val _2: Array[Int] = axes match {
       case Scalar => Array()
       case Vec(i) => Array(i)
@@ -61,27 +64,46 @@ object Tensors{
       case TensorRank4(i,j,k,l) => Array(i,j,k,l)
       case _ => ???
     }
-
+*/
       //Array(dim0,dim1,dim2).map(_.asInstanceOf[Option[Int]]).flatten
-    require(_2.size <= 4)
-    require(data.size == _2.foldLeft(1)(_ * _)) 
-  }
+  //  require(_2.size <= 4)
+  //  require(data.size == _2.foldLeft(1)(_ * _)) 
+//  }
+//TODO: restore requires
+//
+//TODO: opaque
+  type OSTensor[T <: Supported, A <: Axes] = (Array[T], A)
 
   object Tensor {
+    extension[T <: Supported, A <: Axes](tens: OSTensor[T,A]) def data = tens._1
 //    def apply[T <: Supported] (elem: T): OSTensor[T, Scalar] = new OSTensor[T, ?](Array(elem), Scalar())
-    def apply[T <: Supported, I <: Dimension](arr: Array[T], d0: I): OSTensor[T, Vec[I, VecShape[I]]] = new OSTensor(arr, Vec[I, VecShape[I]](d0))
-    def apply[T <: Supported, I <: Dimension, J <: Dimension](arr: Array[T], d0: I, d1: J): OSTensor[T, Mat[I,J, MatShape[I,J]]] = new OSTensor(arr,Mat[I, J, MatShape[I,J]](d0, d1))
-    def apply[T <: Supported, I <: Dimension, J <: Dimension, K <: Dimension](arr: Array[T], d0: I, d1: J, d2: K): OSTensor[T, TensorRank3[I,J,K, TensorRank3Shape[I,J,K]]] = new OSTensor(arr, TensorRank3[I,J,K, TensorRank3Shape[I,J,K]](d0,d1,d2))
+    extension[T <: Supported, A <: Axes](tens: OSTensor[T,A]) def shape = tens._2 match {
+      case Scalar => Array[Int]()
+      case Vec(i) => Array(i)
+      case Mat(i, j) => Array(i,j)
+      case TensorRank3(i,j,k) => Array(i,j,k)
+      case TensorRank4(i,j,k,l) => Array(i,j,k,l)
+      case _ => ???
+    } 
+  def tensorRequires[T <: Supported, A <: Axes](tens: OSTensor[T,A]): OSTensor[T,A] = {
+    require(tens.shape.size <= 4)
+    require(tens._1.size == tens.shape.foldLeft(1)(_ * _))
+    tens
+  }
 
-    def apply[T <: Supported, I <: Dimension, J <: Dimension, K <: Dimension, L <: Dimension](arr: Array[T], d0: I, d1: J, d2: K, d3: L): OSTensor[T, TensorRank4[I,J,K, L, TensorRank4Shape[I,J,K, L]]] = new OSTensor(arr, TensorRank4[I,J,K,L, TensorRank4Shape[I,J,K, L]](d0,d1,d2, d3))
+    def apply[T <: Supported, I <: Dimension](arr: Array[T], d0: I): OSTensor[T, Vec[I, VecShape[I]]] = tensorRequires(arr, Vec[I, VecShape[I]](d0))
+    def apply[T <: Supported, I <: Dimension, J <: Dimension](arr: Array[T], d0: I, d1: J): OSTensor[T, Mat[I,J, MatShape[I,J]]] = (arr,Mat[I, J, MatShape[I,J]](d0, d1))
+    def apply[T <: Supported, I <: Dimension, J <: Dimension, K <: Dimension](arr: Array[T], d0: I, d1: J, d2: K): OSTensor[T, TensorRank3[I,J,K, TensorRank3Shape[I,J,K]]] = (arr, TensorRank3[I,J,K, TensorRank3Shape[I,J,K]](d0,d1,d2))
 
-    def create[T <: Supported](arr: Array[T], shape: Array[Int]): OSTensor[T, Axes] = {
+    def apply[T <: Supported, I <: Dimension, J <: Dimension, K <: Dimension, L <: Dimension](arr: Array[T], d0: I, d1: J, d2: K, d3: L): OSTensor[T, TensorRank4[I,J,K, L, TensorRank4Shape[I,J,K, L]]] = (arr, TensorRank4[I,J,K,L, TensorRank4Shape[I,J,K, L]](d0,d1,d2, d3))
+
+    def create[T <: Supported, Ax <: Axes](arr: Array[T], shape: Array[Int]): OSTensor[T, Ax] = {
       shape.size match {
  //     case 0 => apply(arr(0))
-      case 1 => apply(arr, shape(0).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Axes]]
-      case 2 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Axes]]
-      case 3 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension], shape(2).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Axes]]
-      case 4 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension], shape(2).asInstanceOf[Dimension], shape(3).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Axes]]
+      case 1 => apply(arr, shape(0).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Ax]]
+      case 2 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Ax]]
+      case 3 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension], shape(2).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Ax]]
+      case 4 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension], shape(2).asInstanceOf[Dimension], shape(3).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Ax]]
       case _ => ???
     }
     }

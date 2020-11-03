@@ -14,27 +14,31 @@ object Tensors{
   type Supported = Int | Long | Float | Double | Byte | Short | UByte | UShort | UInt | ULong | 
                    Boolean | String | Float16 | Complex[Float] | Complex[Double]
 
-  type Dimension = Int with Singleton
-  type VecShape[I <: Dimension] = I #: SNil
-  type MatShape[I <: Dimension, J <: Dimension] = I #: J #: SNil
-  type TensorRank3Shape[I <: Dimension, J <: Dimension, K <: Dimension] = I #: J #: K #: SNil
-  type TensorRank4Shape[I <: Dimension, J <: Dimension, K <: Dimension, L <: Dimension] = I #: J #: K #: L #: SNil
+  type TensorTypeDenotation = String with Singleton 
+  type DimensionDenotation = String with Singleton 
+  type ShapeDimension = Int with Singleton
+  type VecShape[I <: ShapeDimension] = I #: SNil
+  type MatShape[I <: ShapeDimension, J <: ShapeDimension] = I #: J #: SNil
+  type TensorRank3Shape[I <: ShapeDimension, J <: ShapeDimension, K <: ShapeDimension] = I #: J #: K #: SNil
+  type TensorRank4Shape[I <: ShapeDimension, J <: ShapeDimension, K <: ShapeDimension, L <: ShapeDimension] = I #: J #: K #: L #: SNil
 
 
   sealed trait Axes
-  sealed case class Scalar()                             extends Axes
-  sealed case class Vec[I <: Dimension, Q <: VecShape[I]](i: I) extends Axes
-  sealed case class Mat[I <: Dimension, J <: Dimension, Q <: MatShape[I,J]](i: I, j: J)
+  sealed case class Undefined()
+  sealed case class Scalar[T <: TensorTypeDenotation, D <: DimensionDenotation]()                             extends Axes
+  sealed case class Vec[T <: TensorTypeDenotation, D <: DimensionDenotation, I <: ShapeDimension, Q <: VecShape[I]](i: I) extends Axes
+  sealed case class Mat[T <: TensorTypeDenotation, D <: DimensionDenotation, D1 <: DimensionDenotation, I <: ShapeDimension, J <: ShapeDimension, Q <: MatShape[I,J]](i: I, j: J)
       extends Axes
 
-  sealed case class TensorRank3[I <: Dimension, J <: Dimension, K <: Dimension,
+  sealed case class TensorRank3[T <: TensorTypeDenotation, D <: DimensionDenotation, D1 <: DimensionDenotation, D2 <: DimensionDenotation, I <: ShapeDimension, J <: ShapeDimension, K <: ShapeDimension,
   Q <: TensorRank3Shape[I,J,K]](
       i: I,
       j: J,
       k: K,
 ) extends Axes
 
-  sealed case class TensorRank4[I <: Dimension, J <: Dimension, K <: Dimension, L <: Dimension,
+  sealed case class TensorRank4[T <: TensorTypeDenotation, D <: DimensionDenotation, D1 <: DimensionDenotation, D2 <: DimensionDenotation, D3 <: DimensionDenotation, I <: ShapeDimension, J <: ShapeDimension, K <: ShapeDimension,
+  L <: ShapeDimension,
   Q <: TensorRank4Shape[I,J,K, L]](
       i: I,
       j: J,
@@ -91,19 +95,19 @@ object Tensors{
     tens
   }
 
-    def apply[T <: Supported, I <: Dimension](arr: Array[T], d0: I): OSTensor[T, Vec[I, VecShape[I]]] = tensorRequires(arr, Vec[I, VecShape[I]](d0))
-    def apply[T <: Supported, I <: Dimension, J <: Dimension](arr: Array[T], d0: I, d1: J): OSTensor[T, Mat[I,J, MatShape[I,J]]] = (arr,Mat[I, J, MatShape[I,J]](d0, d1))
-    def apply[T <: Supported, I <: Dimension, J <: Dimension, K <: Dimension](arr: Array[T], d0: I, d1: J, d2: K): OSTensor[T, TensorRank3[I,J,K, TensorRank3Shape[I,J,K]]] = (arr, TensorRank3[I,J,K, TensorRank3Shape[I,J,K]](d0,d1,d2))
+    def apply[T <: Supported, Tt <: TensorTypeDenotation, D <: DimensionDenotation, I <: ShapeDimension](arr: Array[T], d0: I): OSTensor[T, Vec[Tt, D, I, VecShape[I]]] = tensorRequires(arr, Vec[Tt, D, I, VecShape[I]](d0))
+    def apply[T <: Supported, Tt <: TensorTypeDenotation, D <: DimensionDenotation, D1 <: DimensionDenotation, I <: ShapeDimension, J <: ShapeDimension](arr: Array[T], d0: I, d1: J): OSTensor[T, Mat[Tt, D, D1, I,J, MatShape[I,J]]] = (arr,Mat[Tt, D, D1, I, J, MatShape[I,J]](d0, d1))
+    def apply[T <: Supported, Tt <: TensorTypeDenotation, D <: DimensionDenotation, D1 <: DimensionDenotation, D2 <: DimensionDenotation, I <: ShapeDimension, J <: ShapeDimension, K <: ShapeDimension](arr: Array[T], d0: I, d1: J, d2: K): OSTensor[T, TensorRank3[Tt, D, D1, D2, I,J,K, TensorRank3Shape[I,J,K]]] = (arr, TensorRank3[Tt, D, D1, D2, I,J,K, TensorRank3Shape[I,J,K]](d0,d1,d2))
 
-    def apply[T <: Supported, I <: Dimension, J <: Dimension, K <: Dimension, L <: Dimension](arr: Array[T], d0: I, d1: J, d2: K, d3: L): OSTensor[T, TensorRank4[I,J,K, L, TensorRank4Shape[I,J,K, L]]] = (arr, TensorRank4[I,J,K,L, TensorRank4Shape[I,J,K, L]](d0,d1,d2, d3))
+    def apply[T <: Supported, Tt <: TensorTypeDenotation, D <: DimensionDenotation, D1 <: DimensionDenotation, D2 <: DimensionDenotation, D3 <: DimensionDenotation, I <: ShapeDimension, J <: ShapeDimension, K <: ShapeDimension, L <: ShapeDimension](arr: Array[T], d0: I, d1: J, d2: K, d3: L): OSTensor[T, TensorRank4[Tt, D, D1, D2, D3, I,J,K, L, TensorRank4Shape[I,J,K, L]]] = (arr, TensorRank4[Tt, D, D1, D2, D3, I,J,K,L, TensorRank4Shape[I,J,K, L]](d0,d1,d2, d3))
 
     def create[T <: Supported, Ax <: Axes](arr: Array[T], shape: Array[Int]): OSTensor[T, Ax] = {
       shape.size match {
  //     case 0 => apply(arr(0))
-      case 1 => apply(arr, shape(0).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Ax]]
-      case 2 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Ax]]
-      case 3 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension], shape(2).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Ax]]
-      case 4 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension], shape(2).asInstanceOf[Dimension], shape(3).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Ax]]
+      case 1 => apply(arr, shape(0).asInstanceOf[ShapeDimension]).asInstanceOf[OSTensor[T, Ax]]
+      case 2 => apply(arr, shape(0).asInstanceOf[ShapeDimension], shape(1).asInstanceOf[ShapeDimension]).asInstanceOf[OSTensor[T, Ax]]
+      case 3 => apply(arr, shape(0).asInstanceOf[ShapeDimension], shape(1).asInstanceOf[ShapeDimension], shape(2).asInstanceOf[ShapeDimension]).asInstanceOf[OSTensor[T, Ax]]
+      case 4 => apply(arr, shape(0).asInstanceOf[ShapeDimension], shape(1).asInstanceOf[ShapeDimension], shape(2).asInstanceOf[ShapeDimension], shape(3).asInstanceOf[ShapeDimension]).asInstanceOf[OSTensor[T, Ax]]
       case _ => ???
     }
     }

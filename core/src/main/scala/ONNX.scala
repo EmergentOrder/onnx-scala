@@ -16,7 +16,8 @@ import org.emergentorder.onnx.Tensors._
 
 package object onnx {
 
-  //Note: constraints will disallow broadcasting
+  //TODO:Typed axis semantics, JS support
+  //Note: shape constraints will disallow broadcasting
   //In progress: Add shapes, constraints (at first only to NDScala-exposed ops)
   //TODO: add ORT contrib ops
   //TODO: Remove requirement to be Numeric for ops with non-numeric outputs / inputs
@@ -667,11 +668,11 @@ package object onnx {
   trait ClipV12 extends Operator {
     def ClipV12[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Ax <: Axes](
+    , Ax <: Axes, Tt <: TensorTypeDenotation, Dd <: DimensionDenotation](
         name: String,
         input: Tensor[T, Ax],
-        min: Option[Tensor[T, Scalar]] = None,
-        max: Option[Tensor[T, Scalar]] = None
+        min: Option[Tensor[T, Scalar[Tt, Dd]]] = None,
+        max: Option[Tensor[T, Scalar[Tt, Dd]]] = None
     ): Tensor[T, Ax] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple3(input, min, max)
@@ -682,11 +683,11 @@ package object onnx {
   trait ClipV11 extends Operator {
     def ClipV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Ax <: Axes](
+    , Ax <: Axes, Tt <: TensorTypeDenotation, Dd <: DimensionDenotation](
         name: String,
         input: Tensor[T, Ax],
-        min: Option[Tensor[T, Scalar]] = None,
-        max: Option[Tensor[T, Scalar]] = None
+        min: Option[Tensor[T, Scalar[TensorTypeDenotation, Dd]]] = None,
+        max: Option[Tensor[T, Scalar[TensorTypeDenotation, Dd]]] = None
     ): Tensor[T, Ax] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple3(input, min, max)

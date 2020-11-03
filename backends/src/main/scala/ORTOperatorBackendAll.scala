@@ -4,8 +4,7 @@ import org.emergentorder.onnx._
 
 //Going forward we only support ops (and their versions) which are supported in both ONNX Runtime & ONNX.js (CPU), opset 6+
 //Plus a handful of others we need
-//Same goes for types in the API ?
-//Current ONNX opset 12
+//Current ONNX opset 12, no new ops in opset 13, just support for training
 class ORTOperatorBackendAll
     extends ORTOperatorBackend
     with AbsV6

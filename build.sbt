@@ -18,6 +18,7 @@ lazy val commonSettings = Seq(
   updateOptions := updateOptions.value.withLatestSnapshots(false),
   scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-language:strictEquality"),
   autoCompilerPlugins := true,
+  sources in (Compile, doc) := Seq(), //Bug w/ Dotty & JS on doc 
 ) ++ sonatypeSettings
 
 lazy val common = (crossProject(JSPlatform, JVMPlatform)

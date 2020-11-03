@@ -20,16 +20,7 @@ lazy val commonSettings = Seq(
   autoCompilerPlugins := true,
 ) ++ sonatypeSettings
 
-lazy val onnx = (crossProject(JVMPlatform)
-  .crossType(CrossType.Pure) in file("onnx"))
-  .settings(commonSettings, name := "onnx-scala-onnx",
-    crossScalaVersions := Seq(
-      dottyVersion,
-      scala213Version
-    )
-  )
-
-lazy val common = (crossProject(JVMPlatform)
+lazy val common = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("common"))
   .settings(commonSettings, name := "onnx-scala-common",
     crossScalaVersions := Seq(
@@ -44,16 +35,16 @@ lazy val common = (crossProject(JVMPlatform)
     ),
 )
 
-lazy val proto = (crossProject(JVMPlatform)
+lazy val proto = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("proto"))
   .settings(commonSettings, name := "onnx-scala-proto",
     crossScalaVersions := Seq(
       dottyVersion,
       scala213Version
     ),
- libraryDependencies -= "com.thesamet.scalapb" %% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion,
+ libraryDependencies -= ("com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion),
 
-    libraryDependencies += ("com.thesamet.scalapb" %% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion).withDottyCompat(scalaVersion.value),
+    libraryDependencies += ("com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion).withDottyCompat(scalaVersion.value),
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil }, 
 
 
@@ -126,10 +117,9 @@ lazy val backends = (crossProject(JVMPlatform)
     crossScalaVersions := Seq(dottyVersion, scala213Version)
   )
 
-lazy val core = (crossProject(JVMPlatform)
+lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("core"))
   .dependsOn(common)
-  .dependsOn(onnx)
   .dependsOn(proto)
   .settings(
     commonSettings,
@@ -149,12 +139,12 @@ lazy val core = (crossProject(JVMPlatform)
       .partialVersion(scalaVersion.value) match {
       case Some((2, n)) =>
         Seq(
-          "org.typelevel" %% "spire" % spireVersion,
+          "org.typelevel" %%% "spire" % spireVersion,
         )
       case _ =>
         Seq(
 //           "io.kjaer" %% "tf-dotty-compiletime" % "0.0.0+134-f1f8d0ba+20201102-1209-SNAPSHOT",
-          ("org.typelevel" %% "spire" % spireVersion).withDottyCompat(dottyVersion),
+          ("org.typelevel" %%% "spire" % spireVersion).withDottyCompat(dottyVersion),
         )
     }),
     libraryDependencies ++= Seq(

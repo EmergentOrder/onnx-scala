@@ -39,7 +39,7 @@ trait ORTOperatorBackend
     val inputs = (inputNames zip input_tensor_values).toMap.asJava
 
     //TODO: More outputs / handle via ONNXSequence / ONNXMap
-    val output_tensor = sess.run(inputs)
+      val output_tensor = sess.run(inputs)
       val firstOut = output_tensor.get(0).asInstanceOf[OnnxTensor]
       val shape = firstOut.getInfo.getShape.map(_.toInt)
 
@@ -72,14 +72,14 @@ trait ORTOperatorBackend
           }
       }.flatten
 
-      val sess  = getSession(opModel)
-        val res:Tensor[T, Ax] = runModel(
+      val res: Tensor[T, Ax] = Using.resource(getSession(opModel)) { sess =>
+        runModel(
           sess, 
           inputTensors,
           input_node_names,
           output_node_names
         )
-      sess.close
+      }
         res
   } 
 

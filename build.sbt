@@ -5,7 +5,7 @@ val scala213Version = "2.13.3" // "2.13.4"
 val spireVersion = "0.17.0"
 val scalametaVersion = "4.3.24"
 val onnxJavaCPPPresetVersion = "1.7.0-1.5.4"
-  
+
 scalaVersion := scala213Version 
 
 lazy val commonSettings = Seq(
@@ -23,6 +23,8 @@ lazy val commonSettings = Seq(
 
 lazy val common = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("common"))
+  .enablePlugins(ScalaJSPlugin)
+//  .enablePlugins(ScalaJSBundlerPlugin) //broken
   .settings(commonSettings, name := "onnx-scala-common",
     crossScalaVersions := Seq(
       dottyVersion,
@@ -34,7 +36,8 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform)
       case _ => "" 
       }
     ),
-)
+).jsSettings()
+//    npmDependencies in Compile += "snabbdom" -> "0.5.3")
 
 lazy val proto = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("proto"))

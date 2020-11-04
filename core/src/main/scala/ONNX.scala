@@ -13,9 +13,12 @@ import spire.implicits._
 import spire.algebra.Field
 import org.bytedeco.onnx.ModelProto
 import org.emergentorder.onnx.Tensors._
+import scala.compiletime.ops.int._
 
 package object onnx {
 
+  //TODO: Push constraints on binary ops using =!= to here
+  //TODO: match types to avoid instance of?
   //TODO:Typed axis semantics, JS support
   //Note: shape constraints will disallow broadcasting
   //In progress: Add shapes, constraints (at first only to NDScala-exposed ops)
@@ -43,7 +46,7 @@ package object onnx {
 
   trait Graph
   trait DataSource {
-    def getParams[T <: Supported: Numeric, Ax <: Axes](name: String): Tensor[T, Ax]
+    def getParams[T <: Supported](name: String): Tensor[T, ? <: Axes]
   }
   trait AbsV6 extends Operator {
     def AbsV6[
@@ -184,6 +187,7 @@ package object onnx {
     }
   }
 
+  //tf-dotty reduce eligible
   trait ArgMaxV12 extends Operator {
     def ArgMaxV12[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
@@ -231,6 +235,7 @@ package object onnx {
     }
   }
 
+  //tf-dotty reduce eligible
   trait ArgMinV12 extends Operator {
     def ArgMinV12[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
@@ -3674,6 +3679,7 @@ package object onnx {
     }
   }
 
+  //tf-dotty reduce eligible
   trait ReduceLogSumV11 extends Operator {
     def ReduceLogSumV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
@@ -3704,6 +3710,7 @@ package object onnx {
     }
   }
 
+  //tf-dotty reduce eligible
   trait ReduceMaxV12 extends Operator {
     def ReduceMaxV12[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
@@ -3749,6 +3756,7 @@ package object onnx {
     }
   }
 
+  //tf-dotty reduce eligible
   trait ReduceMeanV11 extends Operator {
     def ReduceMeanV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
@@ -3779,6 +3787,7 @@ package object onnx {
     }
   }
 
+  //tf-dotty reduce eligible
   trait ReduceMinV12 extends Operator {
     def ReduceMinV12[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
@@ -3824,6 +3833,7 @@ package object onnx {
     }
   }
 
+  //tf-dotty reduce eligible
   trait ReduceProdV11 extends Operator {
     def ReduceProdV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
@@ -3854,6 +3864,7 @@ package object onnx {
     }
   }
 
+  //tf-dotty reduce eligible
   trait ReduceSumSquareV11 extends Operator {
     def ReduceSumSquareV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
@@ -3884,6 +3895,7 @@ package object onnx {
     }
   }
 
+  //tf-dotty reduce eligible
   trait ReduceSumV11 extends Operator {
     def ReduceSumV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
@@ -3937,7 +3949,9 @@ package object onnx {
     }
   }
 
-  //TODO: Constraint
+  //TODO: Constraint, //tf-dotty reshape eligible
+  //(given NumElements[Old] =:= NumElements[New]
+  //+ match types on axes
   trait ReshapeV5 extends Operator {
     def ReshapeV5[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[

@@ -24,7 +24,6 @@ lazy val commonSettings = Seq(
 lazy val common = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("common"))
   .enablePlugins(ScalaJSPlugin)
-//  .enablePlugins(ScalaJSBundlerPlugin) //broken
   .settings(commonSettings, name := "onnx-scala-common",
     crossScalaVersions := Seq(
       dottyVersion,
@@ -36,8 +35,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform)
       case _ => "" 
       }
     ),
-).jsSettings()
-//    npmDependencies in Compile += "snabbdom" -> "0.5.3")
+)
 
 lazy val proto = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("proto"))
@@ -95,9 +93,10 @@ lazy val programGenerator = (crossProject(JVMPlatform)
     )
   )
 
-lazy val backends = (crossProject(JVMPlatform)
+lazy val backends = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("backends"))
   .dependsOn(core)
+  .enablePlugins(ScalaJSBundlerPlugin)
   .settings(
     commonSettings,
     name := "onnx-scala-backends",
@@ -119,7 +118,9 @@ lazy val backends = (crossProject(JVMPlatform)
 //      "org.bytedeco" % "onnxruntime-platform" % "1.5.2-1.5.5-SNAPSHOT"
     ),
     crossScalaVersions := Seq(dottyVersion, scala213Version)
-  )
+  ).jvmSettings().jsSettings(
+      scalaJSUseMainModuleInitializer := true, //Testing
+      npmDependencies in Compile += "onnxjs" -> "0.1.8")
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("core"))

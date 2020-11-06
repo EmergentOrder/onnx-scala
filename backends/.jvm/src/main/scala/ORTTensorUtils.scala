@@ -10,15 +10,15 @@ import org.bytedeco.javacpp.BooleanPointer
 
 object ORTTensorUtils{
 
-    def getOnnxTensor[T <: Supported](arr: Array[T], shape: Array[Int], env: OrtEnvironment): OnnxTensor = {
-    arr match {
-      case b: Array[Byte] => getTensorByte(arr, shape, env)
-      case s: Array[Short] => getTensorShort(arr, shape, env)
-      case d: Array[Double] => getTensorDouble(arr, shape, env)
-      case f: Array[Float] => getTensorFloat(arr, shape, env)
-      case i: Array[Int]   => getTensorInt(arr, shape, env)
-      case l: Array[Long]  => getTensorLong(arr, shape, env)
-      case b: Array[Boolean] => getTensorBoolean(arr, shape, env)
+    def getOnnxTensor[T](arr: Array[T], shape: Array[Int], env: OrtEnvironment): OnnxTensor = {
+    arr(0) match {
+      case b: Byte => getTensorByte(arr.asInstanceOf[Array[Byte]], shape, env)
+      case s: Short => getTensorShort(arr.asInstanceOf[Array[Short]], shape, env)
+      case d: Double => getTensorDouble(arr.asInstanceOf[Array[Double]], shape, env)
+      case f: Float => getTensorFloat(arr.asInstanceOf[Array[Float]], shape, env)
+      case i: Int   => getTensorInt(arr.asInstanceOf[Array[Int]], shape, env)
+      case l: Long  => getTensorLong(arr.asInstanceOf[Array[Long]], shape, env)
+      case b: Boolean => getTensorBoolean(arr.asInstanceOf[Array[Boolean]], shape, env)
     }
   }
 
@@ -57,7 +57,7 @@ object ORTTensorUtils{
     OnnxTensor.createTensor(env,tensorIn)
   }
 
-  def getArrayFromOnnxTensor[T <: Supported] (value: OnnxTensor): Array[T] = {
+  def getArrayFromOnnxTensor[T] (value: OnnxTensor): Array[T] = {
     val dtype = value.getInfo.onnxType
     val arr = dtype match {
       case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT =>{

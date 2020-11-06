@@ -107,7 +107,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
       case Some((2, 13)) => "NCF.scala" | 
                             "ORTOperatorBackend.scala" | 
                             "ORTOperatorBackendAll.scala" | "ORTOperatorBackendAtoL.scala" |
-                            "ORTModelBackend.scala" | "ORTTensorUtils.scala" |
+                            "ORTModelBackend.scala" | //"ORTTensorUtils.scala" |
                             "Main.scala" | "ONNXJSOperatorBackend.scala"  
       case _ => "ORTModelBackend213.scala" | "NCF213.scala" |
                 "ORTOperatorBackend213.scala" | "ORTOperatorBackendAll213.scala" | 

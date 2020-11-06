@@ -13,8 +13,8 @@ import org.emergentorder.union._
 object Tensors{
 
   type Dimension = Int with Singleton
-  type Supported = Int | Long | Float | Double | Byte | Short | UByte | UShort | UInt | ULong | 
-                   Boolean | String | Float16 | Complex[Float] | Complex[Double]
+//  type Supported = Int | Long | Float | Double | Byte | Short | UByte | UShort | UInt | ULong | 
+//                   Boolean | String | Float16 | Complex[Float] | Complex[Double]
 
   type TensorTypeDenotation = String with Singleton
 

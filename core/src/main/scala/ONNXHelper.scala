@@ -27,7 +27,7 @@ import scala.language.implicitConversions
 import java.io.File
 //import org.bytedeco.javacpp._
 //import org.bytedeco.onnx._
-import org.bytedeco.onnx.global.onnx.check_model
+//import org.bytedeco.onnx.global.onnx.check_model
 import onnx.onnx._
 import onnx.onnx.TensorProto.DataType._
 
@@ -116,23 +116,23 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
   val ops = node.map(x => x.map(y => y.opType).flatten).toArray
 
   private val tensorElemTypeMap = Map(
-    org.bytedeco.onnx.TensorProto.UNDEFINED  -> "Undefined",
-    org.bytedeco.onnx.TensorProto.FLOAT      -> "Float",
-    org.bytedeco.onnx.TensorProto.UINT8      -> "UByte",
-    org.bytedeco.onnx.TensorProto.INT8       -> "Byte",
-    org.bytedeco.onnx.TensorProto.UINT16     -> "UShort",
-    org.bytedeco.onnx.TensorProto.INT16      -> "Short",
-    org.bytedeco.onnx.TensorProto.INT32      -> "Int",
-    org.bytedeco.onnx.TensorProto.INT64      -> "Long",
-    org.bytedeco.onnx.TensorProto.STRING     -> "String",
-    org.bytedeco.onnx.TensorProto.BOOL       -> "Boolean",
-    org.bytedeco.onnx.TensorProto.FLOAT16    -> "Float16",
-    org.bytedeco.onnx.TensorProto.DOUBLE     -> "Double",
-    org.bytedeco.onnx.TensorProto.UINT32     -> "UInt",
-    org.bytedeco.onnx.TensorProto.UINT64     -> "ULong",
-    org.bytedeco.onnx.TensorProto.COMPLEX64  -> "Complex[Float]",
-    org.bytedeco.onnx.TensorProto.COMPLEX128 -> "Complex[Double]",
-    org.bytedeco.onnx.TensorProto.BFLOAT16   -> "???"
+    UNDEFINED.index  -> "Undefined",
+    FLOAT.index      -> "Float",
+    UINT8.index      -> "UByte",
+    INT8.index       -> "Byte",
+    UINT16.index     -> "UShort",
+    INT16.index      -> "Short",
+    INT32.index      -> "Int",
+    INT64.index      -> "Long",
+    STRING.index     -> "String",
+    BOOL.index       -> "Boolean",
+    FLOAT16.index    -> "Float16",
+    DOUBLE.index     -> "Double",
+    UINT32.index     -> "UInt",
+    UINT64.index     -> "ULong",
+    COMPLEX64.index  -> "Complex[Float]",
+    COMPLEX128.index -> "Complex[Double]",
+    BFLOAT16.index   -> "???"
   )
 
   val nodeInputs =

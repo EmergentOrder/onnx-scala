@@ -98,7 +98,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("backends"))
   .dependsOn(core)
 //conditionally enabling/disable based on version, still not working
-  .enablePlugins(ScalaJSBundlerPlugin) //{ScalablyTypedConverterPlugin})
+//  .enablePlugins(ScalaJSBundlerPlugin) //{ScalablyTypedConverterPlugin})
   .settings(
     commonSettings,
     name := "onnx-scala-backends",
@@ -118,14 +118,15 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
     libraryDependencies ++= Seq(
  //        "org.bytedeco" % "dnnl-platform" % "1.6.4-1.5.5-SNAPSHOT",
+         "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion,
         "com.microsoft.onnxruntime" % "onnxruntime" % "1.5.2"
 //      "org.bytedeco" % "onnxruntime-platform" % "1.5.2-1.5.5-SNAPSHOT"
     ),
     crossScalaVersions := Seq(dottyVersion, scala213Version)
   ).jvmSettings().jsSettings(
-      scalaJSUseMainModuleInitializer := true, //Testing
+      scalaJSUseMainModuleInitializer := true) //, //Testing
 //Seems to be a bundling issue, copying things manually seems to work
-     npmDependencies in Compile += "onnxjs" -> "0.1.8")
+     //npmDependencies in Compile += "onnxjs" -> "0.1.8")
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("core"))
@@ -158,7 +159,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
         )
     }),
     libraryDependencies ++= Seq(
-        "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion,
+//        "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion,
 //      "org.osgi" % "org.osgi.annotation.versioning" % "1.1.0"
     )
   )

@@ -11,7 +11,6 @@ import spire.math.Complex
 import spire.math.Numeric
 import spire.implicits._
 import spire.algebra.Field
-import org.bytedeco.onnx.ModelProto
 import org.emergentorder.onnx.Tensors._
 import scala.compiletime.ops.int._
 

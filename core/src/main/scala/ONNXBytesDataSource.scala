@@ -12,7 +12,7 @@ class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends AutoCloseable with Dat
 
   //TODO: produce tensors with axes derived from denotations
   //TODO: return non-tensor params
-  override def getParams[T <: Supported](name: String): Tensor[T,? <: Axes] = {
+  override def getParams[T <: Supported, Ax <: Axes](name: String): Tensor[T,Ax] = {
     val params = onnxHelper.params.filter(x => x._1 == name).headOption
     params match {
       case Some(x) => Tensor.create(x._3.asInstanceOf[Array[T]], x._4)

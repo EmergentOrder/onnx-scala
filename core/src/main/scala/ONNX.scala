@@ -47,7 +47,7 @@ package object onnx {
 
   trait Graph
   trait DataSource {
-    def getParams[T <: Supported](name: String): Tensor[T, _ <: Axes]
+    def getParams[T <: Supported, Ax <: Axes](name: String): Tensor[T, Ax]
   }
   trait AbsV6 extends Operator {
     def AbsV6[
@@ -194,13 +194,13 @@ package object onnx {
   trait ArgMaxV12 extends Operator {
     def ArgMaxV12[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Ax <: Axes](
+    , Ax <: Axes, Bx <: Axes](
         name: String,
         axis: Option[(Int)] = None,
         keepdims: Option[(Int)] = None,
         select_last_index: Option[(Int)] = None,
-        data: Tensor[T, _]
-    ): Tensor[Long, _] = {
+        data: Tensor[T, Ax]
+    ): Tensor[Long, Bx] = {
       val map: Map[String, Any] =
         Map("axis" -> axis, "keepdims" -> keepdims, "select_last_index" -> select_last_index)
       val allInputs = Tuple1(data)
@@ -1669,12 +1669,12 @@ package object onnx {
           Float
         ] | Complex[Double]: Numeric,
         @sp Tind <: Int | Long: Numeric
-    , Ax <: Axes](
+    , Ax <: Axes, Bx <: Axes, Cx <: Axes](
         name: String,
         axis: Option[(Int)] = None,
-        data: Tensor[T, _],
-        indices: Tensor[Tind, _]
-    ): Tensor[T, _] = {
+        data: Tensor[T, Ax],
+        indices: Tensor[Tind, Bx]
+    ): Tensor[T, Cx] = {
       val map: Map[String, Any] = Map("axis" -> axis)
       val allInputs             = Tuple2(data, indices)
       (callOp(name, "Gather", allInputs, map))
@@ -1687,12 +1687,12 @@ package object onnx {
           Float
         ] | Complex[Double]: Numeric,
         @sp Tind <: Int | Long: Numeric
-    , Ax <: Axes](
+    , Ax <: Axes, Bx <: Axes, Cx <: Axes](
         name: String,
         axis: Option[(Int)] = None,
-        data: Tensor[T, _],
-        indices: Tensor[Tind, _]
-    ): Tensor[T, _] = {
+        data: Tensor[T, Ax],
+        indices: Tensor[Tind, Bx]
+    ): Tensor[T, Cx] = {
       val map: Map[String, Any] = Map("axis" -> axis)
       val allInputs             = Tuple2(data, indices)
       (callOp(name, "Gather", allInputs, map))
@@ -2601,11 +2601,11 @@ package object onnx {
   }
 
   trait MatMulV1 extends Operator {
-    def MatMulV1[@sp T <: Float16 | Float | Double | UInt | ULong | Int | Long: Numeric, Ax <: Axes](
+    def MatMulV1[@sp T <: Float16 | Float | Double | UInt | ULong | Int | Long: Numeric, Ax <: Axes, Bx <: Axes, Cx <: Axes](
         name: String,
-        A: Tensor[T, _],
-        B: Tensor[T, _]
-    ): Tensor[T, _] = {
+        A: Tensor[T, Ax],
+        B: Tensor[T, Bx]
+    ): Tensor[T, Cx] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple2(A,B)
       (callOp(name, "MatMul", allInputs, map))

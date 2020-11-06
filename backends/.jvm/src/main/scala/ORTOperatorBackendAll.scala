@@ -26,7 +26,7 @@ class ORTOperatorBackendAll
     with BatchNormalizationV7
     with BatchNormalizationV9
 //    with BinarizerV1 //ONNX ML, not tested for in scoreboard
-//    with BitShiftV11
+//    with BitShiftV11 //not supported in ONNX.js
     with CastV6
     with CastV9
 //    with CastMapV1 //ONNX ML, not tested for in scoreboard
@@ -40,8 +40,8 @@ class ORTOperatorBackendAll
     with ConcatV4 //Retained for Squeezenet v1.1
     with ConcatV11
 //    with ConcatFromSequenceV11
-//    with ConstantV9
-//    with ConstantV11
+    with ConstantV9
+    with ConstantV11
 //    with ConstantOfShapeV9 
     with ConvV1 //Retained for Squeezenet v1.1
     with ConvV11

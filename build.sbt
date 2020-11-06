@@ -1,5 +1,6 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
+//val dottyVersion = dottyLatestNightlyBuild.get
 val dottyVersion = "0.27.0-RC1" //"3.0.0-M1"
 val scala213Version = "2.13.3" // "2.13.4"
 val spireVersion = "0.17.0"
@@ -23,7 +24,7 @@ lazy val commonSettings = Seq(
 
 lazy val common = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("common"))
-//  .enablePlugins(ScalaJSPlugin)
+  .enablePlugins(ScalaJSPlugin)
   .settings(commonSettings, name := "onnx-scala-common",
     crossScalaVersions := Seq(
       dottyVersion,
@@ -96,7 +97,8 @@ lazy val programGenerator = (crossProject(JVMPlatform)
 lazy val backends = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("backends"))
   .dependsOn(core)
-//  .enablePlugins(ScalaJSBundlerPlugin)
+//conditionally enabling/disable based on version, still not working
+  .enablePlugins(ScalaJSBundlerPlugin) //{ScalablyTypedConverterPlugin})
   .settings(
     commonSettings,
     name := "onnx-scala-backends",
@@ -105,10 +107,12 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
       case Some((2, 13)) => "NCF.scala" | 
                             "ORTOperatorBackend.scala" | 
                             "ORTOperatorBackendAll.scala" | "ORTOperatorBackendAtoL.scala" |
-                            "ORTModelBackend.scala" | "ORTTensorUtils.scala"
+                            "ORTModelBackend.scala" | "ORTTensorUtils.scala" |
+                            "Main.scala" | "ONNXJSOperatorBackend.scala"  
       case _ => "ORTModelBackend213.scala" | "NCF213.scala" |
                 "ORTOperatorBackend213.scala" | "ORTOperatorBackendAll213.scala" | 
-                "ORTOperatorBackendAtoL213.scala"
+                "ORTOperatorBackendAtoL213.scala" |
+                            "Main.scala" | "ONNXJSOperatorBackend.scala" 
       }
     ),
     scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
@@ -119,8 +123,9 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
     ),
     crossScalaVersions := Seq(dottyVersion, scala213Version)
   ).jvmSettings().jsSettings(
-      scalaJSUseMainModuleInitializer := true) //Testing
-  //    npmDependencies in Compile += "onnxjs" -> "0.1.8")
+      scalaJSUseMainModuleInitializer := true, //Testing
+//Seems to be a bundling issue, copying things manually seems to work
+     npmDependencies in Compile += "onnxjs" -> "0.1.8")
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("core"))

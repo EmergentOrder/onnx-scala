@@ -9,3 +9,8 @@ addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.5")
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.1")
 addSbtPlugin("org.scalameta" % "sbt-mdoc" % "2.2.11" )
 addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "0.20.0")
+
+resolvers += Resolver.bintrayRepo("oyvindberg", "converter")
+
+// for Scala.js 1.x.x
+addSbtPlugin("org.scalablytyped.converter" % "sbt-converter" % "1.0.0-beta28")

@@ -1,8 +1,6 @@
 package org.emergentorder.onnx.backends
 
 import scala.language.implicitConversions
-import org.bytedeco.javacpp._
-import org.bytedeco.javacpp.indexer.FloatIndexer
 import ai.onnxruntime._
 import scala.jdk.CollectionConverters._
 

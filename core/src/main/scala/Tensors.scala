@@ -29,6 +29,7 @@ object Tensors{
   type TensorRank4Shape[I <: Dimension, J <: Dimension, K <: Dimension, L <: Dimension] = I #: J #: K #: L #: SNil
 
 
+  //TODO: use "super" trait here, to avoid incorrect type inference, and remove NEQ checks in NDScala
   sealed trait Axes
   sealed case class Undefined() extends Axes
   sealed case class Scalar[T <: TensorTypeDenotation, D <: DimensionDenotation]()                             extends Axes

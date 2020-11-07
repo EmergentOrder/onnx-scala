@@ -46,7 +46,7 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
   }
 
   override def close(): Unit = {
-    fullORTBackend.close
+    fullORTBackend.close()
 
   }
 }

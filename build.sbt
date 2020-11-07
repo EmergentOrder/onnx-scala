@@ -7,13 +7,13 @@ val spireVersion = "0.17.0"
 val scalametaVersion = "4.3.24"
 val onnxJavaCPPPresetVersion = "1.7.0-1.5.4"
 
-scalaVersion := scala213Version 
+scalaVersion := dottyVersion
 
 lazy val commonSettings = Seq(
 //  scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
   version := "0.8.0",
-  scalaVersion := scala213Version,
+  scalaVersion := dottyVersion, 
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
@@ -75,7 +75,7 @@ lazy val programGenerator = (crossProject(JVMPlatform)
       case _ => "ONNXProgramGenerator213.scala" | "Squeezenet1dot1213.scala"
       }
     ),
-    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
+    scalacOptions ++= { if (isDotty.value) Seq("-source:3.0-migration") else Nil },
     libraryDependencies ++= (CrossVersion
     .partialVersion(scalaVersion.value) match {
      case Some((2,_)) =>
@@ -88,6 +88,8 @@ lazy val programGenerator = (crossProject(JVMPlatform)
         )
       }
     ),
+    libraryDependencies += "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion,
+
     crossScalaVersions := Seq(
       dottyVersion,
       scala213Version
@@ -115,10 +117,10 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
                             "Main.scala" | "ONNXJSOperatorBackend.scala" 
       }
     ),
-    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
+    scalacOptions ++= { if (isDotty.value) Seq("-source:3.0-migration") else Nil },
     libraryDependencies ++= Seq(
  //        "org.bytedeco" % "dnnl-platform" % "1.6.4-1.5.5-SNAPSHOT",
-         "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion,
+//         "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion,
         "com.microsoft.onnxruntime" % "onnxruntime" % "1.5.2"
 //      "org.bytedeco" % "onnxruntime-platform" % "1.5.2-1.5.5-SNAPSHOT"
     ),
@@ -135,7 +137,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala",
-    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil },
+    scalacOptions ++= { if (isDotty.value) Seq("-source:3.0-migration") else Nil },
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
       case Some((2, 13)) => "ONNX.scala" | "OpToONNXBytesConverter.scala" | "Tensors.scala" | "ONNXBytesDataSource.scala"

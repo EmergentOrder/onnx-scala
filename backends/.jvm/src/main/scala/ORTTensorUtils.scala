@@ -6,7 +6,6 @@ import ai.onnxruntime.OnnxTensor
 import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtUtil
 import ai.onnxruntime.TensorInfo.OnnxTensorType._
-import org.bytedeco.javacpp.BooleanPointer
 
 object ORTTensorUtils{
 
@@ -84,16 +83,11 @@ object ORTTensorUtils{
 
       }
       case ONNX_TENSOR_ELEMENT_DATA_TYPE_BOOL =>{
-        val booleanPoint =
-          new BooleanPointer(
-            value.getByteBuffer
-          ) //C++ bool size is not defined, could cause problems on some platforms
-        (0l until (booleanPoint.capacity(): Long)).map { x =>
-          booleanPoint.get(x)
-        }.toArray
+
+        value.getByteBuffer.array().map(x => if(x==1) true else false) 
       }
     }
-    value.close
+    value.close()
     arr.asInstanceOf[Array[T]]
   }
 }

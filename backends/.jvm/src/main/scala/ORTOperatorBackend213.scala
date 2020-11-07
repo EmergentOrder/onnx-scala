@@ -5,13 +5,11 @@ import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 import scala.language.implicitConversions
 import scala.util.Using
-import org.bytedeco.javacpp._
 import ai.onnxruntime._
 import ai.onnxruntime.TensorInfo.OnnxTensorType._
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.Tensors.Tensor._
-import org.bytedeco.javacpp.BooleanPointer
 import ORTTensorUtils._
 
 trait ORTOperatorBackend

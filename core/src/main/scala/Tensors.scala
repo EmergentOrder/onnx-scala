@@ -9,6 +9,11 @@ import spire.math.Complex
 import spire.math.Numeric
 import io.kjaer.compiletime._
 
+
+import org.emergentorder.compiletime.DimensionDenotation
+import org.emergentorder.compiletime.TensorDenotation
+import org.emergentorder.compiletime.tensorDenotationOf
+
 object Tensors{
 
   type Supported = Int | Long | Float | Double | Byte | Short | UByte | UShort | UInt | ULong | 
@@ -16,7 +21,6 @@ object Tensors{
 
   type TensorTypeDenotation = String with Singleton
 
-  type DimensionDenotation = String with Singleton 
 //  type VecDenotation[I <: DimensionDenotation] = I #: SNil
 //  type MatDenotation[I <: DimensionDenotation, J <: DimensionDenotation] = I #: J #: SNil
 //  type TensorRank3Denotation[I <: DimensionDenotation, J <: DimensionDenotation, K <: DimensionDenotation] = I #: J #: K #: SNil
@@ -28,7 +32,12 @@ object Tensors{
   type TensorRank3Shape[I <: Dimension, J <: Dimension, K <: Dimension] = I #: J #: K #: SNil
   type TensorRank4Shape[I <: Dimension, J <: Dimension, K <: Dimension, L <: Dimension] = I #: J #: K #: L #: SNil
 
+//  case class Axes(ttd: TensorTypeDenotation,td: TensorDenotation, shape: Shape)
+  type Axes = Tuple3[TensorTypeDenotation, TensorDenotation, Shape]
 
+//  type Axes = DenotedTensor[? <: TensorTypeDenotation, ? <: TensorDenotation, ? <: Shape]
+
+  /*
   //TODO: use "super" trait here, to avoid incorrect type inference, and remove NEQ checks in NDScala
   sealed trait Axes
   sealed case class Undefined() extends Axes
@@ -50,9 +59,9 @@ object Tensors{
     k:Dimension,
     l:Dimension
 ) extends Axes
-
+*/
   //Need this alias to not conflict with other Tensors
-  type Tensor[T <: Supported, A <: Axes] = OSTensor[T, A]  //(Array[T], Array[Int])
+  type Tensor[T <: Supported, Ax <: Axes] = OSTensor[T, Ax]  //(Array[T], Array[Int])
 
   type SparseTensor[T <: Supported, A <: Axes] = Tensor[T, A]
 
@@ -79,42 +88,28 @@ object Tensors{
 //TODO: restore requires
 //
 //TODO: opaque
-  type OSTensor[T <: Supported, A <: Axes] = Tuple2[Array[T], A]
+  type OSTensor[T <: Supported, Ax <: Axes] = Tuple2[Array[T], Ax]
 
   object Tensor {
-    extension[T <: Supported, A <: Axes](tens: OSTensor[T,A]) def data = tens._1
+    extension[T <: Supported,  Tt <: TensorTypeDenotation, Td <: TensorDenotation, S <: Shape](tens: OSTensor[T,Tuple3[Tt, Td, S]]) def data = tens._1
 //    def apply[T <: Supported] (elem: T): OSTensor[T, Scalar] = new OSTensor[T, ?](Array(elem), Scalar())
-    extension[T <: Supported, A <: Axes](tens: OSTensor[T,A]) def shape = tens._2 match {
-      case Scalar() => Array[Int]()
-      case Vec(i) => Array(i)
-      case Mat(i, j) => Array(i,j)
-      case TensorRank3(i,j,k) => Array(i,j,k)
-      case TensorRank4(i,j,k,l) => Array(i,j,k,l)
-      case _ => ???
-    } 
-  def tensorRequires[T <: Supported, A <: Axes](tens: OSTensor[T,A]): OSTensor[T,A] = {
+
+    extension[T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorDenotation, S <: Shape](tens: OSTensor[T,Tuple3[Tt, Td, S]]) def shape: Array[Int] = tens._2._3.toSeq.toArray 
+      
+  def tensorRequires[T <: Supported,  Tt <: TensorTypeDenotation, Td <: TensorDenotation, S <: Shape](tens: OSTensor[T,Tuple3[Tt,Td,S]]): OSTensor[T,Tuple3[Tt, Td, S]] = {
     require(tens.shape.size <= 4)
     require(tens._1.size == tens.shape.foldLeft(1)(_ * _))
     tens
   }
+    def apply[T <: Supported : scala.reflect.ClassTag, Tt <: TensorTypeDenotation](element: T, tt: Tt): OSTensor[T, Tuple3[Tt, org.emergentorder.compiletime.SSNil, SNil]] = tensorRequires((Array[T](element), (tt, org.emergentorder.compiletime.SSNil, SNil))) 
 
-    def apply[T <: Supported, Tt <: TensorTypeDenotation, D <: DimensionDenotation](arr: Array[T]): OSTensor[T, Scalar[Tt, D]] = tensorRequires(arr, Scalar[Tt, D]()) 
+    def apply[T <: Supported, Tt <: TensorTypeDenotation, TD <: TensorDenotation, S <: Shape](arr: Array[T],tt: Tt, td0: TD, d0: S): OSTensor[T, Tuple3[Tt, TD, S]] = tensorRequires((arr, (tt, td0, d0)))
 
-    def apply[T <: Supported, Tt <: TensorTypeDenotation, D <: DimensionDenotation](arr: Array[T], d0: Dimension): OSTensor[T, Vec[Tt, D, VecShape[d0.type]]] = tensorRequires(arr, Vec[Tt, D, VecShape[d0.type]](d0))
-    def apply[T <: Supported, Tt <: TensorTypeDenotation, D <: DimensionDenotation, D1 <: DimensionDenotation](arr: Array[T], d0: Dimension, d1: Dimension): OSTensor[T, Mat[Tt, D, D1, MatShape[d0.type,d1.type]]] = (arr,Mat[Tt, D, D1, MatShape[d0.type,d1.type]](d0, d1))
-    def apply[T <: Supported, Tt <: TensorTypeDenotation, D <: DimensionDenotation, D1 <: DimensionDenotation, D2 <: DimensionDenotation](arr: Array[T], d0: Dimension, d1: Dimension, d2: Dimension): OSTensor[T, TensorRank3[Tt, D, D1, D2, TensorRank3Shape[d0.type, d1.type, d2.type]]] = (arr, TensorRank3[Tt, D, D1, D2, TensorRank3Shape[d0.type,d1.type,d2.type]](d0,d1,d2))
+    //InstanceOf
+    def create[T <: Supported, Tt <: TensorTypeDenotation, TD <: TensorDenotation](arr: Array[T],tt: Tt, td: TD, shape: Array[Int]): OSTensor[T, (Tt, TD, ? <: Shape)] = {
 
-    def apply[T <: Supported, Tt <: TensorTypeDenotation, D <: DimensionDenotation, D1 <: DimensionDenotation, D2 <: DimensionDenotation, D3 <: DimensionDenotation](arr: Array[T], d0: Dimension, d1: Dimension, d2: Dimension, d3: Dimension): OSTensor[T, TensorRank4[Tt, D, D1, D2, D3, TensorRank4Shape[d0.type, d1.type, d2.type, d3.type]]] = (arr, TensorRank4[Tt, D, D1, D2, D3, TensorRank4Shape[d0.type,d1.type,d2.type,d3.type]](d0,d1,d2, d3))
-
-    def create[T <: Supported, Ax <: Axes](arr: Array[T], shape: Array[Int]): OSTensor[T, Ax] = {
-      shape.size match {
-      case 0 => apply(arr).asInstanceOf[OSTensor[T, Ax]]
-      case 1 => apply(arr, shape(0).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Ax]]
-      case 2 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Ax]]
-      case 3 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension], shape(2).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Ax]]
-      case 4 => apply(arr, shape(0).asInstanceOf[Dimension], shape(1).asInstanceOf[Dimension], shape(2).asInstanceOf[Dimension], shape(3).asInstanceOf[Dimension]).asInstanceOf[OSTensor[T, Ax]]
-      case _ => ???
-    }
+      apply(arr, tt, td, Shape.fromSeq(shape))
+    
     }
   }
 }

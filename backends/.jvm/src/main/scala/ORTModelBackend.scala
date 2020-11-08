@@ -7,6 +7,9 @@ import scala.jdk.CollectionConverters._
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.Tensors.Tensor._
+import org.emergentorder.compiletime._
+import io.kjaer.compiletime.Shape
+
 import ORTTensorUtils._
 
 //TODO: Clean up, remove asInstaceOf, etc.
@@ -31,10 +34,10 @@ class ORTModelBackend(onnxBytes: Array[Byte])
 
   override def fullModel[
       T <: Supported,
-      Ax <: Axes
+      Tt <: TensorTypeDenotation, Td <: TensorDenotation, S <: Shape
   ](
       inputs: Tuple
-  ): Tensor[T, Ax] = {
+  ): Tensor[T, Tuple3[Tt, Td, S]] = {
 
 
 
@@ -45,7 +48,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
           tup match {
             case t: Tuple1[_] =>
               t(0) match {
-                case tens: Tensor[T,Ax] => getOnnxTensor(tens.data, tens.shape, env)
+                case tens: Tensor[T,(Tt, Td, S)] => getOnnxTensor(tens.data, tens.shape, env)
               }
           }
         }.toArray
@@ -57,7 +60,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
           allNodeNamesAndDims._3
         )
 
-        output.asInstanceOf[Tensor[T, Ax]]
+        output.asInstanceOf[Tensor[T, Tuple3[Tt, Td, S]]]
   }
 
   override def close(): Unit = {

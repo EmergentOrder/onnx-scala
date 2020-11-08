@@ -32,7 +32,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform)
     ),
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
-      case Some((2, 13)) => "Shape.scala" | "Indices.scala"
+      case Some((2, 13)) => "TensorDenotation.scala" | "Shape.scala" | "Indices.scala"
       case _ => "" 
       }
     ),

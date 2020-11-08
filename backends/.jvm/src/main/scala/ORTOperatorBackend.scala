@@ -10,6 +10,8 @@ import ai.onnxruntime.TensorInfo.OnnxTensorType._
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.Tensors.Tensor._
+import org.emergentorder.compiletime._
+import io.kjaer.compiletime.Shape
 import ORTTensorUtils._
 
 trait ORTOperatorBackend
@@ -41,16 +43,16 @@ trait ORTOperatorBackend
       val firstOut = output_tensor.get(0).asInstanceOf[OnnxTensor]
       val shape = firstOut.getInfo.getShape.map(_.toInt)
 
-      val result: Tensor[T, Ax] = Tensor.create(getArrayFromOnnxTensor[T](firstOut), shape).asInstanceOf[Tensor[T, Ax]] //dangerous
+      val typeDenotation: TensorTypeDenotation = "TEMP"
+      val tensorDenotation: TensorDenotation = "TEMP" ##: SSNil
+      val result: Tensor[T, Ax] = Tensor.create(getArrayFromOnnxTensor[T](firstOut),typeDenotation, tensorDenotation, shape).asInstanceOf[Tensor[T, Ax]] //dangerous
       result
   }
     
 // def cachedSess(bytes: Array[Byte]) = sessionCache.computeIfAbsent(java.util.Arrays.hashCode(bytes), _ => getSession(bytes))
 
   def callByteArrayOp[
-      T <: Supported,
-      Ax <: Axes
-  ](
+      T <: Supported, Ax <: Axes](
       opModel: Array[Byte],
       inputs: Tuple
   ): Tensor[T, Ax] = {
@@ -92,7 +94,7 @@ trait ORTOperatorBackend
     //TODO: prevent passing input to opToONNXBytes
 
     val bytes = opToONNXBytes(name, opName, inputs, "outName", attrs)
-    callByteArrayOp[T, Ax](bytes,inputs)
+    callByteArrayOp(bytes,inputs)
   }
 
   override def close(): Unit = {

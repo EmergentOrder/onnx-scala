@@ -11,6 +11,8 @@ import onnx.onnx.ValueInfoProto
 import onnx.onnx.OperatorSetIdProto
 import onnx.onnx.TensorProto.DataType._
 
+import io.kjaer.compiletime.Shape
+import org.emergentorder.compiletime._
 import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.Tensors.Tensor._
 
@@ -63,7 +65,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
   }
 
   //TODO: prevent passing the inputs all the way down here
-  protected def createInputValueInfoProto[T <: Supported, Ax <: Axes](tens: Tensor[T, Ax], inputName: String): ValueInfoProto = {
+  protected def createInputValueInfoProto[T <: Supported,  Tt <: TensorTypeDenotation, Td <: TensorDenotation, S <: Shape](tens: Tensor[T, (Tt, Td, S)], inputName: String): ValueInfoProto = {
 //    node.addInput(inputName)
     val elemType = tens._1 match {
           case b: Array[Byte]   => INT8.index

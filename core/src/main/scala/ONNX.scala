@@ -13,6 +13,8 @@ import spire.implicits._
 import spire.algebra.Field
 import org.emergentorder.onnx.Tensors._
 import scala.compiletime.ops.int._
+import io.kjaer.compiletime.Shape
+import org.emergentorder.compiletime.TensorDenotation
 
 package object onnx {
 
@@ -38,16 +40,17 @@ package object onnx {
   }
 
   abstract class Model(onnxBytes: Array[Byte]) extends Operator {
-    def fullModel[
-        T <: Supported
-    , Ax <: Axes](
-        inputs: Tuple
-    ): Tensor[T, Ax]
+   def fullModel[
+      T <: Supported,
+      Tt <: TensorTypeDenotation, Td <: TensorDenotation, S <: Shape
+  ](
+      inputs: Tuple
+  ): Tensor[T, Tuple3[Tt, Td, S]] 
   }
 
   trait Graph
   trait DataSource {
-    def getParams[T <: Supported, Ax <: Axes](name: String): Tensor[T, Ax]
+    def getParams[T <: Supported](name: String): Tensor[T,Tuple3[? <: TensorTypeDenotation,? <: TensorDenotation,? <: Shape]] 
   }
   trait AbsV6 extends Operator {
     def AbsV6[

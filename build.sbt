@@ -1,7 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion = "0.27.0-RC1" //"3.0.0-M1"
+val dottyVersion = "0.27.0-RC1" //"3.0.0-M1"  // Blocks build on Scalapb
 val scala213Version = "2.13.3" // "2.13.4"
 val spireVersion = "0.17.0"
 val scalametaVersion = "4.3.24"
@@ -156,7 +156,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
         )
       case _ =>
         Seq(
-//           "io.kjaer" %% "tf-dotty-compiletime" % "0.0.0+134-f1f8d0ba+20201102-1209-SNAPSHOT",
+//           "io.kjaer" %% "tf-dotty-compiletime" % "0.0.0+50-9271a5d2-SNAPSHOT",
           ("org.typelevel" %%% "spire" % spireVersion).withDottyCompat(dottyVersion),
         )
     }),

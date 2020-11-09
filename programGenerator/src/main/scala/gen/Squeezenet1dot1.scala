@@ -24,7 +24,7 @@ class Squeezenet1dot1(byteArray: Array[Byte]) extends AutoCloseable {
   val Reshape: ReshapeV5         = backend
   val dataSource: DataSource     = bytesDataSource
   type t= "T"
-  type t2 = "T" ##: SSNil
+  type t2 = "T" ##: TSNil
    val t: String with Singleton = "TensorType"
 
    //Denotation progagation not fully working

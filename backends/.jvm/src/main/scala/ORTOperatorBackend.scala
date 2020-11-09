@@ -30,7 +30,7 @@ trait ORTOperatorBackend
     env.createSession(bytes) //, session_options)
   }
 
-  def runModel[T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorDenotation, S <: Shape](
+  def runModel[T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
       sess: OrtSession,
       input_tensor_values: Array[OnnxTensor],
       inputNames: List[String],
@@ -43,14 +43,14 @@ trait ORTOperatorBackend
       val firstOut = output_tensor.get(0).asInstanceOf[OnnxTensor]
       val shape = firstOut.getInfo.getShape.map(_.toInt) 
       //TODO: Denotations
-      val result: Tensor[T, Tuple3[Tt, Td, S]] = Tensor(getArrayFromOnnxTensor(firstOut), "???", "???" ##: SSNil, Shape.fromSeq(shape)).asInstanceOf[Tensor[T,Tuple3[Tt, Td, S]]] //dangerous
+      val result: Tensor[T, Tuple3[Tt, Td, S]] = Tensor(getArrayFromOnnxTensor(firstOut), "???", "???" ##: TSNil, Shape.fromSeq(shape)).asInstanceOf[Tensor[T,Tuple3[Tt, Td, S]]] //dangerous
       result
   }
     
 // def cachedSess(bytes: Array[Byte]) = sessionCache.computeIfAbsent(java.util.Arrays.hashCode(bytes), _ => getSession(bytes))
 
   def callByteArrayOp[
-      T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorDenotation, S <: Shape]( 
+      T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape]( 
       opModel: Array[Byte],
       inputs: Tuple
   ): Tensor[T, Tuple3[Tt, Td, S]] = {
@@ -82,7 +82,7 @@ trait ORTOperatorBackend
   } 
 
   def callOp[
-      T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorDenotation, S <: Shape](
+      T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
       name: String,
       opName: String,
       inputs: Tuple,

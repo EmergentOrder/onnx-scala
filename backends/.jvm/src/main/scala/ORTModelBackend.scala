@@ -34,7 +34,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
 
   override def fullModel[
       T <: Supported,
-      Tt <: TensorTypeDenotation, Td <: TensorDenotation, S <: Shape
+      Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape
   ](
       inputs: Tuple
     ): Tensor[T, Tuple3[Tt, Td, S]] = {

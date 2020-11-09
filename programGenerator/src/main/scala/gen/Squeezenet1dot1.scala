@@ -11,6 +11,7 @@ import spire.math.UShort
 import spire.math.Complex
 import spire.math.Numeric
 import org.emergentorder.compiletime._
+import io.kjaer.compiletime._
 //TODO: Make this work with typed shapes
 class Squeezenet1dot1(byteArray: Array[Byte]) extends AutoCloseable {
   val backend                    = new ORTOperatorBackendAll()
@@ -23,66 +24,67 @@ class Squeezenet1dot1(byteArray: Array[Byte]) extends AutoCloseable {
   val AveragePool: AveragePoolV7 = backend
   val Reshape: ReshapeV5         = backend
   val dataSource: DataSource     = bytesDataSource
-  type t= "T"
-  type t2 = "T" ##: TSNil
+  type Tt= "T"
+  type Td = "T" ##: TSNil
+  type S = 1 #: 3 #: 224 #: 224 #: SNil
    val t: String with Singleton = "TensorType"
 
-   //Denotation progagation not fully working
-  def program[Ax <: Axes](inputDatadata: Tensor[Float, Ax]): Tensor[Float,?] = {
+   //Will fail at runtime because we didn't specify param shapes correctly here
+  def program[T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape,Tt1<: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](inputDatadata: Tensor[Float, (Tt, Td, S)])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[Float,(TensorTypeDenotation,TensorShapeDenotation,Shape)] = {
     val nodedata                      = inputDatadata
-    val nodesqueezenet0_conv0_weight  = dataSource.getParams[Float]("squeezenet0_conv0_weight")
-    val nodesqueezenet0_conv0_bias    = dataSource.getParams[Float]("squeezenet0_conv0_bias")
-    val nodesqueezenet0_conv1_weight  = dataSource.getParams[Float]("squeezenet0_conv1_weight")
-    val nodesqueezenet0_conv1_bias    = dataSource.getParams[Float]("squeezenet0_conv1_bias")
-    val nodesqueezenet0_conv2_weight  = dataSource.getParams[Float]("squeezenet0_conv2_weight")
-    val nodesqueezenet0_conv2_bias    = dataSource.getParams[Float]("squeezenet0_conv2_bias")
-    val nodesqueezenet0_conv3_weight  = dataSource.getParams[Float]("squeezenet0_conv3_weight")
-    val nodesqueezenet0_conv3_bias    = dataSource.getParams[Float]("squeezenet0_conv3_bias")
-    val nodesqueezenet0_conv4_weight  = dataSource.getParams[Float]("squeezenet0_conv4_weight")
-    val nodesqueezenet0_conv4_bias    = dataSource.getParams[Float]("squeezenet0_conv4_bias")
-    val nodesqueezenet0_conv5_weight  = dataSource.getParams[Float]("squeezenet0_conv5_weight")
-    val nodesqueezenet0_conv5_bias    = dataSource.getParams[Float]("squeezenet0_conv5_bias")
-    val nodesqueezenet0_conv6_weight  = dataSource.getParams[Float]("squeezenet0_conv6_weight")
-    val nodesqueezenet0_conv6_bias    = dataSource.getParams[Float]("squeezenet0_conv6_bias")
-    val nodesqueezenet0_conv7_weight  = dataSource.getParams[Float]("squeezenet0_conv7_weight")
-    val nodesqueezenet0_conv7_bias    = dataSource.getParams[Float]("squeezenet0_conv7_bias")
-    val nodesqueezenet0_conv8_weight  = dataSource.getParams[Float]("squeezenet0_conv8_weight")
-    val nodesqueezenet0_conv8_bias    = dataSource.getParams[Float]("squeezenet0_conv8_bias")
-    val nodesqueezenet0_conv9_weight  = dataSource.getParams[Float]("squeezenet0_conv9_weight")
-    val nodesqueezenet0_conv9_bias    = dataSource.getParams[Float]("squeezenet0_conv9_bias")
-    val nodesqueezenet0_conv10_weight = dataSource.getParams[Float]("squeezenet0_conv10_weight")
-    val nodesqueezenet0_conv10_bias   = dataSource.getParams[Float]("squeezenet0_conv10_bias")
-    val nodesqueezenet0_conv11_weight = dataSource.getParams[Float]("squeezenet0_conv11_weight")
-    val nodesqueezenet0_conv11_bias   = dataSource.getParams[Float]("squeezenet0_conv11_bias")
-    val nodesqueezenet0_conv12_weight = dataSource.getParams[Float]("squeezenet0_conv12_weight")
-    val nodesqueezenet0_conv12_bias   = dataSource.getParams[Float]("squeezenet0_conv12_bias")
-    val nodesqueezenet0_conv13_weight = dataSource.getParams[Float]("squeezenet0_conv13_weight")
-    val nodesqueezenet0_conv13_bias   = dataSource.getParams[Float]("squeezenet0_conv13_bias")
-    val nodesqueezenet0_conv14_weight = dataSource.getParams[Float]("squeezenet0_conv14_weight")
-    val nodesqueezenet0_conv14_bias   = dataSource.getParams[Float]("squeezenet0_conv14_bias")
-    val nodesqueezenet0_conv15_weight = dataSource.getParams[Float]("squeezenet0_conv15_weight")
-    val nodesqueezenet0_conv15_bias   = dataSource.getParams[Float]("squeezenet0_conv15_bias")
-    val nodesqueezenet0_conv16_weight = dataSource.getParams[Float]("squeezenet0_conv16_weight")
-    val nodesqueezenet0_conv16_bias   = dataSource.getParams[Float]("squeezenet0_conv16_bias")
-    val nodesqueezenet0_conv17_weight = dataSource.getParams[Float]("squeezenet0_conv17_weight")
-    val nodesqueezenet0_conv17_bias   = dataSource.getParams[Float]("squeezenet0_conv17_bias")
-    val nodesqueezenet0_conv18_weight = dataSource.getParams[Float]("squeezenet0_conv18_weight")
-    val nodesqueezenet0_conv18_bias   = dataSource.getParams[Float]("squeezenet0_conv18_bias")
-    val nodesqueezenet0_conv19_weight = dataSource.getParams[Float]("squeezenet0_conv19_weight")
-    val nodesqueezenet0_conv19_bias   = dataSource.getParams[Float]("squeezenet0_conv19_bias")
-    val nodesqueezenet0_conv20_weight = dataSource.getParams[Float]("squeezenet0_conv20_weight")
-    val nodesqueezenet0_conv20_bias   = dataSource.getParams[Float]("squeezenet0_conv20_bias")
-    val nodesqueezenet0_conv21_weight = dataSource.getParams[Float]("squeezenet0_conv21_weight")
-    val nodesqueezenet0_conv21_bias   = dataSource.getParams[Float]("squeezenet0_conv21_bias")
-    val nodesqueezenet0_conv22_weight = dataSource.getParams[Float]("squeezenet0_conv22_weight")
-    val nodesqueezenet0_conv22_bias   = dataSource.getParams[Float]("squeezenet0_conv22_bias")
-    val nodesqueezenet0_conv23_weight = dataSource.getParams[Float]("squeezenet0_conv23_weight")
-    val nodesqueezenet0_conv23_bias   = dataSource.getParams[Float]("squeezenet0_conv23_bias")
-    val nodesqueezenet0_conv24_weight = dataSource.getParams[Float]("squeezenet0_conv24_weight")
-    val nodesqueezenet0_conv24_bias   = dataSource.getParams[Float]("squeezenet0_conv24_bias")
-    val nodesqueezenet0_conv25_weight = dataSource.getParams[Float]("squeezenet0_conv25_weight")
-    val nodesqueezenet0_conv25_bias   = dataSource.getParams[Float]("squeezenet0_conv25_bias")
-    val nodereshape_attr_tensor118    = dataSource.getParams[Long]("reshape_attr_tensor118")
+    val nodesqueezenet0_conv0_weight  = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv0_weight")
+    val nodesqueezenet0_conv0_bias    = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv0_bias")
+    val nodesqueezenet0_conv1_weight  = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv1_weight")
+    val nodesqueezenet0_conv1_bias    = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv1_bias")
+    val nodesqueezenet0_conv2_weight  = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv2_weight")
+    val nodesqueezenet0_conv2_bias    = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv2_bias")
+    val nodesqueezenet0_conv3_weight  = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv3_weight")
+    val nodesqueezenet0_conv3_bias    = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv3_bias")
+    val nodesqueezenet0_conv4_weight  = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv4_weight")
+    val nodesqueezenet0_conv4_bias    = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv4_bias")
+    val nodesqueezenet0_conv5_weight  = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv5_weight")
+    val nodesqueezenet0_conv5_bias    = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv5_bias")
+    val nodesqueezenet0_conv6_weight  = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv6_weight")
+    val nodesqueezenet0_conv6_bias    = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv6_bias")
+    val nodesqueezenet0_conv7_weight  = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv7_weight")
+    val nodesqueezenet0_conv7_bias    = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv7_bias")
+    val nodesqueezenet0_conv8_weight  = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv8_weight")
+    val nodesqueezenet0_conv8_bias    = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv8_bias")
+    val nodesqueezenet0_conv9_weight  = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv9_weight")
+    val nodesqueezenet0_conv9_bias    = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv9_bias")
+    val nodesqueezenet0_conv10_weight = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv10_weight")
+    val nodesqueezenet0_conv10_bias   = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv10_bias")
+    val nodesqueezenet0_conv11_weight = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv11_weight")
+    val nodesqueezenet0_conv11_bias   = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv11_bias")
+    val nodesqueezenet0_conv12_weight = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv12_weight")
+    val nodesqueezenet0_conv12_bias   = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv12_bias")
+    val nodesqueezenet0_conv13_weight = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv13_weight")
+    val nodesqueezenet0_conv13_bias   = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv13_bias")
+    val nodesqueezenet0_conv14_weight = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv14_weight")
+    val nodesqueezenet0_conv14_bias   = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv14_bias")
+    val nodesqueezenet0_conv15_weight = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv15_weight")
+    val nodesqueezenet0_conv15_bias   = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv15_bias")
+    val nodesqueezenet0_conv16_weight = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv16_weight")
+    val nodesqueezenet0_conv16_bias   = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv16_bias")
+    val nodesqueezenet0_conv17_weight = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv17_weight")
+    val nodesqueezenet0_conv17_bias   = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv17_bias")
+    val nodesqueezenet0_conv18_weight = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv18_weight")
+    val nodesqueezenet0_conv18_bias   = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv18_bias")
+    val nodesqueezenet0_conv19_weight = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv19_weight")
+    val nodesqueezenet0_conv19_bias   = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv19_bias")
+    val nodesqueezenet0_conv20_weight = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv20_weight")
+    val nodesqueezenet0_conv20_bias   = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv20_bias")
+    val nodesqueezenet0_conv21_weight = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv21_weight")
+    val nodesqueezenet0_conv21_bias   = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv21_bias")
+    val nodesqueezenet0_conv22_weight = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv22_weight")
+    val nodesqueezenet0_conv22_bias   = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv22_bias")
+    val nodesqueezenet0_conv23_weight = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv23_weight")
+    val nodesqueezenet0_conv23_bias   = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv23_bias")
+    val nodesqueezenet0_conv24_weight = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv24_weight")
+    val nodesqueezenet0_conv24_bias   = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv24_bias")
+    val nodesqueezenet0_conv25_weight = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv25_weight")
+    val nodesqueezenet0_conv25_bias   = dataSource.getParams[Float, Tt, Td, S]("squeezenet0_conv25_bias")
+    val nodereshape_attr_tensor118    = dataSource.getParams[Long, Tt, Td, S]("reshape_attr_tensor118")
     val nodesqueezenet0_conv0_fwd = Conv
       .ConvV1(
         "squeezenet0_conv0_fwd",

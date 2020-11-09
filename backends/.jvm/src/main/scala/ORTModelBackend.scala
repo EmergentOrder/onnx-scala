@@ -8,7 +8,7 @@ import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.Tensors.Tensor._
 import org.emergentorder.compiletime._
-import io.kjaer.compiletime.Shape
+import io.kjaer.compiletime._
 
 import ORTTensorUtils._
 
@@ -37,7 +37,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
       Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape
   ](
       inputs: Tuple
-    ): Tensor[T, Tuple3[Tt, Td, S]] = {
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
 
         val size = inputs.size
         val inputTensors = (0 until size).map { i =>

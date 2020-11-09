@@ -24,4 +24,4 @@ object TensorShapeDenotationOf {
     TensorShapeDenotationOf(head.value ##: tail.value)
 }
 
-inline def tensorShapeDenotationOf[S <: TensorShapeDenotation](using s: TensorShapeDenotationOf[S]): S = s.value
+inline def tensorShapeDenotationOf[Td <: TensorShapeDenotation](using td: TensorShapeDenotationOf[Td]): Td = td.value

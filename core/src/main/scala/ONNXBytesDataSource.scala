@@ -15,14 +15,14 @@ class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends AutoCloseable with Dat
   
   //TODO: produce tensors with axes derived from denotations
   //TODO: return non-tensor params
-  override def getParams[T <: Supported](name: String): Tensor[T,Tuple3[? <: TensorTypeDenotation,? <: TensorDenotation,? <: Shape]] = {
-
-  val typeDenotation: TensorTypeDenotation = "TEMP"
+  override def getParams[T <: Supported](name: String): Tensor[T,Tuple3[TensorTypeDenotation,TensorDenotation,Shape]] = {
+ 
+  val tensorTypeDenotation: TensorTypeDenotation = "TEMP"
   val tensorDenotation: TensorDenotation = "TEMP" ##: SSNil
 
     val params = onnxHelper.params.filter(x => x._1 == name).headOption
     params match {
-      case Some(x) => Tensor.create(x._3.asInstanceOf[Array[T]], typeDenotation, tensorDenotation, x._4)
+      case Some(x) => Tensor(x._3.asInstanceOf[Array[T]],tensorTypeDenotation, tensorDenotation, Shape.fromSeq(x._4))
       case None =>
         throw new Exception("No params found for param name: " + name)
     }

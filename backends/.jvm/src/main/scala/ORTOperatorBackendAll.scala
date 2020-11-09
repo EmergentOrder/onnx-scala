@@ -23,11 +23,9 @@ class ORTOperatorBackendAll
     with AveragePoolV7
     with AveragePoolV10
 //    with AveragePoolV11 //Missing from ONNX.js
-    with BatchNormalizationV7
     with BatchNormalizationV9
 //    with BinarizerV1 //ONNX ML, not tested for in scoreboard
 //    with BitShiftV11 //not supported in ONNX.js
-    with CastV6
     with CastV9
 //    with CastMapV1 //ONNX ML, not tested for in scoreboard
 //    with CategoryMapperV1 //ONNX ML, not tested for in scoreboard
@@ -37,11 +35,9 @@ class ORTOperatorBackendAll
     with ClipV6
 //    with ClipV11 //not supported in ONNX.js
 //    with CompressV11 
-    with ConcatV4 //Retained for Squeezenet v1.1
     with ConcatV11
 //    with ConcatFromSequenceV11
-    with ConstantV9
-    with ConstantV11
+//    with ConstantV11 //Not supported in ONNX.js
 //    with ConstantOfShapeV9 
     with ConvV1 //Retained for Squeezenet v1.1
     with ConvV11
@@ -55,8 +51,7 @@ class ORTOperatorBackendAll
 //    with DetV11
 //    with DictVectorizerV1 //ONNX ML, not tested for in scoreboard
     with DivV7
-    with DropoutV7
-    with DropoutV10
+    with DropoutV7 
     with DropoutV12
 //    with DynamicQuantizeLinearV11
 // with EinsumV12 //new in 1.7.0
@@ -73,8 +68,6 @@ class ORTOperatorBackendAll
     with GatherV11
 //    with GatherElementsV11
 //    with GatherNDV11
-    with GemmV7
-    with GemmV9
     with GemmV11
     with GlobalAveragePoolV1
 //    with GlobalLpPoolV2 //fails in scoreboard
@@ -130,7 +123,6 @@ class ORTOperatorBackendAll
 //    with OneHotV11
 //    with OneHotEncoderV1 //ONNX ML, not tested in scoreboard
     with OrV7
-    with PReluV7
     with PReluV9
     with PadV11
     with PowV7
@@ -186,7 +178,6 @@ class ORTOperatorBackendAll
     with SinV7
     with SinhV9
 //    with SizeV1
-    with SliceV10
     with SliceV11
 //    with SoftmaxV1
     with SoftmaxV11
@@ -201,7 +192,6 @@ class ORTOperatorBackendAll
     with SqueezeV11
 //    with StringNormalizerV10
     with SubV7
-    with SumV6
     with SumV8
     with TanV7
     with TanhV6

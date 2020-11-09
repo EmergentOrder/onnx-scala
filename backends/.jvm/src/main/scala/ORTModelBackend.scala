@@ -37,10 +37,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
       Tt <: TensorTypeDenotation, Td <: TensorDenotation, S <: Shape
   ](
       inputs: Tuple
-  ): Tensor[T, Tuple3[Tt, Td, S]] = {
-
-
-
+    ): Tensor[T, Tuple3[Tt, Td, S]] = {
 
         val size = inputs.size
         val inputTensors = (0 until size).map { i =>
@@ -48,19 +45,19 @@ class ORTModelBackend(onnxBytes: Array[Byte])
           tup match {
             case t: Tuple1[_] =>
               t(0) match {
-                case tens: Tensor[T,(Tt, Td, S)] => getOnnxTensor(tens.data, tens.shape, env)
+                case tens: Tensor[T, Tuple3[Tt, Td, S]] => getOnnxTensor(tens.data, tens.shape, env)
               }
           }
         }.toArray
 
-        val output = runModel(
+        val output = runModel[T, Tt, Td, S](
           session,
           inputTensors,
           allNodeNamesAndDims._1,
           allNodeNamesAndDims._3
         )
 
-        output.asInstanceOf[Tensor[T, Tuple3[Tt, Td, S]]]
+        output //.asInstanceOf[Tensor[T, Tuple3[Tt, Td, S]]]
   }
 
   override def close(): Unit = {

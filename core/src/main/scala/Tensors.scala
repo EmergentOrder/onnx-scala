@@ -19,47 +19,12 @@ object Tensors{
   type Supported = Int | Long | Float | Double | Byte | Short | UByte | UShort | UInt | ULong | 
                    Boolean | String | Float16 | Complex[Float] | Complex[Double]
 
-  type TensorTypeDenotation = String with Singleton
-
-//  type VecDenotation[I <: DimensionDenotation] = I #: SNil
-//  type MatDenotation[I <: DimensionDenotation, J <: DimensionDenotation] = I #: J #: SNil
-//  type TensorRank3Denotation[I <: DimensionDenotation, J <: DimensionDenotation, K <: DimensionDenotation] = I #: J #: K #: SNil
-//  type TensorRank4Denotation[I <: DimensionDenotation, J <: DimensionDenotation, K <: DimensionDenotation, L <: DimensionDenotation] = I #: J #: K #: L #: SNil
-
-//  type Dimension = Int with Singleton
-  type VecShape[I <: Dimension] = I #: SNil
-  type MatShape[I <: Dimension, J <: Dimension] = I #: J #: SNil
-  type TensorRank3Shape[I <: Dimension, J <: Dimension, K <: Dimension] = I #: J #: K #: SNil
-  type TensorRank4Shape[I <: Dimension, J <: Dimension, K <: Dimension, L <: Dimension] = I #: J #: K #: L #: SNil
+  type TensorTypeDenotation = String & Singleton
 
 //  case class Axes(ttd: TensorTypeDenotation,td: TensorDenotation, shape: Shape)
   type Axes = Tuple3[TensorTypeDenotation, TensorDenotation, Shape]
 
-//  type Axes = DenotedTensor[? <: TensorTypeDenotation, ? <: TensorDenotation, ? <: Shape]
 
-  /*
-  //TODO: use "super" trait here, to avoid incorrect type inference, and remove NEQ checks in NDScala
-  sealed trait Axes
-  sealed case class Undefined() extends Axes
-  sealed case class Scalar[T <: TensorTypeDenotation, D <: DimensionDenotation]()                             extends Axes
-  sealed case class Vec[T <: TensorTypeDenotation, D <: DimensionDenotation, Q <: Shape](i: Dimension) extends Axes
-  sealed case class Mat[T <: TensorTypeDenotation, D <: DimensionDenotation, D1 <: DimensionDenotation, Q <: Shape](i: Dimension, j: Dimension)
-      extends Axes
-
-  sealed case class TensorRank3[T <: TensorTypeDenotation, D <: DimensionDenotation, D1 <: DimensionDenotation, D2 <: DimensionDenotation, Q <: Shape](
-    i:Dimension,
-    j:Dimension,
-    k:Dimension
-) extends Axes
-
-  sealed case class TensorRank4[T <: TensorTypeDenotation, D <: DimensionDenotation, D1 <: DimensionDenotation, D2 <: DimensionDenotation, D3 <: DimensionDenotation,
-  Q <: Shape](
-    i:Dimension,
-    j:Dimension,
-    k:Dimension,
-    l:Dimension
-) extends Axes
-*/
   //Need this alias to not conflict with other Tensors
   type Tensor[T <: Supported, Ax <: Axes] = OSTensor[T, Ax]  //(Array[T], Array[Int])
 
@@ -88,6 +53,7 @@ object Tensors{
 //TODO: restore requires
 //
 //TODO: opaque
+//TODO: Benchmark Array[T] vs ArraySeq[T] vs IArray[T]
   type OSTensor[T <: Supported, Ax <: Axes] = Tuple2[Array[T], Ax]
 
   object Tensor {
@@ -103,13 +69,14 @@ object Tensors{
   }
     def apply[T <: Supported : scala.reflect.ClassTag, Tt <: TensorTypeDenotation](element: T, tt: Tt): OSTensor[T, Tuple3[Tt, org.emergentorder.compiletime.SSNil, SNil]] = tensorRequires((Array[T](element), (tt, org.emergentorder.compiletime.SSNil, SNil))) 
 
-    def apply[T <: Supported, Tt <: TensorTypeDenotation, TD <: TensorDenotation, S <: Shape](arr: Array[T],tt: Tt, td0: TD, d0: S): OSTensor[T, Tuple3[Tt, TD, S]] = tensorRequires((arr, (tt, td0, d0)))
-
+    def apply[T <: Supported, Tt <: TensorTypeDenotation, TD <: TensorDenotation, S <: Shape](arr: Array[T], tt0: Tt, td0: TD, d0: S): OSTensor[T, Tuple3[Tt, TD, S]] = tensorRequires((arr, (tt0, td0, d0)))
+/*
     //InstanceOf
-    def create[T <: Supported, Tt <: TensorTypeDenotation, TD <: TensorDenotation](arr: Array[T],tt: Tt, td: TD, shape: Array[Int]): OSTensor[T, (Tt, TD, ? <: Shape)] = {
+    def create[T <: Supported, Tt <: TensorTypeDenotation, TD <: TensorDenotation, S <: Shape](arr: Array[T],tt: Tt, td: TD, shape: Array[Int]): OSTensor[T, (Tt, TD, S)] = {
 
       apply(arr, tt, td, Shape.fromSeq(shape))
     
     }
+    */
   }
 }

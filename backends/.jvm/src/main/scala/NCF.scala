@@ -13,6 +13,7 @@ import spire.math.Numeric
 import scala.language.higherKinds
 import scala.io.Source
 import org.emergentorder.compiletime._
+import io.kjaer.compiletime._
 
 //TODO: Add changes to generator; Generate both full model and layerwise programs each time
 class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[Long, Long])
@@ -31,16 +32,15 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
       inputDataactual_input_1._2)
     )
 
+    val tensorType: String with Singleton = "TensorType"
     val nodelearned_0 = Tuple1((inputDatalearned_0._1.map(y => itemIdsMap(y)), inputDatalearned_0._2))
 
     //Note: Don't need to specify all the type params except in Dotty
     val nodeFullOutput: Tensor[Float, ?] =
       fullORTBackend
-        .fullModel(
+        .fullModel[Float, "TensorType", "DimensionDenotation" ##: SSNil, 1 #: 1000 #: SNil](
           //TODO: testing less than enough inputs
-          (nodeactual_input_1),
-          "TensorType",
-          "DimensionDenotation" ##: SSNil
+          (nodeactual_input_1) 
         )
         
 

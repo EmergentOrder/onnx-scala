@@ -18,14 +18,17 @@ class Squeezenet1dot1(byteArray: Array[Byte]) extends AutoCloseable {
   val Conv: ConvV1               = backend
   val Relu: ReluV6               = backend
   val MaxPool: MaxPoolV1         = backend
-  val Concat: ConcatV4           = backend
+  val Concat: ConcatV11           = backend
   val Dropout: DropoutV7         = backend
   val AveragePool: AveragePoolV7 = backend
   val Reshape: ReshapeV5         = backend
   val dataSource: DataSource     = bytesDataSource
   type t= "T"
   type t2 = "T" ##: SSNil
-  def program[Ax <: Axes](inputDatadata: Tensor[Float, Ax]): Tensor[Float,Ax] = {
+   val t: String with Singleton = "TensorType"
+
+   //Denotation progagation not fully working
+  def program[Ax <: Axes](inputDatadata: Tensor[Float, Ax]): Tensor[Float,?] = {
     val nodedata                      = inputDatadata
     val nodesqueezenet0_conv0_weight  = dataSource.getParams[Float]("squeezenet0_conv0_weight")
     val nodesqueezenet0_conv0_bias    = dataSource.getParams[Float]("squeezenet0_conv0_bias")
@@ -149,7 +152,7 @@ class Squeezenet1dot1(byteArray: Array[Byte]) extends AutoCloseable {
     val nodesqueezenet0_relu3_fwd =
       Relu.ReluV6("squeezenet0_relu3_fwd", X = ((nodesqueezenet0_conv3_fwd)))
     val nodesqueezenet0_concat0 = Concat
-      .ConcatV4(
+      .ConcatV11(
         "squeezenet0_concat0",
         axis = ((1)),
         inputs = (Seq(nodesqueezenet0_relu2_fwd, nodesqueezenet0_relu3_fwd))
@@ -201,7 +204,7 @@ class Squeezenet1dot1(byteArray: Array[Byte]) extends AutoCloseable {
     val nodesqueezenet0_relu6_fwd =
       Relu.ReluV6("squeezenet0_relu6_fwd", X = ((nodesqueezenet0_conv6_fwd)))
     val nodesqueezenet0_concat1 = Concat
-      .ConcatV4(
+      .ConcatV11(
         "squeezenet0_concat1",
         axis = ((1)),
         inputs = (Seq(nodesqueezenet0_relu5_fwd, nodesqueezenet0_relu6_fwd))
@@ -262,7 +265,7 @@ class Squeezenet1dot1(byteArray: Array[Byte]) extends AutoCloseable {
     val nodesqueezenet0_relu9_fwd =
       Relu.ReluV6("squeezenet0_relu9_fwd", X = ((nodesqueezenet0_conv9_fwd)))
     val nodesqueezenet0_concat2 = Concat
-      .ConcatV4(
+      .ConcatV11(
         "squeezenet0_concat2",
         axis = ((1)),
         inputs = (Seq(nodesqueezenet0_relu8_fwd, nodesqueezenet0_relu9_fwd))
@@ -314,7 +317,7 @@ class Squeezenet1dot1(byteArray: Array[Byte]) extends AutoCloseable {
     val nodesqueezenet0_relu12_fwd =
       Relu.ReluV6("squeezenet0_relu12_fwd", X = ((nodesqueezenet0_conv12_fwd)))
     val nodesqueezenet0_concat3 = Concat
-      .ConcatV4(
+      .ConcatV11(
         "squeezenet0_concat3",
         axis = ((1)),
         inputs = (Seq(nodesqueezenet0_relu11_fwd, nodesqueezenet0_relu12_fwd))
@@ -375,7 +378,7 @@ class Squeezenet1dot1(byteArray: Array[Byte]) extends AutoCloseable {
     val nodesqueezenet0_relu15_fwd =
       Relu.ReluV6("squeezenet0_relu15_fwd", X = ((nodesqueezenet0_conv15_fwd)))
     val nodesqueezenet0_concat4 = Concat
-      .ConcatV4(
+      .ConcatV11(
         "squeezenet0_concat4",
         axis = ((1)),
         inputs = (Seq(nodesqueezenet0_relu14_fwd, nodesqueezenet0_relu15_fwd))
@@ -427,7 +430,7 @@ class Squeezenet1dot1(byteArray: Array[Byte]) extends AutoCloseable {
     val nodesqueezenet0_relu18_fwd =
       Relu.ReluV6("squeezenet0_relu18_fwd", X = ((nodesqueezenet0_conv18_fwd)))
     val nodesqueezenet0_concat5 = Concat
-      .ConcatV4(
+      .ConcatV11(
         "squeezenet0_concat5",
         axis = ((1)),
         inputs = (Seq(nodesqueezenet0_relu17_fwd, nodesqueezenet0_relu18_fwd))
@@ -479,7 +482,7 @@ class Squeezenet1dot1(byteArray: Array[Byte]) extends AutoCloseable {
     val nodesqueezenet0_relu21_fwd =
       Relu.ReluV6("squeezenet0_relu21_fwd", X = ((nodesqueezenet0_conv21_fwd)))
     val nodesqueezenet0_concat6 = Concat
-      .ConcatV4(
+      .ConcatV11(
         "squeezenet0_concat6",
         axis = ((1)),
         inputs = (Seq(nodesqueezenet0_relu20_fwd, nodesqueezenet0_relu21_fwd))
@@ -531,7 +534,7 @@ class Squeezenet1dot1(byteArray: Array[Byte]) extends AutoCloseable {
     val nodesqueezenet0_relu24_fwd =
       Relu.ReluV6("squeezenet0_relu24_fwd", X = ((nodesqueezenet0_conv24_fwd)))
     val nodesqueezenet0_concat7 = Concat
-      .ConcatV4(
+      .ConcatV11(
         "squeezenet0_concat7",
         axis = ((1)),
         inputs = (Seq(nodesqueezenet0_relu23_fwd, nodesqueezenet0_relu24_fwd))

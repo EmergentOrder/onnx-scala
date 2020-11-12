@@ -13,6 +13,8 @@ import io.kjaer.compiletime._
 import org.emergentorder.compiletime.DimensionDenotation
 import org.emergentorder.compiletime.TensorShapeDenotation
 import org.emergentorder.compiletime.tensorShapeDenotationOf
+import org.emergentorder.compiletime.TSNil
+import org.emergentorder.compiletime.##:
 
 object Tensors{
 
@@ -26,57 +28,38 @@ object Tensors{
 
 
   //Need this alias to not conflict with other Tensors
-  type Tensor[T <: Supported, Ax <: Axes] = OSTensor[T, Ax]  //(Array[T], Array[Int])
+  opaque type Tensor[T <: Supported, Ax <: Axes] = Tuple2[Array[T], Ax]
 
   type SparseTensor[T <: Supported, A <: Axes] = Tensor[T, A]
 
+  //TODO: shapes to longs
+  //TODO: Ensure denotation size matches shape size
   //TODO: random nd access
-  //Supports up to tensor rank 4 right now
-  //TODO: use IArray ?
-  //
-//  case class OSTensor[T <: Supported, A <: Axes](data: Array[T], axes: A){
-//    val _1: Array[T] = data
-/*
-    val _2: Array[Int] = axes match {
-      case Scalar => Array()
-      case Vec(i) => Array(i)
-      case Mat(i, j) => Array(i,j)
-      case TensorRank3(i,j,k) => Array(i,j,k) 
-      case TensorRank4(i,j,k,l) => Array(i,j,k,l)
-      case _ => ???
-    }
-*/
-      //Array(dim0,dim1,dim2).map(_.asInstanceOf[Option[Int]]).flatten
-  //  require(_2.size <= 4)
-  //  require(data.size == _2.foldLeft(1)(_ * _)) 
-//  }
-//TODO: restore requires
-//
-//TODO: opaque
-//TODO: Benchmark Array[T] vs ArraySeq[T] vs IArray[T]
-  type OSTensor[T <: Supported, Ax <: Axes] = Tuple2[Array[T], Ax]
+  //TODO: opaque
+  //TODO: Benchmark Array[T] vs ArraySeq[T] vs IArray[T]
+  //type OSTensor[T <: Supported, Ax <: Axes] = Tuple2[Array[T], Ax]
 
   object Tensor {
-    extension[T <: Supported,  Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](tens: OSTensor[T,Tuple3[Tt, Td, S]]) def data = tens._1
+    extension[T <: Supported,  Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](tens: Tensor[T,Tuple3[Tt, Td, S]]) def data = tens._1
 //    def apply[T <: Supported] (elem: T): OSTensor[T, Scalar] = new OSTensor[T, ?](Array(elem), Scalar())
 
-    extension[T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](tens: OSTensor[T,Tuple3[Tt, Td, S]]) def shape: Array[Int] = tens._2._3.toSeq.toArray 
+    extension[T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](tens: Tensor[T,Tuple3[Tt, Td, S]]) def shape: Array[Int] = tens._2._3.toSeq.toArray 
       
-  def tensorRequires[T <: Supported,  Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](tens: OSTensor[T,Tuple3[Tt,Td,S]]): OSTensor[T,Tuple3[Tt, Td, S]] = {
+  def tensorRequires[T <: Supported,  Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](tens: Tensor[T,Tuple3[Tt,Td,S]]): Tensor[T,Tuple3[Tt, Td, S]] = {
     require(tens.shape.size <= 4)
     require(tens._1.size == tens.shape.foldLeft(1)(_ * _))
     tens
   }
-    def apply[T <: Supported : scala.reflect.ClassTag, Tt <: TensorTypeDenotation](element: T, tt: Tt): OSTensor[T, Tuple3[Tt, org.emergentorder.compiletime.TSNil, SNil]] = tensorRequires((Array[T](element), (tt, org.emergentorder.compiletime.TSNil, SNil))) 
+    def apply[T <: Supported : scala.reflect.ClassTag, Tt <: TensorTypeDenotation](element: T, tt: Tt): Tensor[T, Tuple3[Tt, org.emergentorder.compiletime.TSNil, SNil]] = tensorRequires((Array[T](element), (tt, org.emergentorder.compiletime.TSNil, SNil))) 
 
-    def apply[T <: Supported, Tt <: TensorTypeDenotation, TD <: TensorShapeDenotation, S <: Shape](arr: Array[T], tt0: Tt, td0: TD, d0: S): OSTensor[T, Tuple3[Tt, TD, S]] = tensorRequires((arr, (tt0, td0, d0)))
-/*
-    //InstanceOf
-    def create[T <: Supported, Tt <: TensorTypeDenotation, TD <: TensorShapeDenotation, S <: Shape](arr: Array[T],tt: Tt, td: TD, shape: Array[Int]): OSTensor[T, (Tt, TD, S)] = {
+    def apply[T <: Supported, Tt <: TensorTypeDenotation, TD <: TensorShapeDenotation, S <: Shape](arr: Array[T], tt0: Tt, td0: TD, d0: S): Tensor[T, Tuple3[Tt, TD, S]] = tensorRequires((arr, (tt0, td0, d0)))
 
-      apply(arr, tt, td, Shape.fromSeq(shape))
-    
-    }
-    */
+
+    def apply[T <: Supported : scala.reflect.ClassTag](element: T): Tensor[T, Tuple3["", org.emergentorder.compiletime.TSNil, SNil]] = tensorRequires((Array[T](element), ("", org.emergentorder.compiletime.TSNil, SNil))) 
+
+    def apply[T <: Supported, TD <: TensorShapeDenotation, S <: Shape](arr: Array[T], td0: TD, d0: S): Tensor[T, Tuple3["", TD, S]] = tensorRequires((arr, ("", td0, d0)))
+
+    def apply[T <: Supported, S <: Shape](arr: Array[T], d0: S): Tensor[T, Tuple3["", "" ##: TSNil, S]] = tensorRequires((arr, ("", "" ##: TSNil, d0)))
+
   }
 }

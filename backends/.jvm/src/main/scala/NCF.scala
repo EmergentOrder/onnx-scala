@@ -23,20 +23,20 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
   val fullORTBackend = new ORTModelBackend(byteArray)
 
   def fullNCF(
-      inputDataactual_input_1: Tensor[Long, ?],
-      inputDatalearned_0: Tensor[Long, ?]
-  ): Tensor[Float, ?] = {
+      inputDataactual_input_1: Tensor[Long, Axes],
+      inputDatalearned_0: Tensor[Long, Axes]
+  ): Tensor[Float, Axes] = {
 //    val scope = new PointerScope()
     val nodeactual_input_1 = Tuple1((
-      inputDataactual_input_1._1.map(y => userIdsMap(y)),
-      inputDataactual_input_1._2)
+      inputDataactual_input_1.data.map(y => userIdsMap(y)),
+      inputDataactual_input_1.shape)
     )
 
     val tensorType: String with Singleton = "TensorType"
-    val nodelearned_0 = Tuple1((inputDatalearned_0._1.map(y => itemIdsMap(y)), inputDatalearned_0._2))
+    val nodelearned_0 = Tuple1((inputDatalearned_0.data.map(y => itemIdsMap(y)), inputDatalearned_0.shape))
 
     //Note: Don't need to specify all the type params except in Dotty
-    val nodeFullOutput: Tensor[Float, ?] =
+    val nodeFullOutput: Tensor[Float, Axes] =
       fullORTBackend
         .fullModel[Float, "TensorType", "DimensionDenotation" ##: TSNil, 1 #: 1000 #: SNil](
           //TODO: testing less than enough inputs

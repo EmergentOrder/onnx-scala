@@ -1,6 +1,7 @@
 package org.emergentorder.onnx
 
 //import scala.language.implicitConversions
+import scala.collection.immutable.ArraySeq
 
 import onnx.onnx.ModelProto
 import onnx.onnx.NodeProto
@@ -35,7 +36,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     }
 
     def createIntArrayAttr(x: Array[Int], key: String): AttributeProto = {
-      AttributeProto(name=Some(key),`type`=Some(AttributeProto.AttributeType.INTS),ints=x.map(_.toLong))  
+      AttributeProto(name=Some(key),`type`=Some(AttributeProto.AttributeType.INTS),ints=ArraySeq.unsafeWrapArray(x.map(_.toLong)))
     }
 
     //TODO: more attr types
@@ -59,7 +60,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
           }
       }.toArray.flatten
  
-    val newNode = node.withAttribute(attrProtos)
+    val newNode = node.withAttribute(ArraySeq.unsafeWrapArray(attrProtos))
 
     return newNode
   }
@@ -67,7 +68,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
   //TODO: prevent passing the inputs all the way down here
   protected def createInputValueInfoProto[T <: Supported,  Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](tens: Tensor[T, (Tt, Td, S)], inputName: String): ValueInfoProto = {
 //    node.addInput(inputName)
-    val elemType = tens._1 match {
+    val elemType = tens.data match {
           case b: Array[Byte]   => INT8.index
           case s: Array[Short]  => INT16.index
           case d: Array[Double] => DOUBLE.index
@@ -114,12 +115,12 @@ trait OpToONNXBytesConverter extends AutoCloseable {
           t match {
             case tup: Tuple1[_] => 
               tup(0) match {
-                case opt: Option[Tensor[T, ?]] =>
+                case opt: Option[Tensor[T, Axes]] =>
                 opt match {
                   case Some(in) => {Some((createInputValueInfoProto(in, i.toString), i.toString))}
                   case None => None
                 }
-                case tens: Tensor[T, ?] =>  {Some((createInputValueInfoProto(tens, i.toString), i.toString)
+                case tens: Tensor[T, Axes] =>  {Some((createInputValueInfoProto(tens, i.toString), i.toString)
                                     )}  
               }
           } 

@@ -15,7 +15,7 @@ import org.emergentorder.onnx.Tensors._
 import scala.compiletime.ops.int._
 import io.kjaer.compiletime._
 import org.emergentorder.compiletime._
-
+import org.emergentorder.compiletime.TensorShapeDenotation.Reverse
 package object onnx {
 
 
@@ -2026,13 +2026,13 @@ package object onnx {
     }
   }
 */
-  //TODO: Constraint
+
   trait MatMulV9 extends Operator {
-    def MatMulV9[@sp T <: Float16 | Float | Double | UInt | ULong | Int | Long: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](
+    def MatMulV9[@sp T <: Float16 | Float | Double | UInt | ULong | Int | Long: Numeric, Dim0 <: Dimension, Dim1 <: Dimension, Dim2 <: Dimension, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dim0 #: Dim1 #:SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dim1 #: Dim2 #: SNil](
         name: String,
         A: Tensor[T, Tuple3[Tt,Td,S]],
         B: Tensor[T, Tuple3[Tt1,Td1,S1]]
-    )(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[Dim0 #: Dim2 #: SNil]): Tensor[T, Tuple3[Tt,Td, Dim0 #: Dim2 #: SNil]] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple2(A,B)
       (callOp(name, "MatMul", allInputs, map))
@@ -4250,13 +4250,13 @@ package object onnx {
     }
   }
 */
-  //TODO: Constraint
+
   trait TransposeV1 extends Operator {
     def TransposeV1[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](name: String, perm: Option[(Array[Int])] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String, perm: Option[(Array[Int])] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Reverse[Td]], s: ShapeOf[io.kjaer.compiletime.Shape.Reverse[S]]): Tensor[T, Tuple3[Tt,Reverse[Td],io.kjaer.compiletime.Shape.Reverse[S]]] = {
       val map: Map[String, Any] = Map("perm" -> perm)
       val allInputs             = Tuple1(data)
       (callOp(name, "Transpose", allInputs, map))

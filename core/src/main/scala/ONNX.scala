@@ -14,11 +14,13 @@ import spire.algebra.Field
 import org.emergentorder.onnx.Tensors._
 import scala.compiletime.ops.int._
 import io.kjaer.compiletime._
+import io.kjaer.compiletime.Shape.NumElements
 import org.emergentorder.compiletime._
 import org.emergentorder.compiletime.TensorShapeDenotation.Reverse
 package object onnx {
 
 
+  //TODO: to consider: drop keepdims on reduce ops, allows for correct shape constraint OR handle at type-level, default param singleton types working now
   //TODO to consider: Use existing typeclasses here
   //TODO: Fix propagation behavavior for TensorShapeDenotation 
   //TODO: Push constraints on binary ops using =!= to here
@@ -3242,15 +3244,15 @@ package object onnx {
     }
   }
 
-  //TODO: Constraint, //tf-dotty reshape eligible
-  //(given NumElements[Old] =:= NumElements[New]
+  //TODO: Constraint for shape denotation
+  //
   //+ match types on axes
   trait ReshapeV5 extends Operator {
     def ReshapeV5[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](name: String, data: Tensor[T, Tuple3[Tt,Td,S]], shapeInput: Tensor[Long, Tuple3[Tt1,Td1,S1]])(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](name: String, data: Tensor[T, Tuple3[Tt,Td,S]], shapeInput: Tensor[Long, Tuple3[Tt1,Td1,S1]])(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2], sizeSeq: NumElements[S] =:= NumElements[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple2(data, shapeInput)
       (callOp(name, "Reshape", allInputs, map))
@@ -3763,14 +3765,13 @@ package object onnx {
     }
   }
 */
-  //TODO: Constraint
   trait ShapeV1 extends Operator {
     def ShapeV1[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]: Numeric,
         @sp T1 <: Long: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](name: String, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T1, Tuple3[Tt1,Td1,S1]] = {
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation](name: String, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[io.kjaer.compiletime.Shape.Rank[S] & Dimension #: SNil]): Tensor[T1, Tuple3[Tt1,Td1,io.kjaer.compiletime.Shape.Rank[S] & Dimension #: SNil]] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple1(data)
       (callOp(name, "Shape", allInputs, map))

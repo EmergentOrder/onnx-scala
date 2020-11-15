@@ -2264,18 +2264,18 @@ package object onnx {
       (callOp(name, "MeanSquaredDistance", allInputs, map))
     }
   }
-
+*/
   trait MeanV8 extends Operator {
-    def MeanV8[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
+    def MeanV8[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
-        data_0: Seq[Tensor[T, _]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, _] = {
+        data_0: Seq[Tensor[T, (Tt,Td,S)]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, (Tt,Td,S)] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple.fromArray(data_0.toArray).asInstanceOf[Tuple]
       (callOp(name, "Mean", allInputs, map))
     }
   }
-
+/*
   trait MeanV6 extends Operator {
     def MeanV6[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
         name: String,

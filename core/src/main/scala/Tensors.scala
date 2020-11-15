@@ -31,6 +31,11 @@ object Tensors{
   opaque type Tensor[T <: Supported, Ax <: Axes] = Tuple2[Array[T], Ax]
 
   type SparseTensor[T <: Supported, A <: Axes] = Tensor[T, A]
+ 
+  type KeepOrReduceDims[S <: Shape, Axis <: None.type | Indices, KeepDims <: (Boolean & Singleton)] <: Shape = (KeepDims) match {
+        case true => S
+        case false => Shape.Reduce[S, Axis]
+  }
 
   //TODO: shapes to longs
   //TODO: Ensure denotation size matches shape size

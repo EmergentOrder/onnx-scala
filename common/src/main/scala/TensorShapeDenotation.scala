@@ -5,6 +5,9 @@ package org.emergentorder.compiletime
 import scala.compiletime.S
 import scala.compiletime.ops.int.{+, <, <=, *}
 import scala.compiletime.ops.boolean.&&
+import io.kjaer.compiletime.Index
+import io.kjaer.compiletime.Indices
+import io.kjaer.compiletime.INil
 
 type DimensionDenotation = String & Singleton
 
@@ -77,6 +80,42 @@ object TensorShapeDenotation {
 
   type Tail[X <: TensorShapeDenotation] <: TensorShapeDenotation = X match {
     case _ ##: tail => tail
+  }
+ /**
+   * Represents reduction along axes, as defined in TensorFlow:
+   *
+   *   - None means reduce along all axes
+   *   - List of indices contain which indices in the shape to remove
+   *   - Empty list of indices means reduce along nothing
+   *
+   * @tparam S           Shape to reduce
+   * @tparam Axes        List of indices to reduce along.
+   *                     `one` if reduction should be done along all axes.
+   *                     `SNil` if no reduction should be done.
+   */
+  type Reduce[S <: TensorShapeDenotation, Axes <: None.type | Indices] <: TensorShapeDenotation = Axes match {
+    case None.type => TSNil
+    case Indices => ReduceLoop[S, Axes, 0]
+  }
+
+  /**
+   * Remove indices from a shape
+   *
+   * @tparam RemoveFrom   Shape to remove from
+   * @tparam ToRemove     Indices to remove from `RemoveFrom`
+   * @tparam I            Current index (in the original shape)
+   */
+  protected type ReduceLoop[RemoveFrom <: TensorShapeDenotation, ToRemove <: Indices, I <: Index] <: TensorShapeDenotation = RemoveFrom match {
+    case head ##: tail => Indices.Contains[ToRemove, I] match {
+      case true => ReduceLoop[tail, Indices.RemoveValue[ToRemove, I], S[I]]
+      case false => head ##: ReduceLoop[tail, ToRemove, S[I]]
+    }
+    case TSNil => ToRemove match {
+      case INil => TSNil
+      //     case head :: tail => Error[
+      //         "The following indices are out of bounds: " + Indices.ToString[ToRemove]
+      //     ]
+    }
   }
 
   /**

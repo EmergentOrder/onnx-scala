@@ -37,6 +37,12 @@ object Tensors{
         case false => Shape.Reduce[S, Axis]
   }
 
+  type KeepOrReduceDimDenotations[Td <: TensorShapeDenotation, Axis <: None.type | Indices, KeepDims <: (Boolean & Singleton)] <: TensorShapeDenotation = (KeepDims) match {
+        case true => Td
+        case false => TensorShapeDenotation.Reduce[Td, Axis]
+  }
+
+
   //TODO: shapes to longs
   //TODO: Ensure denotation size matches shape size
   //TODO: random nd access

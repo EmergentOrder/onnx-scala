@@ -3059,17 +3059,17 @@ package object onnx {
     }
   }
 
-  //tf-dotty reduce eligible
+  //TODO: fix the rest of the reduce ops like this one
   trait ReduceMeanV11 extends Operator {
     def ReduceMeanV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: None.type | Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
         axes: Option[(Axis)] = None,
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]]): Tensor[T, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> axes, "keepdims" -> keepdims)
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceMean", allInputs, map))
     }

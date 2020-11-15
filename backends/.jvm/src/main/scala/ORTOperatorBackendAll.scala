@@ -106,7 +106,7 @@ class ORTOperatorBackendAll
 //    with MaxPoolV11 //Missing in ONNX.js
 //    with MaxRoiPoolV1 //fails in scoreboard
 //    with MaxUnpoolV11
-//    with MeanV8 //Missing in ONNX.js, we can use ReduceMean instead
+    with MeanV8 //Missing in ONNX.js, we can use ReduceMean instead
 //    with MeanSquaredDistanceV12
 //    with MeanVarianceNormalizationV9
     with MinV8 //Missing in ONNX.js, but we need it

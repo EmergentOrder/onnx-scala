@@ -1,5 +1,5 @@
 language: scala
 script: 
   - bash get_models.sh
-  - travis_wait sbt +test -J-Xmx5G
+  - travis_wait 30 sbt +test -J-Xmx5G
 #  - sbt docsJVM/mdoc

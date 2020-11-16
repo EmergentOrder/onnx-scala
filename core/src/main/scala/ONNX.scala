@@ -967,11 +967,12 @@ package object onnx {
         @sp T <: Float16 | Float | Double: Numeric,
         @sp T1 <: Float16 | Float | Double | Boolean,
         @sp T2 <: Boolean
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](
         name: String,
         seed: Option[(Int)] = None,
         data: Tensor[T, Tuple3[Tt,Td,S]],
-        ratio: Option[Tensor[T1,Tuple3[Tt1,Td1,S1]]] = None
+        ratio: Option[Tensor[T1,Tuple3[Tt1,Td1,S1]]] = None,
+        training_mode: Option[Tensor[T2, Tuple3[Tt2,Td2,S2]]] = None
     )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
       val map: Map[String, Any] = Map("seed" -> seed)
       val allInputs             = Tuple2(data, ratio)

@@ -30,7 +30,12 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform)
       dottyVersion,
       scala213Version
     ),
-    libraryDependencies += "io.kjaer" %% "tf-dotty-compiletime" % "0.0.0+50-9271a5d2-SNAPSHOT",
+//libraryDependencies ++= (CrossVersion
+//    .partialVersion(scalaVersion.value) match {
+//     case Some((2,_)) => Seq()
+//     case _ => Seq("io.kjaer" %% "tf-dotty-compiletime" % "0.0.0+50-9271a5d2-SNAPSHOT")
+//      }
+//    ), 
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
       case Some((2, 13)) => "TensorShapeDenotation.scala" | "TensorShapeDenotationOf.scala" | "Shape.scala" | "ShapeOf.scala" | "Indices.scala" | "IndicesOf.scala" | "dependent.scala"

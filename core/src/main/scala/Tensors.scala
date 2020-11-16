@@ -1,6 +1,5 @@
 package org.emergentorder.onnx
 
-import scala.reflect.ClassTag
 import spire.math.UByte
 import spire.math.UShort
 import spire.math.UInt
@@ -42,6 +41,20 @@ object Tensors{
         case false => TensorShapeDenotation.Reduce[Td, Axis]
   }
 
+  /*
+  type ConcatLoop[ConcatFromA <: Shape, ConcatFromB <: Shape, ToConcat <: Indices, I <: Index] <: Shape = ConcatFromA match {
+    case head #: tail => Indices.Contains[ConcatFromA, I] match {
+      case true => ReduceLoop[tail, Indices.RemoveValue[ToRemove, I], S[I]]
+      case false => head #: ReduceLoop[tail, ToRemove, S[I]]
+    }
+    case SNil => ToConcat match {
+      case INil => SNil
+      //     case head :: tail => Error[
+      //         "The following indices are out of bounds: " + Indices.ToString[ToRemove]
+      //     ]
+    }
+  }
+*/
 
   //TODO: shapes to longs
   //TODO: Ensure denotation size matches shape size
@@ -58,15 +71,15 @@ object Tensors{
       
   def tensorRequires[T <: Supported,  Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](tens: Tensor[T,Tuple3[Tt,Td,S]]): Tensor[T,Tuple3[Tt, Td, S]] = {
     require(tens.shape.size <= 4)
-    require(tens._1.size == tens.shape.foldLeft(1)(_ * _))
+    require(tens.data.size == tens.shape.foldLeft(1)(_ * _))
     tens
   }
-    def apply[T <: Supported : scala.reflect.ClassTag, Tt <: TensorTypeDenotation](element: T, tt: Tt): Tensor[T, Tuple3[Tt, org.emergentorder.compiletime.TSNil, SNil]] = tensorRequires((Array[T](element), (tt, org.emergentorder.compiletime.TSNil, SNil))) 
+//    def apply[T <: Supported, Tt <: TensorTypeDenotation](element: T, tt: Tt): Tensor[T, Tuple3[Tt, org.emergentorder.compiletime.TSNil, SNil]] = tensorRequires((Array(element), (tt, org.emergentorder.compiletime.TSNil, SNil))) 
 
     def apply[T <: Supported, Tt <: TensorTypeDenotation, TD <: TensorShapeDenotation, S <: Shape](arr: Array[T], tt0: Tt, td0: TD, d0: S): Tensor[T, Tuple3[Tt, TD, S]] = tensorRequires((arr, (tt0, td0, d0)))
 
 
-    def apply[T <: Supported : scala.reflect.ClassTag](element: T): Tensor[T, Tuple3["", org.emergentorder.compiletime.TSNil, SNil]] = tensorRequires((Array[T](element), ("", org.emergentorder.compiletime.TSNil, SNil))) 
+//    def apply[T <: Supported](element: T): Tensor[T, Tuple3["", org.emergentorder.compiletime.TSNil, SNil]] = tensorRequires((Array(element), ("", org.emergentorder.compiletime.TSNil, SNil))) 
 
     def apply[T <: Supported, TD <: TensorShapeDenotation, S <: Shape](arr: Array[T], td0: TD, d0: S): Tensor[T, Tuple3["", TD, S]] = tensorRequires((arr, ("", td0, d0)))
 

@@ -1,7 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion = "0.27.0-RC1" //"3.0.0-M1"  // Blocks build on Scalapb
+val dottyVersion = "3.0.0-M1"
 val scala213Version = "2.13.3" // "2.13.4"
 val spireVersion = "0.17.0"
 val scalametaVersion = "4.3.24"
@@ -17,7 +17,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
-  scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-language:strictEquality"),
+  scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
   autoCompilerPlugins := true,
   sources in (Compile, doc) := Seq(), //Bug w/ Dotty & JS on doc 
 ) ++ sonatypeSettings
@@ -30,6 +30,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform)
       dottyVersion,
       scala213Version
     ),
+    libraryDependencies += "io.kjaer" %% "tf-dotty-compiletime" % "0.0.0+50-9271a5d2-SNAPSHOT",
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
       case Some((2, 13)) => "TensorShapeDenotation.scala" | "TensorShapeDenotationOf.scala" | "Shape.scala" | "ShapeOf.scala" | "Indices.scala" | "IndicesOf.scala" | "dependent.scala"
@@ -48,7 +49,7 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform)
  libraryDependencies -= ("com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion),
 
     libraryDependencies += ("com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion).withDottyCompat(scalaVersion.value),
-    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil }, 
+//    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil }, 
 
 
   PB.targets in Compile := Seq(

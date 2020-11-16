@@ -106,7 +106,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("backends"))
   .dependsOn(core)
 //conditionally enabling/disable based on version, still not working
-//  .enablePlugins(ScalaJSBundlerPlugin) //{ScalablyTypedConverterPlugin})
+  .enablePlugins(ScalaJSBundlerPlugin) //{ScalablyTypedConverterPlugin})
   .settings(
     commonSettings,
     name := "onnx-scala-backends",
@@ -132,9 +132,9 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
     ),
     crossScalaVersions := Seq(dottyVersion, scala213Version)
   ).jvmSettings().jsSettings(
-      scalaJSUseMainModuleInitializer := true) //, //Testing
+      scalaJSUseMainModuleInitializer := true, //, //Testing
 //Seems to be a bundling issue, copying things manually seems to work
-     //npmDependencies in Compile += "onnxjs" -> "0.1.8")
+     npmDependencies in Compile += "onnxjs" -> "0.1.8")
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("core"))

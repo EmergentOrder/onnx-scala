@@ -58,9 +58,14 @@ val imageTensDefaultDenotations = Tensor(data,shape)
 Note that ONNX Tensor content is in row-major order.
 
 ```scala
-val out = squeezenet.fullModel[Float, "ImageNetClassification","Batch" ##: "Class" ##: TSNil,1 #: 1000 #: SNil](Tuple(imageTens))
+val out = squeezenet.fullModel[Float, 
+                               "ImageNetClassification",
+                               "Batch" ##: "Class" ##: TSNil,
+                               1 #: 1000 #: SNil](Tuple(imageTens))
 // val out:
-//  org.emergentorder.onnx.Tensors.Tensor[Float, ("ImageNetClassification", "Batch" ##: "Class" ##:
+//  org.emergentorder.onnx.Tensors.Tensor[Float, 
+//                                         ("ImageNetClassification", 
+//                                         "Batch" ##: "Class" ##:
 //    org.emergentorder.compiletime.TSNil
 //  , 1 #: 1000 #: io.kjaer.compiletime.SNil)] = (Array(0.8230729,
 // ...
@@ -96,7 +101,9 @@ val onnxBackend = new ORTOperatorBackendAll()
 
 val longTens = Tensor(Array.fill(1*3*224*224){-42l},tensorDenotation,tensorShapeDenotation,shape)
 // longTens:
-//  org.emergentorder.onnx.Tensors.Tensor[Float, ("Image", "Batch" ##: "Channel" ##: "Height" ##: "Width" ##:
+//  org.emergentorder.onnx.Tensors.Tensor[Float, 
+//                                         ("Image", 
+//                                          "Batch" ##: "Channel" ##: "Height" ##: "Width" ##:
 //    org.emergentorder.compiletime.TSNil
 //  , 1 #: 1000 #: io.kjaer.compiletime.SNil)] = (
 //   Array(
@@ -106,7 +113,9 @@ val longTens = Tensor(Array.fill(1*3*224*224){-42l},tensorDenotation,tensorShape
 
 onnxBackend.AbsV6("abs", longTens)
 // res2:
-//  org.emergentorder.onnx.Tensors.Tensor[Float, ("Image", "Batch" ##: "Channel" ##: "Height" ##: "Width" ##:
+//  org.emergentorder.onnx.Tensors.Tensor[Float, 
+//                                          ("Image", 
+//                                           "Batch" ##: "Channel" ##: "Height" ##: "Width" ##:
 //    org.emergentorder.compiletime.TSNil
 //  , 1 #: 1000 #: io.kjaer.compiletime.SNil)] = ( 
 //   Array(

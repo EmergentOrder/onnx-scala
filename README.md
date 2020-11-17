@@ -29,6 +29,8 @@ or from your project:
 sbt console
 ```
 
+Note that all code snippets are written in Scala 3 (Dotty).
+
 Run SqueezeNet image classification inference on an "image" composed entirely of pixel value [42](https://upload.wikimedia.org/wikipedia/commons/0/0e/Answer_to_Life_42.svg):
 
 ```scala
@@ -40,14 +42,14 @@ import org.emergentorder.compiletime._
 import io.kjaer.compiletime._
 
 val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.1.onnx"))
-
 val squeezenet = new ORTModelBackend(squeezenetBytes)
 
 val data = Array.fill(1*3*224*224){42f}
+val shape = 1 #: 3 #: 224 #: 224 #: SNil
+
 val tensorDenotation: String & Singleton = "Image"
 //In NCHW tensor image format
 val tensorShapeDenotation = "Batch" ##: "Channel" ##: "Height" ##: "Width" ##: TSNil
-val shape = 1 #: 3 #: 224 #: 224 #: SNil
 
 val imageTens = Tensor(data,tensorDenotation,tensorShapeDenotation,shape)
 
@@ -63,11 +65,9 @@ val out = squeezenet.fullModel[Float,
                                "Batch" ##: "Class" ##: TSNil,
                                1 #: 1000 #: SNil](Tuple(imageTens))
 // val out:
-//  org.emergentorder.onnx.Tensors.Tensor[Float, 
-//                                         ("ImageNetClassification", 
-//                                         "Batch" ##: "Class" ##:
-//    org.emergentorder.compiletime.TSNil
-//  , 1 #: 1000 #: io.kjaer.compiletime.SNil)] = (Array(0.8230729,
+//  Tensor[Float,("ImageNetClassification", 
+//                "Batch" ##: "Class" ##: TSNil,
+//                1 #: 1000 #: SNil)] = (Array(0.8230729,
 // ...
 
 //The output shape

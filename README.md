@@ -13,7 +13,7 @@ libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala-backends" % "0.
 
 As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the latest, build and publish locally from master.
 
-### Full ONNX model inference quick start
+### Full ONNX model inference - quick start
 First, download the [model file](https://s3.amazonaws.com/onnx-model-zoo/squeezenet/squeezenet1.1/squeezenet1.1.onnx) for [SqueezeNet](https://en.wikipedia.org/wiki/SqueezeNet).
 You can use `get_models.sh`
 
@@ -167,14 +167,13 @@ import org.emergentorder.onnx._
 
 Using this API, each ONNX operation is executed on the underyling backend individually.
 As a result, you can write your own models from scratch in Scala using ONNX-Scala operations, injecting parameters from outside sources as need be.
-
-Type-checking is done at the operation level on inputs and outputs for data types, with support for type-checking over tensor-level and axis-level denotations and tensor shapes.
 This allows for dynamic graph structure, in which the execution itself defines the graph, similar to PyTorch and Tensorflow Eager.
 The trade-off made for this flexibility is that the underlying ONNX backend can no longer optimize the full graph, and the JNI boundary-crossing and ONNX graph structure at each operation results in additional overhead.
 
-## Type-safe Tensors (Experimental)
-Featuring type-checked tensor and axis labels, which along with literal types (new in Scala 2.13) for dimension sizes allow for tensor/axes/shape-typed tensors.
-Using ONNX docs for [dimension](https://github.com/onnx/onnx/blob/master/docs/DimensionDenotation.md) and [type](https://github.com/onnx/onnx/blob/master/docs/TypeDenotation.md) denotation as a reference,
+#### Type-safe Tensors
+Featuring type-level tensor and axis labels/denotations, which along with literal types for dimension sizes allow for tensor/axes/shape/data-typed tensors.
+Type constraints, as per the ONNX spec, are implemented at the operation level on inputs and outputs, using union types, match types and compiletime singleton ops (thanks to @MaximeKjaer for getting the latter into dotty).
+Using ONNX docs for [dimension](https://github.com/onnx/onnx/blob/master/docs/DimensionDenotation.md) and [type](https://github.com/onnx/onnx/blob/master/docs/TypeDenotation.md) denotation, as well as the [operators doc](https://github.com/onnx/onnx/blob/v1.7.0/docs/Operators.md) as a reference,
 and inspired by [Nexus](https://github.com/ctongfei/nexus), [Neurocat](https://github.com/mandubian/neurocat) and [Named Tensors](https://pytorch.org/docs/stable/named_tensor.html).
 
 ### B) Backend

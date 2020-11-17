@@ -13,7 +13,6 @@ libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala-backends" % "0.
 
 As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the latest, build and publish locally from master.
 
-
 ### Full ONNX model inference quick start
 First, download the [model file](https://s3.amazonaws.com/onnx-model-zoo/squeezenet/squeezenet1.1/squeezenet1.1.onnx) for [SqueezeNet](https://en.wikipedia.org/wiki/SqueezeNet).
 You can use `get_models.sh`
@@ -44,20 +43,35 @@ val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.1.onnx"))
 
 val squeezenet = new ORTModelBackend(squeezenetBytes)
 
+val data = Array.fill(1*3*224*224){42f}
+val tensorDenotation: String & Singleton = "SomeTensorType"
 //In NCHW tensor image format
-val imageTens = Tensor(Array.fill(1*3*224*224){42f},"SomeTensorType","Batch" ##: "Channel" ##: "Height" ##: "Width" ##: TSNil,1 #: 3 #: 224 #: 224 #: SNil)
+val tensorShapeDenotation = "Batch" ##: "Channel" ##: "Height" ##: "Width" ##: TSNil
+val shape = 1 #: 3 #: 224 #: 224 #: SNil
+
+val imageTens = Tensor(data,tensorDenotation,tensorShapeDenotation,shape)
+
+//or as a shorthand if you aren't concerned with enforcing denotations
+val imageTensDefaultDenotations = Tensor(data,shape)
 ```
 
 Note that ONNX Tensor content is in row-major order.
 
 ```scala
 val out = squeezenet.fullModel[Float, "T","T" ##: TSNil,1 #: 1000 #: SNil](Tuple(imageTens))
-
+// val out:
+//  org.emergentorder.onnx.Tensors.Tensor[Float, ("T", "T" ##:
+//    org.emergentorder.compiletime.TSNil
+//  , 1 #: 1000 #: io.kjaer.compiletime.SNil)] = (Array(0.8230729,
+// ...
 //The output shape
 out.shape
+// val res0: Array[Int] = Array(1, 1000)
+
 
 //The highest probability (predicted) class
-out.data.indices.maxBy(out._1)
+out.data.indices.maxBy(out.data)
+// val res1: Int = 418
 ```
 
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "ballpoint pen".
@@ -77,16 +91,37 @@ Feel free to wrap your calls into it in a facade with typed inputs.
 You can call individual operators:
 
 ```scala
-val onnx = new ORTOperatorBackendAll()
+val onnxBackend = new ORTOperatorBackendAll()
 
-val longTens = Tensor(Array.fill(1*3*224*224){42l},"SomeTensorType","Batch" ##: "Channel" ##: "Height" ##: "Width" ##: TSNil,1 #: 3 #: 224 #: 224 #: SNil)
+val longTens = Tensor(Array.fill(1*3*224*224){-42l},tensorDenotation,tensorShapeDenotation,shape)
+// longTens:
+//  org.emergentorder.onnx.Tensors.Tensor[Float, ("T", "T" ##:
+//    org.emergentorder.compiletime.TSNil
+//  , 1 #: 1000 #: io.kjaer.compiletime.SNil)] = (
+//   Array(
+//     -42L,
+//     -42L,
+// ...
 
-onnx.AbsV6("abs", longTens)
+onnxBackend.AbsV6("abs", longTens)
+// res2:
+//  org.emergentorder.onnx.Tensors.Tensor[Float, ("T", "T" ##:
+//    org.emergentorder.compiletime.TSNil
+//  , 1 #: 1000 #: io.kjaer.compiletime.SNil)] = ( 
+//   Array(
+//     42L,
+//     42L,
+// ...
 ```
 
 Sqrt will fail to compile because it's not defined for Long:
 ```scala
-onnx.SqrtV6("sqrt", longTens)
+onnxBackend.SqrtV6("sqrt", longTens)
+// ...
+//Required: org.emergentorder.onnx.Tensors.Tensor[T, (
+//...
+//where:    T            is a type variable with constraint <: org.emergentorder.onnx.Float16 | Float | Double
+
 ```
 Note that in real use backends should be closed to prevent native memory leaks.
 
@@ -107,36 +142,27 @@ This API is expressed via traits, with version-named methods. For example, Abs, 
 
 ```scala
 import scala.{specialized => sp}
-import spire.math.UByte
-import spire.math.UShort
-import spire.math.UInt
-import spire.math.ULong
-import spire.math.Numeric
+import spire.math._
 import spire.implicits._
-import scala.reflect.ClassTag
 import org.emergentorder.onnx._
 
   trait AbsV6 extends Operator {
     def AbsV6[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String, X: Tensor[T, Tuple3[Tt, Td, S]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
+        @sp T <: UByte | UShort | UInt | 
+                 ULong | Byte | Short | Int | 
+                 Long | Float16 | Float | Double: Numeric,
+      Tt <: TensorTypeDenotation, 
+      Td <: TensorShapeDenotation, 
+      S <: Shape]
+      (name: String, X: Tensor[T, Tuple3[Tt, Td, S]])
+      (using tt: ValueOf[Tt], 
+             td: TensorShapeDenotationOf[Td], 
+             s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple1(X)
       (callOp(name, "Abs", allInputs, map))
     }
   }
-```
-
-A few more examples of the type constraints in action (fail to compile):
-```scala
-val stringTens = Tensor(Array.fill(1*3*224*224){"test"},"SomeTensorType","Batch" ##: "Channel" ##: "Height" ##: "Width" ##: TSNil,1 #: 3 #: 224 #: 224 #: SNil)
-onnx.AbsV6("abs", stringTens)
-```
-
-```scala
-val aBigInt = new BigInt(new java.math.BigInteger("5"))
-val bigIntTens = Tensor(Array.fill(1*3*224*224){aBigInt},"SomeTensorType","Batch" ##: "Channel" ##: "Height" ##: "Width" ##: TSNil,1 #: 3 #: 224 #: 224 #: SNil)
-onnx.Abs6("abs", bigIntTens)
 ```
 
 Using this API, each ONNX operation is executed on the underyling backend individually.
@@ -162,6 +188,7 @@ Supported ONNX input and output tensor data types:
 * Long
 * Float
 * Double
+* Boolean
 
 Supported ONNX ops:
 
@@ -197,15 +224,15 @@ to build against Scala 2.13 and Dotty/3.0, where possible.
 
 #### Core
 
-* [ONNX](https://github.com/onnx/onnx) via [ScalaPB](https://github.com/scalapb/ScalaPB) - Open Neural Network Exchange / The missing bridge between Java and native C++ libraries (For access to Protobuf definitions and operator schemas)
+* [ONNX](https://github.com/onnx/onnx) via [ScalaPB](https://github.com/scalapb/ScalaPB) - Open Neural Network Exchange / The missing bridge between Java and native C++ libraries (For access to Protobuf definitions, used in the fine-grained API to create ONNX models in memory to send to the backend)
 
-* [Spire](https://github.com/non/spire) - Typelevel project enabling generic numeric programming (For support for unsigned ints, complex numbers and the Numeric type class in the core API)
+* [Spire](https://github.com/typelevel/spire) - Powerful new number types and numeric abstractions for Scala.  (For support for unsigned ints, complex numbers and the Numeric type class in the core API)
 
-* [Dotty](https://github.com/lampepfl/dotty) - A next-generation compiler that will become Scala 3 (For native union types, formerly used here to express ONNX type constraints, but currently using cross-version source compatibile union types instead)
+* [Dotty](https://github.com/lampepfl/dotty) - The Scala 3 compiler, also known as Dotty. (For union types (used here to express ONNX type constraints), match types, compiletime singleton ops, ...)
 
 #### Backends
 
-* [ONNX Runtime via ORT Java API](https://github.com/microsoft/onnxruntime/tree/master/java) - ONNX Runtime: cross-platform, high performance scoring engine for ML models
+* [ONNX Runtime via ORT Java API](https://github.com/microsoft/onnxruntime/tree/master/java) - ONNX Runtime: cross-platform, high performance ML inferencing and training accelerator
 
 ### Inspiration
 

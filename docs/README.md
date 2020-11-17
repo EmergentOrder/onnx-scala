@@ -45,11 +45,12 @@ val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.1.onnx"))
 val squeezenet = new ORTModelBackend(squeezenetBytes)
 
 val data = Array.fill(1*3*224*224){42f}
-val shape = 1 #: 3 #: 224 #: 224 #: SNil
+
+//In NCHW tensor image format
+val shape =                    1     #:     3      #:    224    #: 224     #: SNil
+val tensorShapeDenotation = "Batch" ##: "Channel" ##: "Height" ##: "Width" ##: TSNil
 
 val tensorDenotation: String & Singleton = "Image"
-//In NCHW tensor image format
-val tensorShapeDenotation = "Batch" ##: "Channel" ##: "Height" ##: "Width" ##: TSNil
 
 val imageTens = Tensor(data,tensorDenotation,tensorShapeDenotation,shape)
 

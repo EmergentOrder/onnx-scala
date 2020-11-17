@@ -24,7 +24,7 @@ lazy val commonSettings = Seq(
 
 lazy val common = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("common"))
-  .enablePlugins(ScalaJSPlugin)
+//  .enablePlugins(ScalaJSPlugin)
   .settings(commonSettings, name := "onnx-scala-common",
     crossScalaVersions := Seq(
       dottyVersion,
@@ -131,8 +131,9 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
 //      "org.bytedeco" % "onnxruntime-platform" % "1.5.2-1.5.5-SNAPSHOT"
     ),
     crossScalaVersions := Seq(dottyVersion, scala213Version)
-  ).jvmSettings().jsSettings(
-      scalaJSUseMainModuleInitializer := true) //, //Testing
+  )
+//.jvmSettings().jsSettings(
+//      scalaJSUseMainModuleInitializer := true) //, //Testing
 //Seems to be a bundling issue, copying things manually seems to work
 //     npmDependencies in Compile += "onnxjs" -> "0.1.8")
 

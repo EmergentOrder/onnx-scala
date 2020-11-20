@@ -1,7 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
-//val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion = "3.0.0-M1"
+val dottyVersion = dottyLatestNightlyBuild.get
+//val dottyVersion = "3.0.0-M1"
 val scala213Version = "2.13.4"
 val spireVersion = "0.17.0"
 val scalametaVersion = "4.4.0"
@@ -173,6 +173,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
     )
   )
 
+/*
 lazy val docs = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("core-docs"))       // new documentation project
   .settings(
@@ -186,7 +187,7 @@ lazy val docs = (crossProject(JVMPlatform)
   .jvmSettings(
     crossScalaVersions := Seq(scala213Version)
   )
-
+*/
 skip in publish := true
 sonatypeProfileName := "com.github.EmergentOrder" 
 

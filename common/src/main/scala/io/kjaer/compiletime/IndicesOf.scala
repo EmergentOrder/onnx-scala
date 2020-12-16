@@ -9,9 +9,9 @@ package io.kjaer.compiletime
 final class IndicesOf[T <: Indices](val value: T)
 
 object IndicesOf {
-  given indicesOfINilType as IndicesOf[INil.type] = IndicesOf(INil)
-  given indicesOfINil as IndicesOf[INil] = IndicesOf(INil)
-  given indicesOfCons[H <: Index, T <: Indices](using head: ValueOf[H], tail: IndicesOf[T]) as IndicesOf[H :: T] =
+  given indicesOfINilType: IndicesOf[INil.type] = IndicesOf(INil)
+  given indicesOfINil: IndicesOf[INil] = IndicesOf(INil)
+  given indicesOfCons[H <: Index, T <: Indices](using head: ValueOf[H], tail: IndicesOf[T]): IndicesOf[H :: T] =
     IndicesOf(head.value :: tail.value)
 }
 

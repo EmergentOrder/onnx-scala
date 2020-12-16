@@ -18,9 +18,9 @@ package org.emergentorder.compiletime
 final class TensorShapeDenotationOf[T <: TensorShapeDenotation](val value: T)
 
 object TensorShapeDenotationOf {
-  given tensorShapeDenotationOfTSNilType as TensorShapeDenotationOf[TSNil.type] = TensorShapeDenotationOf(TSNil)
-  given tensorShapeDenotationOfTSNil as TensorShapeDenotationOf[TSNil] = TensorShapeDenotationOf(TSNil)
-  given tensorShapeDenotationOfCons[H <: DimensionDenotation, T <: TensorShapeDenotation](using head: ValueOf[H], tail: TensorShapeDenotationOf[T]) as TensorShapeDenotationOf[H ##: T] =
+  given tensorShapeDenotationOfTSNilType: TensorShapeDenotationOf[TSNil.type] = TensorShapeDenotationOf(TSNil)
+  given tensorShapeDenotationOfTSNil: TensorShapeDenotationOf[TSNil] = TensorShapeDenotationOf(TSNil)
+  given tensorShapeDenotationOfCons[H <: DimensionDenotation, T <: TensorShapeDenotation](using head: ValueOf[H], tail: TensorShapeDenotationOf[T]): TensorShapeDenotationOf[H ##: T] =
     TensorShapeDenotationOf(head.value ##: tail.value)
 }
 

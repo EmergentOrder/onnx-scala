@@ -16,9 +16,9 @@ package io.kjaer.compiletime
 final class ShapeOf[T <: Shape](val value: T)
 
 object ShapeOf {
-  given shapeOfSNilType as ShapeOf[SNil.type] = ShapeOf(SNil)
-  given shapeOfSNil as ShapeOf[SNil] = ShapeOf(SNil)
-  given shapeOfCons[H <: Dimension, T <: Shape](using head: ValueOf[H], tail: ShapeOf[T]) as ShapeOf[H #: T] =
+  given shapeOfSNilType: ShapeOf[SNil.type] = ShapeOf(SNil)
+  given shapeOfSNil: ShapeOf[SNil] = ShapeOf(SNil)
+  given shapeOfCons[H <: Dimension, T <: Shape](using head: ValueOf[H], tail: ShapeOf[T]): ShapeOf[H #: T] =
     ShapeOf(head.value #: tail.value)
 }
 

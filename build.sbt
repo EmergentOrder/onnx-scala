@@ -1,7 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion = "3.0.0-M3"
+val dottyVersion = "3.0.0-RC1"
 val scala213Version = "2.13.4"
 val spireVersion = "0.17.0"
 val scalametaVersion = "4.4.8"

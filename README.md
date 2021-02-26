@@ -11,33 +11,20 @@ Add this to the build.sbt in your project:
 libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala-backends" % "0.8.0"
 ```
 
-As of v0.1.0, artifacts are published to Sonatype OSS / Maven Central. For the latest, build and publish locally from master.
+A short, recent talk I gave about the project: [ONNX-Scala: Typeful, Functional Deep Learning / Dotty Meets an Open AI Standard](https://youtu.be/8HuZTeHi7lg?t=1156)
 
 ### Full ONNX model inference - quick start
 First, download the [model file](https://s3.amazonaws.com/onnx-model-zoo/squeezenet/squeezenet1.1/squeezenet1.1.onnx) for [SqueezeNet](https://en.wikipedia.org/wiki/SqueezeNet).
 You can use `get_models.sh`
 
-Using the console, from this project root:
-```
-sbt
-project backendsJVM
-console 
-```
-
-or from your project:
-```
-sbt console
-```
-
 Note that all code snippets are written in Scala 3 (Dotty).
 
-Run SqueezeNet image classification inference on an "image" composed entirely of pixel value [42](https://upload.wikimedia.org/wikipedia/commons/0/0e/Answer_to_Life_42.svg):
+First we create an "image" tensor composed entirely of pixel value [42](https://upload.wikimedia.org/wikipedia/commons/0/0e/Answer_to_Life_42.svg):
 
 ```scala
 import java.nio.file.{Files, Paths}
 import org.emergentorder.onnx.Tensors._
-import org.emergentorder.onnx.backends.ORTOperatorBackendAll
-import org.emergentorder.onnx.backends.ORTModelBackend
+import org.emergentorder.onnx.backends._
 import org.emergentorder.compiletime._
 import io.kjaer.compiletime._
 
@@ -58,7 +45,9 @@ val imageTens = Tensor(data,tensorDenotation,tensorShapeDenotation,shape)
 val imageTensDefaultDenotations = Tensor(data,shape)
 ```
 
-Note that ONNX Tensor content is in row-major order.
+Note that ONNX tensor content is in row-major order.
+
+Next we run SqueezeNet image classification inference on it:
 
 ```scala
 val out = squeezenet.fullModel[Float, 
@@ -83,7 +72,7 @@ out.data.indices.maxBy(out.data)
 
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "ballpoint pen".
 
-Based on a simple benchmark of 100000 iterations of SqueezeNet inference (run on my laptop), it is roughly on par with (within 10% of) ONNX Runtime (via Python).
+Based on a simple benchmark of 100000 iterations of SqueezeNet inference (run on my laptop), the run time is roughly on par with (within 10% of) ONNX Runtime (via Python).
 
 The resulting output values also match ONNX Runtime/Python.
 
@@ -142,7 +131,7 @@ Automatic differentiation to enable training is under consideration (ONNX curren
 
 The ONNX-Scala core (fine-grained) API is cross-built against Scala JVM (for Scala 2.13 and Dotty/3.0) , Scala.js / JavaScript (for Scala 2.13 and Dotty/3.0).
 
-Currently at ONNX 1.7.0 (Backward compatible to at least 1.2.0), ONNX Runtime 1.5.2.
+Currently at ONNX 1.8.0 (Backward compatible to at least 1.2.0), ONNX Runtime 1.6.0.
  
 ### A) Fine-grained API
 A complete\*, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep learning and classical machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++) via the JavaCPP Preset for ONNX. We also generate implementations for each operator in terms of core methods to be implemented by the backend.

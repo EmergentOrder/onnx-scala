@@ -2,7 +2,7 @@ package org.emergentorder.onnx.backends
 
 import scala.concurrent.duration._
 import typings.onnxjs.onnxImplMod.Tensor.{^ => Tensor}
-import typings.onnxjs.libTensorMod.Tensor.DataTypeMap.DataTypeMapOps
+//import typings.onnxjs.libTensorMod.Tensor.DataTypeMap.DataTypeMapOps
 import typings.onnxjs.onnxImplMod.InferenceSession.{^ => InferenceSession}
 //import typings.onnxjs.onnxMod.Onnx
 
@@ -15,6 +15,7 @@ trait ONNXJSOperatorBackend{
    // with AutoCloseable {
 implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
   def test() = {
+
     val session = new InferenceSession()
     val url = "relu.onnx"
     val modelFuture = session.loadModel(url).toFuture
@@ -24,7 +25,7 @@ implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionC
     val outputFuture = modelFuture.map{x =>
       val inputs = Array(new Tensor(
         scala.scalajs.js.Array[Boolean | Double]((1 until 61).map(_.toDouble:Boolean | Double).toArray:_*), 
-      typings.onnxjs.onnxjsStrings.float32, scala.scalajs.js.Array(3.0, 4.0, 5.0)):typings.onnxjs.tensorMod.Tensor_);
+      typings.onnxjs.onnxjsStrings.float32, scala.scalajs.js.Array(3.0, 4.0, 5.0)):typings.onnxjs.tensorMod.Tensor);
       println("before run")
       val res = session.run(scala.scalajs.js.Array(inputs:_*)).toFuture
       println("after run")

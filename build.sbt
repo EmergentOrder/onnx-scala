@@ -127,7 +127,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
     libraryDependencies ++= Seq(
  //        "org.bytedeco" % "dnnl-platform" % "1.6.4-1.5.5-SNAPSHOT",
 //         "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion,
-        "com.microsoft.onnxruntime" % "onnxruntime" % "1.6.0"
+        "com.microsoft.onnxruntime" % "onnxruntime" % "1.7.0"
 //      "org.bytedeco" % "onnxruntime-platform" % "1.5.2-1.5.5-SNAPSHOT"
     ),
     crossScalaVersions := Seq(dottyVersion, scala213Version)

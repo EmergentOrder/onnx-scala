@@ -1,11 +1,9 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
-//val dottyVersion = dottyLatestNightlyBuild.get
 val dottyVersion = "3.0.0-RC1"
 val scala213Version = "2.13.5"
 val spireVersion = "0.17.0"
 val scalametaVersion = "4.4.10"
-val onnxJavaCPPPresetVersion = "1.7.0-1.5.4"
 
 scalaVersion := dottyVersion
 
@@ -30,12 +28,6 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform)
       dottyVersion,
       scala213Version
     ),
-//libraryDependencies ++= (CrossVersion
-//    .partialVersion(scalaVersion.value) match {
-//     case Some((2,_)) => Seq()
-//     case _ => Seq("io.kjaer" %% "tf-dotty-compiletime" % "0.0.0+50-9271a5d2-SNAPSHOT")
-//      }
-//    ), 
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
       case Some((2, 13)) => "TensorShapeDenotation.scala" | "TensorShapeDenotationOf.scala" | "Shape.scala" | "ShapeOf.scala" | "Indices.scala" | "IndicesOf.scala" | "dependent.scala"
@@ -51,55 +43,13 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform)
       dottyVersion,
       scala213Version
     ),
- libraryDependencies -= ("com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion),
-
+    libraryDependencies -= ("com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion),
     libraryDependencies += ("com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion).withDottyCompat(scalaVersion.value),
-//    scalacOptions ++= { if (isDotty.value) Seq("-language:Scala2Compat") else Nil }, 
-
-
   PB.targets in Compile := Seq(
       scalapb.gen() -> (sourceManaged in Compile).value
     ),
     // The trick is in this line:
     PB.protoSources in Compile := Seq(file("proto/src/main/protobuf")),
-  )
-
-
-
-lazy val programGenerator = (crossProject(JVMPlatform)
-  .crossType(CrossType.Pure) in file("programGenerator"))
-  .dependsOn(backends)
-  .settings(
-    commonSettings,
-    name := "onnx-scala-program-generator",
-    mainClass in (Compile, run) := Some(
-      "org.emergentorder.onnx.ONNXProgramGenerator"
-    ),
-    excludeFilter in unmanagedSources := (CrossVersion
-      .partialVersion(scalaVersion.value) match {
-      case Some((2, 13)) => "Absnet.scala" | "Squeezenet1dot1.scala" | "ONNXProgramGenerator.scala"
-      case _ => "ONNXProgramGenerator213.scala" | "Squeezenet1dot1213.scala"
-      }
-    ),
-    scalacOptions ++= { if (isDotty.value) Seq("-source:3.0-migration") else Nil },
-    libraryDependencies ++= (CrossVersion
-    .partialVersion(scalaVersion.value) match {
-     case Some((2,_)) =>
-        Seq(
-          "org.scalameta" %% "scalameta" % scalametaVersion
-        )
-     case _ =>
-        Seq(
-         ("org.scalameta" %% "scalameta" % scalametaVersion).withDottyCompat(dottyVersion)
-        )
-      }
-    ),
-    libraryDependencies += "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion,
-
-    crossScalaVersions := Seq(
-      dottyVersion,
-      scala213Version
-    )
   )
 
 lazy val backends = (crossProject(JSPlatform, JVMPlatform)
@@ -115,7 +65,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
       case Some((2, 13)) => "NCF.scala" | 
                             "ORTOperatorBackend.scala" | 
                             "ORTOperatorBackendAll.scala" | "ORTOperatorBackendAtoL.scala" |
-                            "ORTModelBackend.scala" | //"ORTTensorUtils.scala" |
+                            "ORTModelBackend.scala" | 
                             "Main.scala" | "ONNXJSOperatorBackend.scala"  
       case _ => "ORTModelBackend213.scala" | "NCF213.scala" |
                 "ORTOperatorBackend213.scala" | "ORTOperatorBackendAll213.scala" | 
@@ -125,10 +75,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
     ),
     scalacOptions ++= { if (isDotty.value) Seq("-source:3.0-migration") else Nil },
     libraryDependencies ++= Seq(
- //        "org.bytedeco" % "dnnl-platform" % "1.6.4-1.5.5-SNAPSHOT",
-//         "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion,
-        "com.microsoft.onnxruntime" % "onnxruntime" % "1.6.0"
-//      "org.bytedeco" % "onnxruntime-platform" % "1.5.2-1.5.5-SNAPSHOT"
+        "com.microsoft.onnxruntime" % "onnxruntime" % "1.7.0"
     ),
     crossScalaVersions := Seq(dottyVersion, scala213Version)
   )
@@ -163,15 +110,10 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
         )
       case _ =>
         Seq(
-//           "io.kjaer" %% "tf-dotty-compiletime" % "0.0.0+50-9271a5d2-SNAPSHOT",
           ("org.typelevel" %%% "spire" % spireVersion).withDottyCompat(dottyVersion),
         )
-    }),
-    libraryDependencies ++= Seq(
-//        "org.bytedeco" % "onnx-platform" % onnxJavaCPPPresetVersion,
-//      "org.osgi" % "org.osgi.annotation.versioning" % "1.1.0"
-    )
-  )
+    })
+)
 
 /*
 lazy val docs = (crossProject(JVMPlatform)
@@ -182,7 +124,7 @@ lazy val docs = (crossProject(JVMPlatform)
       "VERSION" -> version.value
    )
   )
-  .dependsOn(programGenerator)
+  .dependsOn(backends)
   .enablePlugins(MdocPlugin)
   .jvmSettings(
     crossScalaVersions := Seq(scala213Version)

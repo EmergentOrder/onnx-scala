@@ -24,7 +24,6 @@ trait OpToONNXBytesConverter extends AutoCloseable {
   ](
       name: String,
       opName: String,
-//      inputs: Tuple,
       outName: String,
       attrs: Map[String, Any]
   ) 
@@ -65,9 +64,8 @@ trait OpToONNXBytesConverter extends AutoCloseable {
     return newNode
   }
 
-  //TODO: prevent passing the inputs all the way down here
   protected def createInputValueInfoProto[T <: Supported,  Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](tens: Tensor[T, (Tt, Td, S)], inputName: String): ValueInfoProto = {
-//    node.addInput(inputName)
+
     val elemType = tens.data match {
           case b: Array[Byte]   => INT8.index
           case s: Array[Short]  => INT16.index
@@ -80,15 +78,8 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 
       ValueInfoProto(name=Some(inputName), `type`=Some(onnx.onnx.TypeProto().withTensorType(onnx.onnx.TypeProto.Tensor(shape=Some(onnx.onnx.TensorShapeProto(dim=tens.shape.map(onnx.onnx.TensorShapeProto.Dimension().withDimValue(_)))),
           elemType=Some(elemType)))
-            //.asInstanceOf[onnx.onnx.TypeProto]
+    
             ))
-/*
-
-
-
-//              inputDim.set_dim_param("NAME?")
- */
-
   }
 
   def opToONNXBytes[
@@ -134,9 +125,4 @@ trait OpToONNXBytesConverter extends AutoCloseable {
   
     (model.toByteArray)
   }
-
-  override def close(): Unit = {
-//    scope.close
-  }
-
 }

@@ -31,14 +31,14 @@ object Tensors{
 
   type SparseTensor[T <: Supported, A <: Axes] = Tensor[T, A]
  
-  type KeepOrReduceDims[S <: Shape, Axis <: None.type | Indices, KeepDims <: (Boolean & Singleton)] <: Shape = (KeepDims) match {
+  type KeepOrReduceDims[S <: Shape, AxisIndices <: None.type | Indices, KeepDims <: (Boolean & Singleton)] <: Shape = (KeepDims) match {
         case true => S
-        case false => Shape.Reduce[S, Axis]
+        case false => Shape.Reduce[S, AxisIndices]
   }
 
-  type KeepOrReduceDimDenotations[Td <: TensorShapeDenotation, Axis <: None.type | Indices, KeepDims <: (Boolean & Singleton)] <: TensorShapeDenotation = (KeepDims) match {
+  type KeepOrReduceDimDenotations[Td <: TensorShapeDenotation, AxisIndices <: None.type | Indices, KeepDims <: (Boolean & Singleton)] <: TensorShapeDenotation = (KeepDims) match {
         case true => Td
-        case false => TensorShapeDenotation.Reduce[Td, Axis]
+        case false => TensorShapeDenotation.Reduce[Td, AxisIndices]
   }
 
   /*
@@ -56,31 +56,28 @@ object Tensors{
   }
 */
 
-  //TODO: shapes to longs
-  //TODO: Ensure denotation size matches shape size
+  //TODO: shape dimension values should be longs, not ints, but dotty compiletime ops only support ints
   //TODO: random nd access
   //TODO: opaque
   //TODO: Benchmark Array[T] vs ArraySeq[T] vs IArray[T]
-  //type OSTensor[T <: Supported, Ax <: Axes] = Tuple2[Array[T], Ax]
 
   object Tensor {
     extension[T <: Supported,  Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](tens: Tensor[T,Tuple3[Tt, Td, S]]) def data = tens._1
-//    def apply[T <: Supported] (elem: T): OSTensor[T, Scalar] = new OSTensor[T, ?](Array(elem), Scalar())
 
     extension[T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](tens: Tensor[T,Tuple3[Tt, Td, S]]) def shape: Array[Int] = tens._2._3.toSeq.toArray 
  
-  //TODO: enforce tensor shape denotation size matches shape size
   def tensorRequires[T <: Supported,  Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](tens: Tensor[T,Tuple3[Tt,Td,S]]): Tensor[T,Tuple3[Tt, Td, S]] = {
+    //require(tens._2._2.toSeq.size == tens.shape.size) //We allow empty denotations
     require(tens.shape.size <= 4)
     require(tens.data.size == tens.shape.foldLeft(1)(_ * _))
     tens
   }
-//    def apply[T <: Supported, Tt <: TensorTypeDenotation](element: T, tt: Tt): Tensor[T, Tuple3[Tt, org.emergentorder.compiletime.TSNil, SNil]] = tensorRequires((Array(element), (tt, org.emergentorder.compiletime.TSNil, SNil))) 
+    def apply[T <: Supported : scala.reflect.ClassTag, Tt <: TensorTypeDenotation, TD <: TensorShapeDenotation](element: T, tt: Tt, td: TD): Tensor[T, Tuple3[Tt, TD, 1 #: SNil]] = tensorRequires((Array[T](element), (tt, td, 1 #: SNil))) 
 
     def apply[T <: Supported, Tt <: TensorTypeDenotation, TD <: TensorShapeDenotation, S <: Shape](arr: Array[T], tt0: Tt, td0: TD, d0: S): Tensor[T, Tuple3[Tt, TD, S]] = tensorRequires((arr, (tt0, td0, d0)))
 
 
-//    def apply[T <: Supported](element: T): Tensor[T, Tuple3["", org.emergentorder.compiletime.TSNil, SNil]] = tensorRequires((Array(element), ("", org.emergentorder.compiletime.TSNil, SNil))) 
+    def apply[T <: Supported : scala.reflect.ClassTag](element: T): Tensor[T, Tuple3["", org.emergentorder.compiletime.TSNil, 1 #: SNil]] = tensorRequires((Array(element), ("", TSNil, 1 #: SNil))) 
 
     def apply[T <: Supported, TD <: TensorShapeDenotation, S <: Shape](arr: Array[T], td0: TD, d0: S): Tensor[T, Tuple3["", TD, S]] = tensorRequires((arr, ("", td0, d0)))
 

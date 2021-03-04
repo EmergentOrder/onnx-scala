@@ -23,10 +23,10 @@ sealed trait TensorShapeDenotation extends Product with Serializable {
   /** Reverse the dimension list */
   def reverse: Reverse[this.type] = TensorShapeDenotation.reverse(this)
 
-//  def toSeq: Seq[String] = this match {
-//    case TSNil => Nil
-//    case head ##: tail => head +: tail.toSeq
-//  }
+  def toSeq: Seq[String] = this match {
+    case TSNil => Nil
+    case head ##: tail => head +: tail.toSeq
+  }
 }
 
 final case class ##:[+H <: DimensionDenotation, +T <: TensorShapeDenotation](head: H, tail: T) extends TensorShapeDenotation {
@@ -81,6 +81,7 @@ object TensorShapeDenotation {
   type Tail[X <: TensorShapeDenotation] <: TensorShapeDenotation = X match {
     case _ ##: tail => tail
   }
+
  /**
    * Represents reduction along axes, as defined in TensorFlow:
    *

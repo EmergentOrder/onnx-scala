@@ -3,7 +3,6 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 val dottyVersion = "3.0.0-RC1"
 val scala213Version = "2.13.5"
 val spireVersion = "0.17.0"
-val scalametaVersion = "4.4.10"
 
 scalaVersion := dottyVersion
 
@@ -17,12 +16,11 @@ lazy val commonSettings = Seq(
   updateOptions := updateOptions.value.withLatestSnapshots(false),
   scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
   autoCompilerPlugins := true,
-  sources in (Compile, doc) := Seq(), //Bug w/ Dotty & JS on doc 
+//  sources in (Compile, doc) := Seq(), //Bug w/ Dotty & JS on doc 
 ) ++ sonatypeSettings
 
 lazy val common = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("common"))
-//  .enablePlugins(ScalaJSPlugin)
   .settings(commonSettings, name := "onnx-scala-common",
     crossScalaVersions := Seq(
       dottyVersion,
@@ -56,7 +54,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("backends"))
   .dependsOn(core)
 //conditionally enabling/disable based on version, still not working
-//  .enablePlugins(ScalaJSBundlerPlugin) //{ScalablyTypedConverterPlugin})
+  .enablePlugins(ScalaJSBundlerPlugin)//, ScalablyTypedConverterPlugin)
   .settings(
     commonSettings,
     name := "onnx-scala-backends",
@@ -79,10 +77,10 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
     ),
     crossScalaVersions := Seq(dottyVersion, scala213Version)
   )
-//.jvmSettings().jsSettings(
-//      scalaJSUseMainModuleInitializer := true) //, //Testing
+.jvmSettings().jsSettings(
+      scalaJSUseMainModuleInitializer := true, //, //Testing
 //Seems to be a bundling issue, copying things manually seems to work
-//     npmDependencies in Compile += "onnxjs" -> "0.1.8")
+     npmDependencies in Compile += "onnxjs" -> "0.1.8")
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("core"))
@@ -115,7 +113,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
     })
 )
 
-/*
+
 lazy val docs = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("core-docs"))       // new documentation project
   .settings(
@@ -129,7 +127,7 @@ lazy val docs = (crossProject(JVMPlatform)
   .jvmSettings(
     crossScalaVersions := Seq(scala213Version)
   )
-*/
+
 skip in publish := true
 sonatypeProfileName := "com.github.EmergentOrder" 
 

@@ -162,7 +162,7 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
     , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axis: Option[(Axis)] = Some(0 :: INil),
+        axis: Option[(Axis)] = Some(0 ::: INil),
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt, Td, S]]
     )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
@@ -177,7 +177,7 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
     , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axis: Option[(Axis)] = Some(0 :: INil),
+        axis: Option[(Axis)] = Some(0 ::: INil),
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt, Td, S]]
     )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
@@ -211,7 +211,7 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
     , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axis: Option[(Axis)] = Some(0 :: INil),
+        axis: Option[(Axis)] = Some(0 ::: INil),
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt, Td, S]]
     )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
@@ -226,7 +226,7 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
     , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axis: Option[(Axis)] = Some(0 :: INil),
+        axis: Option[(Axis)] = Some(0 ::: INil),
         keepdims: Option[(KeepDims)] = None,
         data: Tensor[T, Tuple3[Tt, Td, S]]
     )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {

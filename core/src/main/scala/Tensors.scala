@@ -32,7 +32,7 @@ object Tensors{
   type SparseTensor[T <: Supported, A <: Axes] = Tensor[T, A]
  
   type KeepOrReduceDims[S <: Shape, AxisIndices <: None.type | Indices, KeepDims <: (Boolean & Singleton)] <: Shape = (KeepDims) match {
-        case true => S
+        case true => Shape.Map[S, [AxisIndices] =>> 1]
         case false => Shape.Reduce[S, AxisIndices]
   }
 

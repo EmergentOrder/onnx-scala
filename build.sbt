@@ -3,6 +3,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 val dottyVersion = "3.0.0-RC1"
 val scala213Version = "2.13.5"
 val spireVersion = "0.17.0"
+val scalaTestVersion = "3.2.5"
 
 scalaVersion := dottyVersion
 
@@ -50,11 +51,11 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform)
     PB.protoSources in Compile := Seq(file("proto/src/main/protobuf")),
   )
 
-lazy val backends = (crossProject(JSPlatform, JVMPlatform)
+lazy val backends = (crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure) in file("backends"))
   .dependsOn(core)
 //conditionally enabling/disable based on version, still not working
-  .enablePlugins(ScalaJSBundlerPlugin)//, ScalablyTypedConverterPlugin)
+//  .enablePlugins(ScalaJSBundlerPlugin)//, ScalablyTypedConverterPlugin)
   .settings(
     commonSettings,
     name := "onnx-scala-backends",
@@ -77,10 +78,12 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
     ),
     crossScalaVersions := Seq(dottyVersion, scala213Version)
   )
-.jvmSettings().jsSettings(
-      scalaJSUseMainModuleInitializer := true, //, //Testing
+.jvmSettings(
+libraryDependencies += ("org.scalatest" %% "scalatest" % scalaTestVersion) % Test,
+).jsSettings(
+      scalaJSUseMainModuleInitializer := true) //, //Testing
 //Seems to be a bundling issue, copying things manually seems to work
-     npmDependencies in Compile += "onnxjs" -> "0.1.8")
+//     npmDependencies in Compile += "onnxjs" -> "0.1.8")
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("core"))

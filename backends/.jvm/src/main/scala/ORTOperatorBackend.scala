@@ -24,11 +24,13 @@ trait ORTOperatorBackend
   
   val env = OrtEnvironment.getEnvironment()
 
+  val coreCount = java.lang.Runtime.getRuntime().availableProcessors()
   def getSession(bytes: Array[Byte]) = { 
 
-//    val session_options = new OrtSession.SessionOptions()
-//    session_options.addDnnl(true)
-    env.createSession(bytes) //, session_options)
+    val session_options = new OrtSession.SessionOptions()
+    session_options.setIntraOpNumThreads(coreCount)
+    //    session_options.addDnnl(true)
+    env.createSession(bytes, session_options)
   }
   
   def runModel[T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](

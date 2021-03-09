@@ -134,7 +134,7 @@ The ONNX-Scala core (fine-grained) API is cross-built against Scala JVM (for Sca
 Currently at ONNX 1.8.0 (Backward compatible to at least 1.2.0), ONNX Runtime 1.7.0.
  
 ### A) Fine-grained API
-A complete\*, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep learning and classical machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++) via the JavaCPP Preset for ONNX. We also generate implementations for each operator in terms of core methods to be implemented by the backend.
+A complete\*, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep learning and classical machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++). We also provide implementations for each operator in terms of core methods to be implemented by the backend.
 
 This API is expressed via traits, with version-named methods. For example, Abs, the absolute value operator (defined here for operator set 6):
 

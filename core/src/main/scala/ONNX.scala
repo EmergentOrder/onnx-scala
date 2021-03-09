@@ -19,17 +19,11 @@ import org.emergentorder.compiletime._
 import org.emergentorder.compiletime.TensorShapeDenotation.Reverse
 package object onnx {
 
-  //TODO: report Dotty compilation time explosion: ~5s -> 380s
-  //TODO to consider: Use existing typeclasses here / in NDScala
+  //TODO: Support bfloat16 type (new in ONNX 1.8.0)
   //TODO: Fix propagation behavavior for TensorShapeDenotation 
-  //TODO:Remaining typed axis semantics, JS support
-  //Note: shape constraints will disallow broadcasting
-  //In progress: Add shapes, constraints (at first only to NDScala-exposed ops)
-  //TODO: add ORT contrib ops
-  //TODO: Remove requirement to be Numeric for ops with non-numeric outputs / inputs
   //TODO: Encode node names as types
-  //TODO: Use  monadless(except dead, find followup) / scala-async (with -Xasync?) / dotty-cps-async to replace for comprehensions
-
+  //ORT contrib ops would be nice, but will likely never be supported in JS
+  //Note: Broadcasting is not supported, by design
   sealed trait Operator {
    def callOp[
       T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
@@ -907,6 +901,7 @@ package object onnx {
     }
   }
 
+  //Missing V13
   trait DequantizeLinearV10 extends Operator {
     def DequantizeLinearV10[@sp T <: Byte | UByte | Int: Numeric, Ax <: Axes](
         name: String,
@@ -1456,6 +1451,7 @@ package object onnx {
     }
   }
 
+  //Missing V13
   trait HardmaxV11 extends Operator {
     def HardmaxV11[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
         name: String,
@@ -1492,6 +1488,7 @@ package object onnx {
     }
   }
 
+  //Missing V13
   trait IfV11 extends Operator {
     def IfV11[
         @sp B <: Boolean,
@@ -1846,7 +1843,7 @@ package object onnx {
     }
   }
 */
-  //Not supported, missing from ONNXJS
+  //Not supported, missing from ONNXJS, missing V13
   /*
   trait LogSoftmaxV11 extends Operator {
     def LogSoftmaxV11[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -1883,7 +1880,7 @@ package object onnx {
     }
   }
 
-  //Not supported, missing from ONNXJS
+  //Not supported, missing from ONNXJS, Missing V13
   /*
   trait LoopV11 extends Operator {
     def LoopV11[
@@ -2416,7 +2413,7 @@ package object onnx {
     }
   }
  
-  //Not supported, missing from ONNXJS
+  //Not supported, missing from ONNXJS, missing V13
   /*
   trait NegativeLogLikelihoodLossV12 extends Operator {
     def NegativeLogLikelihoodLossV12[
@@ -2707,6 +2704,7 @@ package object onnx {
     }
   }
 
+  //Missing V13
   trait QuantizeLinearV10 extends Operator {
     def QuantizeLinearV10[
         @sp T1 <: Float | Int: Numeric,
@@ -3866,7 +3864,7 @@ package object onnx {
     }
   }
 
-  //Not supported, missing in ONNXJS
+  //Not supported, missing in ONNXJS, missing V13
   /*
    //To consider restoring, need a loss function
   trait SoftmaxCrossEntropyLossV12 extends Operator {
@@ -3886,6 +3884,7 @@ package object onnx {
     }
   }
 */
+  //Missing V13, signature only differs in adding bfloat
   trait SoftmaxV11 extends Operator {
     def SoftmaxV11[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
         name: String,
@@ -3977,6 +3976,7 @@ package object onnx {
   }
 
 
+  //Missing V13
   trait SplitV11 extends Operator {
     def SplitV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -4040,6 +4040,7 @@ package object onnx {
     }
   }
 
+  //Missing V13
   //TODO: Constraint
   trait SqueezeV11 extends Operator {
     def SqueezeV11[
@@ -4397,6 +4398,7 @@ package object onnx {
     }
   }
 */
+  //Missing V13
   //TODO: Constraint
   trait UnsqueezeV11 extends Operator {
     def UnsqueezeV11[

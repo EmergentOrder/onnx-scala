@@ -1,17 +1,22 @@
 package org.emergentorder.onnx.backends
 
+import sys.process._
+import java.net.URL
+import java.io.File
 import java.nio.file.{Files, Paths}
+import scala.language.postfixOps
 import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.backends._
 import org.emergentorder.compiletime._
 import io.kjaer.compiletime._
-
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should._
 
 
 class ONNXScalaSpec extends AnyFlatSpec with Matchers{
+ 
+   new URL("https://s3.amazonaws.com/onnx-model-zoo/squeezenet/squeezenet1.1/squeezenet1.1.onnx") #> new File("squeezenet1.1.onnx") !!
 
   "SqueezeNet ONNX-Scala model" should "predict dummy image class" in {
     val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.1.onnx"))

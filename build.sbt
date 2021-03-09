@@ -116,7 +116,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
     })
 )
 
-
+/*
 lazy val docs = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("core-docs"))       // new documentation project
   .settings(
@@ -130,6 +130,7 @@ lazy val docs = (crossProject(JVMPlatform)
   .jvmSettings(
     crossScalaVersions := Seq(scala213Version)
   )
+*/
 
 skip in publish := true
 sonatypeProfileName := "com.github.EmergentOrder" 

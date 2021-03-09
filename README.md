@@ -131,7 +131,7 @@ Automatic differentiation to enable training is under consideration (ONNX curren
 
 The ONNX-Scala core (fine-grained) API is cross-built against Scala JVM (for Scala 2.13 and Dotty/3.0) , Scala.js / JavaScript (for Scala 2.13 and Dotty/3.0).
 
-Currently at ONNX 1.8.0 (Backward compatible to at least 1.2.0), ONNX Runtime 1.6.0.
+Currently at ONNX 1.8.0 (Backward compatible to at least 1.2.0), ONNX Runtime 1.7.0.
  
 ### A) Fine-grained API
 A complete\*, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep learning and classical machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++) via the JavaCPP Preset for ONNX. We also generate implementations for each operator in terms of core methods to be implemented by the backend.

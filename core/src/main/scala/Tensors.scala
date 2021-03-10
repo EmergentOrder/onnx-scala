@@ -7,7 +7,7 @@ import spire.math.ULong
 import spire.math.Complex
 import spire.math.Numeric
 import io.kjaer.compiletime._
-
+import scala.compiletime.S
 
 import org.emergentorder.compiletime.DimensionDenotation
 import org.emergentorder.compiletime.TensorShapeDenotation
@@ -32,7 +32,7 @@ object Tensors{
   type SparseTensor[T <: Supported, A <: Axes] = Tensor[T, A]
  
   type KeepOrReduceDims[S <: Shape, AxisIndices <: None.type | Indices, KeepDims <: (Boolean & Singleton)] <: Shape = (KeepDims) match {
-        case true => Shape.Map[S, [AxisIndices] =>> 1]
+        case true => ReduceKeepDims[S, AxisIndices]
         case false => Shape.Reduce[S, AxisIndices]
   }
 
@@ -41,6 +41,20 @@ object Tensors{
         case false => TensorShapeDenotation.Reduce[Td, AxisIndices]
   }
 
+  type ReduceKeepDims[S <: Shape, Axes <: None.type | Indices] <: Shape = Axes match {
+    case None.type => SNil
+    case Indices => ReduceKeepDimsLoop[S, Axes, 0]
+  }
+
+  protected type ReduceKeepDimsLoop[ReplaceFrom <: Shape, ToReplace <: Indices, I <: Index] <: Shape = ReplaceFrom match {
+    case head #: tail => Indices.Contains[ToReplace, I] match {
+      case true => 1 #: ReduceKeepDimsLoop[tail, Indices.RemoveValue[ToReplace, I], S[I]]
+      case false => head #: ReduceKeepDimsLoop[tail, ToReplace, S[I]]
+    }
+    case SNil => ToReplace match {
+      case INil => SNil 
+    }
+  }
   /*
   type ConcatLoop[ConcatFromA <: Shape, ConcatFromB <: Shape, ToConcat <: Indices, I <: Index] <: Shape = ConcatFromA match {
     case head #: tail => Indices.Contains[ConcatFromA, I] match {

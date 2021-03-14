@@ -8,7 +8,7 @@
 Add this to the build.sbt in your project:
 
 ```scala
-libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala-backends" % "0.8.0"
+libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala-backends" % "0.10.0"
 ```
 
 A short, recent talk I gave about the project: [ONNX-Scala: Typeful, Functional Deep Learning / Dotty Meets an Open AI Standard](https://youtu.be/8HuZTeHi7lg?t=1156)

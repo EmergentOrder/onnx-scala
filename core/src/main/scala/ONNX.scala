@@ -156,13 +156,13 @@ package object onnx {
   trait ArgMaxV11 extends Operator {
     def ArgMaxV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axis: Option[(Axis)] = Some(0 ::: INil),
+        axis: Option[(Axes)] = Some(0 ::: INil),
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axes,KeepDims], KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ArgMax", allInputs, map))
     }
@@ -171,13 +171,13 @@ package object onnx {
   trait ArgMaxV1 extends Operator {
     def ArgMaxV1[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axis: Option[(Axis)] = Some(0 ::: INil),
+        axis: Option[(Axes)] = Some(0 ::: INil),
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axes,KeepDims], KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ArgMax", allInputs, map))
     }
@@ -205,13 +205,13 @@ package object onnx {
   trait ArgMinV11 extends Operator {
     def ArgMinV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axis: Option[(Axis)] = Some(0 ::: INil),
+        axis: Option[(Axes)] = Some(0 ::: INil),
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axes,KeepDims], KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ArgMin", allInputs, map))
     }
@@ -220,13 +220,13 @@ package object onnx {
   trait ArgMinV1 extends Operator {
     def ArgMinV1[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axis: Option[(Axis)] = Some(0 ::: INil),
+        axis: Option[(Axes)] = Some(0 ::: INil),
         keepdims: Option[(KeepDims)] = None,
         data: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axes,KeepDims], KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ArgMin", allInputs, map))
     }
@@ -2988,13 +2988,13 @@ package object onnx {
   trait ReduceLogSumV11 extends Operator {
     def ReduceLogSumV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-        , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+        , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axes: Option[(Axis)] = None,
+        axes: Option[(Axes)] = None,
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,KeepDims],KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceLogSum", allInputs, map))
     }
@@ -3003,13 +3003,13 @@ package object onnx {
   trait ReduceLogSumV1 extends Operator {
     def ReduceLogSumV1[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axes: Option[(Axis)] = None,
+        axes: Option[(Axes)] = None,
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,KeepDims],KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceLogSum", allInputs, map))
     }
@@ -3018,13 +3018,13 @@ package object onnx {
   trait ReduceMaxV12 extends Operator {
     def ReduceMaxV12[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axes: Option[(Axis)] = None,
+        axes: Option[(Axes)] = None,
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,KeepDims],KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceMax", allInputs, map))
     }
@@ -3033,13 +3033,13 @@ package object onnx {
   trait ReduceMaxV11 extends Operator {
     def ReduceMaxV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axes: Option[(Axis)] = None,
+        axes: Option[(Axes)] = None,
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,KeepDims],KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceMax", allInputs, map))
     }
@@ -3048,12 +3048,12 @@ package object onnx {
   trait ReduceMaxV1 extends Operator {
     def ReduceMaxV1[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
-        , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+        , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axes: Option[(Axis)] = None,
+        axes: Option[(Axes)] = None,
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,KeepDims],KeepOrReduceDims[S,Axis,KeepDims]]] = {
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
       val map: Map[String, Any] = Map("axes" -> axes, "keepdims" -> keepdims)
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceMax", allInputs, map))
@@ -3063,13 +3063,13 @@ package object onnx {
   trait ReduceMeanV11 extends Operator {
     def ReduceMeanV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axes: Option[(Axis)] = None,
+        axes: Option[(Axes)] = None,
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axes,KeepDims], KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceMean", allInputs, map))
     }
@@ -3078,13 +3078,13 @@ package object onnx {
   trait ReduceMeanV1 extends Operator {
     def ReduceMeanV1[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axes: Option[(Axis)] = None,
+        axes: Option[(Axes)] = None,
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,KeepDims],KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceMean", allInputs, map))
     }
@@ -3093,13 +3093,13 @@ package object onnx {
   trait ReduceMinV12 extends Operator {
     def ReduceMinV12[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axes: Option[(Axis)] = None,
+        axes: Option[(Axes)] = None,
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,KeepDims],KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceMin", allInputs, map))
     }
@@ -3108,13 +3108,13 @@ package object onnx {
   trait ReduceMinV11 extends Operator {
     def ReduceMinV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axes: Option[(Axis)] = None,
+        axes: Option[(Axes)] = None,
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,KeepDims],KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceMin", allInputs, map))
     }
@@ -3123,13 +3123,13 @@ package object onnx {
   trait ReduceMinV1 extends Operator {
     def ReduceMinV1[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axes: Option[(Axis)] = None,
+        axes: Option[(Axes)] = None,
         keepdims: Option[(KeepDims)] = Some(true),
         data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,KeepDims],KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceMin", allInputs, map))
     }
@@ -3138,13 +3138,13 @@ package object onnx {
   trait ReduceProdV11 extends Operator {
     def ReduceProdV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axes: Option[(Axis)] = None,
+        axes: Option[(Axes)] = None,
         keepdims: Option[(KeepDims)] = None,
         data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims], KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceProd", allInputs, map))
     }
@@ -3153,13 +3153,13 @@ package object onnx {
   trait ReduceProdV1 extends Operator {
     def ReduceProdV1[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axes: Option[(Axis)] = None,
+        axes: Option[(Axes)] = None,
         keepdims: Option[(KeepDims)] = None,
         data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,KeepDims],KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceProd", allInputs, map))
     }
@@ -3168,13 +3168,13 @@ package object onnx {
   trait ReduceSumSquareV11 extends Operator {
     def ReduceSumSquareV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axes: Option[(Axis)] = None,
+        axes: Option[(Axes)] = None,
         keepdims: Option[(KeepDims)] = None,
         data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,KeepDims],KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceSumSquare", allInputs, map))
     }
@@ -3183,13 +3183,13 @@ package object onnx {
   trait ReduceSumSquareV1 extends Operator {
     def ReduceSumSquareV1[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axes: Option[(Axis)] = None,
+        axes: Option[(Axes)] = None,
         keepdims: Option[(KeepDims)] = None,
         data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,KeepDims],KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceSumSquare", allInputs, map))
     }
@@ -3198,13 +3198,13 @@ package object onnx {
   trait ReduceSumV11 extends Operator {
     def ReduceSumV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axes: Option[(Axis)] = None,
+        axes: Option[(Axes)] = None,
         keepdims: Option[(KeepDims)] = None,
         data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,KeepDims],KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceSum", allInputs, map))
     }
@@ -3213,13 +3213,13 @@ package object onnx {
   trait ReduceSumV1 extends Operator {
     def ReduceSumV1[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices, KeepDims <: (Boolean&Singleton)](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
         name: String,
-        axes: Option[(Axis)] = None,
+        axes: Option[(Axes)] = None,
         keepdims: Option[(KeepDims)] = None,
         data: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,KeepDims],KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ReduceSum", allInputs, map))
     }
@@ -3848,16 +3848,20 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double],
-        @sp Tind <: Int | Long: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape, Tt3 <: TensorTypeDenotation, Td3 <: TensorShapeDenotation, S3 <: Shape, Tt4 <: TensorTypeDenotation, Td4 <: TensorShapeDenotation, S4 <: Shape, Tt5 <: TensorTypeDenotation, Td5 <: TensorShapeDenotation, S5 <: Shape](
+//        @sp Tind <: Int | Long: Numeric,
+     Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape, Tt3 <: TensorTypeDenotation, Td3 <: TensorShapeDenotation, S3 <: Shape, Tt4 <: TensorTypeDenotation, Td4 <: TensorShapeDenotation, S4 <: Shape, Tt5 <: TensorTypeDenotation, Td5 <: TensorShapeDenotation, S5 <: Shape, AxesStart <: Indices, AxesEnd <: Indices](
         name: String,
         data: Tensor[T, Tuple3[Tt,Td,S]],
-        starts: Tensor[Tind, Tuple3[Tt1,Td1,S1]],
-        ends: Tensor[Tind, Tuple3[Tt2,Td2,S2]],
-        axes: Option[Tensor[Tind, Tuple3[Tt3,Td3,S3]]] = None,
-        steps: Option[Tensor[Tind, Tuple3[Tt4,Td4,S4]]] = None
-    )(using tt: ValueOf[Tt5], td: TensorShapeDenotationOf[Td5], s: ShapeOf[S5]): Tensor[T, Tuple3[Tt5,Td5,S5]] = {
+        starts: AxesStart, // Tensor[Tind, Tuple3[Tt1,Td1,S1]],
+        ends: AxesEnd, //Tensor[Tind, Tuple3[Tt2,Td2,S2]],
+        axes: Option[Tensor[Int | Long, Tuple3[Tt3,Td3,S3]]] = None,
+        steps: Option[Tensor[Int | Long, Tuple3[Tt4,Td4,S4]]] = None
+    )(using tt: ValueOf[Tt5], td: TensorShapeDenotationOf[Td5], s5: ShapeOf[S5], i: IndicesOf[AxesStart], i2: IndicesOf[AxesEnd]): Tensor[T, Tuple3[Tt5,Td5,S5]] = {
       val map: Map[String, Any] = Map()
+      val startsArr = indicesOf[AxesStart].indices.toArray
+      val starts = Tensor(startsArr, startsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
+      val endsArr = indicesOf[AxesEnd].indices.toArray
+      val ends = Tensor(endsArr, endsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
       val allInputs             = Tuple5(data, starts, ends, axes, steps)
       (callOp(name, "Slice", allInputs, map))
     }
@@ -4040,27 +4044,27 @@ package object onnx {
   }
 
   //Missing V13
-  //TODO: Constraint on range, and for V1, disallow negative indexing
   trait SqueezeV11 extends Operator {
     def SqueezeV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices](name: String, axes: Option[(Axis)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,false]], s: ShapeOf[KeepOrReduceDims[S,Axis,false]], i: IndicesOf[Axis]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,false],KeepOrReduceDims[S,Axis,false]]] = {
-      val axes = indicesOf[Axis].indices.toArray
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[(Axes)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] = {
+      val axes = indicesOf[Axes].indices.toArray
       val map: Map[String, Any] = Map("axes" -> axes)
       val allInputs             = Tuple1(data)
       (callOp(name, "Squeeze", allInputs, map))
     }
   }
 
+  //TODO: for V1, disallow negative indexing
   trait SqueezeV1 extends Operator {
     def SqueezeV1[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices](name: String, axes: Option[(Axis)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,false]], s: ShapeOf[KeepOrReduceDims[S,Axis,false]], i: IndicesOf[Axis]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,false],KeepOrReduceDims[S,Axis,false]]] =  {
-      val axes = indicesOf[Axis].indices.toArray
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[(Axes)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] =  {
+      val axes = indicesOf[Axes].indices.toArray
       val map: Map[String, Any] = Map("axes" -> axes)
       val allInputs             = Tuple1(data)
       (callOp(name, "Squeeze", allInputs, map))
@@ -4400,27 +4404,27 @@ package object onnx {
   }
 */
   //Missing V13
-  //TODO: Constraint on range, and for V1, disallowing negative indexes
   trait UnsqueezeV11 extends Operator {
     def UnsqueezeV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices](name: String, axes: Option[(Axis)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,false]], s: ShapeOf[KeepOrReduceDims[S,Axis,false]], i: IndicesOf[Axis]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,false],KeepOrReduceDims[S,Axis,false]]] =  {
-      val axes = indicesOf[Axis].indices.toArray
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[(Axes)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] =  {
+      val axes = indicesOf[Axes].indices.toArray
       val map: Map[String, Any] = Map("axes" -> axes)
       val allInputs             = Tuple1(data)
       (callOp(name, "Unsqueeze", allInputs, map))
     }
   }
 
+  //TODO: for V1, disallow negative indexing
   trait UnsqueezeV1 extends Operator {
     def UnsqueezeV1[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices](name: String, axes: Option[(Axis)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,false]], s: ShapeOf[KeepOrReduceDims[S,Axis,false]], i: IndicesOf[Axis]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,false],KeepOrReduceDims[S,Axis,false]]] =  {
-      val axes = indicesOf[Axis].indices.toArray
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[(Axes)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] =  {
+      val axes = indicesOf[Axes].indices.toArray
       val map: Map[String, Any] = Map("axes" -> axes)
       val allInputs             = Tuple1(data)
       (callOp(name, "Unsqueeze", allInputs, map))

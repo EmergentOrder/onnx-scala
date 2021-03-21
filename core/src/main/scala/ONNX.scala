@@ -12,6 +12,7 @@ import spire.math.Numeric
 import spire.implicits._
 import spire.algebra.Field
 import org.emergentorder.onnx.Tensors._
+//import scala.compiletime.ops.int //For RC2
 import scala.compiletime.ops.int._
 import io.kjaer.compiletime._
 import io.kjaer.compiletime.Shape.NumElements
@@ -19,6 +20,7 @@ import org.emergentorder.compiletime._
 import org.emergentorder.compiletime.TensorShapeDenotation.Reverse
 package object onnx {
 
+  //TODO: Symbolic shape values
   //TODO: Support bfloat16 type (new in ONNX 1.8.0)
   //TODO: Fix propagation behavavior for TensorShapeDenotation 
   //TODO: Encode node names as types
@@ -3234,9 +3236,6 @@ package object onnx {
     }
   }
 
-  //TODO: Constraint for shape denotation
-  //
-  //+ match types on axes
   trait ReshapeV5 extends Operator {
     def ReshapeV5[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -4041,13 +4040,14 @@ package object onnx {
   }
 
   //Missing V13
-  //TODO: Constraint
+  //TODO: Constraint on range, and for V1, disallow negative indexing
   trait SqueezeV11 extends Operator {
     def SqueezeV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](name: String, axes: Option[(Array[Int])] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices](name: String, axes: Option[(Axis)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,false]], s: ShapeOf[KeepOrReduceDims[S,Axis,false]], i: IndicesOf[Axis]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,false],KeepOrReduceDims[S,Axis,false]]] = {
+      val axes = indicesOf[Axis].indices.toArray
       val map: Map[String, Any] = Map("axes" -> axes)
       val allInputs             = Tuple1(data)
       (callOp(name, "Squeeze", allInputs, map))
@@ -4059,7 +4059,8 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](name: String, axes: Option[(Array[Int])] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices](name: String, axes: Option[(Axis)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,false]], s: ShapeOf[KeepOrReduceDims[S,Axis,false]], i: IndicesOf[Axis]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,false],KeepOrReduceDims[S,Axis,false]]] =  {
+      val axes = indicesOf[Axis].indices.toArray
       val map: Map[String, Any] = Map("axes" -> axes)
       val allInputs             = Tuple1(data)
       (callOp(name, "Squeeze", allInputs, map))
@@ -4399,13 +4400,14 @@ package object onnx {
   }
 */
   //Missing V13
-  //TODO: Constraint
+  //TODO: Constraint on range, and for V1, disallowing negative indexes
   trait UnsqueezeV11 extends Operator {
     def UnsqueezeV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](name: String, axes: (Array[Int]), data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices](name: String, axes: Option[(Axis)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,false]], s: ShapeOf[KeepOrReduceDims[S,Axis,false]], i: IndicesOf[Axis]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,false],KeepOrReduceDims[S,Axis,false]]] =  {
+      val axes = indicesOf[Axis].indices.toArray
       val map: Map[String, Any] = Map("axes" -> axes)
       val allInputs             = Tuple1(data)
       (callOp(name, "Unsqueeze", allInputs, map))
@@ -4417,7 +4419,8 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](name: String, axes: (Array[Int]), data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Indices](name: String, axes: Option[(Axis)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,false]], s: ShapeOf[KeepOrReduceDims[S,Axis,false]], i: IndicesOf[Axis]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axis,false],KeepOrReduceDims[S,Axis,false]]] =  {
+      val axes = indicesOf[Axis].indices.toArray
       val map: Map[String, Any] = Map("axes" -> axes)
       val allInputs             = Tuple1(data)
       (callOp(name, "Unsqueeze", allInputs, map))

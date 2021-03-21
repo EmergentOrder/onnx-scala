@@ -82,8 +82,7 @@ object Tensors{
  
   def tensorRequires[T <: Supported,  Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](tens: Tensor[T,Tuple3[Tt,Td,S]]): Tensor[T,Tuple3[Tt, Td, S]] = {
     //require(tens._2._2.toSeq.size == tens.shape.size) //We allow empty denotations
-    require(tens.shape.size <= 4)
-    require(tens.data.size == tens.shape.foldLeft(1)(_ * _))
+    require(tens.data.size == tens.shape.foldLeft(1)(_ * _)) //This shouldn't fail at runtime, if so shape constraints need fixing
     tens
   }
     def apply[T <: Supported : scala.reflect.ClassTag, Tt <: TensorTypeDenotation, TD <: TensorShapeDenotation](element: T, tt: Tt, td: TD): Tensor[T, Tuple3[Tt, TD, 1 #: SNil]] = tensorRequires((Array[T](element), (tt, td, 1 #: SNil))) 

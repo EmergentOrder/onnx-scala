@@ -38,7 +38,15 @@ trait OpToONNXBytesConverter extends AutoCloseable {
       AttributeProto(name=Some(key),`type`=Some(AttributeProto.AttributeType.INTS),ints=ArraySeq.unsafeWrapArray(x.map(_.toLong)))
     }
 
-    //TODO: more attr types
+    def createStrAttr(x: String, key: String): AttributeProto = {
+      AttributeProto(name=Some(key),`type`=Some(AttributeProto.AttributeType.STRING),s=Some(com.google.protobuf.ByteString.copyFromUtf8(x)))
+    }
+
+    def createStrArrayAttr(x: Array[String], key: String): AttributeProto = {
+      AttributeProto(name=Some(key),`type`=Some(AttributeProto.AttributeType.STRINGS),strings=ArraySeq.unsafeWrapArray(x.map(com.google.protobuf.ByteString.copyFromUtf8(_))))
+    }
+
+    //TODO: more attr types - Float
     val attrProtos: Array[AttributeProto] =
       attrs.map {
         case (key:String, value) =>
@@ -55,6 +63,19 @@ trait OpToONNXBytesConverter extends AutoCloseable {
             case Some(x: Array[Int]) => {
               Some(createIntArrayAttr(x, key))
             }
+            case x: String => {
+              Some(createStrAttr(x, key))
+            }
+            case Some(x: String) => {
+              Some(createStrAttr(x, key))
+            }
+            case x: Array[String] => {
+              Some(createStrArrayAttr(x, key))
+            }
+            case Some(x: Array[String]) => {
+              Some(createStrArrayAttr(x, key))
+            }
+
             case None => None
           }
       }.toArray.flatten

@@ -18,8 +18,10 @@ import io.kjaer.compiletime._
 import io.kjaer.compiletime.Shape.NumElements
 import org.emergentorder.compiletime._
 import org.emergentorder.compiletime.TensorShapeDenotation.Reverse
+import org.emergentorder.compiletime.TensorShapeDenotation.Concat
 package object onnx {
 
+  //TODO: indices as longs, not ints.. but can't at the type-level..
   //TODO: Symbolic shape values
   //TODO: Support bfloat16 type (new in ONNX 1.8.0)
   //TODO: Encode node names as types
@@ -595,14 +597,15 @@ package object onnx {
   }
 */
 
-  //TODO: constraint - sum size of dims concated over 
+  //FIXME: "All input tensors must have the same shape, except for the dimension size of the axis to concatenate on". Currently assumes tensors to be concated are exact same shape
+  //TODO: Arbitrary arity inputs 
   trait ConcatV11 extends Operator {
     def ConcatV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](name: String, axis: (Int), inputs: Seq[Tensor[T, Tuple3[Tt, Td, S]]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1, Td1, S1]] = {
-      val map: Map[String, Any] = Map("axis" -> axis)
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Axis <: Index ::: INil](name: String, axis: Axis, inputs: Tuple2[Tensor[T, Tuple3[Tt, Td, S]],Tensor[T, Tuple3[Tt, Td, S]]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[DoubleGivenAxisSize[S,Axis]], i: IndicesOf[Axis]): Tensor[T, Tuple3[Tt, Td, DoubleGivenAxisSize[S,Axis]]] = {
+      val map: Map[String, Any] = Map("axis"-> indicesOf[Axis].indices.toArray.head)
       val allInputs             = Tuple.fromArray(inputs.toArray)
       (callOp(name, "Concat", allInputs, map))
     }
@@ -1363,6 +1366,7 @@ package object onnx {
   }
 
   //Not supported, training is not yet GA
+ 
   /*
   trait GradientV1 extends Operator {
     def GradientV1[
@@ -1370,15 +1374,15 @@ package object onnx {
           Float
         ] | Complex[Double]: Numeric,
         @sp T2 <: Float16 | Float | Double: Numeric
-    , Ax <: Axes](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
         name: String,
         xs: (Array[String]),
         y: (String),
         zs: Option[(Array[String])] = None,
-        Inputs: Seq[Tensor[T1,_]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T2, _] = {
+        Inputs: Seq[Tensor[T1,Tuple3[Tt, Td, S]]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T2, Tuple3[Tt1,Td1,S1]] = {
       val map: Map[String, Any] = Map("xs" -> xs, "y" -> y, "zs" -> zs)
-      val allInputs             = Tuple.fromArray(Inputs.toArray).asInstanceOf[Tuple]
+      val allInputs             = Tuple.fromArray(Inputs.toArray)
       (callOp(name, "Gradient", allInputs, map))
     }
   }

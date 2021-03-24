@@ -8,6 +8,7 @@ import spire.math.Complex
 import spire.math.Numeric
 import io.kjaer.compiletime._
 import scala.compiletime.S
+import scala.compiletime.ops.int.*
 
 import org.emergentorder.compiletime.DimensionDenotation
 import org.emergentorder.compiletime.TensorShapeDenotation
@@ -23,10 +24,12 @@ object Tensors{
   type TensorTypeDenotation = String & Singleton
 
 //  case class Axes(ttd: TensorTypeDenotation,td: TensorShapeDenotation, shape: Shape)
+  //potential collision, use type name Axes elsewhere
   type Axes = Tuple3[TensorTypeDenotation, TensorShapeDenotation, Shape]
 
 
   //Need this alias to not conflict with other Tensors
+  //TODO: consider using TF-Java ndarray as backing instead of Scala Array here
   opaque type Tensor[T <: Supported, Ax <: Axes] = Tuple2[Array[T], Ax]
 
   type SparseTensor[T <: Supported, A <: Axes] = Tensor[T, A]
@@ -41,9 +44,9 @@ object Tensors{
         case false => TensorShapeDenotation.Reduce[Td, AxisIndices]
   }
 
-  type ReduceKeepDims[S <: Shape, Axes <: None.type | Indices] <: Shape = Axes match {
+  type ReduceKeepDims[S <: Shape, AxisIndices <: None.type | Indices] <: Shape = AxisIndices match {
     case None.type => SNil
-    case Indices => ReduceKeepDimsLoop[S, Axes, 0]
+    case Indices => ReduceKeepDimsLoop[S, AxisIndices, 0]
   }
 
   protected type ReduceKeepDimsLoop[ReplaceFrom <: Shape, ToReplace <: Indices, I <: Index] <: Shape = ReplaceFrom match {
@@ -55,6 +58,22 @@ object Tensors{
       case INil => SNil 
     }
   }
+
+  type DoubleGivenAxisSize[S <: Shape, AxisIndices <: None.type | Indices] <: Shape = AxisIndices match {
+    case None.type => SNil
+    case Indices => DoubleGivenAxisSizeLoop[S, AxisIndices, 0]
+  }
+
+  protected type DoubleGivenAxisSizeLoop[ReplaceFrom <: Shape, ToReplace <: Indices, I <: Index] <: Shape = ReplaceFrom match {
+    case head #: tail => Indices.Contains[ToReplace, I] match {
+      case true => (2 * head) #: DoubleGivenAxisSizeLoop[tail, Indices.RemoveValue[ToReplace, I], S[I]]
+      case false => head #: DoubleGivenAxisSizeLoop[tail, ToReplace, S[I]]
+    }
+    case SNil => ToReplace match {
+      case INil => SNil
+    }
+  }
+
   /*
   type ConcatLoop[ConcatFromA <: Shape, ConcatFromB <: Shape, ToConcat <: Indices, I <: Index] <: Shape = ConcatFromA match {
     case head #: tail => Indices.Contains[ConcatFromA, I] match {

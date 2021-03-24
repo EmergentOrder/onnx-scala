@@ -17,7 +17,7 @@ sealed trait Indices {
 
 }
 
-final case class :::[H <: Index, T <: Indices](head: H, tail: T) extends Indices {
+final case class :::[+H <: Index, +T <: Indices](head: H, tail: T) extends Indices {
   override def toString = s"$head ::: $tail"
 }
 

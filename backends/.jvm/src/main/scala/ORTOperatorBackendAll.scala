@@ -20,7 +20,6 @@ class ORTOperatorBackendAll
     with AsinhV9
     with AtanV7
     with AtanhV9
-    with AveragePoolV7
     with AveragePoolV10
 //    with AveragePoolV11 //Missing from ONNX.js
     with BatchNormalizationV9
@@ -39,7 +38,6 @@ class ORTOperatorBackendAll
 //    with ConcatFromSequenceV11
 //    with ConstantV11 //Not supported in ONNX.js
 //    with ConstantOfShapeV9 
-    with ConvV1 //Retained for Squeezenet v1.1
     with ConvV11
 //   with ConvIntegerV10
 //    with ConvTransposeV11
@@ -51,7 +49,6 @@ class ORTOperatorBackendAll
 //    with DetV11
 //    with DictVectorizerV1 //ONNX ML, not tested for in scoreboard
     with DivV7
-    with DropoutV7 
     with DropoutV12
 //    with DynamicQuantizeLinearV11
 // with EinsumV12 //new in 1.7.0
@@ -101,8 +98,7 @@ class ORTOperatorBackendAll
     with MatMulV9
 //    with MatMulIntegerV10
     with MaxV8 //Fails in ONNX.js, but we need it
-    with MaxPoolV1 //Retained for Squeezenet v1.1
-    with MaxPoolV8
+    with MaxPoolV10
 //    with MaxPoolV11 //Missing in ONNX.js
 //    with MaxRoiPoolV1 //fails in scoreboard
 //    with MaxUnpoolV11

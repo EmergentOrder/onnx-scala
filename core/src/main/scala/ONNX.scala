@@ -2977,27 +2977,45 @@ package object onnx {
     }
   }
 */
-  //TODO: Constraint
+  //TODO: Constraints on axes / steps params
+  //TODO: All 4 params must be 1D vectors of same size - to enforce
   trait SliceV11 extends Operator {
     def SliceV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double],
 //        @sp Tind <: Int | Long: Numeric,
-     Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape, Tt3 <: TensorTypeDenotation, Td3 <: TensorShapeDenotation, S3 <: Shape, Tt4 <: TensorTypeDenotation, Td4 <: TensorShapeDenotation, S4 <: Shape, Tt5 <: TensorTypeDenotation, Td5 <: TensorShapeDenotation, S5 <: Shape, AxesStart <: Indices, AxesEnd <: Indices](
+     Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, AxesStart <: Indices, AxesEnd <: Indices, AxisIndices <: None.type | Indices, StepIndices <: None.type | Indices](
         name: String,
         data: Tensor[T, Tuple3[Tt,Td,S]],
-        starts: AxesStart, // Tensor[Tind, Tuple3[Tt1,Td1,S1]],
-        ends: AxesEnd, //Tensor[Tind, Tuple3[Tt2,Td2,S2]],
-        axes: Option[Tensor[Int | Long, Tuple3[Tt3,Td3,S3]]] = None,
-        steps: Option[Tensor[Int | Long, Tuple3[Tt4,Td4,S4]]] = None
-    )(using tt: ValueOf[Tt5], td: TensorShapeDenotationOf[Td5], s5: ShapeOf[S5], i: IndicesOf[AxesStart], i2: IndicesOf[AxesEnd]): Tensor[T, Tuple3[Tt5,Td5,S5]] = {
+        starts: AxesStart,
+        ends: AxesEnd,
+        axes: AxisIndices = None,
+        steps: StepIndices = None
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s5: ShapeOf[SlicedShape[AxesStart,AxesEnd]]): Tensor[T, Tuple3[Tt1,Td,SlicedShape[AxesStart,AxesEnd]]] = {
       val map: Map[String, Any] = Map()
-      val startsArr = indicesOf[AxesStart].indices.toArray
-      val starts = Tensor(startsArr, startsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
-      val endsArr = indicesOf[AxesEnd].indices.toArray
-      val ends = Tensor(endsArr, endsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
-      val allInputs             = Tuple5(data, starts, ends, axes, steps)
+      val startsArr = starts.indices.toArray
+      val newStarts = Tensor(startsArr, startsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
+      val endsArr = ends.indices.toArray
+      val newEnds = Tensor(endsArr, endsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
+
+      val newAxes = axes match {
+        case None => None
+        case x: Indices => {
+          val axesArr = x.indices.toArray
+          Tensor(axesArr, axesArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
+        }
+      }
+
+      val newSteps = steps match {
+        case None => None
+        case x: Indices => {
+          val stepsArr = x.indices.toArray
+          Tensor(stepsArr, stepsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
+        }
+      }
+
+      val allInputs             = Tuple5(data, newStarts, newEnds, newAxes, newSteps)
       (callOp(name, "Slice", allInputs, map))
     }
   }

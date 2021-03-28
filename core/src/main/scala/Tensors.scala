@@ -30,6 +30,7 @@ object Tensors{
 
   //Need this alias to not conflict with other Tensors
   //TODO: consider using TF-Java ndarray as backing instead of Scala Array here
+  //S is overloaded
   opaque type Tensor[T <: Supported, Ax <: Axes] = Tuple2[Array[T], Ax]
 
   type SparseTensor[T <: Supported, A <: Axes] = Tensor[T, A]
@@ -73,6 +74,22 @@ object Tensors{
       case INil => SNil
     }
   }
+
+  type SlicedShape[AxisIndicesStarts <: None.type | Indices, AxisIndicesEnds <: None.type | Indices] <: Shape = AxisIndicesStarts match {
+    case None.type => SNil
+    case Indices => SlicedShapeLoop[AxisIndicesStarts, AxisIndicesEnds]
+  }
+
+  protected type SlicedShapeLoop[Starts <: Indices, Ends <: Indices] <: Shape = Starts match {
+    case head ::: tail => Ends match{
+      case endsHead ::: endsTail => (endsHead - head) #: SlicedShapeLoop[tail, endsTail]
+      case INil => SNil
+    }
+    case INil => Starts match {
+      case INil => SNil
+    }
+  }
+
 
   /*
   type ConcatLoop[ConcatFromA <: Shape, ConcatFromB <: Shape, ToConcat <: Indices, I <: Index] <: Shape = ConcatFromA match {

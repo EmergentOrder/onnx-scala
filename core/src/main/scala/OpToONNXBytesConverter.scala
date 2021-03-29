@@ -97,7 +97,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
           case b: Array[Boolean] => BOOL.index
         }
 
-      ValueInfoProto(name=Some(inputName), `type`=Some(onnx.onnx.TypeProto().withTensorType(onnx.onnx.TypeProto.Tensor(shape=Some(onnx.onnx.TensorShapeProto(dim=tens.shape.map(onnx.onnx.TensorShapeProto.Dimension().withDimValue(_)))),
+      ValueInfoProto(name=Some(inputName), `type`=Some(onnx.onnx.TypeProto().withTensorType(onnx.onnx.TypeProto.Tensor(shape=Some(onnx.onnx.TensorShapeProto(dim=ArraySeq.unsafeWrapArray(tens.shape.map(onnx.onnx.TensorShapeProto.Dimension().withDimValue(_))))),
           elemType=Some(elemType)))
     
             ))

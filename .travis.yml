@@ -10,5 +10,5 @@ install:
     sudo ln -s $HOME/sbt/bin/sbt /usr/local/bin/sbt
 script: 
 #  - bash get_models.sh
-  - travis_wait 1 sbt test -J-Xmx5G
+  - travis_wait 5 sbt test -J-Xmx5G
 #  - sbt docsJVM/mdoc

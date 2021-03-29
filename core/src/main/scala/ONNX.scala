@@ -3293,16 +3293,21 @@ package object onnx {
     }
   }
 */
-  //TODO P2: Constraint
   trait TileV6 extends Operator {
     def TileV6[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]: Numeric,
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | 
+                 Complex[Double]: Numeric,
         @sp T1 <: Long: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](name: String, input: Tensor[T, Tuple3[Tt,Td,S]], repeats: Tensor[T1, Tuple3[Tt1,Td1,S1]])(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt2 <: TensorTypeDenotation, AxisRepeats <: Indices](
+        name: String,
+        input: Tensor[T, Tuple3[Tt,Td,S]],
+        repeats: AxisRepeats)
+        (using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td], s: ShapeOf[TiledShape[S, AxisRepeats]]): Tensor[T, Tuple3[Tt2,Td,TiledShape[S, AxisRepeats]]] = {
       val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(input, repeats)
+      val repeatsArr = repeats.indices.toArray
+      val repeatsTens = Tensor(repeatsArr, repeatsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
+
+      val allInputs             = Tuple2(input, repeatsTens)
       (callOp(name, "Tile", allInputs, map))
     }
   }

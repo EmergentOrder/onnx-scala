@@ -114,6 +114,19 @@ object Tensors{
     }
   }
 
+  type TiledShape[TileFrom <: Shape, AxisRepeats <: None.type | Indices] <: Shape = AxisRepeats match {
+    case None.type => SNil
+    case Indices => TiledShapeLoop[TileFrom, AxisRepeats]
+  }
+
+  protected type TiledShapeLoop[TileFrom <: Shape, Repeats <: Indices] <: Shape = Repeats match {
+    case head ::: tail => TileFrom match {
+      case tileFromHead #: tileFromTail => (head * tileFromHead) #: TiledShapeLoop[tileFromTail, tail]
+      case SNil => SNil
+    }
+    case INil => SNil
+  }
+
   /*
   type ConcatLoop[ConcatFromA <: Shape, ConcatFromB <: Shape, ToConcat <: Indices, I <: Index] <: Shape = ConcatFromA match {
     case head #: tail => Indices.Contains[ConcatFromA, I] match {

@@ -1104,7 +1104,7 @@ package object onnx {
     }
   }
 
-  //Not supported, missing from ONNXJS
+  //Not supported, missing from ONNXJS, fail in ORT scoreboard
   /*
   trait GlobalLpPoolV2 extends Operator {
     def GlobalLpPoolV2[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -1229,6 +1229,7 @@ package object onnx {
   }
 
   //Missing V13
+  //Fails in ORT scoreboard
   trait IfV11 extends Operator {
     def IfV11[
         @sp B <: Boolean,
@@ -1552,6 +1553,7 @@ package object onnx {
     }
   } 
 
+  //Fails in ORT scoreboard
   trait LpNormalizationV1 extends Operator {
     def LpNormalizationV1[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
         name: String,
@@ -1565,6 +1567,7 @@ package object onnx {
     }
   }
 
+  //Fails in ORT scoreboard
   trait LpPoolV11 extends Operator {
     def LpPoolV11[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
         name: String,
@@ -1712,7 +1715,7 @@ package object onnx {
     }
   }
 
-  //Not supported, missing from ONNXJS
+  //Not supported, missing from ONNXJS, fails in ORT scoreboard
   /*
   trait MaxRoiPoolV1 extends Operator {
     def MaxRoiPoolV1[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -1881,7 +1884,7 @@ package object onnx {
     }
   }
 
-  //Not supported, missing from ONNXJS
+  //Not supported, missing from ONNXJS, Fails in ORT scoreboard
   /*
   trait MultinomialV7 extends Operator {
     def MultinomialV7[
@@ -2205,6 +2208,7 @@ package object onnx {
     }
   }
 
+  //Fails in ORT scoreboard
   trait RandomNormalLikeV1 extends Operator {
     def RandomNormalLikeV1[
         @sp T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -2226,6 +2230,7 @@ package object onnx {
     }
   }
 
+  //Fails in ORT scoreboard
   trait RandomNormalV1 extends Operator {
     def RandomNormalV1[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
         name: String,
@@ -2246,7 +2251,7 @@ package object onnx {
       (callOp(name, "RandomNormal", allInputs, map))
     }
   }
-
+  //Fails in ORT scoreboard
   trait RandomUniformLikeV1 extends Operator {
     def RandomUniformLikeV1[
         @sp T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -2267,7 +2272,7 @@ package object onnx {
       (callOp(name, "RandomUniformLike", allInputs, map))
     }
   }
-
+  //Fails in ORT scoreboard
   trait RandomUniformV1 extends Operator {
     def RandomUniformV1[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
         name: String,
@@ -2779,21 +2784,21 @@ package object onnx {
       (callOp(name, "ScatterND", allInputs, map))
     }
   }
-
+*/
   trait SeluV6 extends Operator {
-    def SeluV6[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
+    def SeluV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
-        alpha: Option[(Float)] = None,
-        gamma: Option[(Float)] = None,
-        X: Tensor[T, Ax]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Ax] = {
+        alpha: Float = 1.67326,
+        gamma: Float = 1.0507,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
       val map: Map[String, Any] = Map("alpha" -> alpha, "gamma" -> gamma)
       val allInputs             = Tuple1(X)
       (callOp(name, "Selu", allInputs, map))
     }
   }
 
-*/
+
   //Not supported, sequence op
   /*
   trait SequenceAtV11 extends Operator {
@@ -3109,7 +3114,7 @@ package object onnx {
       (callOp(name, "Softsign", allInputs, map))
     }
   }
-
+  //Fails in ORT scoreboard
   trait SpaceToDepthV1 extends Operator {
     def SpaceToDepthV1[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[

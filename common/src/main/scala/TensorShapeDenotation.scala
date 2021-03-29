@@ -2,8 +2,7 @@
 
 package org.emergentorder.compiletime
 
-import scala.compiletime.S
-import scala.compiletime.ops.int.{+, <, <=, *}
+import scala.compiletime.ops.int.{S, +, <, <=, *}
 import scala.compiletime.ops.boolean.&&
 import io.kjaer.compiletime.Index
 import io.kjaer.compiletime.Indices

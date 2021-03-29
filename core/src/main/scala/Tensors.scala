@@ -7,7 +7,6 @@ import spire.math.ULong
 import spire.math.Complex
 import spire.math.Numeric
 import io.kjaer.compiletime._
-import scala.compiletime.S
 import scala.compiletime.ops.int.*
 
 import org.emergentorder.compiletime.DimensionDenotation

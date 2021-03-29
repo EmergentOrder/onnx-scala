@@ -1,8 +1,7 @@
 //Author: Maxime Kjaer, taken from tf-dotty
 package io.kjaer.compiletime
 
-import scala.compiletime.S
-import scala.compiletime.ops.int.{+, <, <=, *}
+import scala.compiletime.ops.int.{S, +, <, <=, *}
 import scala.compiletime.ops.boolean.&&
 
 type Dimension = Int & Singleton

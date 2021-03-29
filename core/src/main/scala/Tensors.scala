@@ -77,7 +77,10 @@ object Tensors{
 
   type SlicedShape[AxisIndicesStarts <: None.type | Indices, AxisIndicesEnds <: None.type | Indices] <: Shape = AxisIndicesStarts match {
     case None.type => SNil
-    case Indices => SlicedShapeLoop[AxisIndicesStarts, AxisIndicesEnds]
+    case Indices => AxisIndicesEnds match {
+      case None.type => SNil
+      case Indices => SlicedShapeLoop[AxisIndicesStarts, AxisIndicesEnds]
+    }
   }
 
   protected type SlicedShapeLoop[Starts <: Indices, Ends <: Indices] <: Shape = Starts match {
@@ -85,11 +88,31 @@ object Tensors{
       case endsHead ::: endsTail => (endsHead - head) #: SlicedShapeLoop[tail, endsTail]
       case INil => SNil
     }
-    case INil => Starts match {
+    case INil => Ends match {
       case INil => SNil
     }
   }
 
+  type PaddedShape[PadFrom <: Shape, AxisIndicesBefore <: None.type | Indices, AxisIndicesAfter <: None.type | Indices] <: Shape = AxisIndicesBefore match {
+    case None.type => SNil
+    case Indices => AxisIndicesAfter match {
+      case None.type => SNil
+      case Indices => PaddedShapeLoop[PadFrom, AxisIndicesBefore, AxisIndicesAfter]
+    }
+  }
+
+  protected type PaddedShapeLoop[PadFrom <: Shape, Before <: Indices, After <: Indices] <: Shape = Before match {
+    case head ::: tail => After match{
+      case afterHead ::: afterTail => PadFrom match {
+        case padFromHead #: padFromTail => (head + padFromHead + afterHead) #: PaddedShapeLoop[padFromTail, tail, afterTail]
+        case SNil => SNil
+      }
+      case INil => SNil
+    }
+    case INil => After match {
+      case INil => SNil
+    }
+  }
 
   /*
   type ConcatLoop[ConcatFromA <: Shape, ConcatFromB <: Shape, ToConcat <: Indices, I <: Index] <: Shape = ConcatFromA match {

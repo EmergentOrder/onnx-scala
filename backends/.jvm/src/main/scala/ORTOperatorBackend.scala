@@ -20,16 +20,20 @@ trait ORTOperatorBackend
     with AutoCloseable {
 
   //Java map performs better
-  //val sessionCache = new java.util.HashMap[Integer, OrtSession]
+  //val sessionCache = new java.util.HashMap[Integer, Array[Byte]]
   
   val env = OrtEnvironment.getEnvironment()
 
   val coreCount = java.lang.Runtime.getRuntime().availableProcessors()
   def getSession(bytes: Array[Byte]) = { 
 
+    //Can now set symbolic dimension values, but only at session creation time
     val session_options = new OrtSession.SessionOptions()
     session_options.setIntraOpNumThreads(coreCount)
-    //    session_options.addDnnl(true)
+   session_options.setExecutionMode(OrtSession.SessionOptions.ExecutionMode.PARALLEL)
+   session_options.setInterOpNumThreads(2)
+    //session_options.addCUDA()
+//    session_options.addDnnl(true)
     env.createSession(bytes, session_options)
   }
   
@@ -50,7 +54,7 @@ trait ORTOperatorBackend
       val tensorShapeDenotationFromType = td.value 
       require(shape sameElements shapeFromType.toSeq)
       //TODO: Denotations
-      val result: Tensor[T, Tuple3[Tt, Td, S]] = Tensor(getArrayFromOnnxTensor(firstOut), tensorTypeDenotationFromType, tensorShapeDenotationFromType, shapeFromType) //.asInstanceOf[Tensor[T,Tuple3[Tt, Td, S]]] //dangerous
+      val result: Tensor[T, Tuple3[Tt, Td, S]] = Tensor(getArrayFromOnnxTensor(firstOut), tensorTypeDenotationFromType, tensorShapeDenotationFromType, shapeFromType)
       result
   }
     
@@ -65,6 +69,7 @@ trait ORTOperatorBackend
     //TODO: more outputs
     val output_node_names = List("outName") 
 
+    //Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
     //TODO: don't mix up Options and Tensors here
     val inputTensors: Array[OnnxTensor] = inputs.toArray.map{elem =>
       elem match {

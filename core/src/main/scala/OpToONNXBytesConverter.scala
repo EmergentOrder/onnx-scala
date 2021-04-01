@@ -122,6 +122,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 
     //Dummy names
 
+    //Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
     val inputValueInfosAndExistingInputs: IndexedSeq[Tuple2[ValueInfoProto, String]] = (0 until inputs.size).map { i =>
           val t = inputs.drop(i).take(1)
           t match {

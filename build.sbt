@@ -1,9 +1,10 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
-val dottyVersion = "3.0.0-RC1"
+//val dottyVersion = dottyLatestNightlyBuild.get
+val dottyVersion = "3.0.0-RC2"
 val scala213Version = "2.13.5"
 val spireVersion = "0.17.0"
-val scalaTestVersion = "3.2.6"
+val scalaTestVersion = "3.2.7"
 
 scalaVersion := dottyVersion
 
@@ -79,6 +80,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
     crossScalaVersions := Seq(dottyVersion, scala213Version)
   )
 .jvmSettings(
+//TODO: move to utest
 libraryDependencies += ("org.scalatest" %% "scalatest" % scalaTestVersion) % Test,
 ).jsSettings(
       scalaJSUseMainModuleInitializer := true, //Testing
@@ -86,7 +88,8 @@ npmDependencies in Compile += "onnxjs" -> "0.1.8")
 //Seems to be a bundling issue, copying things manually seems to work
 //TODO NEW: try JS, bundler and converter beta/RC are out
 //     npmDependencies in Compile += "onnxjs" -> "0.1.8")
-.jsConfigure { project => project.enablePlugins(ScalaJSBundlerPlugin)} //,ScalablyTypedConverterPlugin) }
+.jsConfigure { project => project.enablePlugins(ScalaJSBundlerPlugin)} //ScalablyTypedConverterPlugin)}
+//ScalaJSBundlerPlugin)} //,ScalablyTypedConverterPlugin) }
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure) in file("core"))

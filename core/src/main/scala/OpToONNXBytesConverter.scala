@@ -25,11 +25,18 @@ trait OpToONNXBytesConverter extends AutoCloseable {
       name: String,
       opName: String,
       outName: String,
-      attrs: Map[String, Any]
+      attrs: Map[String, Any],
+      domain: String
   ) 
       : NodeProto = {
-    val node = NodeProto(name=Some(name),opType=Some(opName), output=(Seq(outName)))
+    val node = NodeProto(name=Some(name),opType=Some(opName), output=(Seq(outName)), domain=Some(domain))
     
+    def createFloatTensorAttr[Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](x: Tensor[Float, Tuple3[Tt,Td,S]], key: String): AttributeProto = {
+      AttributeProto(name=Some(key),`type`=Some(AttributeProto.AttributeType.TENSOR),
+        t=Some(TensorProto().withDataType(TensorProto.DataType.FLOAT.value)
+          .withDims(x.shape.map(_.toLong)).withFloatData(ArraySeq.unsafeWrapArray(x.data))))
+    }
+
     def createFloatAttr(x: Float, key: String): AttributeProto = {
       AttributeProto(name=Some(key),`type`=Some(AttributeProto.AttributeType.FLOAT),f=Some(x))
     }
@@ -54,11 +61,17 @@ trait OpToONNXBytesConverter extends AutoCloseable {
       AttributeProto(name=Some(key),`type`=Some(AttributeProto.AttributeType.STRINGS),strings=ArraySeq.unsafeWrapArray(x.map(com.google.protobuf.ByteString.copyFromUtf8(_))))
     }
 
-    //TODO: more attr types - Float
-    val attrProtos: Array[AttributeProto] =
+    //TODO: more attr types
+    def attrProtos[Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape]: Array[AttributeProto] =
       attrs.map {
         case (key:String, value) =>
           value match {
+            case x: Tensor[Float, Tuple3[Tt,Td,S]] => {
+              Some(createFloatTensorAttr(x, key))
+            }
+            case Some(x: Tensor[Float, Tuple3[Tt,Td,S]]) => {
+              Some(createFloatTensorAttr(x, key))
+            }
             case x: Float => {
               Some(createFloatAttr(x, key))
             }
@@ -131,6 +144,8 @@ trait OpToONNXBytesConverter extends AutoCloseable {
       attrs: Map[String, Any]
   ): ModelProto = {
 
+    val thisDomain = if(opName.equals("Inverse")) "com.microsoft" else "ai.onnx"
+
     def nodeWithAddedInputs(inputNames: List[String], node: NodeProto): NodeProto = {
       inputNames match { 
         case x :: tail => {nodeWithAddedInputs(tail, node.addInput(x))}
@@ -138,10 +153,11 @@ trait OpToONNXBytesConverter extends AutoCloseable {
       }
     }
 
+    //Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
     val inputValueInfosAndExistingInputs: IndexedSeq[Tuple2[ValueInfoProto, String]] = (0 until inputs.size).map { i =>
           val t = inputs.drop(i).take(1)
           t match {
-            case tup: Tuple1[_] => 
+            case tup: Tuple1[_] =>  //TODO: union type
               tup(0) match {
                 case opt: Option[Tensor[T, Axes]] =>
                 opt match {
@@ -161,12 +177,12 @@ trait OpToONNXBytesConverter extends AutoCloseable {
 
     val outName = inputs.toArray.map(_.toString).toList.toString.hashCode.toString
 
-    val node = nodeWithAddedInputs(inputValueInfosAndExistingInputs.map(_._2).toList, opToNode(inputs.toString.hashCode.toString, opName, outName, attrs)) 
+    val node = nodeWithAddedInputs(inputValueInfosAndExistingInputs.map(_._2).toList, opToNode(inputs.toString.hashCode.toString, opName, outName, attrs, thisDomain)) 
 
     val newGraph = GraphProto(name = Some(inputs.toString), output=Seq(ValueInfoProto(name=Some(outName))), input = inputValueInfosAndExistingInputs.map(_._1), node = Seq(node)) 
-  
-    val model = ModelProto(producerName=Some("ONNX-Scala"), graph=Some(newGraph), irVersion=Some(7), opsetImport=Seq(OperatorSetIdProto(version=Some(13))))
-  
+
+    val thisOpset = if(opName.equals("Inverse")) 1 else 13
+    val model = ModelProto(producerName=Some("ONNX-Scala"), graph=Some(newGraph), domain=Some(thisDomain), irVersion=Some(7), opsetImport=Seq(OperatorSetIdProto(version=Some(thisOpset))))
     model
   }
 }

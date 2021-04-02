@@ -145,6 +145,7 @@ class ORTOperatorBackendAll
     with ReduceMinV12
     with ReduceProdV11
     with ReduceSumV11
+    with ReduceSumV13
     with ReduceSumSquareV11
     with ReluV6
     with ReshapeV5
@@ -186,6 +187,7 @@ class ORTOperatorBackendAll
 //    with SplitToSequenceV11
     with SqrtV6
     with SqueezeV11
+    with SqueezeV13
 //    with StringNormalizerV10
     with SubV7
     with SumV8
@@ -199,7 +201,7 @@ class ORTOperatorBackendAll
 //    with TreeEnsembleClassifierV1 //ONNX ML, not tested for in scoreboard
 //    with TreeEnsembleRegressorV1 //ONNX ML, not tested for in scoreboard
 //    with UniqueV11
-//    with UnsqueezeV1
+    with UnsqueezeV13
     with UnsqueezeV11
 //    with UpsampleV10 //Deprecated in 1.8
 //    with WhereV9

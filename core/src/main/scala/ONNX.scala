@@ -19,6 +19,8 @@ import io.kjaer.compiletime.Shape.NumElements
 import org.emergentorder.compiletime._
 import org.emergentorder.compiletime.TensorShapeDenotation.Reverse
 import org.emergentorder.compiletime.TensorShapeDenotation.Concat
+import scala.collection.immutable.ArraySeq
+
 package object onnx {
 
   //TODO: Pull out ONNX ML ops to another file, only implement for ORT backend
@@ -2483,6 +2485,23 @@ package object onnx {
     }
   }
 
+  //TODO: new attr : noop_with_empty_axes
+  trait ReduceSumV13 extends Operator {
+    def ReduceSumV13[
+        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
+        name: String,
+        axes: Option[(Axes)] = None,
+        keepdims: KeepDims = true,
+        data: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val axes = indicesOf[Axes].indices.toArray
+      val map: Map[String, Any] = Map("keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+      val allInputs             = Tuple2(data, Tensor(axes.map(_.toLong), Shape.fromSeq(ArraySeq.unsafeWrapArray(Array(axes.size)))))
+      (callOp(name, "ReduceSum", allInputs, map))
+    }
+  }
+
   trait ReduceSumV11 extends Operator {
     def ReduceSumV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
@@ -3188,7 +3207,21 @@ package object onnx {
     }
   }
 
-  //Missing V13
+    //"If axes is not provided, all the single dimensions will be removed from the shape"
+    trait SqueezeV13 extends Operator {
+    def SqueezeV13[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double]
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[(Axes)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] = {
+      val axes = indicesOf[Axes].indices.toArray
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(data, Tensor(axes.map(_.toLong), Shape.fromSeq(ArraySeq.unsafeWrapArray(Array(axes.size)))))
+      (callOp(name, "Squeeze", allInputs, map))
+    }
+  }
+
+
   //"If axes is not provided, all the single dimensions will be removed from the shape"
   trait SqueezeV11 extends Operator {
     def SqueezeV11[
@@ -3518,7 +3551,20 @@ package object onnx {
     }
   }
 */
-  //Missing V13
+  //"If axes is not provided, all the single dimensions will be removed from the shape"
+  trait UnsqueezeV13 extends Operator {
+    def UnsqueezeV13[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double]: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[(Axes)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] =  {
+      val axes = indicesOf[Axes].indices.toArray
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(data, Tensor(axes.map(_.toLong), Shape.fromSeq(ArraySeq.unsafeWrapArray(Array(axes.size)))))
+      (callOp(name, "Unsqueeze", allInputs, map))
+    }
+  }
+
   //"If axes is not provided, all the single dimensions will be removed from the shape"
   trait UnsqueezeV11 extends Operator {
     def UnsqueezeV11[

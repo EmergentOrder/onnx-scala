@@ -30,6 +30,14 @@ trait OpToONNXBytesConverter extends AutoCloseable {
       : NodeProto = {
     val node = NodeProto(name=Some(name),opType=Some(opName), output=(Seq(outName)))
     
+    def createFloatAttr(x: Float, key: String): AttributeProto = {
+      AttributeProto(name=Some(key),`type`=Some(AttributeProto.AttributeType.FLOAT),f=Some(x))
+    }
+
+    def createFloatArrayAttr(x: Array[Float], key: String): AttributeProto = {
+      AttributeProto(name=Some(key),`type`=Some(AttributeProto.AttributeType.FLOATS),floats=ArraySeq.unsafeWrapArray(x))
+    }
+
     def createIntAttr(x: Int, key: String): AttributeProto = {
       AttributeProto(name=Some(key),`type`=Some(AttributeProto.AttributeType.INT),i=Some(x.toLong))    
     }
@@ -51,6 +59,18 @@ trait OpToONNXBytesConverter extends AutoCloseable {
       attrs.map {
         case (key:String, value) =>
           value match {
+            case x: Float => {
+              Some(createFloatAttr(x, key))
+            }
+            case Some(x: Float) => {
+              Some(createFloatAttr(x, key))
+            }
+            case x: Array[Float] => {
+              Some(createFloatArrayAttr(x, key))
+            }
+            case Some(x: Array[Float]) => {
+              Some(createFloatArrayAttr(x, key))
+            }
             case x: Int => {
               Some(createIntAttr(x, key))
             }
@@ -103,26 +123,21 @@ trait OpToONNXBytesConverter extends AutoCloseable {
             ))
   }
 
-  def opToONNXBytes[
+  def opToModelProto[
       T <: Supported
   ](
-      name: String,
       opName: String,
       inputs: Tuple,
-      outName: String,
       attrs: Map[String, Any]
-  ): Array[Byte] = {
+  ): ModelProto = {
 
-    def nodeWithAddedInputs(inputNames: List[String], node: NodeProto, name: String): NodeProto = {
+    def nodeWithAddedInputs(inputNames: List[String], node: NodeProto): NodeProto = {
       inputNames match { 
-        case x :: tail => {nodeWithAddedInputs(tail, node.addInput(x), name)}
+        case x :: tail => {nodeWithAddedInputs(tail, node.addInput(x))}
         case Nil => node
       }
     }
 
-    //Dummy names
-
-    //Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
     val inputValueInfosAndExistingInputs: IndexedSeq[Tuple2[ValueInfoProto, String]] = (0 until inputs.size).map { i =>
           val t = inputs.drop(i).take(1)
           t match {
@@ -130,21 +145,28 @@ trait OpToONNXBytesConverter extends AutoCloseable {
               tup(0) match {
                 case opt: Option[Tensor[T, Axes]] =>
                 opt match {
-                  case Some(in) => {Some((createInputValueInfoProto(in, i.toString), i.toString))}
+                  case Some(in) => {
+                        val incr = if(inputs.toArray.distinct.size == inputs.size) 0 else i
+                        Some((createInputValueInfoProto(in, (in.toString.hashCode + incr).toString), (in.toString.hashCode + incr).toString))
+                  }
                   case None => None
                 }
-                case tens: Tensor[T, Axes] =>  {Some((createInputValueInfoProto(tens, i.toString), i.toString)
+                case tens: Tensor[T, Axes] =>  {
+                  val incr = if(inputs.toArray.distinct.size == inputs.size) 0 else i
+                  Some((createInputValueInfoProto(tens, (tens.toString.hashCode + incr).toString), (tens.toString.hashCode + incr).toString)
                                     )}  
               }
           } 
         }.flatten
 
-    val node = nodeWithAddedInputs(inputValueInfosAndExistingInputs.map(_._2).toList, opToNode(name, opName, outName, attrs), name) 
+    val outName = inputs.toArray.map(_.toString).toList.toString.hashCode.toString
 
-    val newGraph = GraphProto(name = Some(name), output=Seq(ValueInfoProto(name=Some(outName))), input = inputValueInfosAndExistingInputs.map(_._1), node = Seq(node)) 
+    val node = nodeWithAddedInputs(inputValueInfosAndExistingInputs.map(_._2).toList, opToNode(inputs.toString.hashCode.toString, opName, outName, attrs)) 
+
+    val newGraph = GraphProto(name = Some(inputs.toString), output=Seq(ValueInfoProto(name=Some(outName))), input = inputValueInfosAndExistingInputs.map(_._1), node = Seq(node)) 
   
-    val model = ModelProto(producerName=Some("ONNX-Scala"), graph=Some(newGraph), irVersion=Some(6), opsetImport=Seq(OperatorSetIdProto(version=Some(12))))
+    val model = ModelProto(producerName=Some("ONNX-Scala"), graph=Some(newGraph), irVersion=Some(7), opsetImport=Seq(OperatorSetIdProto(version=Some(13))))
   
-    (model.toByteArray)
+    model
   }
 }

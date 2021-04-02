@@ -12,6 +12,7 @@ import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.Tensors.Tensor._
 import org.emergentorder.compiletime._
 import io.kjaer.compiletime._
+import onnx.onnx._
 
 import ORTTensorUtils._
 
@@ -20,19 +21,16 @@ trait ORTOperatorBackend
     with AutoCloseable {
 
   //Java map performs better
-  //val sessionCache = new java.util.HashMap[Integer, Array[Byte]]
+  val sessionCache = new java.util.LinkedHashMap[String, ModelProto]
   
   val env = OrtEnvironment.getEnvironment()
 
   val coreCount = java.lang.Runtime.getRuntime().availableProcessors()
   def getSession(bytes: Array[Byte]) = { 
-
     //Can now set symbolic dimension values, but only at session creation time
     val session_options = new OrtSession.SessionOptions()
     session_options.setIntraOpNumThreads(coreCount)
-   session_options.setExecutionMode(OrtSession.SessionOptions.ExecutionMode.PARALLEL)
-   session_options.setInterOpNumThreads(2)
-    //session_options.addCUDA()
+//    session_options.addCUDA()
 //    session_options.addDnnl(true)
     env.createSession(bytes, session_options)
   }
@@ -57,17 +55,19 @@ trait ORTOperatorBackend
       val result: Tensor[T, Tuple3[Tt, Td, S]] = Tensor(getArrayFromOnnxTensor(firstOut), tensorTypeDenotationFromType, tensorShapeDenotationFromType, shapeFromType)
       result
   }
-    
-// def cachedSess(bytes: Array[Byte]) = sessionCache.computeIfAbsent(java.util.Arrays.hashCode(bytes), _ => getSession(bytes))
 
   def callByteArrayOp[
       T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape]( 
       opModel: Array[Byte],
       inputs: Tuple
   )(using s: ShapeOf[S], tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td]): Tensor[T, Tuple3[Tt, Td, S]] = {
-    val input_node_names = List("0", "1", "2", "3", "4", "5", "6", "7", "8")
+    val input_node_names = inputs.toArray.zipWithIndex.map{(e, i) =>
+       val incr = if(inputs.toArray.distinct.size == inputs.size) 0 else i
+       (e.toString.hashCode + incr).toString
+    }.toList
+
     //TODO: more outputs
-    val output_node_names = List("outName") 
+    val output_node_names = List(input_node_names.toString)
 
     //Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
     //TODO: don't mix up Options and Tensors here
@@ -102,8 +102,32 @@ trait ORTOperatorBackend
       attrs: Map[String, Any])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
     //TODO: prevent passing input to opToONNXBytes
     
-    val bytes = opToONNXBytes(name, opName, inputs, "outName", attrs)
-    callByteArrayOp(bytes,inputs)
+    val modelProto = opToModelProto(opName, inputs, attrs)
+
+    val result: Tensor[T, Tuple3[Tt, Td, S]] = callByteArrayOp(modelProto.toByteArray,inputs)
+    sessionCache.computeIfAbsent(opName + inputs.toArray.toList.toString + attrs.toString, _ => modelToPersist(modelProto, result.toString.hashCode.toString))
+    result
+  }
+
+  def modelToPersist(mod: ModelProto, outName: String ) = {
+    val outNode = mod.getGraph.node(0).clearOutput.withOutput(Seq(outName))
+    val outInfoProto = mod.getGraph.output(0).clearName.withName(outName)
+    val graphToPersist = mod.getGraph.clearNode.withNode(Seq(outNode)).clearOutput.withOutput(Seq(outInfoProto))
+    mod.clearGraph.withGraph(graphToPersist)
+  }
+
+  //WARNING: not referentially transparent
+  //Limitation: same reference cannot appear multiple times in a single op internally to the fused graph
+  def fuseOps: ModelProto = {
+    val cacheValues = sessionCache.values.asScala.toList
+    if(cacheValues.size == 0) return ModelProto()
+    val nodes = cacheValues.map(_.getGraph.node).fold(Seq[NodeProto]())( (x,y) => x ++ y )
+    val nodeOutputs = cacheValues.map(_.getGraph.output).fold(Seq[ValueInfoProto]())( (x,y) => x ++ y ).map(_.getName)
+    val inputs = cacheValues.map(_.getGraph.input).fold(Seq[ValueInfoProto]())( (x,y) => x ++ y ).filter(z => ! nodeOutputs.contains(z.getName)).distinct
+    val outputs = cacheValues(cacheValues.size - 1).getGraph.output
+    val modelProto = (cacheValues.head.clearGraph).withGraph((new GraphProto).withNode(nodes).withInput(inputs).withOutput(outputs))
+    sessionCache.clear
+    modelProto
   }
 
   override def close(): Unit = {

@@ -23,7 +23,7 @@ import scala.collection.immutable.ArraySeq
 
 package object onnx {
 
-  //TODO: Pull out ONNX ML ops to another file, only implement for ORT backend
+  //TODO: Pull out ONNX ML ops & other ORT-only ops to another file, only implement for ORT backend
   //TODO P2: Symbolic shape values
   //TODO P2: Support bfloat16 type (new in ONNX 1.8.0)
   //TODO P2: Encode node names as types
@@ -546,34 +546,38 @@ package object onnx {
 
   //Not supported - missing from ONNXjs
   /*
-  trait ConstantOfShapeV9 extends Operator {
+   trait ConstantOfShapeV9 extends Operator {
     def ConstantOfShapeV9[
         @sp T1 <: Long: Numeric,
         @sp T2 <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | UInt | ULong | Boolean
-    , Ax <: Axes, Bx <: Axes, Cx <: Axes](name: String, value: Option[(Tensor[T2, Ax])] = None, input: Tensor[T1, Bx])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T2, Cx] = {
+    ,Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String,
+             value: Option[(Tensor[T2, Tuple3[Tt,Td,S]])] = None,
+             input: Tensor[T1, Bx])
+    (using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T2, Tuple3[Tt,Td,S]] = {
       val map: Map[String, Any] = Map("value" -> value)
       val allInputs             = Tuple1(input)
       (callOp(name, "ConstantOfShape", allInputs, map))
     }
   }
+*/
 
-
+  //TODO: V13
   trait ConstantV12 extends Operator {
     def ConstantV12[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]: Numeric
-    , Ax <: Axes, Bx <: Axes, Cx <: Axes](
+    ,Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
-        sparse_value: Option[(SparseTensor[T, Ax])] = None,
-        value: Option[(Tensor[T, Bx])] = None,
+        sparse_value: Option[(SparseTensor[T, Tuple3[Tt,Td,S]])] = None,
+        value: Option[(Tensor[T, Tuple3[Tt,Td,S]])] = None,
         value_float: Option[(Float)] = None,
         value_floats: Option[(Array[Float])] = None,
         value_int: Option[(Int)] = None,
         value_ints: Option[(Array[Int])] = None,
         value_string: Option[(String)] = None,
         value_strings: Option[(Array[String])] = None
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Cx] = {
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
       val map: Map[String, Any] = Map(
         "sparse_value"  -> sparse_value,
         "value"         -> value,
@@ -584,11 +588,14 @@ package object onnx {
         "value_string"  -> value_string,
         "value_strings" -> value_strings
       )
-      val allInputs = EmptyTuple
+      val shapeArr = s.value.toSeq.toArray
+      val shapeSize: Dimension = shapeArr.size.asInstanceOf[Dimension]
+      val allInputs = Tuple(Tensor(shapeArr.map(_.toLong), shapeSize #: SNil))
       (callOp(name, "Constant", allInputs, map))
     }
   }
 
+  /*
   trait ConstantV11 extends Operator {
     def ConstantV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -1290,19 +1297,19 @@ package object onnx {
     }
   }
 
-  //Not supported, missing from ONNXJS
-  /*
-
-  trait InverseV12 extends Operator {
-    def InverseV12[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Ax <: Axes](name: String, X: Tensor[T, _])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, _] = {
+  trait InverseV1Contrib extends Operator {
+    def InverseV1Contrib[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        input: Tensor[T, Tuple3[Tt, Td, S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
       val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(X)
+      val allInputs             = Tuple1(input)
       (callOp(name, "Inverse", allInputs, map))
     }
   }
 
+  //Not supported, missing from ONNXJS
+  /*
   trait IsInfV10 extends Operator {
     def IsInfV10[@sp T1 <: Float | Double: Numeric, @sp T2 <: Boolean, Ax <: Axes](
         name: String,

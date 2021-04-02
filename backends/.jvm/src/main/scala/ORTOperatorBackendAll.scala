@@ -36,7 +36,7 @@ class ORTOperatorBackendAll
 //    with CompressV11 
     with ConcatV11
 //    with ConcatFromSequenceV11
-//    with ConstantV11 //Not supported in ONNX.js
+    with ConstantV12 //Not supported in ONNX.js
 //    with ConstantOfShapeV9 
     with ConvV11
 //   with ConvIntegerV10
@@ -79,7 +79,7 @@ class ORTOperatorBackendAll
 //    with IfV11 //fails in scoreboard
 //    with ImputerV1 //ONNX ML, not tested for in scoreboard
     with InstanceNormalizationV6
-//    with InverseV12 //New in 1.7.0
+    with InverseV1Contrib //New in 1.7.0
 //    with IsInfV10
     with IsNaNV9
     with LRNV1

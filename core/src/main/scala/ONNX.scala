@@ -530,14 +530,14 @@ package object onnx {
   }
 */
 
-  //FIXME: "All input tensors must have the same shape, except for the dimension size of the axis to concatenate on". Currently assumes tensors to be concated are exact same shape
+  //FIXME: "All input tensors must have the same shape, except for the dimension size of the axis to concatenate on". Currently assumes tensors to be concated are same shape except the leading dimension
   //TODO P1: Arbitrary arity inputs 
   trait ConcatV11 extends Operator {
     def ConcatV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Axis <: Index ::: INil](name: String, axis: Axis, inputs: Tuple2[Tensor[T, Tuple3[Tt, Td, S]],Tensor[T, Tuple3[Tt, Td, S]]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[DoubleGivenAxisSize[S,Axis]], i: IndicesOf[Axis]): Tensor[T, Tuple3[Tt, Td, DoubleGivenAxisSize[S,Axis]]] = {
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, SSuffix <: Shape, S <: Dimension #: SSuffix, S1 <: Dimension #: SSuffix, Axis <: Index ::: INil](name: String, axis: Axis, inputs: Tuple2[Tensor[T, Tuple3[Tt, Td, S]],Tensor[T, Tuple3[Tt, Td, S1]]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[AddGivenAxisSize[S, S1, Axis]], i: IndicesOf[Axis]): Tensor[T, Tuple3[Tt, Td, AddGivenAxisSize[S, S1, Axis]]] = {
       val map: Map[String, Any] = Map("axis"-> indicesOf[Axis].indices.toArray.head)
       val allInputs             = Tuple.fromArray(inputs.toArray)
       (callOp(name, "Concat", allInputs, map))

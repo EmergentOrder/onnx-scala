@@ -59,17 +59,24 @@ object Tensors{
     }
   }
 
-  type DoubleGivenAxisSize[S <: Shape, AxisIndices <: None.type | Indices] <: Shape = AxisIndices match {
+  type AddGivenAxisSize[S <: Shape, S1 <: Shape, AxisIndices <: None.type | Indices] <: Shape = AxisIndices match {
     case None.type => SNil
-    case Indices => DoubleGivenAxisSizeLoop[S, AxisIndices, 0]
+    case Indices => AddGivenAxisSizeLoop[S, S1, AxisIndices, 0]
   }
 
-  protected type DoubleGivenAxisSizeLoop[ReplaceFrom <: Shape, ToReplace <: Indices, I <: Index] <: Shape = ReplaceFrom match {
-    case head #: tail => Indices.Contains[ToReplace, I] match {
-      case true => (2 * head) #: DoubleGivenAxisSizeLoop[tail, Indices.RemoveValue[ToReplace, I], S[I]]
-      case false => head #: DoubleGivenAxisSizeLoop[tail, ToReplace, S[I]]
+  protected type AddGivenAxisSizeLoop[First <: Shape, Second <: Shape, AxisIndex <: Indices, I <: Index] <: Shape = First match {
+    case head #: tail => Indices.Contains[AxisIndex, I] match {
+      case true =>  Second match {
+        case secondHead #: secondTail => (head + secondHead) #: AddGivenAxisSizeLoop[tail, secondTail, Indices.RemoveValue[AxisIndex, I], S[I]]
+        case SNil => AxisIndex match{
+          case INil => SNil
+        }
+      }
+      case false => Second match{
+        case secondHead #: secondTail => (head) #: AddGivenAxisSizeLoop[tail, secondTail, AxisIndex, S[I]]
+      }
     }
-    case SNil => ToReplace match {
+    case SNil => AxisIndex match {
       case INil => SNil
     }
   }
@@ -126,24 +133,8 @@ object Tensors{
     case INil => SNil
   }
 
-  /*
-  type ConcatLoop[ConcatFromA <: Shape, ConcatFromB <: Shape, ToConcat <: Indices, I <: Index] <: Shape = ConcatFromA match {
-    case head #: tail => Indices.Contains[ConcatFromA, I] match {
-      case true => ReduceLoop[tail, Indices.RemoveValue[ToRemove, I], S[I]]
-      case false => head #: ReduceLoop[tail, ToRemove, S[I]]
-    }
-    case SNil => ToConcat match {
-      case INil => SNil
-      //     case head :: tail => Error[
-      //         "The following indices are out of bounds: " + Indices.ToString[ToRemove]
-      //     ]
-    }
-  }
-*/
-
   //TODO: shape dimension values should be longs, not ints, but dotty compiletime ops only support ints
   //TODO: random nd access
-  //TODO: opaque
   //TODO: Benchmark Array[T] vs ArraySeq[T] vs IArray[T]
 
   object Tensor {

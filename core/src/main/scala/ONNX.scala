@@ -21,13 +21,13 @@ import org.emergentorder.compiletime.TensorShapeDenotation.Reverse
 import org.emergentorder.compiletime.TensorShapeDenotation.Concat
 import scala.collection.immutable.ArraySeq
 
+//ONNX domain: ai.onnx(default)
+//See: https://github.com/onnx/onnx/blob/v1.8.1/docs/Operators.md
+//Tests currently live one level up at: https://github.com/SciScala/NDScala/blob/master/ONNXScala/src/test/scala/ndscala/ONNXScalaNDArraySpec.scala
 package object onnx {
-
-  //TODO: Pull out ONNX ML ops & other ORT-only ops to another file, only implement for ORT backend
   //TODO P2: Symbolic shape values
   //TODO P2: Support bfloat16 type (new in ONNX 1.8.0)
-  //TODO P2: Encode node names as types
-  //ORT contrib ops would be nice, but will likely never be supported in JS
+  //TODO P3: Encode node names as types
 
   //Note: Indices should at least optionally be longs, but currently compiletime ops in Scala 3 are only defined for ints
   //Note: Broadcasting is not supported, by design
@@ -200,21 +200,6 @@ package object onnx {
     }
   }
 
-  //TODO: P3 shape constraints
-  trait ArrayFeatureExtractorV1 extends Operator {
-    def ArrayFeatureExtractorV1[@sp T <: Float | Double | Long | Int | String: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, 
-                                    Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, 
-                                    Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](
-        name: String,
-        X: Tensor[T, Tuple3[Tt, Td, S]],
-        Y: Tensor[Long, Tuple3[Tt1, Td1, S1]]
-    )(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(X,Y)
-      (callOp(name, "ArrayFeatureExtractor", allInputs, map))
-    }
-  }
-
   trait AsinV7 extends Operator {
     def AsinV7[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -329,18 +314,6 @@ package object onnx {
     }
   }
 
-  trait BinarizerV1 extends Operator {
-    def BinarizerV1[@sp T <: Float | Double | Long | Int: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation](
-        name: String,
-        threshold: Float = 0.0f,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt1,Td,S]] = {
-      val map: Map[String, Any] = Map("threshold" -> threshold)
-      val allInputs             = Tuple1(X)
-      (callOp(name, "Binarizer", allInputs, map))
-    }
-  }
-
   //Missing from ONNXJS
   trait BitShiftV11 extends Operator {
     def BitShiftV11[@sp T <: UByte | UShort | UInt | ULong: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
@@ -355,26 +328,6 @@ package object onnx {
     }
   }
 
-  //Not supported, ONNX ML - using ONNX Map
-  /*
-  trait CastMapV1 extends Operator {
-    def CastMapV1[@sp T1 <: Map[Long, String] | Map[
-      Long,
-      Float
-    ]: Numeric, @sp T2 <: String | Float | Long: Numeric, Ax <: Axes](
-        name: String,
-        cast_to: Option[(String)] = None,
-        map_form: Option[(String)] = None,
-        max_map: Option[(Int)] = None,
-        X: T1
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T2, Ax] = {
-      val map: Map[String, Any] =
-        Map("cast_to" -> cast_to, "map_form" -> map_form, "max_map" -> max_map)
-      val allInputs = Tuple1(X)
-      (callOp(name, "CastMap", allInputs, map))
-    }
-  }
-*/
   trait CastV9 extends Operator {
     def CastV9[
         @sp T1 <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | UInt | ULong | Boolean | String: Numeric,
@@ -386,31 +339,6 @@ package object onnx {
     }
   }
   
-  //TODO: P3 constraints -
-  //split out to Int -> String and String -> Int
-  trait CategoryMapperV1 extends Operator {
-    def CategoryMapperV1[
-        @sp T1 <: String | Long: Numeric,
-        @sp T2 <: String | Long: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation](
-        name: String,
-        cats_int64s: Array[Int],
-        cats_strings: Array[String],
-        default_int64: Int = -1,
-        default_string: String = "_Unused",
-        X: Tensor[T1, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T2, Tuple3[Tt1, Td, S]] = {
-      val map: Map[String, Any] = Map(
-        "cats_int64s"    -> cats_int64s,
-        "cats_strings"   -> cats_strings,
-        "default_int64"  -> default_int64,
-        "default_string" -> default_string
-      )
-      val allInputs = Tuple1(X)
-      (callOp(name, "CategoryMapper", allInputs, map))
-    }
-  }
-
   trait CeilV6 extends Operator {
     def CeilV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -787,29 +715,6 @@ package object onnx {
   }
 */
 
-//Not supported - ONNX ML - uses ONNX Map
-/*
-  trait DictVectorizerV1 extends Operator {
-    def DictVectorizerV1[@sp T1 <: Map[String, Long] | Map[Long, String] | Map[Long, Float] | Map[
-      Long,
-      Double
-    ] | Map[String, Float] | Map[
-      String,
-      Double
-    ]: Numeric, @sp T2 <: Long | Float | Double | String: Numeric, Ax <: Axes](
-        name: String,
-        int64_vocabulary: Option[(Array[Int])] = None,
-        string_vocabulary: Option[(Array[String])] = None,
-        X: T1
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T2, _] = {
-      val map: Map[String, Any] =
-        Map("int64_vocabulary" -> int64_vocabulary, "string_vocabulary" -> string_vocabulary)
-      val allInputs = Tuple1(X)
-      (callOp(name, "DictVectorizer", allInputs, map))
-    }
-  }
-*/
-
   trait DivV7 extends Operator {
     def DivV7[@sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -942,24 +847,6 @@ package object onnx {
     }
   }
 */
-
-  //All input shapes are 2-D and are concatenated along the second dimension
-  //TODO: P3 output shape constraint - match type summing over second dim, similar to concat op
-  trait FeatureVectorizerV1 extends Operator {
-    def FeatureVectorizerV1[@sp T1 <: Int | Long | Float | Double: Numeric,
-                                Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: SNil,
-                                Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](
-        name: String,
-        inputdimensions: Option[(Array[Int])] = None,
-        X: Seq[Tensor[T1,Tuple3[Tt,Td,S]]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[Float,Tuple3[Tt1,Td1,S1]] = {
-      val map: Map[String, Any] = Map("inputdimensions" -> inputdimensions)
-      val allInputs             = Tuple.fromArray(X.toArray).asInstanceOf[Tuple]
-      (callOp(name, "FeatureVectorizer", allInputs, map))
-    }
-  }
-
-
   trait FlattenV11 extends Operator {
     def FlattenV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -1258,29 +1145,6 @@ package object onnx {
   }
 */
 
-  //TODO: P3 constraints
-  //split out to floats / ints
-  trait ImputerV1 extends Operator {
-    def ImputerV1[@sp T <: Float | Double | Long | Int: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: SNil,
-                      Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](
-        name: String,
-        imputed_value_floats: Option[(Array[Float])] = None,
-        imputed_value_int64s: Option[(Array[Int])] = None,
-        replaced_value_float: Option[(Float)] = None,
-        replaced_value_int64: Option[(Int)] = None,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
-      val map: Map[String, Any] = Map(
-        "imputed_value_floats" -> imputed_value_floats,
-        "imputed_value_int64s" -> imputed_value_int64s,
-        "replaced_value_float" -> replaced_value_float,
-        "replaced_value_int64" -> replaced_value_int64
-      )
-      val allInputs = Tuple1(X)
-      (callOp(name, "Imputer", allInputs, map))
-    }
-  }
-
   //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
   //Consider enforcing denotations
   trait InstanceNormalizationV6 extends Operator {
@@ -1294,17 +1158,6 @@ package object onnx {
       val map: Map[String, Any] = Map("epsilon" -> epsilon)
       val allInputs             = Tuple3(input, scale, B)
       (callOp(name, "InstanceNormalization", allInputs, map))
-    }
-  }
-
-  trait InverseV1Contrib extends Operator {
-    def InverseV1Contrib[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        input: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(input)
-      (callOp(name, "Inverse", allInputs, map))
     }
   }
 
@@ -1392,42 +1245,6 @@ package object onnx {
   } 
 */
 
-  //TODO: P3 constraints
-  //split out to floats / ints / strings ? 
-  trait LabelEncoderV2 extends Operator {
-    def LabelEncoderV2[
-        @sp T1 <: String | Long | Float: Numeric,
-        @sp T2 <: String | Long | Float: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape,
-    Tt1 <: TensorTypeDenotation](
-        name: String,
-        default_float: Option[(Float)] = None,
-        default_int64: Option[(Int)] = None,
-        default_string: Option[(String)] = None,
-        keys_floats: Option[(Array[Float])] = None,
-        keys_int64s: Option[(Array[Int])] = None,
-        keys_strings: Option[(Array[String])] = None,
-        values_floats: Option[(Array[Float])] = None,
-        values_int64s: Option[(Array[Int])] = None,
-        values_strings: Option[(Array[String])] = None,
-        X: Tensor[T1,Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T2, Tuple3[Tt1,Td,S]] = {
-      val map: Map[String, Any] = Map(
-        "default_float"  -> default_float,
-        "default_int64"  -> default_int64,
-        "default_string" -> default_string,
-        "keys_floats"    -> keys_floats,
-        "keys_int64s"    -> keys_int64s,
-        "keys_strings"   -> keys_strings,
-        "values_floats"  -> values_floats,
-        "values_int64s"  -> values_int64s,
-        "values_strings" -> values_strings
-      )
-      val allInputs = Tuple1(X)
-      (callOp(name, "LabelEncoder", allInputs, map))
-    }
-  }
-
   trait LeakyReluV6 extends Operator {
     def LeakyReluV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -1459,57 +1276,6 @@ package object onnx {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple2(A,B)
       (callOp(name, "Less", allInputs, map))
-    }
-  }
-
-  //TODO: P3 constraints
-  //split out to strings / ints
-  trait LinearClassifierV1 extends Operator {
-    def LinearClassifierV1[
-        @sp T1 <: Float | Double | Long | Int: Numeric,
-        @sp T2 <: String | Long: Numeric,
-      Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: SNil, 
-      Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](
-        name: String,
-        classlabels_ints: Option[(Array[Int])] = None,
-        classlabels_strings: Option[(Array[String])] = None,
-        coefficients: (Array[Float]),
-        intercepts: Option[(Array[Float])] = None,
-        multi_class: Option[(Int)] = None,
-        post_transform: Option[(String)] = None,
-        X: Tensor[T1,Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T2, Tuple3[Tt1,Td1,S1]] = {
-      val map: Map[String, Any] = Map(
-        "classlabels_ints"    -> classlabels_ints,
-        "classlabels_strings" -> classlabels_strings,
-        "coefficients"        -> coefficients,
-        "intercepts"          -> intercepts,
-        "multi_class"         -> multi_class,
-        "post_transform"      -> post_transform
-      )
-      val allInputs = Tuple1(X)
-      (callOp(name, "LinearClassifier", allInputs, map))
-    }
-  }
-  //TODO: P3 constraints
-  trait LinearRegressorV1 extends Operator {
-    def LinearRegressorV1[@sp T <: Float | Double | Long | Int: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: SNil, 
-                              Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](
-        name: String,
-        coefficients: Option[(Array[Float])] = None,
-        intercepts: Option[(Array[Float])] = None,
-        post_transform: Option[(String)] = None,
-        targets: Option[(Int)] = None,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[Float, Tuple3[Tt1,Td1,S1]] = {
-      val map: Map[String, Any] = Map(
-        "coefficients"   -> coefficients,
-        "intercepts"     -> intercepts,
-        "post_transform" -> post_transform,
-        "targets"        -> targets
-      )
-      val allInputs = Tuple1(X)
-      (callOp(name, "LinearRegressor", allInputs, map))
     }
   }
 
@@ -1974,18 +1740,6 @@ package object onnx {
   }
 */
 
-  trait NormalizerV1 extends Operator {
-    def NormalizerV1[@sp T <: Float | Double | Long | Int: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: SNil](
-        name: String,
-        norm: Option[(String)] = None,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[Float, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map("norm" -> norm)
-      val allInputs             = Tuple1(X)
-      (callOp(name, "Normalizer", allInputs, map))
-    }
-  }
-
   trait NotV1 extends Operator {
     def NotV1[@sp T <: Boolean, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -1996,23 +1750,7 @@ package object onnx {
       (callOp(name, "Not", allInputs, map))
     }
   }
-  //TODO: P3 constraints
-  //split out to ints / strings  
-  trait OneHotEncoderV1 extends Operator {
-    def OneHotEncoderV1[@sp T <: String | Long | Int | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape,
-                            Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
-        name: String,
-        cats_int64s: Option[(Array[Int])] = None,
-        cats_strings: Option[(Array[String])] = None,
-        zeros: Option[(Int)] = None,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[Float, Tuple3[Tt1,Td1,S1]] = {
-      val map: Map[String, Any] =
-        Map("cats_int64s" -> cats_int64s, "cats_strings" -> cats_strings, "zeros" -> zeros)
-      val allInputs = Tuple1(X)
-      (callOp(name, "OneHotEncoder", allInputs, map))
-    }
-  }
+ 
   //Not supported, missing from ONNXJS
 /*
   trait OneHotV11 extends Operator {
@@ -2657,92 +2395,7 @@ package object onnx {
       val allInputs             = Tuple1(X)
       (callOp(name, "Round", allInputs, map))
     }
-  }
-
-  //TODO: P3 constraints
-  //split out to strings / ints
-  trait SVMClassifierV1 extends Operator {
-    def SVMClassifierV1[
-        @sp T1 <: Float | Double | Long | Int: Numeric,
-        @sp T2 <: String | Long: Numeric,
-         Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: SNil,
-         Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](
-        name: String,
-        classlabels_ints: Option[(Array[Int])] = None,
-        classlabels_strings: Option[(Array[String])] = None,
-        coefficients: Option[(Array[Float])] = None,
-        kernel_params: Option[(Array[Float])] = None,
-        kernel_type: Option[(String)] = None,
-        post_transform: Option[(String)] = None,
-        prob_a: Option[(Array[Float])] = None,
-        prob_b: Option[(Array[Float])] = None,
-        rho: Option[(Array[Float])] = None,
-        support_vectors: Option[(Array[Float])] = None,
-        vectors_per_class: Option[(Array[Int])] = None,
-        X: Tensor[T1, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T2, Tuple3[Tt1,Td1,S1]] = {
-      val map: Map[String, Any] = Map(
-        "classlabels_ints"    -> classlabels_ints,
-        "classlabels_strings" -> classlabels_strings,
-        "coefficients"        -> coefficients,
-        "kernel_params"       -> kernel_params,
-        "kernel_type"         -> kernel_type,
-        "post_transform"      -> post_transform,
-        "prob_a"              -> prob_a,
-        "prob_b"              -> prob_b,
-        "rho"                 -> rho,
-        "support_vectors"     -> support_vectors,
-        "vectors_per_class"   -> vectors_per_class
-      )
-      val allInputs = Tuple1(X)
-      (callOp(name, "SVMClassifier", allInputs, map))
-    }
-  }
-  //TODO: P3 constraints
-  trait SVMRegressorV1 extends Operator {
-    def SVMRegressorV1[@sp T <: Float | Double | Long | Int: Numeric,
-                        Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: SNil,
-      Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](
-        name: String,
-        coefficients: Option[(Array[Float])] = None,
-        kernel_params: Option[(Array[Float])] = None,
-        kernel_type: Option[(String)] = None,
-        n_supports: Option[(Int)] = None,
-        one_class: Option[(Int)] = None,
-        post_transform: Option[(String)] = None,
-        rho: Option[(Array[Float])] = None,
-        support_vectors: Option[(Array[Float])] = None,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[Float,Tuple3[Tt1,Td1,S1]] = {
-      val map: Map[String, Any] = Map(
-        "coefficients"    -> coefficients,
-        "kernel_params"   -> kernel_params,
-        "kernel_type"     -> kernel_type,
-        "n_supports"      -> n_supports,
-        "one_class"       -> one_class,
-        "post_transform"  -> post_transform,
-        "rho"             -> rho,
-        "support_vectors" -> support_vectors
-      )
-      val allInputs = Tuple1(X)
-      (callOp(name, "SVMRegressor", allInputs, map))
-    }
-  }
-
-  //TODO: P3 constraints on offset / scaleAttr
-  trait ScalerV1 extends Operator {
-    def ScalerV1[@sp T <: Float | Double | Long | Int: Numeric,  Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape,
-                     Tt1 <: TensorTypeDenotation](
-        name: String,
-        offset: Option[(Array[Float])] = None,
-        scaleAttr: Option[(Array[Float])] = None,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[Float, Tuple3[Tt1,Td,S]] = {
-      val map: Map[String, Any] = Map("offset" -> offset, "scaleAttr" -> scaleAttr)
-      val allInputs             = Tuple1(X)
-      (callOp(name, "Scaler", allInputs, map))
-    }
-  }
+  } 
 
   //Not supported, missing from ONNXJS
   /*
@@ -3413,108 +3066,6 @@ package object onnx {
     }
   }
 
-  //TODO: P3 constraints
-  //split out to strings / ints
-  trait TreeEnsembleClassifierV1 extends Operator {
-    def TreeEnsembleClassifierV1[
-        @sp T1 <: Float | Double | Long | Int: Numeric,
-        @sp T2 <: String | Long: Numeric,
-            Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape,
-            Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
-        name: String,
-        base_values: Option[(Array[Float])] = None,
-        class_ids: Option[(Array[Int])] = None,
-        class_nodeids: Option[(Array[Int])] = None,
-        class_treeids: Option[(Array[Int])] = None,
-        class_weights: Option[(Array[Float])] = None,
-        classlabels_int64s: Option[(Array[Int])] = None,
-        classlabels_strings: Option[(Array[String])] = None,
-        nodes_falsenodeids: Option[(Array[Int])] = None,
-        nodes_featureids: Option[(Array[Int])] = None,
-        nodes_hitrates: Option[(Array[Float])] = None,
-        nodes_missing_value_tracks_true: Option[(Array[Int])] = None,
-        nodes_modes: Option[(Array[String])] = None,
-        nodes_nodeids: Option[(Array[Int])] = None,
-        nodes_treeids: Option[(Array[Int])] = None,
-        nodes_truenodeids: Option[(Array[Int])] = None,
-        nodes_values: Option[(Array[Float])] = None,
-        post_transform: Option[(String)] = None,
-        X: Tensor[T1, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T2, Tuple3[Tt1,Td1,S1]] = {
-      val map: Map[String, Any] = Map(
-        "base_values"                     -> base_values,
-        "class_ids"                       -> class_ids,
-        "class_nodeids"                   -> class_nodeids,
-        "class_treeids"                   -> class_treeids,
-        "class_weights"                   -> class_weights,
-        "classlabels_int64s"              -> classlabels_int64s,
-        "classlabels_strings"             -> classlabels_strings,
-        "nodes_falsenodeids"              -> nodes_falsenodeids,
-        "nodes_featureids"                -> nodes_featureids,
-        "nodes_hitrates"                  -> nodes_hitrates,
-        "nodes_missing_value_tracks_true" -> nodes_missing_value_tracks_true,
-        "nodes_modes"                     -> nodes_modes,
-        "nodes_nodeids"                   -> nodes_nodeids,
-        "nodes_treeids"                   -> nodes_treeids,
-        "nodes_truenodeids"               -> nodes_truenodeids,
-        "nodes_values"                    -> nodes_values,
-        "post_transform"                  -> post_transform
-      )
-      val allInputs = Tuple1(X)
-      (callOp(name, "TreeEnsembleClassifier", allInputs, map))
-    }
-  }
-
-  //TODO: P3 constraints
-  trait TreeEnsembleRegressorV1 extends Operator {
-    def TreeEnsembleRegressorV1[@sp T <: Float | Double | Long | Int: Numeric,
-                                    Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape,
-                                    Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
-        name: String,
-        aggregate_function: Option[(String)] = None,
-        base_values: Option[(Array[Float])] = None,
-        n_targets: Option[(Int)] = None,
-        nodes_falsenodeids: Option[(Array[Int])] = None,
-        nodes_featureids: Option[(Array[Int])] = None,
-        nodes_hitrates: Option[(Array[Float])] = None,
-        nodes_missing_value_tracks_true: Option[(Array[Int])] = None,
-        nodes_modes: Option[(Array[String])] = None,
-        nodes_nodeids: Option[(Array[Int])] = None,
-        nodes_treeids: Option[(Array[Int])] = None,
-        nodes_truenodeids: Option[(Array[Int])] = None,
-        nodes_values: Option[(Array[Float])] = None,
-        post_transform: Option[(String)] = None,
-        target_ids: Option[(Array[Int])] = None,
-        target_nodeids: Option[(Array[Int])] = None,
-        target_treeids: Option[(Array[Int])] = None,
-        target_weights: Option[(Array[Float])] = None,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[Float, Tuple3[Tt1,Td1,S1]] = {
-      val map: Map[String, Any] = Map(
-        "aggregate_function"              -> aggregate_function,
-        "base_values"                     -> base_values,
-        "n_targets"                       -> n_targets,
-        "nodes_falsenodeids"              -> nodes_falsenodeids,
-        "nodes_featureids"                -> nodes_featureids,
-        "nodes_hitrates"                  -> nodes_hitrates,
-        "nodes_missing_value_tracks_true" -> nodes_missing_value_tracks_true,
-        "nodes_modes"                     -> nodes_modes,
-        "nodes_nodeids"                   -> nodes_nodeids,
-        "nodes_treeids"                   -> nodes_treeids,
-        "nodes_truenodeids"               -> nodes_truenodeids,
-        "nodes_values"                    -> nodes_values,
-        "post_transform"                  -> post_transform,
-        "target_ids"                      -> target_ids,
-        "target_nodeids"                  -> target_nodeids,
-        "target_treeids"                  -> target_treeids,
-        "target_weights"                  -> target_weights
-      )
-      val allInputs = Tuple1(X)
-      (callOp(name, "TreeEnsembleRegressor", allInputs, map))
-    }
-  }
-
-
   //Not supported - ?
   /*
   trait UnfoldToDepthV12 extends Operator {
@@ -3614,6 +3165,465 @@ package object onnx {
     }
   }
  
+}
+
+//ORT contrib ops
+//ONNX domain: com.microsoft
+//See: https://github.com/microsoft/onnxruntime/blob/v1.7.1/docs/ContribOperators.md
+package object onnxruntimecontrib {
+  trait InverseV1 extends onnx.Operator {
+    def InverseV1[@sp T <: org.emergentorder.onnx.Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        input: Tensor[T, Tuple3[Tt, Td, S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(input)
+      (callOp(name, "Inverse", allInputs, map))
+    }
+  }
+}
+
+//ONNX domain: ai.onnx.ml
+//See: https://github.com/onnx/onnx/blob/v1.8.1/docs/Operators-ml.md
+package object onnxml {
+  //TODO: P3 shape constraints
+  trait ArrayFeatureExtractorV1 extends onnx.Operator {
+    def ArrayFeatureExtractorV1[@sp T <: Float | Double | Long | Int | String: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape,
+                                    Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape,
+                                    Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](
+        name: String,
+        X: Tensor[T, Tuple3[Tt, Td, S]],
+        Y: Tensor[Long, Tuple3[Tt1, Td1, S1]]
+    )(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(X,Y)
+      (callOp(name, "ArrayFeatureExtractor", allInputs, map))
+    }
+  }
+
+  trait BinarizerV1 extends onnx.Operator {
+    def BinarizerV1[@sp T <: Float | Double | Long | Int: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation](
+        name: String,
+        threshold: Float = 0.0f,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt1,Td,S]] = {
+      val map: Map[String, Any] = Map("threshold" -> threshold)
+      val allInputs             = Tuple1(X)
+      (callOp(name, "Binarizer", allInputs, map))
+    }
+  }
+
+  //Not supported, ONNX ML - using ONNX Map
+  /*
+  trait CastMapV1 extends Operator {
+    def CastMapV1[@sp T1 <: Map[Long, String] | Map[
+      Long,
+      Float
+    ]: Numeric, @sp T2 <: String | Float | Long: Numeric, Ax <: Axes](
+        name: String,
+        cast_to: Option[(String)] = None,
+        map_form: Option[(String)] = None,
+        max_map: Option[(Int)] = None,
+        X: T1
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T2, Ax] = {
+      val map: Map[String, Any] =
+        Map("cast_to" -> cast_to, "map_form" -> map_form, "max_map" -> max_map)
+      val allInputs = Tuple1(X)
+      (callOp(name, "CastMap", allInputs, map))
+    }
+  }
+*/
+
+  //TODO: P3 constraints -
+  //split out to Int -> String and String -> Int
+  trait CategoryMapperV1 extends onnx.Operator {
+    def CategoryMapperV1[
+        @sp T1 <: String | Long: Numeric,
+        @sp T2 <: String | Long: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation](
+        name: String,
+        cats_int64s: Array[Int],
+        cats_strings: Array[String],
+        default_int64: Int = -1,
+        default_string: String = "_Unused",
+        X: Tensor[T1, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T2, Tuple3[Tt1, Td, S]] = {
+      val map: Map[String, Any] = Map(
+        "cats_int64s"    -> cats_int64s,
+        "cats_strings"   -> cats_strings,
+        "default_int64"  -> default_int64,
+        "default_string" -> default_string
+      )
+      val allInputs = Tuple1(X)
+      (callOp(name, "CategoryMapper", allInputs, map))
+    }
+  }
+
+//Not supported - ONNX ML - uses ONNX Map
+/*
+  trait DictVectorizerV1 extends Operator {
+    def DictVectorizerV1[@sp T1 <: Map[String, Long] | Map[Long, String] | Map[Long, Float] | Map[
+      Long,
+      Double
+    ] | Map[String, Float] | Map[
+      String,
+      Double
+    ]: Numeric, @sp T2 <: Long | Float | Double | String: Numeric, Ax <: Axes](
+        name: String,
+        int64_vocabulary: Option[(Array[Int])] = None,
+        string_vocabulary: Option[(Array[String])] = None,
+        X: T1
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T2, _] = {
+      val map: Map[String, Any] =
+        Map("int64_vocabulary" -> int64_vocabulary, "string_vocabulary" -> string_vocabulary)
+      val allInputs = Tuple1(X)
+      (callOp(name, "DictVectorizer", allInputs, map))
+    }
+  }
+*/
+
+  //All input shapes are 2-D and are concatenated along the second dimension
+  //TODO: P3 output shape constraint - match type summing over second dim, similar to concat op
+  trait FeatureVectorizerV1 extends onnx.Operator {
+    def FeatureVectorizerV1[@sp T1 <: Int | Long | Float | Double: Numeric,
+                                Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: SNil,
+                                Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](
+        name: String,
+        inputdimensions: Option[(Array[Int])] = None,
+        X: Seq[Tensor[T1,Tuple3[Tt,Td,S]]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[Float,Tuple3[Tt1,Td1,S1]] = {
+      val map: Map[String, Any] = Map("inputdimensions" -> inputdimensions)
+      val allInputs             = Tuple.fromArray(X.toArray).asInstanceOf[Tuple]
+      (callOp(name, "FeatureVectorizer", allInputs, map))
+    }
+  }
+
+  //TODO: P3 constraints
+  //split out to floats / ints
+  trait ImputerV1 extends onnx.Operator {
+    def ImputerV1[@sp T <: Float | Double | Long | Int: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: SNil,
+                      Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](
+        name: String,
+        imputed_value_floats: Option[(Array[Float])] = None,
+        imputed_value_int64s: Option[(Array[Int])] = None,
+        replaced_value_float: Option[(Float)] = None,
+        replaced_value_int64: Option[(Int)] = None,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
+      val map: Map[String, Any] = Map(
+        "imputed_value_floats" -> imputed_value_floats,
+        "imputed_value_int64s" -> imputed_value_int64s,
+        "replaced_value_float" -> replaced_value_float,
+        "replaced_value_int64" -> replaced_value_int64
+      )
+      val allInputs = Tuple1(X)
+      (callOp(name, "Imputer", allInputs, map))
+    }
+  }
+
+  //TODO: P3 constraints
+  //split out to floats / ints / strings ?
+  trait LabelEncoderV2 extends onnx.Operator {
+    def LabelEncoderV2[
+        @sp T1 <: String | Long | Float: Numeric,
+        @sp T2 <: String | Long | Float: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape,
+    Tt1 <: TensorTypeDenotation](
+        name: String,
+        default_float: Option[(Float)] = None,
+        default_int64: Option[(Int)] = None,
+        default_string: Option[(String)] = None,
+        keys_floats: Option[(Array[Float])] = None,
+        keys_int64s: Option[(Array[Int])] = None,
+        keys_strings: Option[(Array[String])] = None,
+        values_floats: Option[(Array[Float])] = None,
+        values_int64s: Option[(Array[Int])] = None,
+        values_strings: Option[(Array[String])] = None,
+        X: Tensor[T1,Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T2, Tuple3[Tt1,Td,S]] = {
+      val map: Map[String, Any] = Map(
+        "default_float"  -> default_float,
+        "default_int64"  -> default_int64,
+        "default_string" -> default_string,
+        "keys_floats"    -> keys_floats,
+        "keys_int64s"    -> keys_int64s,
+        "keys_strings"   -> keys_strings,
+        "values_floats"  -> values_floats,
+        "values_int64s"  -> values_int64s,
+        "values_strings" -> values_strings
+      )
+      val allInputs = Tuple1(X)
+      (callOp(name, "LabelEncoder", allInputs, map))
+    }
+  }
+
+  //TODO: P3 constraints
+  //split out to strings / ints
+  trait LinearClassifierV1 extends onnx.Operator {
+    def LinearClassifierV1[
+        @sp T1 <: Float | Double | Long | Int: Numeric,
+        @sp T2 <: String | Long: Numeric,
+      Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: SNil,
+      Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](
+        name: String,
+        classlabels_ints: Option[(Array[Int])] = None,
+        classlabels_strings: Option[(Array[String])] = None,
+        coefficients: (Array[Float]),
+        intercepts: Option[(Array[Float])] = None,
+        multi_class: Option[(Int)] = None,
+        post_transform: Option[(String)] = None,
+        X: Tensor[T1,Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T2, Tuple3[Tt1,Td1,S1]] = {
+      val map: Map[String, Any] = Map(
+        "classlabels_ints"    -> classlabels_ints,
+        "classlabels_strings" -> classlabels_strings,
+        "coefficients"        -> coefficients,
+        "intercepts"          -> intercepts,
+        "multi_class"         -> multi_class,
+        "post_transform"      -> post_transform
+      )
+      val allInputs = Tuple1(X)
+      (callOp(name, "LinearClassifier", allInputs, map))
+    }
+  }
+  //TODO: P3 constraints
+  trait LinearRegressorV1 extends onnx.Operator {
+    def LinearRegressorV1[@sp T <: Float | Double | Long | Int: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: SNil,
+                              Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](
+        name: String,
+        coefficients: Option[(Array[Float])] = None,
+        intercepts: Option[(Array[Float])] = None,
+        post_transform: Option[(String)] = None,
+        targets: Option[(Int)] = None,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[Float, Tuple3[Tt1,Td1,S1]] = {
+      val map: Map[String, Any] = Map(
+        "coefficients"   -> coefficients,
+        "intercepts"     -> intercepts,
+        "post_transform" -> post_transform,
+        "targets"        -> targets
+      )
+      val allInputs = Tuple1(X)
+      (callOp(name, "LinearRegressor", allInputs, map))
+    }
+  }
+
+  trait NormalizerV1 extends onnx.Operator {
+    def NormalizerV1[@sp T <: Float | Double | Long | Int: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: SNil](
+        name: String,
+        norm: Option[(String)] = None,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[Float, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map("norm" -> norm)
+      val allInputs             = Tuple1(X)
+      (callOp(name, "Normalizer", allInputs, map))
+    }
+  }
+
+  //TODO: P3 constraints
+  //split out to ints / strings
+  trait OneHotEncoderV1 extends onnx.Operator {
+    def OneHotEncoderV1[@sp T <: String | Long | Int | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape,
+                            Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
+        name: String,
+        cats_int64s: Option[(Array[Int])] = None,
+        cats_strings: Option[(Array[String])] = None,
+        zeros: Option[(Int)] = None,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[Float, Tuple3[Tt1,Td1,S1]] = {
+      val map: Map[String, Any] =
+        Map("cats_int64s" -> cats_int64s, "cats_strings" -> cats_strings, "zeros" -> zeros)
+      val allInputs = Tuple1(X)
+      (callOp(name, "OneHotEncoder", allInputs, map))
+    }
+  }
+
+  //TODO: P3 constraints
+  //split out to strings / ints
+  trait SVMClassifierV1 extends onnx.Operator {
+    def SVMClassifierV1[
+        @sp T1 <: Float | Double | Long | Int: Numeric,
+        @sp T2 <: String | Long: Numeric,
+         Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: SNil,
+         Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](
+        name: String,
+        classlabels_ints: Option[(Array[Int])] = None,
+        classlabels_strings: Option[(Array[String])] = None,
+        coefficients: Option[(Array[Float])] = None,
+        kernel_params: Option[(Array[Float])] = None,
+        kernel_type: Option[(String)] = None,
+        post_transform: Option[(String)] = None,
+        prob_a: Option[(Array[Float])] = None,
+        prob_b: Option[(Array[Float])] = None,
+        rho: Option[(Array[Float])] = None,
+        support_vectors: Option[(Array[Float])] = None,
+        vectors_per_class: Option[(Array[Int])] = None,
+        X: Tensor[T1, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T2, Tuple3[Tt1,Td1,S1]] = {
+      val map: Map[String, Any] = Map(
+        "classlabels_ints"    -> classlabels_ints,
+        "classlabels_strings" -> classlabels_strings,
+        "coefficients"        -> coefficients,
+        "kernel_params"       -> kernel_params,
+        "kernel_type"         -> kernel_type,
+        "post_transform"      -> post_transform,
+        "prob_a"              -> prob_a,
+        "prob_b"              -> prob_b,
+        "rho"                 -> rho,
+        "support_vectors"     -> support_vectors,
+        "vectors_per_class"   -> vectors_per_class
+      )
+      val allInputs = Tuple1(X)
+      (callOp(name, "SVMClassifier", allInputs, map))
+    }
+  }
+  //TODO: P3 constraints
+  trait SVMRegressorV1 extends onnx.Operator {
+    def SVMRegressorV1[@sp T <: Float | Double | Long | Int: Numeric,
+                        Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: SNil,
+      Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](
+        name: String,
+        coefficients: Option[(Array[Float])] = None,
+        kernel_params: Option[(Array[Float])] = None,
+        kernel_type: Option[(String)] = None,
+        n_supports: Option[(Int)] = None,
+        one_class: Option[(Int)] = None,
+        post_transform: Option[(String)] = None,
+        rho: Option[(Array[Float])] = None,
+        support_vectors: Option[(Array[Float])] = None,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[Float,Tuple3[Tt1,Td1,S1]] = {
+      val map: Map[String, Any] = Map(
+        "coefficients"    -> coefficients,
+        "kernel_params"   -> kernel_params,
+        "kernel_type"     -> kernel_type,
+        "n_supports"      -> n_supports,
+        "one_class"       -> one_class,
+        "post_transform"  -> post_transform,
+        "rho"             -> rho,
+        "support_vectors" -> support_vectors
+      )
+      val allInputs = Tuple1(X)
+      (callOp(name, "SVMRegressor", allInputs, map))
+    }
+  }
+
+  //TODO: P3 constraints on offset / scaleAttr
+  trait ScalerV1 extends onnx.Operator {
+    def ScalerV1[@sp T <: Float | Double | Long | Int: Numeric,  Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape,
+                     Tt1 <: TensorTypeDenotation](
+        name: String,
+        offset: Option[(Array[Float])] = None,
+        scaleAttr: Option[(Array[Float])] = None,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[Float, Tuple3[Tt1,Td,S]] = {
+      val map: Map[String, Any] = Map("offset" -> offset, "scaleAttr" -> scaleAttr)
+      val allInputs             = Tuple1(X)
+      (callOp(name, "Scaler", allInputs, map))
+    }
+  }
+
+  //TODO: P3 constraints
+  //split out to strings / ints
+  trait TreeEnsembleClassifierV1 extends onnx.Operator {
+    def TreeEnsembleClassifierV1[
+        @sp T1 <: Float | Double | Long | Int: Numeric,
+        @sp T2 <: String | Long: Numeric,
+            Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape,
+            Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
+        name: String,
+        base_values: Option[(Array[Float])] = None,
+        class_ids: Option[(Array[Int])] = None,
+        class_nodeids: Option[(Array[Int])] = None,
+        class_treeids: Option[(Array[Int])] = None,
+        class_weights: Option[(Array[Float])] = None,
+        classlabels_int64s: Option[(Array[Int])] = None,
+        classlabels_strings: Option[(Array[String])] = None,
+        nodes_falsenodeids: Option[(Array[Int])] = None,
+        nodes_featureids: Option[(Array[Int])] = None,
+        nodes_hitrates: Option[(Array[Float])] = None,
+        nodes_missing_value_tracks_true: Option[(Array[Int])] = None,
+        nodes_modes: Option[(Array[String])] = None,
+        nodes_nodeids: Option[(Array[Int])] = None,
+        nodes_treeids: Option[(Array[Int])] = None,
+        nodes_truenodeids: Option[(Array[Int])] = None,
+        nodes_values: Option[(Array[Float])] = None,
+        post_transform: Option[(String)] = None,
+        X: Tensor[T1, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T2, Tuple3[Tt1,Td1,S1]] = {
+      val map: Map[String, Any] = Map(
+        "base_values"                     -> base_values,
+        "class_ids"                       -> class_ids,
+        "class_nodeids"                   -> class_nodeids,
+        "class_treeids"                   -> class_treeids,
+        "class_weights"                   -> class_weights,
+        "classlabels_int64s"              -> classlabels_int64s,
+        "classlabels_strings"             -> classlabels_strings,
+        "nodes_falsenodeids"              -> nodes_falsenodeids,
+        "nodes_featureids"                -> nodes_featureids,
+        "nodes_hitrates"                  -> nodes_hitrates,
+        "nodes_missing_value_tracks_true" -> nodes_missing_value_tracks_true,
+        "nodes_modes"                     -> nodes_modes,
+        "nodes_nodeids"                   -> nodes_nodeids,
+        "nodes_treeids"                   -> nodes_treeids,
+        "nodes_truenodeids"               -> nodes_truenodeids,
+        "nodes_values"                    -> nodes_values,
+        "post_transform"                  -> post_transform
+      )
+      val allInputs = Tuple1(X)
+      (callOp(name, "TreeEnsembleClassifier", allInputs, map))
+    }
+  }
+
+  //TODO: P3 constraints
+  trait TreeEnsembleRegressorV1 extends onnx.Operator {
+    def TreeEnsembleRegressorV1[@sp T <: Float | Double | Long | Int: Numeric,
+                                    Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape,
+                                    Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
+        name: String,
+        aggregate_function: Option[(String)] = None,
+        base_values: Option[(Array[Float])] = None,
+        n_targets: Option[(Int)] = None,
+        nodes_falsenodeids: Option[(Array[Int])] = None,
+        nodes_featureids: Option[(Array[Int])] = None,
+        nodes_hitrates: Option[(Array[Float])] = None,
+        nodes_missing_value_tracks_true: Option[(Array[Int])] = None,
+        nodes_modes: Option[(Array[String])] = None,
+        nodes_nodeids: Option[(Array[Int])] = None,
+        nodes_treeids: Option[(Array[Int])] = None,
+        nodes_truenodeids: Option[(Array[Int])] = None,
+        nodes_values: Option[(Array[Float])] = None,
+        post_transform: Option[(String)] = None,
+        target_ids: Option[(Array[Int])] = None,
+        target_nodeids: Option[(Array[Int])] = None,
+        target_treeids: Option[(Array[Int])] = None,
+        target_weights: Option[(Array[Float])] = None,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[Float, Tuple3[Tt1,Td1,S1]] = {
+      val map: Map[String, Any] = Map(
+        "aggregate_function"              -> aggregate_function,
+        "base_values"                     -> base_values,
+        "n_targets"                       -> n_targets,
+        "nodes_falsenodeids"              -> nodes_falsenodeids,
+        "nodes_featureids"                -> nodes_featureids,
+        "nodes_hitrates"                  -> nodes_hitrates,
+        "nodes_missing_value_tracks_true" -> nodes_missing_value_tracks_true,
+        "nodes_modes"                     -> nodes_modes,
+        "nodes_nodeids"                   -> nodes_nodeids,
+        "nodes_treeids"                   -> nodes_treeids,
+        "nodes_truenodeids"               -> nodes_truenodeids,
+        "nodes_values"                    -> nodes_values,
+        "post_transform"                  -> post_transform,
+        "target_ids"                      -> target_ids,
+        "target_nodeids"                  -> target_nodeids,
+        "target_treeids"                  -> target_treeids,
+        "target_weights"                  -> target_weights
+      )
+      val allInputs = Tuple1(X)
+      (callOp(name, "TreeEnsembleRegressor", allInputs, map))
+    }
+  }
+
   //Not supported, ONNX ML - uses ONNX Map
   /*
   trait ZipMapV1 extends Operator {
@@ -3633,3 +3643,4 @@ package object onnx {
   }
 */
 }
+

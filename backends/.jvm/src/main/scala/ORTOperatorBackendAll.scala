@@ -1,6 +1,6 @@
 package org.emergentorder.onnx.backends
 import org.emergentorder.onnx._
-
+import org.emergentorder.onnxruntimecontrib._
 
 //Going forward we only support ops (and their versions) which are supported in both ONNX Runtime & ONNX.js (CPU), opset 6+
 //Plus a handful of others we need
@@ -79,7 +79,7 @@ class ORTOperatorBackendAll
 //    with IfV11 //fails in scoreboard
 //    with ImputerV1 //ONNX ML, not tested for in scoreboard
     with InstanceNormalizationV6
-    with InverseV1Contrib //New in 1.7.0
+    with InverseV1 //New in 1.7.0
 //    with IsInfV10
     with IsNaNV9
     with LRNV1

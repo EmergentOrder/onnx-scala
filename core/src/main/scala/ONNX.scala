@@ -258,8 +258,8 @@ package object onnx {
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
     , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
-        min: Float = -3.402823e+38,
         max: Float = 3.402823e+38,
+        min: Float = -3.402823e+38,
         input: Tensor[T, Tuple3[Tt, Td, S]]
     )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
       val map: Map[String, Any] = Map("max" -> max, "min" -> min)

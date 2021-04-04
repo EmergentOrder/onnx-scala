@@ -45,8 +45,6 @@ Note that in real use backends should be closed to prevent native memory leaks
 
 This API is expressed via traits, with version-named methods. For example, Abs, the absolute value operator (defined here for operator set 6):
 
-\* Up to roughly the intersection of supported ops in ONNX Runtime and ONNX.js
-
 ```scala
 import scala.{specialized => sp}
 import spire.math._

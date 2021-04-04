@@ -89,10 +89,13 @@ Currently at ONNX 1.8.0 (Backward compatible to at least 1.2.0 for the full mode
  
 ### Fine-grained API
 A complete\*, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep learning and classical machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++). 
+
 We also provide implementations for each operator in terms of a generic core operator method to be implemented by the backend.
 For more details on the low-level fine-grained API see [here](FineGrainedAPI.md)
 
 The preferred high-level fine-grained API, most suitable for the end user, is [NDScala](https://github.com/SciScala/NDScala)
+
+\* Up to roughly the intersection of supported ops in ONNX Runtime and ONNX.js
 
 #### Training
 Automatic differentiation to enable training is under consideration (ONNX currently provides facilities for training as a tech preview only).

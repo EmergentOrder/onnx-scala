@@ -22,7 +22,10 @@ import org.emergentorder.compiletime.TensorShapeDenotation.Concat
 import scala.collection.immutable.ArraySeq
 
 //ONNX domain: ai.onnx(default)
-//See: https://github.com/onnx/onnx/blob/v1.8.1/docs/Operators.md#aionnx-default 
+//Only the ops which are supported in both ONNX Runtime and ONNX.js
+//See: https://github.com/onnx/onnx/blob/v1.8.1/docs/Operators.md#aionnx-default
+//Also: https://github.com/microsoft/onnxruntime/blob/master/docs/OperatorKernels.md 
+//Also: https://github.com/microsoft/onnxjs/blob/master/docs/operators.md
 //Tests currently live one level up at: https://github.com/SciScala/NDScala/blob/master/ONNXScala/src/test/scala/ndscala/ONNXScalaNDArraySpec.scala
 package object onnx {
   //TODO P2: Symbolic shape values
@@ -37,7 +40,6 @@ package object onnx {
       name: String,
       opName: String,
       inputs: Tuple,
-      //    outName: String,
       attrs: Map[String, Any])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] 
   }
 
@@ -98,7 +100,7 @@ package object onnx {
       (callOp(name, "Add", allInputs, map))
     }
   }
-
+  //Missing in NDScala
   trait AndV7 extends Operator {
     def AndV7[@sp T <: Boolean, @sp T1 <: Boolean, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -111,22 +113,7 @@ package object onnx {
     }
   }
 
-  trait ArgMaxV12 extends Operator {
-    def ArgMaxV12[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Index ::: INil, KeepDims <: (Boolean&Singleton)](
-        name: String,
-        axis: Axis = 0 ::: INil,
-        keepdims: KeepDims = true,
-        selectLastIndex: Int = 0,
-        data: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axis" -> indicesOf[Axis].indices.toArray, "select_last_index" -> selectLastIndex, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
-      val allInputs             = Tuple1(data)
-      (callOp(name, "ArgMax", allInputs, map))
-    }
-  }
-
+  //Last version supported in ONNX.js
   trait ArgMaxV11 extends Operator {
     def ArgMaxV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
@@ -140,38 +127,7 @@ package object onnx {
       val allInputs             = Tuple1(data)
       (callOp(name, "ArgMax", allInputs, map))
     }
-  }
-
-  trait ArgMinV12 extends Operator {
-    def ArgMinV12[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Index ::: INil, KeepDims <: (Boolean&Singleton)](
-        name: String,
-        axis: Axis = 0 ::: INil,
-        keepdims: KeepDims = true,
-        selectLastIndex: Int = 0,
-        data: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axis" -> indicesOf[Axis].indices.toArray, "select_last_index" -> selectLastIndex, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
-      val allInputs             = Tuple1(data)
-      (callOp(name, "ArgMin", allInputs, map))
-    }
-  }
-
-  trait ArgMinV11 extends Operator {
-    def ArgMinV11[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Index ::: INil, KeepDims <: (Boolean&Singleton)](
-        name: String,
-        axis: Axis = 0 ::: INil,
-        keepdims: KeepDims = true,
-        data: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axis" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
-      val allInputs             = Tuple1(data)
-      (callOp(name, "ArgMin", allInputs, map))
-    }
-  }
+  } 
 
   trait AsinV7 extends Operator {
     def AsinV7[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
@@ -217,32 +173,8 @@ package object onnx {
     }
   }
 
-  //Not supported, missing from ONNXJS
-  /*
-  trait AveragePoolV11 extends Operator {
-    def AveragePoolV11[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes, Bx <: Axes](
-        name: String,
-        auto_pad: Option[(String)] = None,
-        ceil_mode: Option[(Int)] = None,
-        count_include_pad: Option[(Int)] = None,
-        kernel_shape: (Array[Int]),
-        pads: Option[(Array[Int])] = None,
-        strides: Option[(Array[Int])] = None,
-        X: Tensor[T, Ax]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map(
-        "auto_pad"          -> auto_pad,
-        "ceil_mode"         -> ceil_mode,
-        "count_include_pad" -> count_include_pad,
-        "kernel_shape"      -> kernel_shape,
-        "pads"              -> pads,
-        "strides"           -> strides
-      )
-      val allInputs = Tuple1(X)
-      (callOp(name, "AveragePool", allInputs, map))
-    }
-  }
-*/
+  //Missing in NDScala
+  //Last version supported in ONNX.js
   //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
   //Consider enforcing denotations
   trait AveragePoolV10 extends Operator {
@@ -268,8 +200,7 @@ package object onnx {
       (callOp(name, "AveragePool", allInputs, map))
     }
   }
-
-  //Missing float attrs currently
+  //Missing in NDScala
   trait BatchNormalizationV9 extends Operator {
     def BatchNormalizationV9[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation](
         name: String,
@@ -286,21 +217,7 @@ package object onnx {
       (callOp(name, "BatchNormalization", allInputs, map))
     }
   }
-
-  //Missing from ONNXJS
-  trait BitShiftV11 extends Operator {
-    def BitShiftV11[@sp T <: UByte | UShort | UInt | ULong: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        direction: (String),
-        X: Tensor[T, Tuple3[Tt, Td, S]],
-        Y: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
-      val map: Map[String, Any] = Map("direction" -> direction)
-      val allInputs             = Tuple2(X,Y)
-      (callOp(name, "BitShift", allInputs, map))
-    }
-  }
-
+  //Missing in NDScala
   trait CastV9 extends Operator {
     def CastV9[
         @sp T1 <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | UInt | ULong | Boolean | String: Numeric,
@@ -322,7 +239,7 @@ package object onnx {
       (callOp(name, "Ceil", allInputs, map))
     }
   }
-
+  //Missing in NDScala
   trait CeluV12 extends Operator {
     def CeluV12[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -334,7 +251,1053 @@ package object onnx {
       (callOp(name, "Celu", allInputs, map))
     }
   }
+  //Missing in NDScala
+  //Last version supported in ONNX.js
+  trait ClipV6 extends Operator {
+    def ClipV6[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        max: Float = 3.402823e+38,
+        min: Float = -3.402823e+38,
+        input: Tensor[T, Tuple3[Tt, Td, S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
+      val map: Map[String, Any] = Map("max" -> max, "min" -> min)
+      val allInputs             = Tuple1(input)
+      (callOp(name, "Clip", allInputs, map))
+    }
+  }
 
+  //FIXME: "All input tensors must have the same shape, except for the dimension size of the axis to concatenate on". Currently assumes tensors to be concated are same shape except the leading dimension
+  //TODO P1: Arbitrary arity inputs 
+  trait ConcatV11 extends Operator {
+    def ConcatV11[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double]
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, SSuffix <: Shape, S <: Dimension #: SSuffix, S1 <: Dimension #: SSuffix, Axis <: Index ::: INil](name: String, axis: Axis, inputs: Tuple2[Tensor[T, Tuple3[Tt, Td, S]],Tensor[T, Tuple3[Tt, Td, S1]]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[AddGivenAxisSize[S, S1, Axis]], i: IndicesOf[Axis]): Tensor[T, Tuple3[Tt, Td, AddGivenAxisSize[S, S1, Axis]]] = {
+      val map: Map[String, Any] = Map("axis"-> indicesOf[Axis].indices.toArray.head)
+      val allInputs             = Tuple.fromArray(inputs.toArray)
+      (callOp(name, "Concat", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  //TODO P1: Constraints - Could restrict this to 2d image case, so 4d input
+  //Consider enforcing denotations
+  trait ConvV11 extends Operator {
+    def ConvV11[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape, Tt3 <: TensorTypeDenotation, Td3 <: TensorShapeDenotation, S3 <: Shape](
+        name: String,
+        auto_pad: String = "NOTSET",
+        dilations: Option[(Array[Int])] = None,
+        group: Int = 1,
+        kernel_shape: Option[(Array[Int])] = None,
+        pads: Option[(Array[Int])] = None,
+        strides: Option[(Array[Int])] = None,
+        X: Tensor[T, Tuple3[Tt,Td,S]],
+        W: Tensor[T, Tuple3[Tt1,Td1,S1]],
+        B: Option[Tensor[T, Tuple3[Tt2, Td2, S2]]] = None
+    )(using tt: ValueOf[Tt3], td: TensorShapeDenotationOf[Td3], s: ShapeOf[S3]): Tensor[T, Tuple3[Tt3, Td3, S3]] = {
+      val map: Map[String, Any] = Map(
+        "auto_pad"     -> auto_pad,
+        "dilations"    -> dilations,
+        "group"        -> group,
+        "kernel_shape" -> kernel_shape,
+        "pads"         -> pads,
+        "strides"      -> strides
+      )
+      val allInputs = Tuple3(X, W, B)
+      (callOp(name, "Conv", allInputs, map))
+    }
+  }
+
+  trait CosV7 extends Operator {
+    def CosV7[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        input: Tensor[T, Tuple3[Tt, Td, S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(input)
+      (callOp(name, "Cos", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  trait CoshV9 extends Operator {
+    def CoshV9[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        input: Tensor[T, Tuple3[Tt, Td, S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(input)
+      (callOp(name, "Cosh", allInputs, map))
+    }
+  }
+
+  trait DivV7 extends Operator {
+    def DivV7[@sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        A: Tensor[T, Tuple3[Tt,Td,S]],
+        B: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(A,B)
+      (callOp(name, "Div", allInputs, map))
+    }
+  }
+
+  //Missing in NDScala
+  //Missing optional second output
+  trait DropoutV12 extends Operator {
+    def DropoutV12[
+        @sp T <: Float16 | Float | Double: Numeric,
+        @sp T1 <: Float16 | Float | Double | Boolean,
+        @sp T2 <: Boolean
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](
+        name: String,
+        seed: Int = 42,
+        data: Tensor[T, Tuple3[Tt,Td,S]],
+        ratio: Option[Tensor[T1,Tuple3[Tt1,Td1,S1]]] = None,
+        training_mode: Option[Tensor[T2, Tuple3[Tt2,Td2,S2]]] = None
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map("seed" -> seed)
+      val allInputs             = Tuple3(data, ratio, training_mode)
+      (callOp(name, "Dropout", allInputs, map))
+    }
+  }
+  //Missing in NDScala  
+  trait EluV6 extends Operator {
+    def EluV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        alpha: Float = 1.0,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map("alpha" -> alpha)
+      val allInputs             = Tuple1(X)
+      (callOp(name, "Elu", allInputs, map))
+    }
+  }
+
+  trait EqualV11 extends Operator {
+    def EqualV11[
+        @sp T <: Boolean | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double,
+        @sp T1 <: Boolean
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation](name: String, A: Tensor[T, Tuple3[Tt,Td,S]], B: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S]): Tensor[T1, Tuple3[Tt1,Td1,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(A,B)
+      (callOp(name, "Equal", allInputs, map))
+    }
+  } 
+
+  trait ExpV6 extends Operator {
+    def ExpV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        input: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(input)
+      (callOp(name, "Exp", allInputs, map))
+    }
+  }
+
+  //Missing in NDScala
+  //Explicit broadcasting
+  trait ExpandV8 extends Operator {
+    def ExpandV8[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double]: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](name: String, input: Tensor[T, Tuple3[Tt,Td,S]], shapeInput: Tensor[Long, Tuple3[Tt1,Td1,S1]])(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(input, shapeInput)
+      (callOp(name, "Expand", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  trait FlattenV11 extends Operator {
+    def FlattenV11[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double]: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](name: String, axis: Int = 1, input: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
+      val map: Map[String, Any] = Map("axis" -> axis)
+      val allInputs             = Tuple1(input)
+      (callOp(name, "Flatten", allInputs, map))
+    }
+  }
+
+  trait FloorV6 extends Operator {
+    def FloorV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(X)
+      (callOp(name, "Floor", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  trait GatherV11 extends Operator {
+    def GatherV11[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double]: Numeric,
+        @sp Tind <: Int | Long: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](
+        name: String,
+        axis: Int = 0,
+        data: Tensor[T, Tuple3[Tt,Td,S]],
+        indices: Tensor[Tind, Tuple3[Tt1,Td1,S1]]
+    )(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
+      val map: Map[String, Any] = Map("axis" -> axis)
+      val allInputs             = Tuple2(data, indices)
+      (callOp(name, "Gather", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  //Bug in ORT where the bias tensor C should be optional, but is in fact required
+  //See: https://github.com/microsoft/onnxruntime/issues/6423
+  trait GemmV11 extends Operator {
+    def GemmV11[@sp T <: Float16 | Float | Double | UInt | ULong | Int | Long: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, M <: Dimension, K <: Dimension, S <: M #: K #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, N <: Dimension, S1 <: K #: N #: SNil, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: M #: N #: SNil](
+        name: String,
+        alpha: Float = 1.0,
+        beta: Float = 1.0,
+        transA: Int = 0,
+        transB: Int = 0,
+        A: Tensor[T, Tuple3[Tt,Td,S]],
+        B: Tensor[T, Tuple3[Tt1,Td1,S1]],
+        C: Option[Tensor[T, Tuple3[Tt2,Td2,S2]]] = None
+    )(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
+      val map: Map[String, Any] =
+        Map("alpha" -> alpha, "beta" -> beta, "transA" -> transA, "transB" -> transB)
+      val allInputs = Tuple3(A, B, C)
+      (callOp(name, "Gemm", allInputs, map))
+    }
+  } 
+  //Missing in NDScala
+  trait GlobalAveragePoolV1 extends Operator {
+    def GlobalAveragePoolV1[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
+        name: String,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(X)
+      (callOp(name, "GlobalAveragePool", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  trait GlobalMaxPoolV1 extends Operator {
+    def GlobalMaxPoolV1[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
+        name: String,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(X)
+      (callOp(name, "GlobalMaxPool", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
+  //Consider enforcing denotations
+  trait InstanceNormalizationV6 extends Operator {
+    def InstanceNormalizationV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation](
+        name: String,
+        epsilon: Float = 1e-5,
+        input: Tensor[T, Tuple3[Tt,Td,S]],
+        scale: Tensor[T, Tuple3[Tt1,Td1,S1]],
+        B: Tensor[T, Tuple3[Tt1,Td1,S1]]
+    )(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt2,Td,S]] = {
+      val map: Map[String, Any] = Map("epsilon" -> epsilon)
+      val allInputs             = Tuple3(input, scale, B)
+      (callOp(name, "InstanceNormalization", allInputs, map))
+    }
+  }
+
+  //Missing in NDScala
+  trait IsNaNV9 extends Operator {
+    def IsNaNV9[
+        @sp T1 <: Float16 | Float | Double: Numeric,
+        @sp T2 <: Boolean
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String, X: Tensor[T1, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T2, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(X)
+      (callOp(name, "IsNaN", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
+  //Consider enforcing denotations
+  trait LRNV1 extends Operator {
+    def LRNV1[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation](
+        name: String,
+        alpha: Option[(Float)] = None,
+        beta: Option[(Float)] = None,
+        bias: Option[(Float)] = None,
+        size: (Int),
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt1,Td,S]] = {
+      val map: Map[String, Any] =
+        Map("alpha" -> alpha, "beta" -> beta, "bias" -> bias, "size" -> size)
+      val allInputs = Tuple1(X)
+      (callOp(name, "LRN", allInputs, map))
+    }
+  }
+
+  //Missing in NDScala
+  trait LeakyReluV6 extends Operator {
+    def LeakyReluV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        alpha: Float = 0.01,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map("alpha" -> alpha)
+      val allInputs             = Tuple1(X)
+      (callOp(name, "LeakyRelu", allInputs, map))
+    }
+  }
+  
+  trait LessV9 extends Operator {
+    def LessV9[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric,
+        @sp T1 <: Boolean
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation](name: String, A: Tensor[T, Tuple3[Tt,Td,S]], B: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S]): Tensor[T1, Tuple3[Tt1,Td1,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(A,B)
+      (callOp(name, "Less", allInputs, map))
+    }
+  }
+
+  trait LogV6 extends Operator {
+    def LogV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        input: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(input)
+      (callOp(name, "Log", allInputs, map))
+    }
+  }
+
+  trait MatMulV9 extends Operator {
+    def MatMulV9[@sp T <: Float16 | Float | Double | UInt | ULong | Int | Long: Numeric, Dim0 <: Dimension, Dim1 <: Dimension, Dim2 <: Dimension, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dim0 #: Dim1 #:SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dim1 #: Dim2 #: SNil](
+        name: String,
+        A: Tensor[T, Tuple3[Tt,Td,S]],
+        B: Tensor[T, Tuple3[Tt1,Td1,S1]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[Dim0 #: Dim2 #: SNil],vd0:ValueOf[scala.compiletime.ops.int.S[Dim0]],vd1:ValueOf[scala.compiletime.ops.int.S[Dim1]], vd2: ValueOf[scala.compiletime.ops.int.S[Dim2]])
+    //,vd0:ValueOf[scala.compiletime.S[Dim0]],vd1:ValueOf[scala.compiletime.S[Dim1]], vd2: ValueOf[scala.compiletime.S[Dim2]])
+    : Tensor[T, Tuple3[Tt,Td, Dim0 #: Dim2 #: SNil]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(A,B)
+      (callOp(name, "MatMul", allInputs, map))
+    }
+  }
+  
+  //ONNX.js only supports up to V9, may work
+  //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
+  //Consider enforcing denotations
+  //TODO: output shape constraint
+  trait MaxPoolV10 extends Operator {
+    def MaxPoolV10[
+        @sp T <: Float16 | Float | Double | Byte | UByte: Numeric,
+        @sp I <: Long: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
+        name: String,
+        auto_pad: String = "NOTSET",
+        ceil_mode: Int= 0,
+        dilations: Option[(Array[Int])] = None,
+        kernel_shape: (Array[Int]),
+        pads: Option[(Array[Int])] = None,
+        storage_order: Int = 0,
+        strides: Option[(Array[Int])] = None,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
+      val map: Map[String, Any] = Map(
+        "auto_pad"      -> auto_pad,
+        "ceil_mode"     -> ceil_mode,
+        "dilations"     -> dilations,
+        "kernel_shape"  -> kernel_shape,
+        "pads"          -> pads,
+        "storage_order" -> storage_order,
+        "strides"       -> strides
+      )
+      val allInputs = Tuple1(X)
+      (callOp(name, "MaxPool", allInputs, map))
+    }
+  } 
+
+  trait MulV7 extends Operator {
+    def MulV7[@sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        A: Tensor[T, Tuple3[Tt,Td,S]],
+        B: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(A,B)
+      (callOp(name, "Mul", allInputs, map))
+    }
+  }
+
+  trait NegV6 extends Operator {
+    def NegV6[@sp T <: Float | Int | Byte | Short | Long | Float16 | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(X)
+      (callOp(name, "Neg", allInputs, map))
+    }
+  }
+  //Missing in NDScala 
+  trait NotV1 extends Operator {
+    def NotV1[@sp T <: Boolean, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(X)
+      (callOp(name, "Not", allInputs, map))
+    }
+  }
+ 
+  //Missing in NDScala
+  trait OrV7 extends Operator {
+    def OrV7[@sp T <: Boolean, @sp T1 <: Boolean, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        A: Tensor[T, Tuple3[Tt,Td,S]],
+        B: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T1, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(A,B)
+      (callOp(name, "Or", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  trait PReluV9 extends Operator {
+    def PReluV9[@sp T <: Float16 | Float | Double | UInt | ULong | Int | Long: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        X: Tensor[T, Tuple3[Tt,Td,S]],
+        slope: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(X, slope)
+      (callOp(name, "PRelu", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  trait PadV11 extends Operator {
+    def PadV11[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape, Tt3 <: TensorTypeDenotation, AxesBefore <: Indices, AxesAfter <: Indices](
+        name: String,
+        mode: String = "constant",
+        data: Tensor[T, Tuple3[Tt,Td,S]],
+        padsBefore: AxesBefore,
+        padsAfter: AxesAfter, //Tensor[Long, Tuple3[Tt1,Td1,S1]], //`pads` should be a 1D tensor of shape [2 * input_rank].
+        constant_value: Option[Tensor[T, Tuple3[Tt2,Td2,S2]]] = None
+    )(using tt: ValueOf[Tt3], td: TensorShapeDenotationOf[Td], s: ShapeOf[PaddedShape[S, AxesBefore, AxesAfter]]): Tensor[T, Tuple3[Tt3, Td, PaddedShape[S, AxesBefore, AxesAfter]]] = {
+      val map: Map[String, Any] = Map("mode" -> mode)
+      val beforeArr = padsBefore.indices.toArray
+      val afterArr = padsAfter.indices.toArray
+      val padsArr = beforeArr ++ afterArr
+      val pads = Tensor(padsArr, padsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
+
+      val allInputs             = Tuple3(data, pads, constant_value)
+      (callOp(name, "Pad", allInputs, map))
+    }
+  }
+
+  trait PowV12 extends Operator {
+    def PowV12[
+        @sp T <: Int | Long | Float16 | Float | Double: Numeric,
+        @sp T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String, X: Tensor[T, Tuple3[Tt,Td,S]], Y: Tensor[T1, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(X,Y)
+      (callOp(name, "Pow", allInputs, map))
+    }
+  }
+
+  //Missing in NDScala
+  trait ReciprocalV6 extends Operator {
+    def ReciprocalV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(X)
+      (callOp(name, "Reciprocal", allInputs, map))
+    }
+  }
+
+  //Missing in NDScala
+  //TODO P2: make axes param optional at the type level
+  trait ReduceLogSumV11 extends Operator {
+    def ReduceLogSumV11[
+        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
+        , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
+        name: String,
+        axes: Option[(Axes)] = None,
+        keepdims: KeepDims = true,
+        data: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+      val allInputs             = Tuple1(data)
+      (callOp(name, "ReduceLogSum", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  trait ReduceMaxV12 extends Operator {
+    def ReduceMaxV12[
+        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
+        name: String,
+        axes: Option[(Axes)] = None,
+        keepdims: KeepDims = true,
+        data: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+      val allInputs             = Tuple1(data)
+      (callOp(name, "ReduceMax", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  trait ReduceMeanV11 extends Operator {
+    def ReduceMeanV11[
+        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
+        name: String,
+        axes: Option[(Axes)] = None,
+        keepdims: KeepDims = true,
+        data: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axes,KeepDims], KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+      val allInputs             = Tuple1(data)
+      (callOp(name, "ReduceMean", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  trait ReduceMinV12 extends Operator {
+    def ReduceMinV12[
+        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
+        name: String,
+        axes: Option[(Axes)] = None,
+        keepdims: KeepDims = true,
+        data: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+      val allInputs             = Tuple1(data)
+      (callOp(name, "ReduceMin", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  trait ReduceProdV11 extends Operator {
+    def ReduceProdV11[
+        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
+        name: String,
+        axes: Option[(Axes)] = None,
+        keepdims: KeepDims = true,
+        data: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims], KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+      val allInputs             = Tuple1(data)
+      (callOp(name, "ReduceProd", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  trait ReduceSumSquareV11 extends Operator {
+    def ReduceSumSquareV11[
+        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
+        name: String,
+        axes: Option[(Axes)] = None,
+        keepdims: KeepDims = true,
+        data: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+      val allInputs             = Tuple1(data)
+      (callOp(name, "ReduceSumSquare", allInputs, map))
+    }
+  }
+
+  //TODO: new attr : noop_with_empty_axes
+  trait ReduceSumV13 extends Operator {
+    def ReduceSumV13[
+        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
+        name: String,
+        axes: Option[(Axes)] = None,
+        keepdims: KeepDims = true,
+        data: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
+      val axes = indicesOf[Axes].indices.toArray
+      val map: Map[String, Any] = Map("keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+      val allInputs             = Tuple2(data, Tensor(axes.map(_.toLong), Shape.fromSeq(ArraySeq.unsafeWrapArray(Array(axes.size)))))
+      (callOp(name, "ReduceSum", allInputs, map))
+    }
+  }
+
+  trait ReluV6 extends Operator {
+    def ReluV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(X)
+      (callOp(name, "Relu", allInputs, map))
+    }
+  }
+
+  trait ReshapeV5 extends Operator {
+    def ReshapeV5[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double]
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](name: String, data: Tensor[T, Tuple3[Tt,Td,S]], shapeInput: Tensor[Long, Tuple3[Tt1,Td1,S1]])(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2], sizeSeq: NumElements[S] =:= NumElements[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(data, shapeInput)
+      (callOp(name, "Reshape", allInputs, map))
+    }
+  }
+
+
+  //TODO P2: Add, was added to ONNXJS recently, WebGl only
+  /*
+  trait ResizeV11 extends Operator {
+    def ResizeV11[
+        @sp T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double]: Numeric,
+        @sp T2 <: Float16 | Float | Double: Numeric
+    , Ax <: Axes](
+        name: String,
+        coordinate_transformation_mode: Option[(String)] = None,
+        cubic_coeff_a: Option[(Float)] = None,
+        exclude_outside: Option[(Int)] = None,
+        extrapolation_value: Option[(Float)] = None,
+        mode: Option[(String)] = None,
+        nearest_mode: Option[(String)] = None,
+        X: Tensor[T1,_],
+        roi: Tensor[T2, _],
+        scales: Tensor[Float,_],
+        sizes: Option[Tensor[Long, _]] = None
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T1,_] = {
+      val map: Map[String, Any] = Map(
+        "coordinate_transformation_mode" -> coordinate_transformation_mode,
+        "cubic_coeff_a"                  -> cubic_coeff_a,
+        "exclude_outside"                -> exclude_outside,
+        "extrapolation_value"            -> extrapolation_value,
+        "mode"                           -> mode,
+        "nearest_mode"                   -> nearest_mode
+      )
+      val allInputs = Tuple4(X, roi, scales, sizes)
+      (callOp(name, "Resize", allInputs, map))
+    }
+  }
+
+  trait ResizeV10 extends Operator {
+    def ResizeV10[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double]: Numeric
+    , Ax <: Axes](
+        name: String,
+        mode: Option[(String)] = None,
+        X: Tensor[T, _],
+        scales: Tensor[Float,_]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, _] = {
+      val map: Map[String, Any] = Map("mode" -> mode)
+      val allInputs             = Tuple2(X, scales)
+      (callOp(name, "Resize", allInputs, map))
+    }
+  }
+*/
+
+  trait RoundV11 extends Operator {
+    def RoundV11[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(X)
+      (callOp(name, "Round", allInputs, map))
+    }
+  } 
+  //Missing in NDScala
+  trait SeluV6 extends Operator {
+    def SeluV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        alpha: Float = 1.67326,
+        gamma: Float = 1.0507,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map("alpha" -> alpha, "gamma" -> gamma)
+      val allInputs             = Tuple1(X)
+      (callOp(name, "Selu", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  trait ShapeV1 extends Operator {
+    def ShapeV1[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double]: Numeric,
+        @sp T1 <: Long: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation](name: String, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[io.kjaer.compiletime.Shape.Rank[S] & Dimension #: SNil]): Tensor[T1, Tuple3[Tt1,Td1,io.kjaer.compiletime.Shape.Rank[S] & Dimension #: SNil]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(data)
+      (callOp(name, "Shape", allInputs, map))
+    }
+  }
+
+  trait SigmoidV6 extends Operator {
+    def SigmoidV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(X)
+      (callOp(name, "Sigmoid", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  trait SignV9 extends Operator {
+    def SignV9[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String, input: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(input)
+      (callOp(name, "Sign", allInputs, map))
+    }
+  }
+
+  trait SinV7 extends Operator {
+    def SinV7[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        input: Tensor[T, Tuple3[Tt, Td, S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(input)
+      (callOp(name, "Sin", allInputs, map))
+    }
+  }
+
+  trait SinhV9 extends Operator {
+    def SinhV9[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        input: Tensor[T, Tuple3[Tt, Td, S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(input)
+      (callOp(name, "Sinh", allInputs, map))
+    }
+  }
+
+  //TODO P1: All 4 params must be 1D vectors of same size - to enforce
+  //TODO P2: Constraints on axes / steps params
+  trait SliceV11 extends Operator {
+    def SliceV11[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double],
+//        @sp Tind <: Int | Long: Numeric,
+     Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, AxesStart <: Indices, AxesEnd <: Indices, AxisIndices <: None.type | Indices, StepIndices <: None.type | Indices](
+        name: String,
+        data: Tensor[T, Tuple3[Tt,Td,S]],
+        starts: AxesStart,
+        ends: AxesEnd,
+        axes: AxisIndices = None,
+        steps: StepIndices = None
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s5: ShapeOf[SlicedShape[AxesStart,AxesEnd]]): Tensor[T, Tuple3[Tt1,Td,SlicedShape[AxesStart,AxesEnd]]] = {
+      val map: Map[String, Any] = Map()
+      val startsArr = starts.indices.toArray
+      val newStarts = Tensor(startsArr, startsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
+      val endsArr = ends.indices.toArray
+      val newEnds = Tensor(endsArr, endsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
+
+      val newAxes = axes match {
+        case None => None
+        case x: Indices => {
+          val axesArr = x.indices.toArray
+          Tensor(axesArr, axesArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
+        }
+      }
+
+      val newSteps = steps match {
+        case None => None
+        case x: Indices => {
+          val stepsArr = x.indices.toArray
+          Tensor(stepsArr, stepsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
+        }
+      }
+
+      val allInputs             = Tuple5(data, newStarts, newEnds, newAxes, newSteps)
+      (callOp(name, "Slice", allInputs, map))
+    }
+  }
+
+  //Missing in NDScala
+  //Missing V13, signature only differs in adding bfloat
+  trait SoftmaxV11 extends Operator {
+    def SoftmaxV11[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
+        name: String,
+        axis: Int = 1,
+        input: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
+      val map: Map[String, Any] = Map("axis" -> axis)
+      val allInputs             = Tuple1(input)
+      (callOp(name, "Softmax", allInputs, map))
+    }
+  }
+
+  trait SqrtV6 extends Operator {
+    def SqrtV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        X: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(X)
+      (callOp(name, "Sqrt", allInputs, map))
+    }
+  }
+
+    //"If axes is not provided, all the single dimensions will be removed from the shape"
+    //Missing in ONNX.js
+    trait SqueezeV13 extends Operator {
+    def SqueezeV13[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double]
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[(Axes)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] = {
+      val axes = indicesOf[Axes].indices.toArray
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(data, Tensor(axes.map(_.toLong), Shape.fromSeq(ArraySeq.unsafeWrapArray(Array(axes.size)))))
+      (callOp(name, "Squeeze", allInputs, map))
+    }
+  }
+
+  //"If axes is not provided, all the single dimensions will be removed from the shape"
+  trait SqueezeV11 extends Operator {
+    def SqueezeV11[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double]
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[(Axes)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] = {
+      val axes = indicesOf[Axes].indices.toArray
+      val map: Map[String, Any] = Map("axes" -> axes)
+      val allInputs             = Tuple1(data)
+      (callOp(name, "Squeeze", allInputs, map))
+    }
+  }
+ 
+  trait SubV7 extends Operator {
+    def SubV7[@sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        A: Tensor[T, Tuple3[Tt,Td,S]],
+        B: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(A,B)
+      (callOp(name, "Sub", allInputs, map))
+    }
+  }
+
+  //Missing in NDScala
+  trait SumV8 extends Operator {
+    def SumV8[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        data_0: Seq[Tensor[T, Tuple3[Tt,Td,S]]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple.fromArray(data_0.toArray)
+      (callOp(name, "Sum", allInputs, map))
+    }
+  }
+
+  trait TanV7 extends Operator {
+    def TanV7[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        input: Tensor[T, Tuple3[Tt, Td, S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(input)
+      (callOp(name, "Tan", allInputs, map))
+    }
+  }
+
+  trait TanhV6 extends Operator {
+    def TanhV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        input: Tensor[T, Tuple3[Tt, Td, S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple1(input)
+      (callOp(name, "Tanh", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  trait TileV6 extends Operator {
+    def TileV6[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | 
+                 Complex[Double]: Numeric,
+        @sp T1 <: Long: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt2 <: TensorTypeDenotation, AxisRepeats <: Indices](
+        name: String,
+        input: Tensor[T, Tuple3[Tt,Td,S]],
+        repeats: AxisRepeats)
+        (using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td], s: ShapeOf[TiledShape[S, AxisRepeats]]): Tensor[T, Tuple3[Tt2,Td,TiledShape[S, AxisRepeats]]] = {
+      val map: Map[String, Any] = Map()
+      val repeatsArr = repeats.indices.toArray
+      val repeatsTens = Tensor(repeatsArr, repeatsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
+
+      val allInputs             = Tuple2(input, repeatsTens)
+      (callOp(name, "Tile", allInputs, map))
+    }
+  }
+
+  trait TransposeV1 extends Operator {
+    def TransposeV1[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double]
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String, perm: Option[(Array[Int])] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Reverse[Td]], s: ShapeOf[io.kjaer.compiletime.Shape.Reverse[S]]): Tensor[T, Tuple3[Tt,Reverse[Td],io.kjaer.compiletime.Shape.Reverse[S]]] = {
+      val map: Map[String, Any] = Map("perm" -> perm)
+      val allInputs             = Tuple1(data)
+      (callOp(name, "Transpose", allInputs, map))
+    }
+  }
+  //Missing in NDScala
+  //Missing in ONNX.js
+  //"If axes is not provided, all the single dimensions will be removed from the shape"
+  trait UnsqueezeV13 extends Operator {
+    def UnsqueezeV13[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double]: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[(Axes)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] =  {
+      val axes = indicesOf[Axes].indices.toArray
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(data, Tensor(axes.map(_.toLong), Shape.fromSeq(ArraySeq.unsafeWrapArray(Array(axes.size)))))
+      (callOp(name, "Unsqueeze", allInputs, map))
+    }
+  }
+
+  //"If axes is not provided, all the single dimensions will be removed from the shape"
+  trait UnsqueezeV11 extends Operator {
+    def UnsqueezeV11[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double]: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[(Axes)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] =  {
+      val axes = indicesOf[Axes].indices.toArray
+      val map: Map[String, Any] = Map("axes" -> axes)
+      val allInputs             = Tuple1(data)
+      (callOp(name, "Unsqueeze", allInputs, map))
+    }
+  }
+
+  trait XorV7 extends Operator {
+    def XorV7[@sp T <: Boolean, @sp T1 <: Boolean, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        A: Tensor[T, Tuple3[Tt,Td,S]],
+        B: Tensor[T, Tuple3[Tt,Td,S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T1, Tuple3[Tt,Td,S]] = {
+      val map: Map[String, Any] = Map()
+      val allInputs             = Tuple2(A,B)
+      (callOp(name, "Xor", allInputs, map))
+    }
+  }
+ 
+}
+
+//Ops from the default ai.onnx domain which are only supported in ORT
+package object onnxruntime {
+  //Missing in NDScala
+  trait ArgMaxV12 extends onnx.Operator {
+    def ArgMaxV12[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 | Float | Double: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Index ::: INil, KeepDims <: (Boolean&Singleton)](
+        name: String,
+        axis: Axis = 0 ::: INil,
+        keepdims: KeepDims = true,
+        selectLastIndex: Int = 0,
+        data: Tensor[T, Tuple3[Tt, Td, S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axis" -> indicesOf[Axis].indices.toArray, "select_last_index" -> selectLastIndex, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+      val allInputs             = Tuple1(data)
+      (callOp(name, "ArgMax", allInputs, map))
+    }
+  }
+
+  //Missing in NDScala
+  trait ArgMinV12 extends onnx.Operator {
+    def ArgMinV12[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 | Float | Double: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Index ::: INil, KeepDims <: (Boolean&Singleton)](
+        name: String,
+        axis: Axis = 0 ::: INil,
+        keepdims: KeepDims = true,
+        selectLastIndex: Int = 0,
+        data: Tensor[T, Tuple3[Tt, Td, S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axis" -> indicesOf[Axis].indices.toArray, "select_last_index" -> selectLastIndex, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+      val allInputs             = Tuple1(data)
+      (callOp(name, "ArgMin", allInputs, map))
+    }
+  }
+  //Missing in ONNX.js
+  trait ArgMinV11 extends onnx.Operator {
+    def ArgMinV11[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 | Float | Double: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Index ::: INil, KeepDims <: (Boolean&Singleton)](
+        name: String,
+        axis: Axis = 0 ::: INil,
+        keepdims: KeepDims = true,
+        data: Tensor[T, Tuple3[Tt, Td, S]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
+      val map: Map[String, Any] = Map("axis" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+      val allInputs             = Tuple1(data)
+      (callOp(name, "ArgMin", allInputs, map))
+    }
+  }
+  //Not supported, missing in ONNX.js
+  /*
+  trait AveragePoolV11 extends Operator {
+    def AveragePoolV11[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes, Bx <: Axes](
+        name: String,
+        auto_pad: Option[(String)] = None,
+        ceil_mode: Option[(Int)] = None,
+        count_include_pad: Option[(Int)] = None,
+        kernel_shape: (Array[Int]),
+        pads: Option[(Array[Int])] = None,
+        strides: Option[(Array[Int])] = None,
+        X: Tensor[T, Ax]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Bx] = {
+      val map: Map[String, Any] = Map(
+        "auto_pad"          -> auto_pad,
+        "ceil_mode"         -> ceil_mode,
+        "count_include_pad" -> count_include_pad,
+        "kernel_shape"      -> kernel_shape,
+        "pads"              -> pads,
+        "strides"           -> strides
+      )
+      val allInputs = Tuple1(X)
+      (callOp(name, "AveragePool", allInputs, map))
+    }
+  }
+*/
+  //Missing in ONNX.js
+  trait BitShiftV11 extends onnx.Operator {
+    def BitShiftV11[@sp T <: UByte | UShort | UInt | ULong: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+        name: String,
+        direction: (String),
+        X: Tensor[T, Tuple3[Tt, Td, S]],
+        Y: Tensor[T, Tuple3[Tt, Td, S]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
+      val map: Map[String, Any] = Map("direction" -> direction)
+      val allInputs             = Tuple2(X,Y)
+      (callOp(name, "BitShift", allInputs, map))
+    }
+  }
   //Not supported, not in ONNXJS
   /*
   trait ClipV12 extends Operator {
@@ -367,22 +1330,7 @@ package object onnx {
     }
   }
 */
-  trait ClipV6 extends Operator {
-    def ClipV6[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        max: Float = 3.402823e+38,
-        min: Float = -3.402823e+38,
-        input: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
-      val map: Map[String, Any] = Map("max" -> max, "min" -> min)
-      val allInputs             = Tuple1(input)
-      (callOp(name, "Clip", allInputs, map))
-    }
-  }
-
-  //Not supported, missing from ONNXJS
+ //Not supported, missing from ONNXJS
   /*
   trait CompressV11 extends Operator {
     def CompressV11[
@@ -430,21 +1378,6 @@ package object onnx {
     }
   }
 */
-
-  //FIXME: "All input tensors must have the same shape, except for the dimension size of the axis to concatenate on". Currently assumes tensors to be concated are same shape except the leading dimension
-  //TODO P1: Arbitrary arity inputs 
-  trait ConcatV11 extends Operator {
-    def ConcatV11[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, SSuffix <: Shape, S <: Dimension #: SSuffix, S1 <: Dimension #: SSuffix, Axis <: Index ::: INil](name: String, axis: Axis, inputs: Tuple2[Tensor[T, Tuple3[Tt, Td, S]],Tensor[T, Tuple3[Tt, Td, S1]]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[AddGivenAxisSize[S, S1, Axis]], i: IndicesOf[Axis]): Tensor[T, Tuple3[Tt, Td, AddGivenAxisSize[S, S1, Axis]]] = {
-      val map: Map[String, Any] = Map("axis"-> indicesOf[Axis].indices.toArray.head)
-      val allInputs             = Tuple.fromArray(inputs.toArray)
-      (callOp(name, "Concat", allInputs, map))
-    }
-  }
-
   //Not supported - missing from ONNXjs
   /*
    trait ConstantOfShapeV9 extends Operator {
@@ -461,11 +1394,11 @@ package object onnx {
     }
   }
 */
-
-  //TODO: V13
-  trait ConstantV12 extends Operator {
+ //TODO: V13
+  //Bug in ORT here, it forces us to set shape as an input even thought in the spec there are 0 inputs, it uses ConstantOfShape op instead
+  trait ConstantV12 extends onnx.Operator {
     def ConstantV12[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]: Numeric
     ,Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
@@ -513,7 +1446,7 @@ package object onnx {
     }
   } 
 */
-  //Not supported, missing from ONNXJS
+ //Not supported, missing from ONNXJS
   /*
   trait ConvIntegerV10 extends Operator {
     def ConvIntegerV10[
@@ -576,57 +1509,7 @@ package object onnx {
     }
   } 
 */
-  //TODO P1: Constraints - Could restrict this to 2d image case, so 4d input
-  //Consider enforcing denotations
-  trait ConvV11 extends Operator {
-    def ConvV11[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape, Tt3 <: TensorTypeDenotation, Td3 <: TensorShapeDenotation, S3 <: Shape](
-        name: String,
-        auto_pad: String = "NOTSET",
-        dilations: Option[(Array[Int])] = None,
-        group: Int = 1,
-        kernel_shape: Option[(Array[Int])] = None,
-        pads: Option[(Array[Int])] = None,
-        strides: Option[(Array[Int])] = None,
-        X: Tensor[T, Tuple3[Tt,Td,S]],
-        W: Tensor[T, Tuple3[Tt1,Td1,S1]],
-        B: Option[Tensor[T, Tuple3[Tt2, Td2, S2]]] = None
-    )(using tt: ValueOf[Tt3], td: TensorShapeDenotationOf[Td3], s: ShapeOf[S3]): Tensor[T, Tuple3[Tt3, Td3, S3]] = {
-      val map: Map[String, Any] = Map(
-        "auto_pad"     -> auto_pad,
-        "dilations"    -> dilations,
-        "group"        -> group,
-        "kernel_shape" -> kernel_shape,
-        "pads"         -> pads,
-        "strides"      -> strides
-      )
-      val allInputs = Tuple3(X, W, B)
-      (callOp(name, "Conv", allInputs, map))
-    }
-  }
-
-  trait CosV7 extends Operator {
-    def CosV7[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        input: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(input)
-      (callOp(name, "Cos", allInputs, map))
-    }
-  }
-
-  trait CoshV9 extends Operator {
-    def CoshV9[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        input: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(input)
-      (callOp(name, "Cosh", allInputs, map))
-    }
-  }
-
-  //Not supported for now, missing from ONNXJS
+ //Not supported for now, missing from ONNXJS
   /*
   trait CumSumV11 extends Operator {
     def CumSumV11[
@@ -675,7 +1558,6 @@ package object onnx {
       (callOp(name, "DequantizeLinear", allInputs, map))
     }
   }
-
   trait DetV11 extends Operator {
     def DetV11[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
         name: String,
@@ -687,38 +1569,6 @@ package object onnx {
     }
   }
 */
-
-  trait DivV7 extends Operator {
-    def DivV7[@sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        A: Tensor[T, Tuple3[Tt,Td,S]],
-        B: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(A,B)
-      (callOp(name, "Div", allInputs, map))
-    }
-  }
-
-  //Missing optional second output
-  trait DropoutV12 extends Operator {
-    def DropoutV12[
-        @sp T <: Float16 | Float | Double: Numeric,
-        @sp T1 <: Float16 | Float | Double | Boolean,
-        @sp T2 <: Boolean
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](
-        name: String,
-        seed: Int = 42,
-        data: Tensor[T, Tuple3[Tt,Td,S]],
-        ratio: Option[Tensor[T1,Tuple3[Tt1,Td1,S1]]] = None,
-        training_mode: Option[Tensor[T2, Tuple3[Tt2,Td2,S2]]] = None
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map("seed" -> seed)
-      val allInputs             = Tuple3(data, ratio, training_mode)
-      (callOp(name, "Dropout", allInputs, map))
-    }
-  }
-  
   //Not supported for now, missing from ONNXJS
   /*
   trait DynamicQuantizeLinearV11 extends Operator {
@@ -742,28 +1592,6 @@ package object onnx {
     }
   }
 */
-  trait EluV6 extends Operator {
-    def EluV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        alpha: Float = 1.0,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map("alpha" -> alpha)
-      val allInputs             = Tuple1(X)
-      (callOp(name, "Elu", allInputs, map))
-    }
-  }
-
-  trait EqualV11 extends Operator {
-    def EqualV11[
-        @sp T <: Boolean | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double,
-        @sp T1 <: Boolean
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation](name: String, A: Tensor[T, Tuple3[Tt,Td,S]], B: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S]): Tensor[T1, Tuple3[Tt1,Td1,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(A,B)
-      (callOp(name, "Equal", allInputs, map))
-    }
-  } 
 
   //Not supported, missing from ONNXJS
   /*
@@ -777,30 +1605,6 @@ package object onnx {
     }
   }
 */
-
-  trait ExpV6 extends Operator {
-    def ExpV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        input: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(input)
-      (callOp(name, "Exp", allInputs, map))
-    }
-  }
-
-  //Explicit broadcasting
-  trait ExpandV8 extends Operator {
-    def ExpandV8[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](name: String, input: Tensor[T, Tuple3[Tt,Td,S]], shapeInput: Tensor[Long, Tuple3[Tt1,Td1,S1]])(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(input, shapeInput)
-      (callOp(name, "Expand", allInputs, map))
-    }
-  }
 
   //Not supported, missing from ONNXJS
   /*
@@ -820,29 +1624,6 @@ package object onnx {
     }
   }
 */
-  trait FlattenV11 extends Operator {
-    def FlattenV11[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](name: String, axis: Int = 1, input: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
-      val map: Map[String, Any] = Map("axis" -> axis)
-      val allInputs             = Tuple1(input)
-      (callOp(name, "Flatten", allInputs, map))
-    }
-  }
-
-  trait FloorV6 extends Operator {
-    def FloorV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(X)
-      (callOp(name, "Floor", allInputs, map))
-    }
-  }
-
   //Not supported, missing from ONNXJS
   /*
   trait GRUV7 extends Operator {
@@ -879,7 +1660,7 @@ package object onnx {
     }
   }
 
-  trait GatherElementsV11 extends Operator {
+ trait GatherElementsV11 extends Operator {
     def GatherElementsV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
@@ -926,53 +1707,6 @@ package object onnx {
     }
   }
 */
-  trait GatherV11 extends Operator {
-    def GatherV11[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]: Numeric,
-        @sp Tind <: Int | Long: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](
-        name: String,
-        axis: Int = 0,
-        data: Tensor[T, Tuple3[Tt,Td,S]],
-        indices: Tensor[Tind, Tuple3[Tt1,Td1,S1]]
-    )(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
-      val map: Map[String, Any] = Map("axis" -> axis)
-      val allInputs             = Tuple2(data, indices)
-      (callOp(name, "Gather", allInputs, map))
-    }
-  }
-
-  trait GemmV11 extends Operator {
-    def GemmV11[@sp T <: Float16 | Float | Double | UInt | ULong | Int | Long: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, M <: Dimension, K <: Dimension, S <: M #: K #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, N <: Dimension, S1 <: K #: N #: SNil, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: M #: N #: SNil](
-        name: String,
-        alpha: Float = 1.0,
-        beta: Float = 1.0,
-        transA: Int = 0,
-        transB: Int = 0,
-        A: Tensor[T, Tuple3[Tt,Td,S]],
-        B: Tensor[T, Tuple3[Tt1,Td1,S1]],
-        C: Option[Tensor[T, Tuple3[Tt2,Td2,S2]]] = None
-    )(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
-      val map: Map[String, Any] =
-        Map("alpha" -> alpha, "beta" -> beta, "transA" -> transA, "transB" -> transB)
-      val allInputs = Tuple3(A, B, C)
-      (callOp(name, "Gemm", allInputs, map))
-    }
-  } 
-
-  trait GlobalAveragePoolV1 extends Operator {
-    def GlobalAveragePoolV1[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
-        name: String,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(X)
-      (callOp(name, "GlobalAveragePool", allInputs, map))
-    }
-  }
-
   //Not supported, missing from ONNXJS, fail in ORT scoreboard
   /*
   trait GlobalLpPoolV2 extends Operator {
@@ -989,20 +1723,9 @@ package object onnx {
  
 */
 
-  trait GlobalMaxPoolV1 extends Operator {
-    def GlobalMaxPoolV1[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
-        name: String,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(X)
-      (callOp(name, "GlobalMaxPool", allInputs, map))
-    }
-  }
-
-  trait GreaterOrEqualV12 extends Operator {
+  trait GreaterOrEqualV12 extends onnx.Operator {
     def GreaterOrEqualV12[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric,
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 | Float | Double: Numeric,
         @sp T1 <: Boolean
     , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation](name: String, A: Tensor[T, Tuple3[Tt,Td,S]], B: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S]): Tensor[T1, Tuple3[Tt1,Td1,S]] = {
       val map: Map[String, Any] = Map()
@@ -1011,9 +1734,9 @@ package object onnx {
     }
   }
 
-  trait GreaterV9 extends Operator {
+  trait GreaterV9 extends onnx.Operator {
     def GreaterV9[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric,
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 | Float | Double: Numeric,
         @sp T1 <: Boolean
     , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation](name: String, A: Tensor[T, Tuple3[Tt,Td,S]], B: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S]): Tensor[T1, Tuple3[Tt1,Td1,S]] = {
       val map: Map[String, Any] = Map()
@@ -1021,8 +1744,7 @@ package object onnx {
       (callOp(name, "Greater", allInputs, map))
     }
   }
-  
-  //Not supported, missing in ONNXJS
+ //Not supported, missing in ONNXJS
   /*
   trait HardSigmoidV6 extends Operator {
     def HardSigmoidV6[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -1082,23 +1804,6 @@ package object onnx {
     }
   }
 */
-
-  //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
-  //Consider enforcing denotations
-  trait InstanceNormalizationV6 extends Operator {
-    def InstanceNormalizationV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation](
-        name: String,
-        epsilon: Float = 1e-5,
-        input: Tensor[T, Tuple3[Tt,Td,S]],
-        scale: Tensor[T, Tuple3[Tt1,Td1,S1]],
-        B: Tensor[T, Tuple3[Tt1,Td1,S1]]
-    )(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt2,Td,S]] = {
-      val map: Map[String, Any] = Map("epsilon" -> epsilon)
-      val allInputs             = Tuple3(input, scale, B)
-      (callOp(name, "InstanceNormalization", allInputs, map))
-    }
-  }
-
   //Not supported, missing from ONNXJS
   /*
   trait IsInfV10 extends Operator {
@@ -1115,35 +1820,6 @@ package object onnx {
     }
   }
 */
-  trait IsNaNV9 extends Operator {
-    def IsNaNV9[
-        @sp T1 <: Float16 | Float | Double: Numeric,
-        @sp T2 <: Boolean
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String, X: Tensor[T1, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T2, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(X)
-      (callOp(name, "IsNaN", allInputs, map))
-    }
-  }
-
-  //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
-  //Consider enforcing denotations
-  trait LRNV1 extends Operator {
-    def LRNV1[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation](
-        name: String,
-        alpha: Option[(Float)] = None,
-        beta: Option[(Float)] = None,
-        bias: Option[(Float)] = None,
-        size: (Int),
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt1,Td,S]] = {
-      val map: Map[String, Any] =
-        Map("alpha" -> alpha, "beta" -> beta, "bias" -> bias, "size" -> size)
-      val allInputs = Tuple1(X)
-      (callOp(name, "LRN", allInputs, map))
-    }
-  }
-
   //Not supported, missing from ONNXJS
   /*
   trait LSTMV7 extends Operator {
@@ -1182,22 +1858,9 @@ package object onnx {
     }
   } 
 */
-
-  trait LeakyReluV6 extends Operator {
-    def LeakyReluV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        alpha: Float = 0.01,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map("alpha" -> alpha)
-      val allInputs             = Tuple1(X)
-      (callOp(name, "LeakyRelu", allInputs, map))
-    }
-  }
-  
-  trait LessOrEqualV12 extends Operator {
+  trait LessOrEqualV12 extends onnx.Operator {
     def LessOrEqualV12[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric,
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 | Float | Double: Numeric,
         @sp T1 <: Boolean
     , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation](name: String, A: Tensor[T, Tuple3[Tt,Td,S]], B: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S]): Tensor[T1, Tuple3[Tt1,Td1,S]] = {
       val map: Map[String, Any] = Map()
@@ -1205,18 +1868,6 @@ package object onnx {
       (callOp(name, "LessOrEqual", allInputs, map))
     }
   }
-
-  trait LessV9 extends Operator {
-    def LessV9[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric,
-        @sp T1 <: Boolean
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation](name: String, A: Tensor[T, Tuple3[Tt,Td,S]], B: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S]): Tensor[T1, Tuple3[Tt1,Td1,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(A,B)
-      (callOp(name, "Less", allInputs, map))
-    }
-  }
-
   //Not supported, missing from ONNXJS, missing V13
   /*
   trait LogSoftmaxV11 extends Operator {
@@ -1231,18 +1882,7 @@ package object onnx {
     }
   } 
 */
-  trait LogV6 extends Operator {
-    def LogV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        input: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(input)
-      (callOp(name, "Log", allInputs, map))
-    }
-  }
-
-  //Not supported, missing from ONNXJS, Missing V13
+//Not supported, missing from ONNXJS, Missing V13
   /*
   trait LoopV11 extends Operator {
     def LoopV11[
@@ -1321,21 +1961,6 @@ package object onnx {
     }
   }
 */
-
-  trait MatMulV9 extends Operator {
-    def MatMulV9[@sp T <: Float16 | Float | Double | UInt | ULong | Int | Long: Numeric, Dim0 <: Dimension, Dim1 <: Dimension, Dim2 <: Dimension, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dim0 #: Dim1 #:SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dim1 #: Dim2 #: SNil](
-        name: String,
-        A: Tensor[T, Tuple3[Tt,Td,S]],
-        B: Tensor[T, Tuple3[Tt1,Td1,S1]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[Dim0 #: Dim2 #: SNil],vd0:ValueOf[scala.compiletime.ops.int.S[Dim0]],vd1:ValueOf[scala.compiletime.ops.int.S[Dim1]], vd2: ValueOf[scala.compiletime.ops.int.S[Dim2]])
-    //,vd0:ValueOf[scala.compiletime.S[Dim0]],vd1:ValueOf[scala.compiletime.S[Dim1]], vd2: ValueOf[scala.compiletime.S[Dim2]])
-    : Tensor[T, Tuple3[Tt,Td, Dim0 #: Dim2 #: SNil]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(A,B)
-      (callOp(name, "MatMul", allInputs, map))
-    }
-  }
-
   //Not supported, missing from ONNXJS
   /*
   trait MaxPoolV12 extends Operator {
@@ -1366,7 +1991,6 @@ package object onnx {
       (callOp(name, "MaxPool", allInputs, map))
     }
   }
-
   trait MaxPoolV11 extends Operator {
     def MaxPoolV11[
         @sp T <: Float16 | Float | Double | Byte | UByte: Numeric,
@@ -1396,39 +2020,7 @@ package object onnx {
     }
   }
 */
-  //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
-  //Consider enforcing denotations
-  //TODO: output shape constraint
-  trait MaxPoolV10 extends Operator {
-    def MaxPoolV10[
-        @sp T <: Float16 | Float | Double | Byte | UByte: Numeric,
-        @sp I <: Long: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
-        name: String,
-        auto_pad: String = "NOTSET",
-        ceil_mode: Int= 0,
-        dilations: Option[(Array[Int])] = None,
-        kernel_shape: (Array[Int]),
-        pads: Option[(Array[Int])] = None,
-        storage_order: Int = 0,
-        strides: Option[(Array[Int])] = None,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
-      val map: Map[String, Any] = Map(
-        "auto_pad"      -> auto_pad,
-        "ceil_mode"     -> ceil_mode,
-        "dilations"     -> dilations,
-        "kernel_shape"  -> kernel_shape,
-        "pads"          -> pads,
-        "storage_order" -> storage_order,
-        "strides"       -> strides
-      )
-      val allInputs = Tuple1(X)
-      (callOp(name, "MaxPool", allInputs, map))
-    }
-  }
-
-  //Not supported, missing from ONNXJS, fails in ORT scoreboard
+ //Not supported, missing from ONNXJS, fails in ORT scoreboard
   /*
   trait MaxRoiPoolV1 extends Operator {
     def MaxRoiPoolV1[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -1466,20 +2058,11 @@ package object onnx {
   }
 
 */
-  trait MaxV12 extends Operator {
-    def MaxV12[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String, data_0: Seq[Tensor[T, Tuple3[Tt,Td,S]]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple.fromArray(data_0.toArray)
-      (callOp(name, "Max", allInputs, map))
-    }
-  }
 
-  trait MaxV8 extends Operator {
-    def MaxV8[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-      , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String, data_0: Seq[Tensor[T, Tuple3[Tt,Td,S]]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
+  trait MaxV12 extends onnx.Operator {
+    def MaxV12[
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 | Float | Double: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String, data_0: Seq[Tensor[T, Tuple3[Tt,Td,S]]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple.fromArray(data_0.toArray)
       (callOp(name, "Max", allInputs, map))
@@ -1502,8 +2085,8 @@ package object onnx {
     }
   }
 */
-  trait MeanV8 extends Operator {
-    def MeanV8[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+  trait MeanV8 extends onnx.Operator {
+    def MeanV8[@sp T <: onnx.Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
         data_0: Seq[Tensor[T, (Tt,Td,S)]]
     )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, (Tt,Td,S)] = {
@@ -1512,6 +2095,7 @@ package object onnx {
       (callOp(name, "Mean", allInputs, map))
     }
   }
+
 /*
 
   trait MeanVarianceNormalizationV9 extends Operator {
@@ -1526,9 +2110,9 @@ package object onnx {
     }
   }
 */
-  trait MinV12 extends Operator {
+  trait MinV12 extends onnx.Operator {
     def MinV12[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 | Float | Double: Numeric
     , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String, data_0: Seq[Tensor[T, Tuple3[Tt,Td,S]]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple.fromArray(data_0.toArray)
@@ -1536,38 +2120,15 @@ package object onnx {
     }
   }
 
-  trait MinV8 extends Operator {
-    def MinV8[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String, data_0: Seq[Tensor[T, Tuple3[Tt,Td,S]]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple.fromArray(data_0.toArray)
-      (callOp(name, "Min", allInputs, map))
-    }
-  }
-
-  trait ModV10 extends Operator {
+  trait ModV10 extends onnx.Operator {
     def ModV10[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 | Float | Double: Numeric
     , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String, fmod: Int = 0, A: Tensor[T, Tuple3[Tt,Td,S]], B: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
       val map: Map[String, Any] = Map("fmod" -> fmod)
       val allInputs             = Tuple2(A,B)
       (callOp(name, "Mod", allInputs, map))
     }
   }
-
-  trait MulV7 extends Operator {
-    def MulV7[@sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        A: Tensor[T, Tuple3[Tt,Td,S]],
-        B: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(A,B)
-      (callOp(name, "Mul", allInputs, map))
-    }
-  }
-
   //Not supported, missing from ONNXJS, Fails in ORT scoreboard
   /*
   trait MultinomialV7 extends Operator {
@@ -1589,17 +2150,6 @@ package object onnx {
   }
 */
 
-  trait NegV6 extends Operator {
-    def NegV6[@sp T <: Float | Int | Byte | Short | Long | Float16 | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(X)
-      (callOp(name, "Neg", allInputs, map))
-    }
-  }
- 
   //Not supported, missing from ONNXJS, missing V13
   /*
   trait NegativeLogLikelihoodLossV12 extends Operator {
@@ -1648,18 +2198,6 @@ package object onnx {
     }
   }
 */
-
-  trait NotV1 extends Operator {
-    def NotV1[@sp T <: Boolean, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(X)
-      (callOp(name, "Not", allInputs, map))
-    }
-  }
- 
   //Not supported, missing from ONNXJS
 /*
   trait OneHotV11 extends Operator {
@@ -1682,75 +2220,6 @@ package object onnx {
     }
   } 
 */
-
-  trait OrV7 extends Operator {
-    def OrV7[@sp T <: Boolean, @sp T1 <: Boolean, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        A: Tensor[T, Tuple3[Tt,Td,S]],
-        B: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T1, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(A,B)
-      (callOp(name, "Or", allInputs, map))
-    }
-  }
-
-  trait PReluV9 extends Operator {
-    def PReluV9[@sp T <: Float16 | Float | Double | UInt | ULong | Int | Long: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        X: Tensor[T, Tuple3[Tt,Td,S]],
-        slope: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(X, slope)
-      (callOp(name, "PRelu", allInputs, map))
-    }
-  }
-
-  trait PadV11 extends Operator {
-    def PadV11[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape, Tt3 <: TensorTypeDenotation, AxesBefore <: Indices, AxesAfter <: Indices](
-        name: String,
-        mode: String = "constant",
-        data: Tensor[T, Tuple3[Tt,Td,S]],
-        padsBefore: AxesBefore,
-        padsAfter: AxesAfter, //Tensor[Long, Tuple3[Tt1,Td1,S1]], //`pads` should be a 1D tensor of shape [2 * input_rank].
-        constant_value: Option[Tensor[T, Tuple3[Tt2,Td2,S2]]] = None
-    )(using tt: ValueOf[Tt3], td: TensorShapeDenotationOf[Td], s: ShapeOf[PaddedShape[S, AxesBefore, AxesAfter]]): Tensor[T, Tuple3[Tt3, Td, PaddedShape[S, AxesBefore, AxesAfter]]] = {
-      val map: Map[String, Any] = Map("mode" -> mode)
-      val beforeArr = padsBefore.indices.toArray
-      val afterArr = padsAfter.indices.toArray
-      val padsArr = beforeArr ++ afterArr
-      val pads = Tensor(padsArr, padsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
-
-      val allInputs             = Tuple3(data, pads, constant_value)
-      (callOp(name, "Pad", allInputs, map))
-    }
-  }
-
-  trait PowV12 extends Operator {
-    def PowV12[
-        @sp T <: Int | Long | Float16 | Float | Double: Numeric,
-        @sp T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String, X: Tensor[T, Tuple3[Tt,Td,S]], Y: Tensor[T1, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(X,Y)
-      (callOp(name, "Pow", allInputs, map))
-    }
-  }
-
-  trait PowV7 extends Operator {
-    def PowV7[@sp T <: Int | Long | Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        X: Tensor[T, Tuple3[Tt,Td,S]],
-        Y: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(X,Y)
-      (callOp(name, "Pow", allInputs, map))
-    }
-  }
 
   //Not supported, missing from ONNXJS
   /*
@@ -1945,7 +2414,8 @@ package object onnx {
     }
   }
 */
-  trait RangeV11 extends Operator {
+
+  trait RangeV11 extends onnx.Operator {
     def RangeV11[@sp T <: Float | Double | Short | Int | Long: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape, Tt3 <: TensorTypeDenotation, Td3 <: TensorShapeDenotation, S3 <: Shape](
         name: String,
         start: Tensor[T, Tuple3[Tt,Td,S]],
@@ -1957,18 +2427,6 @@ package object onnx {
       (callOp(name, "Range", allInputs, map))
     }
   }
-
-  trait ReciprocalV6 extends Operator {
-    def ReciprocalV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(X)
-      (callOp(name, "Reciprocal", allInputs, map))
-    }
-  }
-
   //Not supported, missing in ONNXJS
   /*
   trait ReduceL1V11 extends Operator {
@@ -2016,235 +2474,6 @@ package object onnx {
     }
   }
 
-*/
-
-  //TODO P2: make axes param optional at the type level
-  trait ReduceLogSumV11 extends Operator {
-    def ReduceLogSumV11[
-        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-        , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
-        name: String,
-        axes: Option[(Axes)] = None,
-        keepdims: KeepDims = true,
-        data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
-      val allInputs             = Tuple1(data)
-      (callOp(name, "ReduceLogSum", allInputs, map))
-    }
-  }
-
-  trait ReduceMaxV12 extends Operator {
-    def ReduceMaxV12[
-        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
-        name: String,
-        axes: Option[(Axes)] = None,
-        keepdims: KeepDims = true,
-        data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
-      val allInputs             = Tuple1(data)
-      (callOp(name, "ReduceMax", allInputs, map))
-    }
-  }
-
-  trait ReduceMaxV11 extends Operator {
-    def ReduceMaxV11[
-        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
-        name: String,
-        axes: Option[(Axes)] = None,
-        keepdims: KeepDims = true,
-        data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
-      val allInputs             = Tuple1(data)
-      (callOp(name, "ReduceMax", allInputs, map))
-    }
-  }
-
-  trait ReduceMeanV11 extends Operator {
-    def ReduceMeanV11[
-        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
-        name: String,
-        axes: Option[(Axes)] = None,
-        keepdims: KeepDims = true,
-        data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axes,KeepDims], KeepOrReduceDims[S,Axes,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
-      val allInputs             = Tuple1(data)
-      (callOp(name, "ReduceMean", allInputs, map))
-    }
-  }
-
-  trait ReduceMinV12 extends Operator {
-    def ReduceMinV12[
-        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
-        name: String,
-        axes: Option[(Axes)] = None,
-        keepdims: KeepDims = true,
-        data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
-      val allInputs             = Tuple1(data)
-      (callOp(name, "ReduceMin", allInputs, map))
-    }
-  }
-
-  trait ReduceMinV11 extends Operator {
-    def ReduceMinV11[
-        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
-        name: String,
-        axes: Option[(Axes)] = None,
-        keepdims: KeepDims = true,
-        data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
-      val allInputs             = Tuple1(data)
-      (callOp(name, "ReduceMin", allInputs, map))
-    }
-  }
-
-  trait ReduceProdV11 extends Operator {
-    def ReduceProdV11[
-        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
-        name: String,
-        axes: Option[(Axes)] = None,
-        keepdims: KeepDims = true,
-        data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims], KeepOrReduceDims[S,Axes,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
-      val allInputs             = Tuple1(data)
-      (callOp(name, "ReduceProd", allInputs, map))
-    }
-  }
-
-  trait ReduceSumSquareV11 extends Operator {
-    def ReduceSumSquareV11[
-        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
-        name: String,
-        axes: Option[(Axes)] = None,
-        keepdims: KeepDims = true,
-        data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
-      val allInputs             = Tuple1(data)
-      (callOp(name, "ReduceSumSquare", allInputs, map))
-    }
-  }
-
-  //TODO: new attr : noop_with_empty_axes
-  trait ReduceSumV13 extends Operator {
-    def ReduceSumV13[
-        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
-        name: String,
-        axes: Option[(Axes)] = None,
-        keepdims: KeepDims = true,
-        data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
-      val axes = indicesOf[Axes].indices.toArray
-      val map: Map[String, Any] = Map("keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
-      val allInputs             = Tuple2(data, Tensor(axes.map(_.toLong), Shape.fromSeq(ArraySeq.unsafeWrapArray(Array(axes.size)))))
-      (callOp(name, "ReduceSum", allInputs, map))
-    }
-  }
-
-  trait ReduceSumV11 extends Operator {
-    def ReduceSumV11[
-        @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices, KeepDims <: (Boolean&Singleton)](
-        name: String,
-        axes: Option[(Axes)] = None,
-        keepdims: KeepDims = true,
-        data: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axes,KeepDims]], i: IndicesOf[Axes], k: ValueOf[KeepDims]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,KeepDims],KeepOrReduceDims[S,Axes,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axes" -> indicesOf[Axes].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
-      val allInputs             = Tuple1(data)
-      (callOp(name, "ReduceSum", allInputs, map))
-    }
-  }
-
-  trait ReluV6 extends Operator {
-    def ReluV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(X)
-      (callOp(name, "Relu", allInputs, map))
-    }
-  }
-
-  trait ReshapeV5 extends Operator {
-    def ReshapeV5[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](name: String, data: Tensor[T, Tuple3[Tt,Td,S]], shapeInput: Tensor[Long, Tuple3[Tt1,Td1,S1]])(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2], sizeSeq: NumElements[S] =:= NumElements[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(data, shapeInput)
-      (callOp(name, "Reshape", allInputs, map))
-    }
-  }
-
-
-  //TODO P2: Add, was added to ONNXJS recently
-  /*
-  trait ResizeV11 extends Operator {
-    def ResizeV11[
-        @sp T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]: Numeric,
-        @sp T2 <: Float16 | Float | Double: Numeric
-    , Ax <: Axes](
-        name: String,
-        coordinate_transformation_mode: Option[(String)] = None,
-        cubic_coeff_a: Option[(Float)] = None,
-        exclude_outside: Option[(Int)] = None,
-        extrapolation_value: Option[(Float)] = None,
-        mode: Option[(String)] = None,
-        nearest_mode: Option[(String)] = None,
-        X: Tensor[T1,_],
-        roi: Tensor[T2, _],
-        scales: Tensor[Float,_],
-        sizes: Option[Tensor[Long, _]] = None
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T1,_] = {
-      val map: Map[String, Any] = Map(
-        "coordinate_transformation_mode" -> coordinate_transformation_mode,
-        "cubic_coeff_a"                  -> cubic_coeff_a,
-        "exclude_outside"                -> exclude_outside,
-        "extrapolation_value"            -> extrapolation_value,
-        "mode"                           -> mode,
-        "nearest_mode"                   -> nearest_mode
-      )
-      val allInputs = Tuple4(X, roi, scales, sizes)
-      (callOp(name, "Resize", allInputs, map))
-    }
-  }
-
-  trait ResizeV10 extends Operator {
-    def ResizeV10[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]: Numeric
-    , Ax <: Axes](
-        name: String,
-        mode: Option[(String)] = None,
-        X: Tensor[T, _],
-        scales: Tensor[Float,_]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, _] = {
-      val map: Map[String, Any] = Map("mode" -> mode)
-      val allInputs             = Tuple2(X, scales)
-      (callOp(name, "Resize", allInputs, map))
-    }
-  }
 */
   //Not supported, sequence op
   /*
@@ -2295,17 +2524,6 @@ package object onnx {
     }
   }
 */
-  trait RoundV11 extends Operator {
-    def RoundV11[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(X)
-      (callOp(name, "Round", allInputs, map))
-    }
-  } 
-
   //Not supported, missing from ONNXJS
   /*
   trait ScanV11 extends Operator {
@@ -2355,7 +2573,6 @@ package object onnx {
       (callOp(name, "ScatterElements", allInputs, map))
     }
   }
-
   trait ScatterNDV11 extends Operator {
     def ScatterNDV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -2373,20 +2590,6 @@ package object onnx {
     }
   }
 */
-  trait SeluV6 extends Operator {
-    def SeluV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        alpha: Float = 1.67326,
-        gamma: Float = 1.0507,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map("alpha" -> alpha, "gamma" -> gamma)
-      val allInputs             = Tuple1(X)
-      (callOp(name, "Selu", allInputs, map))
-    }
-  }
-
-
   //Not supported, sequence op
   /*
   trait SequenceAtV11 extends Operator {
@@ -2515,19 +2718,6 @@ package object onnx {
     }
   }
 */
-  trait ShapeV1 extends Operator {
-    def ShapeV1[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]: Numeric,
-        @sp T1 <: Long: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation](name: String, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[io.kjaer.compiletime.Shape.Rank[S] & Dimension #: SNil]): Tensor[T1, Tuple3[Tt1,Td1,io.kjaer.compiletime.Shape.Rank[S] & Dimension #: SNil]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(data)
-      (callOp(name, "Shape", allInputs, map))
-    }
-  }
-
   //Not supported, missing from ONNXJS
   /*
   trait ShrinkV9 extends Operator {
@@ -2545,49 +2735,6 @@ package object onnx {
     }
   }
 */
-  trait SigmoidV6 extends Operator {
-    def SigmoidV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(X)
-      (callOp(name, "Sigmoid", allInputs, map))
-    }
-  }
-
-  trait SignV9 extends Operator {
-    def SignV9[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String, input: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(input)
-      (callOp(name, "Sign", allInputs, map))
-    }
-  }
-
-  trait SinV7 extends Operator {
-    def SinV7[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        input: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(input)
-      (callOp(name, "Sin", allInputs, map))
-    }
-  }
-
-  trait SinhV9 extends Operator {
-    def SinhV9[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        input: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(input)
-      (callOp(name, "Sinh", allInputs, map))
-    }
-  }
-
   //Not supported, missing from ONNXJS
   /*
   trait SizeV1 extends Operator {
@@ -2603,49 +2750,6 @@ package object onnx {
     }
   }
 */
-  //TODO P1: All 4 params must be 1D vectors of same size - to enforce
-  //TODO P2: Constraints on axes / steps params
-  trait SliceV11 extends Operator {
-    def SliceV11[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double],
-//        @sp Tind <: Int | Long: Numeric,
-     Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, AxesStart <: Indices, AxesEnd <: Indices, AxisIndices <: None.type | Indices, StepIndices <: None.type | Indices](
-        name: String,
-        data: Tensor[T, Tuple3[Tt,Td,S]],
-        starts: AxesStart,
-        ends: AxesEnd,
-        axes: AxisIndices = None,
-        steps: StepIndices = None
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s5: ShapeOf[SlicedShape[AxesStart,AxesEnd]]): Tensor[T, Tuple3[Tt1,Td,SlicedShape[AxesStart,AxesEnd]]] = {
-      val map: Map[String, Any] = Map()
-      val startsArr = starts.indices.toArray
-      val newStarts = Tensor(startsArr, startsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
-      val endsArr = ends.indices.toArray
-      val newEnds = Tensor(endsArr, endsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
-
-      val newAxes = axes match {
-        case None => None
-        case x: Indices => {
-          val axesArr = x.indices.toArray
-          Tensor(axesArr, axesArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
-        }
-      }
-
-      val newSteps = steps match {
-        case None => None
-        case x: Indices => {
-          val stepsArr = x.indices.toArray
-          Tensor(stepsArr, stepsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
-        }
-      }
-
-      val allInputs             = Tuple5(data, newStarts, newEnds, newAxes, newSteps)
-      (callOp(name, "Slice", allInputs, map))
-    }
-  }
-
   //Not supported, missing in ONNXJS, missing V13
   /*
    //To consider restoring, need a loss function
@@ -2666,20 +2770,7 @@ package object onnx {
     }
   }
 */
-  //Missing V13, signature only differs in adding bfloat
-  trait SoftmaxV11 extends Operator {
-    def SoftmaxV11[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
-        name: String,
-        axis: Int = 1,
-        input: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
-      val map: Map[String, Any] = Map("axis" -> axis)
-      val allInputs             = Tuple1(input)
-      (callOp(name, "Softmax", allInputs, map))
-    }
-  }
-
-  //Not supported, missing from ONNXJS
+//Not supported, missing from ONNXJS
   /*
   trait SoftplusV1 extends Operator {
     def SoftplusV1[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -2714,7 +2805,6 @@ package object onnx {
       (callOp(name, "SpaceToDepth", allInputs, map))
     }
   }
-
 
   //Sequence op, disabled
   trait SplitToSequenceV11 extends Operator {
@@ -2765,47 +2855,6 @@ package object onnx {
   }
 
 */
-  trait SqrtV6 extends Operator {
-    def SqrtV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(X)
-      (callOp(name, "Sqrt", allInputs, map))
-    }
-  }
-
-    //"If axes is not provided, all the single dimensions will be removed from the shape"
-    trait SqueezeV13 extends Operator {
-    def SqueezeV13[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[(Axes)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] = {
-      val axes = indicesOf[Axes].indices.toArray
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(data, Tensor(axes.map(_.toLong), Shape.fromSeq(ArraySeq.unsafeWrapArray(Array(axes.size)))))
-      (callOp(name, "Squeeze", allInputs, map))
-    }
-  }
-
-
-  //"If axes is not provided, all the single dimensions will be removed from the shape"
-  trait SqueezeV11 extends Operator {
-    def SqueezeV11[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[(Axes)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] = {
-      val axes = indicesOf[Axes].indices.toArray
-      val map: Map[String, Any] = Map("axes" -> axes)
-      val allInputs             = Tuple1(data)
-      (callOp(name, "Squeeze", allInputs, map))
-    }
-  }
-
-  //Not supported, ONNX ML
   /*
   trait StringNormalizerV10 extends Operator {
     def StringNormalizerV10(
@@ -2827,53 +2876,6 @@ package object onnx {
     }
   }
 */
-  trait SubV7 extends Operator {
-    def SubV7[@sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        A: Tensor[T, Tuple3[Tt,Td,S]],
-        B: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(A,B)
-      (callOp(name, "Sub", allInputs, map))
-    }
-  }
-
-  trait SumV8 extends Operator {
-    def SumV8[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        data_0: Seq[Tensor[T, Tuple3[Tt,Td,S]]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple.fromArray(data_0.toArray)
-      (callOp(name, "Sum", allInputs, map))
-    }
-  }
-
-
-  trait TanV7 extends Operator {
-    def TanV7[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        input: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(input)
-      (callOp(name, "Tan", allInputs, map))
-    }
-  }
-
-  trait TanhV6 extends Operator {
-    def TanhV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        input: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(input)
-      (callOp(name, "Tanh", allInputs, map))
-    }
-  }
-
-  //Not supported, ONNX ML
   /*
   trait TfIdfVectorizerV9 extends Operator {
     def TfIdfVectorizerV9[
@@ -2922,25 +2924,6 @@ package object onnx {
     }
   }
 */
-  trait TileV6 extends Operator {
-    def TileV6[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | 
-                 Complex[Double]: Numeric,
-        @sp T1 <: Long: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt2 <: TensorTypeDenotation, AxisRepeats <: Indices](
-        name: String,
-        input: Tensor[T, Tuple3[Tt,Td,S]],
-        repeats: AxisRepeats)
-        (using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td], s: ShapeOf[TiledShape[S, AxisRepeats]]): Tensor[T, Tuple3[Tt2,Td,TiledShape[S, AxisRepeats]]] = {
-      val map: Map[String, Any] = Map()
-      val repeatsArr = repeats.indices.toArray
-      val repeatsTens = Tensor(repeatsArr, repeatsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
-
-      val allInputs             = Tuple2(input, repeatsTens)
-      (callOp(name, "Tile", allInputs, map))
-    }
-  }
-
   //Not supported, missing from ONNXJS
   /*
   trait TopKV11 extends Operator {
@@ -2963,42 +2946,6 @@ package object onnx {
 
 */
 
-  trait TransposeV1 extends Operator {
-    def TransposeV1[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String, perm: Option[(Array[Int])] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Reverse[Td]], s: ShapeOf[io.kjaer.compiletime.Shape.Reverse[S]]): Tensor[T, Tuple3[Tt,Reverse[Td],io.kjaer.compiletime.Shape.Reverse[S]]] = {
-      val map: Map[String, Any] = Map("perm" -> perm)
-      val allInputs             = Tuple1(data)
-      (callOp(name, "Transpose", allInputs, map))
-    }
-  }
-
-  //Not supported - ?
-  /*
-  trait UnfoldToDepthV12 extends Operator {
-    def UnfoldToDepthV12[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Ax <: Axes](
-        name: String,
-        block_size: (Array[Int]),
-        dilations: Option[(Array[Int])] = None,
-        pads: Option[(Array[Int])] = None,
-        strides: Option[(Array[Int])] = None,
-        X: Tensor[T, _]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, _] = {
-      val map: Map[String, Any] = Map(
-        "block_size" -> block_size,
-        "dilations"  -> dilations,
-        "pads"       -> pads,
-        "strides"    -> strides
-      )
-      val allInputs = Tuple1(X)
-      (callOp(name, "UnfoldToDepth", allInputs, map))
-    }
-  }
-*/
   //Not supported, missing in ONNXJS
   /*
   trait UniqueV11 extends Operator {
@@ -3018,33 +2965,6 @@ package object onnx {
     }
   }
 */
-  //"If axes is not provided, all the single dimensions will be removed from the shape"
-  trait UnsqueezeV13 extends Operator {
-    def UnsqueezeV13[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[(Axes)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] =  {
-      val axes = indicesOf[Axes].indices.toArray
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(data, Tensor(axes.map(_.toLong), Shape.fromSeq(ArraySeq.unsafeWrapArray(Array(axes.size)))))
-      (callOp(name, "Unsqueeze", allInputs, map))
-    }
-  }
-
-  //"If axes is not provided, all the single dimensions will be removed from the shape"
-  trait UnsqueezeV11 extends Operator {
-    def UnsqueezeV11[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[(Axes)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] =  {
-      val axes = indicesOf[Axes].indices.toArray
-      val map: Map[String, Any] = Map("axes" -> axes)
-      val allInputs             = Tuple1(data)
-      (callOp(name, "Unsqueeze", allInputs, map))
-    }
-  }
 
   //Not supported, missing from ONNXJS
   /*
@@ -3062,26 +2982,13 @@ package object onnx {
   }
 */
 
-  trait XorV7 extends Operator {
-    def XorV7[@sp T <: Boolean, @sp T1 <: Boolean, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-        name: String,
-        A: Tensor[T, Tuple3[Tt,Td,S]],
-        B: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T1, Tuple3[Tt,Td,S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(A,B)
-      (callOp(name, "Xor", allInputs, map))
-    }
-  }
- 
 }
-
 //ORT contrib ops
 //ONNX domain: com.microsoft
 //See: https://github.com/microsoft/onnxruntime/blob/v1.7.1/docs/ContribOperators.md
 package object onnxruntimecontrib {
   trait InverseV1 extends onnx.Operator {
-    def InverseV1[@sp T <: org.emergentorder.onnx.Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+    def InverseV1[@sp T <: onnx.Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
         input: Tensor[T, Tuple3[Tt, Td, S]]
     )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {

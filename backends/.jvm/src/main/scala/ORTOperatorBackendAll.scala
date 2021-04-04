@@ -1,5 +1,6 @@
 package org.emergentorder.onnx.backends
 import org.emergentorder.onnx._
+import org.emergentorder.onnxruntime._
 import org.emergentorder.onnxruntimecontrib._
 
 //Going forward we only support ops (and their versions) which are supported in both ONNX Runtime & ONNX.js (CPU), opset 6+
@@ -97,7 +98,7 @@ class ORTOperatorBackendAll
 //    with LpPoolV11 //fails in scoreboard
     with MatMulV9
 //    with MatMulIntegerV10
-    with MaxV8 //Fails in ONNX.js, but we need it
+    with MaxV12 //Fails in ONNX.js, but we need it
     with MaxPoolV10
 //    with MaxPoolV11 //Missing in ONNX.js
 //    with MaxRoiPoolV1 //fails in scoreboard
@@ -105,7 +106,7 @@ class ORTOperatorBackendAll
     with MeanV8 //Missing in ONNX.js, we can use ReduceMean instead
 //    with MeanSquaredDistanceV12
 //    with MeanVarianceNormalizationV9
-    with MinV8 //Missing in ONNX.js, but we need it
+    with MinV12 //Missing in ONNX.js, but we need it
     with ModV10 //Missing in ONNX.js, but we need it 
 //    with MomentumV1 //Training, new in 1.7.0
     with MulV7
@@ -121,7 +122,6 @@ class ORTOperatorBackendAll
     with OrV7
     with PReluV9
     with PadV11
-    with PowV7
     with PowV12
 //    with QLinearConvV10
 //    with QLinearMatMulV10
@@ -137,14 +137,11 @@ class ORTOperatorBackendAll
 //    with ReduceL2V11
     with ReduceLogSumV11
 //    with ReduceLogSumExpV11
-    with ReduceMaxV11
     with ReduceMaxV12
 //    with ReduceMeanV1
     with ReduceMeanV11
-    with ReduceMinV11
     with ReduceMinV12
-    with ReduceProdV11
-    with ReduceSumV11
+    with ReduceProdV11 
     with ReduceSumV13
     with ReduceSumSquareV11
     with ReluV6

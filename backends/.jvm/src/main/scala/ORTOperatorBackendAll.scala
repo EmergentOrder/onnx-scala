@@ -31,7 +31,7 @@ class ORTOperatorBackendAll
 //    with CategoryMapperV1 //ONNX ML, not tested for in scoreboard
 //    with CeilV1
     with CeilV6
-//    with CeluV12 //new in 1.7.0
+    with CeluV12 //new in 1.7.0
     with ClipV6
 //    with ClipV11 //not supported in ONNX.js
 //    with CompressV11 
@@ -157,7 +157,7 @@ class ORTOperatorBackendAll
 //    with ScatterV11 //Deprecated in 1.8
 //    with ScatterElementsV11
 //    with ScatterNDV11
-//    with SeluV6
+    with SeluV6
 //    with SequenceAtV11
 //    with SequenceConstructV11
 //    with SequenceEmptyV11

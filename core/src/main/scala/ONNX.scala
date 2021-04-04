@@ -1193,7 +1193,6 @@ package object onnx {
     }
   }
 
-  //Missing in NDScala
   trait XorV7 extends Operator {
     def XorV7[@sp T <: Boolean, @sp T1 <: Boolean, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,

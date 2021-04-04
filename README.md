@@ -8,7 +8,7 @@
 Add this to the build.sbt in your project:
 
 ```scala
-libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala-backends" % "0.10.0"
+libraryDependencies += "com.github.EmergentOrder" %% "onnx-scala-backends" % "0.11.0"
 ```
 
 A short, recent talk I gave about the project: [ONNX-Scala: Typeful, Functional Deep Learning / Dotty Meets an Open AI Standard](https://youtu.be/8HuZTeHi7lg?t=1156)
@@ -72,9 +72,8 @@ out.data.indices.maxBy(out.data)
 
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "ballpoint pen".
 
-Based on a simple benchmark of 100000 iterations of SqueezeNet inference (run on my laptop), the run time is roughly on par with (within 10% of) ONNX Runtime (via Python).
-
-The resulting output values also match ONNX Runtime/Python.
+Based on a simple benchmark of 100000 iterations of SqueezeNet inference (run on my laptop), the run time is roughly on par (within 10% of) ONNX Runtime (via Python).
+The discrepancy can be accounted for by the overhead of shipping data between the JVM and native memory.
 
 When using this API, we load the provided ONNX model file and pass it as-is to the underlying ONNX backend.
 This is the most performant execution mode, and is recommended for off-the-shelf models / performance-critical scenarios.
@@ -82,93 +81,21 @@ This is the most performant execution mode, and is recommended for off-the-shelf
 This full-model API is untyped in the inputs, so it can fail at runtime. This inevitable because we load models from disk at runtime.
 Feel free to wrap your calls into it in a facade with typed inputs.
 
-### Operator-level (Fine-grained) API - quick start
-
-You can call individual operators:
-
-```scala
-val onnxBackend = new ORTOperatorBackendAll()
-
-val longTens = Tensor(Array.fill(1*3*224*224){-42l},tensorDenotation,tensorShapeDenotation,shape)
-// longTens:
-//  org.emergentorder.onnx.Tensors.Tensor[Float, 
-//                                         ("Image", 
-//                                          "Batch" ##: "Channel" ##: "Height" ##: "Width" ##:
-//    org.emergentorder.compiletime.TSNil
-//  , 1 #: 1000 #: io.kjaer.compiletime.SNil)] = (
-//   Array(
-//     -42L,
-//     -42L,
-// ...
-
-onnxBackend.AbsV6("abs", longTens)
-// res2:
-//  org.emergentorder.onnx.Tensors.Tensor[Float, 
-//                                          ("Image", 
-//                                           "Batch" ##: "Channel" ##: "Height" ##: "Width" ##:
-//    org.emergentorder.compiletime.TSNil
-//  , 1 #: 1000 #: io.kjaer.compiletime.SNil)] = ( 
-//   Array(
-//     42L,
-//     42L,
-// ...
-```
-
-Sqrt will fail to compile because it's not defined for Long:
-```scala
-onnxBackend.SqrtV6("sqrt", longTens)
-// ...
-//Required: org.emergentorder.onnx.Tensors.Tensor[T, (
-//...
-//where:    T            is a type variable with constraint <: org.emergentorder.onnx.Float16 | Float | Double
-
-```
-Note that in real use backends should be closed to prevent native memory leaks.
-
 ## Project Details
 
-Automatic differentiation to enable training is under consideration (ONNX currently provides facilities for training as a tech preview only).
+The ONNX-Scala is cross-built against Scala JVM and Scala.js/JavaScript (for Scala 2.13 and Dotty/3.0)
 
-The ONNX-Scala core (fine-grained) API is cross-built against Scala JVM (for Scala 2.13 and Dotty/3.0) , Scala.js / JavaScript (for Scala 2.13 and Dotty/3.0).
-
-Currently at ONNX 1.8.0 (Backward compatible to at least 1.2.0), ONNX Runtime 1.7.0.
+Currently at ONNX 1.8.0 (Backward compatible to at least 1.2.0 for the full model API, 1.7.0 for the fine-grained API), ONNX Runtime 1.7.0.
  
-### A) Fine-grained API
-A complete\*, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep learning and classical machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++). We also provide implementations for each operator in terms of core methods to be implemented by the backend.
+### Fine-grained API
+A complete\*, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep learning and classical machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++). 
+We also provide implementations for each operator in terms of a generic core operator method to be implemented by the backend.
+For more details on the low-level fine-grained API see [here](FineGrainedAPI.md)
 
-This API is expressed via traits, with version-named methods. For example, Abs, the absolute value operator (defined here for operator set 6):
+The preferred high-level fine-grained API, most suitable for the end user, is [NDScala](https://github.com/SciScala/NDScala)
 
-\* Up to roughly the intersection of supported ops in ONNX Runtime and ONNX.js
-
-```scala
-import scala.{specialized => sp}
-import spire.math._
-import spire.implicits._
-import org.emergentorder.onnx._
-
-  trait AbsV6 extends Operator {
-    def AbsV6[
-        @sp T <: UByte | UShort | UInt | 
-                 ULong | Byte | Short | Int | 
-                 Long | Float16 | Float | Double: Numeric,
-      Tt <: TensorTypeDenotation, 
-      Td <: TensorShapeDenotation, 
-      S <: Shape]
-      (name: String, X: Tensor[T, Tuple3[Tt, Td, S]])
-      (using tt: ValueOf[Tt], 
-             td: TensorShapeDenotationOf[Td], 
-             s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Tuple1(X)
-      (callOp(name, "Abs", allInputs, map))
-    }
-  }
-```
-
-Using this API, each ONNX operation is executed on the underyling backend individually.
-As a result, you can write your own models from scratch in Scala using ONNX-Scala operations, injecting parameters from outside sources as need be.
-This allows for dynamic graph structure, in which the execution itself defines the graph, similar to PyTorch and Tensorflow Eager.
-The trade-off made for this flexibility is that the underlying ONNX backend can no longer optimize the full graph, and the JNI boundary-crossing and ONNX graph structure at each operation results in additional overhead.
+#### Training
+Automatic differentiation to enable training is under consideration (ONNX currently provides facilities for training as a tech preview only).
 
 #### Type-safe Tensors
 Featuring type-level tensor and axis labels/denotations, which along with literal types for dimension sizes allow for tensor/axes/shape/data-typed tensors.
@@ -176,9 +103,10 @@ Type constraints, as per the ONNX spec, are implemented at the operation level o
 Using ONNX docs for [dimension](https://github.com/onnx/onnx/blob/master/docs/DimensionDenotation.md) and [type](https://github.com/onnx/onnx/blob/master/docs/TypeDenotation.md) denotation, as well as the [operators doc](https://github.com/onnx/onnx/blob/v1.7.0/docs/Operators.md) as a reference,
 and inspired by [Nexus](https://github.com/ctongfei/nexus), [Neurocat](https://github.com/mandubian/neurocat) and [Named Tensors](https://pytorch.org/docs/stable/named_tensor.html).
 
-### B) Backend
-Currently there is one backend support, based on [ONNX Runtime](https://github.com/microsoft/onnxruntime), via their official Java API.
-An alternate backend to enable Scala.js support, based on [ONNX.js](https://github.com/microsoft/onnxjs) is coming soon (blocked on new Scala.js bundler / ScalaPB releases for dotty support). 
+### Backend
+There is one backend per Scala platform.
+For the JVM the backend is based on [ONNX Runtime](https://github.com/microsoft/onnxruntime), via their official Java API.
+For Scala.js / JavaScript a backend based on [ONNX.js](https://github.com/microsoft/onnxjs) is coming soon (blocked on new Scala.js bundler / ScalablyTyped converter releases for dotty support). 
 
 Supported ONNX input and output tensor data types:
 * Byte
@@ -190,10 +118,11 @@ Supported ONNX input and output tensor data types:
 * Boolean
 
 Supported ONNX ops:
+* ONNX-Scala, Fine-grained API: 88/156 total 
+* ONNX-Scala, Full model API: Same as below, depending on platform
 
-* ONNX Runtime: 145/154 total.
-* ONNX JS: 72/154 total.
-* ONNX-Scala: 82/154 total.
+* ONNX Runtime: 145/156 total.
+* ONNX JS: 72/156 total.
 
 See the [ONNX backend scoreboard](http://onnx.ai/backend-scoreboard/index.html) 
 

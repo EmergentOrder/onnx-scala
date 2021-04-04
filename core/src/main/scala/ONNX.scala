@@ -22,7 +22,7 @@ import org.emergentorder.compiletime.TensorShapeDenotation.Concat
 import scala.collection.immutable.ArraySeq
 
 //ONNX domain: ai.onnx(default)
-//See: https://github.com/onnx/onnx/blob/v1.8.1/docs/Operators.md
+//See: https://github.com/onnx/onnx/blob/v1.8.1/docs/Operators.md#aionnx-default 
 //Tests currently live one level up at: https://github.com/SciScala/NDScala/blob/master/ONNXScala/src/test/scala/ndscala/ONNXScalaNDArraySpec.scala
 package object onnx {
   //TODO P2: Symbolic shape values
@@ -86,34 +86,7 @@ package object onnx {
       (callOp(name, "Acosh", allInputs, map))
     }
   }
-
-  //Not yet supported, training has yet to GA
-  /*
-  trait AdagradV1 extends Operator {
-    def AdagradV1[
-        @sp T1 <: Float | Double: Numeric,
-        @sp T2 <: Long: Numeric,
-        @sp T3 <: Float | Double: Numeric
-    , Ax <: Axes, Bx <: Axes, Cx <: Axes, Dx <: Axes](
-        name: String,
-        decay_factor: Option[(Float)] = None,
-        epsilon: Option[(Float)] = None,
-        norm_coefficient: Option[(Float)] = None,
-        R: Tensor[T1,Ax],
-        T: Tensor[T2, Bx],
-        inputs: Seq[Tensor[T3, Cx]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T3, Dx] = {
-      val map: Map[String, Any] = Map(
-        "decay_factor"     -> decay_factor,
-        "epsilon"          -> epsilon,
-        "norm_coefficient" -> norm_coefficient
-      )
-      val allInputs =
-        Tuple2(R, T) ++ (Tuple.fromArray(inputs.toArray).asInstanceOf[Tuple])
-      (callOp(name, "Adagrad", allInputs, map))
-    }
-  }
-*/
+  
   trait AddV7 extends Operator {
     def AddV7[@sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -1027,41 +1000,6 @@ package object onnx {
     }
   }
 
-  //Not supported, training is not yet GA
- 
-  /*
-  trait GradientV1 extends Operator {
-    def GradientV1[
-        @sp T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]: Numeric,
-        @sp T2 <: Float16 | Float | Double: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
-        name: String,
-        xs: (Array[String]),
-        y: (String),
-        zs: Option[(Array[String])] = None,
-        Inputs: Seq[Tensor[T1,Tuple3[Tt, Td, S]]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T2, Tuple3[Tt1,Td1,S1]] = {
-      val map: Map[String, Any] = Map("xs" -> xs, "y" -> y, "zs" -> zs)
-      val allInputs             = Tuple.fromArray(Inputs.toArray)
-      (callOp(name, "Gradient", allInputs, map))
-    }
-  }
-
-  trait GraphCallV1 extends Operator {
-    def GraphCallV1[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]: Numeric
-    , Ax <: Axes](name: String, graph_name: (String), Inputs: Seq[Tensor[T, _]])(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, _] = {
-      val map: Map[String, Any] = Map("graph_name" -> graph_name)
-      val allInputs             = Tuple.fromArray(Inputs.toArray).asInstanceOf[Tuple]
-      (callOp(name, "GraphCall", allInputs, map))
-    }
-  }
-*/
-
   trait GreaterOrEqualV12 extends Operator {
     def GreaterOrEqualV12[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric,
@@ -1618,35 +1556,6 @@ package object onnx {
     }
   }
 
-  //Not supported, training not yet GA
-  /*
-  trait MomentumV1 extends Operator {
-    def MomentumV1[
-        @sp T1 <: Float | Double: Numeric,
-        @sp T2 <: Long: Numeric,
-        @sp T3 <: Float | Double: Numeric
-    , Ax <: Axes](
-        name: String,
-        alpha: (Float),
-        beta: (Float),
-        mode: (String),
-        norm_coefficient: (Float),
-        R: Tensor[T1,_],
-        T: Tensor[T2, _],
-        inputs: Seq[Tensor[T3, _]]
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T3, _] = {
-      val map: Map[String, Any] = Map(
-        "alpha"            -> alpha,
-        "beta"             -> beta,
-        "mode"             -> mode,
-        "norm_coefficient" -> norm_coefficient
-      )
-      val allInputs = 
-        Tuple2(R, T) ++ (Tuple.fromArray(inputs.toArray).asInstanceOf[Tuple])
-      (callOp(name, "Momentum", allInputs, map))
-    }
-  }
-*/
   trait MulV7 extends Operator {
     def MulV7[@sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -3644,3 +3553,83 @@ package object onnxml {
 */
 }
 
+//Not supported, training is not yet GA
+//ONNX domain: ai.onnx.preview.training
+//See: https://github.com/onnx/onnx/blob/v1.8.1/docs/Operators.md#aionnxpreviewtraining
+//Missing: Adam
+package object onnxtraining {
+
+  //Not yet supported, training has yet to GA
+  /*
+  trait AdagradV1 extends Operator {
+    def AdagradV1[
+        @sp T1 <: Float | Double: Numeric,
+        @sp T2 <: Long: Numeric,
+        @sp T3 <: Float | Double: Numeric
+    , Ax <: Axes, Bx <: Axes, Cx <: Axes, Dx <: Axes](
+        name: String,
+        decay_factor: Option[(Float)] = None,
+        epsilon: Option[(Float)] = None,
+        norm_coefficient: Option[(Float)] = None,
+        R: Tensor[T1,Ax],
+        T: Tensor[T2, Bx],
+        inputs: Seq[Tensor[T3, Cx]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T3, Dx] = {
+      val map: Map[String, Any] = Map(
+        "decay_factor"     -> decay_factor,
+        "epsilon"          -> epsilon,
+        "norm_coefficient" -> norm_coefficient
+      )
+      val allInputs =
+        Tuple2(R, T) ++ (Tuple.fromArray(inputs.toArray).asInstanceOf[Tuple])
+      (callOp(name, "Adagrad", allInputs, map))
+    }
+  }
+
+  trait GradientV1 extends Operator {
+    def GradientV1[
+        @sp T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
+          Float
+        ] | Complex[Double]: Numeric,
+        @sp T2 <: Float16 | Float | Double: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
+        name: String,
+        xs: (Array[String]),
+        y: (String),
+        zs: Option[(Array[String])] = None,
+        Inputs: Seq[Tensor[T1,Tuple3[Tt, Td, S]]]
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T2, Tuple3[Tt1,Td1,S1]] = {
+      val map: Map[String, Any] = Map("xs" -> xs, "y" -> y, "zs" -> zs)
+      val allInputs             = Tuple.fromArray(Inputs.toArray)
+      (callOp(name, "Gradient", allInputs, map))
+    }
+  }
+
+  trait MomentumV1 extends Operator {
+    def MomentumV1[
+        @sp T1 <: Float | Double: Numeric,
+        @sp T2 <: Long: Numeric,
+        @sp T3 <: Float | Double: Numeric
+    , Ax <: Axes](
+        name: String,
+        alpha: (Float),
+        beta: (Float),
+        mode: (String),
+        norm_coefficient: (Float),
+        R: Tensor[T1,_],
+        T: Tensor[T2, _],
+        inputs: Seq[Tensor[T3, _]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T3, _] = {
+      val map: Map[String, Any] = Map(
+        "alpha"            -> alpha,
+        "beta"             -> beta,
+        "mode"             -> mode,
+        "norm_coefficient" -> norm_coefficient
+      )
+      val allInputs =
+        Tuple2(R, T) ++ (Tuple.fromArray(inputs.toArray).asInstanceOf[Tuple])
+      (callOp(name, "Momentum", allInputs, map))
+    }
+  }
+*/
+}

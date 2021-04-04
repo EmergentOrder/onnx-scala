@@ -450,11 +450,11 @@ package object onnx {
       (callOp(name, "Gather", allInputs, map))
     }
   }
-  //Missing in NDScala - P1
+
   //Bug in ORT where the bias tensor C should be optional, but is in fact required
   //See: https://github.com/microsoft/onnxruntime/issues/6423
   trait GemmV11 extends Operator {
-    def GemmV11[@sp T <: Float16 | Float | Double | UInt | ULong | Int | Long: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, M <: Dimension, K <: Dimension, S <: M #: K #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, N <: Dimension, S1 <: K #: N #: SNil, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: M #: N #: SNil](
+    def GemmV11[@sp T <: Float16 | Float | Double | UInt | ULong | Int | Long: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, M <: Dimension, K <: Dimension, S <: M #: K #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, N <: Dimension, S1 <: K #: N #: SNil](
         name: String,
         alpha: Float = 1.0,
         beta: Float = 1.0,
@@ -462,8 +462,8 @@ package object onnx {
         transB: Int = 0,
         A: Tensor[T, Tuple3[Tt,Td,S]],
         B: Tensor[T, Tuple3[Tt1,Td1,S1]],
-        C: Option[Tensor[T, Tuple3[Tt2,Td2,S2]]] = None
-    )(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
+        C: Option[Tensor[T, Tuple3[Tt,Td,M #: N #: SNil]]] = None
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[M #: N #: SNil]): Tensor[T, Tuple3[Tt,Td,M #: N #: SNil]] = {
       val map: Map[String, Any] =
         Map("alpha" -> alpha, "beta" -> beta, "transA" -> transA, "transB" -> transB)
       val allInputs = Tuple3(A, B, C)
@@ -711,7 +711,6 @@ package object onnx {
     }
   }
 
-  //Missing in NDScala - P1
   trait ReciprocalV6 extends Operator {
     def ReciprocalV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,

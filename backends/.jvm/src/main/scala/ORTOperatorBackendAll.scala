@@ -15,7 +15,7 @@ class ORTOperatorBackendAll
     with AddV7
     with AndV7
     with ArgMaxV11
-//    with ArgMinV11 //Strangely missing from ONNX.js
+    with ArgMinV11 //Strangely missing from ONNX.js
 //    with ArrayFeatureExtractorV1 //ONNX ML, not tested for in scoreboard
     with AsinV7
     with AsinhV9

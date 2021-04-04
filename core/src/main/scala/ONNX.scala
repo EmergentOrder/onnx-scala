@@ -52,7 +52,7 @@ package object onnx {
   )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T,  Tuple3[Tt, Td, S]] 
   }
 
-  trait Graph
+  //Not in the spec, allows access to params from within the loaded model
   trait DataSource {
     def getParams[T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](name: String)(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T,Tuple3[Tt, Td, S]] 
   }
@@ -173,7 +173,7 @@ package object onnx {
     }
   }
 
-  //Missing in NDScala
+  //Missing in NDScala - P2
   //Last version supported in ONNX.js
   //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
   //Consider enforcing denotations
@@ -200,7 +200,7 @@ package object onnx {
       (callOp(name, "AveragePool", allInputs, map))
     }
   }
-  //Missing in NDScala
+  //Missing in NDScala - P3
   trait BatchNormalizationV9 extends Operator {
     def BatchNormalizationV9[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation](
         name: String,
@@ -217,7 +217,7 @@ package object onnx {
       (callOp(name, "BatchNormalization", allInputs, map))
     }
   }
-  //Missing in NDScala
+  //Missing in NDScala P2 - needs match type from data type to int
   trait CastV9 extends Operator {
     def CastV9[
         @sp T1 <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | UInt | ULong | Boolean | String: Numeric,
@@ -251,15 +251,15 @@ package object onnx {
       (callOp(name, "Celu", allInputs, map))
     }
   }
-  //Missing in NDScala
+
   //Last version supported in ONNX.js
   trait ClipV6 extends Operator {
     def ClipV6[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
     , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
-        max: Float = 3.402823e+38,
         min: Float = -3.402823e+38,
+        max: Float = 3.402823e+38,
         input: Tensor[T, Tuple3[Tt, Td, S]]
     )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt, Td, S]] = {
       val map: Map[String, Any] = Map("max" -> max, "min" -> min)
@@ -281,9 +281,8 @@ package object onnx {
       (callOp(name, "Concat", allInputs, map))
     }
   }
-  //Missing in NDScala
+  //Missing in NDScala - P1 - needs constraints
   //TODO P1: Constraints - Could restrict this to 2d image case, so 4d input
-  //Consider enforcing denotations
   trait ConvV11 extends Operator {
     def ConvV11[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape, Tt3 <: TensorTypeDenotation, Td3 <: TensorShapeDenotation, S3 <: Shape](
         name: String,
@@ -344,7 +343,6 @@ package object onnx {
     }
   }
 
-  //Missing in NDScala
   //Missing optional second output
   trait DropoutV12 extends Operator {
     def DropoutV12[
@@ -398,7 +396,7 @@ package object onnx {
     }
   }
 
-  //Missing in NDScala - needs expand match type
+  //Missing in NDScala - P2 - needs expand match type
   //Explicit broadcasting
   trait ExpandV8 extends Operator {
     def ExpandV8[
@@ -411,7 +409,7 @@ package object onnx {
       (callOp(name, "Expand", allInputs, map))
     }
   }
-  //Missing in NDScala
+  //Missing in NDScala - P2 - needs flatten match type
   trait FlattenV11 extends Operator {
     def FlattenV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -434,7 +432,7 @@ package object onnx {
       (callOp(name, "Floor", allInputs, map))
     }
   }
-  //Missing in NDScala
+  //Missing in NDScala - P3
   trait GatherV11 extends Operator {
     def GatherV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -452,7 +450,7 @@ package object onnx {
       (callOp(name, "Gather", allInputs, map))
     }
   }
-  //Missing in NDScala
+  //Missing in NDScala - P1
   //Bug in ORT where the bias tensor C should be optional, but is in fact required
   //See: https://github.com/microsoft/onnxruntime/issues/6423
   trait GemmV11 extends Operator {
@@ -472,7 +470,7 @@ package object onnx {
       (callOp(name, "Gemm", allInputs, map))
     }
   } 
-  //Missing in NDScala
+  //Missing in NDScala - P2
   trait GlobalAveragePoolV1 extends Operator {
     def GlobalAveragePoolV1[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
         name: String,
@@ -483,7 +481,7 @@ package object onnx {
       (callOp(name, "GlobalAveragePool", allInputs, map))
     }
   }
-  //Missing in NDScala
+  //Missing in NDScala - P2
   trait GlobalMaxPoolV1 extends Operator {
     def GlobalMaxPoolV1[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
         name: String,
@@ -494,11 +492,11 @@ package object onnx {
       (callOp(name, "GlobalMaxPool", allInputs, map))
     }
   }
-  //Missing in NDScala
+
   //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
-  //Consider enforcing denotations
+  //Consider enforcing denotations - NCHW
   trait InstanceNormalizationV6 extends Operator {
-    def InstanceNormalizationV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation](
+    def InstanceNormalizationV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: SNil, Tt2 <: TensorTypeDenotation](
         name: String,
         epsilon: Float = 1e-5,
         input: Tensor[T, Tuple3[Tt,Td,S]],
@@ -521,16 +519,16 @@ package object onnx {
       (callOp(name, "IsNaN", allInputs, map))
     }
   }
-  //Missing in NDScala
+
   //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
-  //Consider enforcing denotations
+  //Consider enforcing denotations - NCHW
   trait LRNV1 extends Operator {
     def LRNV1[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation](
         name: String,
-        alpha: Option[(Float)] = None,
-        beta: Option[(Float)] = None,
-        bias: Option[(Float)] = None,
-        size: (Int),
+        alpha: Float = 0.0001,
+        beta: Float = 0.75,
+        bias: Float = 1.0,
+        size: Int,
         X: Tensor[T, Tuple3[Tt,Td,S]]
     )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt1,Td,S]] = {
       val map: Map[String, Any] =
@@ -588,7 +586,7 @@ package object onnx {
     }
   }
 
-  //Missing in NDScala
+  //Missing in NDScala - P2
   //ONNX.js only supports up to V9, may work
   //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
   //Consider enforcing denotations
@@ -656,7 +654,6 @@ package object onnx {
     }
   }
  
-
   trait OrV7 extends Operator {
     def OrV7[@sp T <: Boolean, @sp T1 <: Boolean, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -680,7 +677,7 @@ package object onnx {
       (callOp(name, "PRelu", allInputs, map))
     }
   }
-  //Missing in NDScala - ready
+  //Missing in NDScala - ready - P1
   trait PadV11 extends Operator {
     def PadV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
@@ -714,7 +711,7 @@ package object onnx {
     }
   }
 
-  //Missing in NDScala
+  //Missing in NDScala - P1
   trait ReciprocalV6 extends Operator {
     def ReciprocalV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -726,7 +723,6 @@ package object onnx {
     }
   }
 
-  //Missing in NDScala - ready
   //TODO P2: make axes param optional at the type level
   trait ReduceLogSumV11 extends Operator {
     def ReduceLogSumV11[
@@ -742,7 +738,7 @@ package object onnx {
       (callOp(name, "ReduceLogSum", allInputs, map))
     }
   }
-  //Missing in NDScala - ready
+
   trait ReduceMaxV12 extends Operator {
     def ReduceMaxV12[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
@@ -757,7 +753,7 @@ package object onnx {
       (callOp(name, "ReduceMax", allInputs, map))
     }
   }
-  //Missing in NDScala - ready
+
   trait ReduceMeanV11 extends Operator {
     def ReduceMeanV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
@@ -772,7 +768,7 @@ package object onnx {
       (callOp(name, "ReduceMean", allInputs, map))
     }
   }
-  //Missing in NDScala - ready
+
   trait ReduceMinV12 extends Operator {
     def ReduceMinV12[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
@@ -787,7 +783,7 @@ package object onnx {
       (callOp(name, "ReduceMin", allInputs, map))
     }
   }
-  //Missing in NDScala - ready
+
   trait ReduceProdV11 extends Operator {
     def ReduceProdV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
@@ -802,7 +798,7 @@ package object onnx {
       (callOp(name, "ReduceProd", allInputs, map))
     }
   }
-  //Missing in NDScala - ready
+
   trait ReduceSumSquareV11 extends Operator {
     def ReduceSumSquareV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
@@ -934,7 +930,7 @@ package object onnx {
       (callOp(name, "Selu", allInputs, map))
     }
   }
-  //Missing in NDScala - ready
+  //Missing in NDScala - ready - P1
   trait ShapeV1 extends Operator {
     def ShapeV1[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -1034,7 +1030,6 @@ package object onnx {
     }
   }
 
-  //Missing V13, signature only differs in adding bfloat
   //From the spec : "The input does not need to explicitly be a 2D vector; rather, it will be coerced into one"
   //Here we require that it is 2D
   trait SoftmaxV11 extends Operator {
@@ -1062,7 +1057,7 @@ package object onnx {
 
     //"If axes is not provided, all the single dimensions will be removed from the shape"
     //Missing in ONNX.js
-    trait SqueezeV13 extends Operator {
+  trait SqueezeV13 extends Operator {
     def SqueezeV13[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
@@ -1075,6 +1070,7 @@ package object onnx {
     }
   }
 
+  //Last version supported in ONNX.js, and incompatible with V13 here, so held
   //"If axes is not provided, all the single dimensions will be removed from the shape"
   trait SqueezeV11 extends Operator {
     def SqueezeV11[
@@ -1133,7 +1129,7 @@ package object onnx {
       (callOp(name, "Tanh", allInputs, map))
     }
   }
-  //Missing in NDScala - ready
+  //Missing in NDScala - ready - P1
   trait TileV6 extends Operator {
     def TileV6[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | 
@@ -1164,7 +1160,7 @@ package object onnx {
       (callOp(name, "Transpose", allInputs, map))
     }
   }
-  //Missing in NDScala - Needs expand match type for output
+  //Missing in NDScala - P2 - Needs expand match type for output
   //Missing in ONNX.js
   trait UnsqueezeV13 extends Operator {
     def UnsqueezeV13[
@@ -1179,7 +1175,8 @@ package object onnx {
     }
   }
 
-  //Missing in NDScala 
+  //Missing in NDScala - P2
+  //Last version supported in ONNX.js, and incompatible with V13 here, so held
   trait UnsqueezeV11 extends Operator {
     def UnsqueezeV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -1209,7 +1206,7 @@ package object onnx {
 
 //Ops from the default ai.onnx domain which are only supported in ORT
 package object onnxruntime {
-  //Missing in NDScala
+
   trait ArgMaxV12 extends onnx.Operator {
     def ArgMaxV12[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 | Float | Double: Numeric
@@ -1226,7 +1223,7 @@ package object onnxruntime {
     }
   }
 
-  //Missing in NDScala
+
   trait ArgMinV12 extends onnx.Operator {
     def ArgMinV12[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 | Float | Double: Numeric
@@ -1770,6 +1767,8 @@ package object onnxruntime {
     }
   }
 
+  //Doesn't make sense in this context, this makes a copy, which in this case means scala -> backend -> scala round trip, essentially no-op
+  //And it's eliminated in graph optimization anyway
   trait IdentityV1 extends Operator {
     def IdentityV1[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[

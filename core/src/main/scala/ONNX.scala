@@ -100,7 +100,7 @@ package object onnx {
       (callOp(name, "Add", allInputs, map))
     }
   }
-  //Missing in NDScala
+
   trait AndV7 extends Operator {
     def AndV7[@sp T <: Boolean, @sp T1 <: Boolean, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -239,7 +239,7 @@ package object onnx {
       (callOp(name, "Ceil", allInputs, map))
     }
   }
-  //Missing in NDScala
+
   trait CeluV12 extends Operator {
     def CeluV12[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -320,7 +320,7 @@ package object onnx {
       (callOp(name, "Cos", allInputs, map))
     }
   }
-  //Missing in NDScala
+
   trait CoshV9 extends Operator {
     def CoshV9[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -363,7 +363,7 @@ package object onnx {
       (callOp(name, "Dropout", allInputs, map))
     }
   }
-  //Missing in NDScala  
+
   trait EluV6 extends Operator {
     def EluV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -398,7 +398,7 @@ package object onnx {
     }
   }
 
-  //Missing in NDScala
+  //Missing in NDScala - needs expand match type
   //Explicit broadcasting
   trait ExpandV8 extends Operator {
     def ExpandV8[
@@ -511,7 +511,6 @@ package object onnx {
     }
   }
 
-  //Missing in NDScala
   trait IsNaNV9 extends Operator {
     def IsNaNV9[
         @sp T1 <: Float16 | Float | Double: Numeric,
@@ -541,7 +540,6 @@ package object onnx {
     }
   }
 
-  //Missing in NDScala
   trait LeakyReluV6 extends Operator {
     def LeakyReluV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -589,7 +587,8 @@ package object onnx {
       (callOp(name, "MatMul", allInputs, map))
     }
   }
-  
+
+  //Missing in NDScala
   //ONNX.js only supports up to V9, may work
   //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
   //Consider enforcing denotations
@@ -645,7 +644,7 @@ package object onnx {
       (callOp(name, "Neg", allInputs, map))
     }
   }
-  //Missing in NDScala 
+
   trait NotV1 extends Operator {
     def NotV1[@sp T <: Boolean, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -657,7 +656,7 @@ package object onnx {
     }
   }
  
-  //Missing in NDScala
+
   trait OrV7 extends Operator {
     def OrV7[@sp T <: Boolean, @sp T1 <: Boolean, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -669,7 +668,7 @@ package object onnx {
       (callOp(name, "Or", allInputs, map))
     }
   }
-  //Missing in NDScala
+
   trait PReluV9 extends Operator {
     def PReluV9[@sp T <: Float16 | Float | Double | UInt | ULong | Int | Long: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -681,7 +680,7 @@ package object onnx {
       (callOp(name, "PRelu", allInputs, map))
     }
   }
-  //Missing in NDScala
+  //Missing in NDScala - ready
   trait PadV11 extends Operator {
     def PadV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
@@ -727,7 +726,7 @@ package object onnx {
     }
   }
 
-  //Missing in NDScala
+  //Missing in NDScala - ready
   //TODO P2: make axes param optional at the type level
   trait ReduceLogSumV11 extends Operator {
     def ReduceLogSumV11[
@@ -743,7 +742,7 @@ package object onnx {
       (callOp(name, "ReduceLogSum", allInputs, map))
     }
   }
-  //Missing in NDScala
+  //Missing in NDScala - ready
   trait ReduceMaxV12 extends Operator {
     def ReduceMaxV12[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
@@ -758,7 +757,7 @@ package object onnx {
       (callOp(name, "ReduceMax", allInputs, map))
     }
   }
-  //Missing in NDScala
+  //Missing in NDScala - ready
   trait ReduceMeanV11 extends Operator {
     def ReduceMeanV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
@@ -773,7 +772,7 @@ package object onnx {
       (callOp(name, "ReduceMean", allInputs, map))
     }
   }
-  //Missing in NDScala
+  //Missing in NDScala - ready
   trait ReduceMinV12 extends Operator {
     def ReduceMinV12[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double | UByte | Byte: Numeric
@@ -788,7 +787,7 @@ package object onnx {
       (callOp(name, "ReduceMin", allInputs, map))
     }
   }
-  //Missing in NDScala
+  //Missing in NDScala - ready
   trait ReduceProdV11 extends Operator {
     def ReduceProdV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
@@ -803,7 +802,7 @@ package object onnx {
       (callOp(name, "ReduceProd", allInputs, map))
     }
   }
-  //Missing in NDScala
+  //Missing in NDScala - ready
   trait ReduceSumSquareV11 extends Operator {
     def ReduceSumSquareV11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double: Numeric
@@ -922,7 +921,7 @@ package object onnx {
       (callOp(name, "Round", allInputs, map))
     }
   } 
-  //Missing in NDScala
+
   trait SeluV6 extends Operator {
     def SeluV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -935,7 +934,7 @@ package object onnx {
       (callOp(name, "Selu", allInputs, map))
     }
   }
-  //Missing in NDScala
+  //Missing in NDScala - ready
   trait ShapeV1 extends Operator {
     def ShapeV1[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -959,7 +958,7 @@ package object onnx {
       (callOp(name, "Sigmoid", allInputs, map))
     }
   }
-  //Missing in NDScala
+
   trait SignV9 extends Operator {
     def SignV9[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
@@ -1035,14 +1034,15 @@ package object onnx {
     }
   }
 
-  //Missing in NDScala
   //Missing V13, signature only differs in adding bfloat
+  //From the spec : "The input does not need to explicitly be a 2D vector; rather, it will be coerced into one"
+  //Here we require that it is 2D
   trait SoftmaxV11 extends Operator {
-    def SoftmaxV11[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
+    def SoftmaxV11[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation](
         name: String,
         axis: Int = 1,
         input: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt1,Td,S]] = {
       val map: Map[String, Any] = Map("axis" -> axis)
       val allInputs             = Tuple1(input)
       (callOp(name, "Softmax", allInputs, map))
@@ -1101,7 +1101,6 @@ package object onnx {
     }
   }
 
-  //Missing in NDScala
   trait SumV8 extends Operator {
     def SumV8[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -1134,7 +1133,7 @@ package object onnx {
       (callOp(name, "Tanh", allInputs, map))
     }
   }
-  //Missing in NDScala
+  //Missing in NDScala - ready
   trait TileV6 extends Operator {
     def TileV6[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | 
@@ -1165,15 +1164,14 @@ package object onnx {
       (callOp(name, "Transpose", allInputs, map))
     }
   }
-  //Missing in NDScala
+  //Missing in NDScala - Needs expand match type for output
   //Missing in ONNX.js
-  //"If axes is not provided, all the single dimensions will be removed from the shape"
   trait UnsqueezeV13 extends Operator {
     def UnsqueezeV13[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[(Axes)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] =  {
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Axes, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] =  {
       val axes = indicesOf[Axes].indices.toArray
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple2(data, Tensor(axes.map(_.toLong), Shape.fromSeq(ArraySeq.unsafeWrapArray(Array(axes.size)))))
@@ -1181,13 +1179,13 @@ package object onnx {
     }
   }
 
-  //"If axes is not provided, all the single dimensions will be removed from the shape"
+  //Missing in NDScala 
   trait UnsqueezeV11 extends Operator {
     def UnsqueezeV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[(Axes)] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] =  {
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Axes, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axes,false]], s: ShapeOf[KeepOrReduceDims[S,Axes,false]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,KeepOrReduceDimDenotations[Td,Axes,false],KeepOrReduceDims[S,Axes,false]]] =  {
       val axes = indicesOf[Axes].indices.toArray
       val map: Map[String, Any] = Map("axes" -> axes)
       val allInputs             = Tuple1(data)
@@ -1195,6 +1193,7 @@ package object onnx {
     }
   }
 
+  //Missing in NDScala
   trait XorV7 extends Operator {
     def XorV7[@sp T <: Boolean, @sp T1 <: Boolean, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,

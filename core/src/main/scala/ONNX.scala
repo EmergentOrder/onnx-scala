@@ -1130,13 +1130,12 @@ package object onnx {
       (callOp(name, "Tanh", allInputs, map))
     }
   }
-  //Missing in NDScala - ready - P1
+
   trait TileV6 extends Operator {
     def TileV6[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[Float] | 
-                 Complex[Double]: Numeric,
-        @sp T1 <: Long: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt2 <: TensorTypeDenotation, AxisRepeats <: Indices](
+                 Complex[Double],
+     Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt2 <: TensorTypeDenotation, AxisRepeats <: Indices](
         name: String,
         input: Tensor[T, Tuple3[Tt,Td,S]],
         repeats: AxisRepeats)

@@ -175,10 +175,12 @@ package object onnx {
 
   //Missing in NDScala - P2
   //Last version supported in ONNX.js
-  //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
-  //Consider enforcing denotations
+  // Contrained to 2d image, means 4d tensor.
+  //output_spatial_shape[i] = floor((input_spatial_shape[i] + pad_shape[i] - kernel_spatial_shape[i]) / strides_spatial_shape[i] + 1)
+  // - pad_shape[i] is sum of pads along axis i
+  // ^ for default case ceil_mode = 0
   trait AveragePoolV10 extends Operator {
-    def AveragePoolV10[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
+    def AveragePoolV10[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: Dimension #: Dimension #: SNil](
         name: String,
         auto_pad: String = "NOTSET",
         ceil_mode: Int = 0,
@@ -200,9 +202,10 @@ package object onnx {
       (callOp(name, "AveragePool", allInputs, map))
     }
   }
-  //Missing in NDScala - P3
+
+  //Missing optional outputs, only needed for training mode
   trait BatchNormalizationV9 extends Operator {
-    def BatchNormalizationV9[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation](
+    def BatchNormalizationV9[@sp T <: Float16 | Float | Double: Numeric, N <: Dimension, C <: Dimension, H <: Dimension, W <: Dimension, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: N #: C #: H #: W #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: C #: SNil, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation](
         name: String,
         epsilon: Float = 1e-05,
         momentum: Float = 0.9,
@@ -282,9 +285,8 @@ package object onnx {
     }
   }
   //Missing in NDScala - P1 - needs constraints
-  //TODO P1: Constraints - Could restrict this to 2d image case, so 4d input
   trait ConvV11 extends Operator {
-    def ConvV11[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape, Tt3 <: TensorTypeDenotation, Td3 <: TensorShapeDenotation, S3 <: Shape](
+    def ConvV11[@sp T <: Float16 | Float | Double: Numeric, N <: Dimension, C <: Dimension, H <: Dimension, W <: Dimension, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: N #: C #: H #: W #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Dimension #: SNil, Tt3 <: TensorTypeDenotation, Td3 <: TensorShapeDenotation, S3 <: Dimension #: Dimension #: Dimension #: Dimension #: SNil](
         name: String,
         auto_pad: String = "NOTSET",
         dilations: Option[(Array[Int])] = None,
@@ -472,7 +474,7 @@ package object onnx {
   } 
   //Missing in NDScala - P2
   trait GlobalAveragePoolV1 extends Operator {
-    def GlobalAveragePoolV1[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
+    def GlobalAveragePoolV1[@sp T <: Float16 | Float | Double: Numeric,  N <: Dimension, C <: Dimension, H <: Dimension, W <: Dimension, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: N #: C #: H #: W #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: N #: C #: 1 #: 1 #: SNil](
         name: String,
         X: Tensor[T, Tuple3[Tt,Td,S]]
     )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
@@ -483,7 +485,7 @@ package object onnx {
   }
   //Missing in NDScala - P2
   trait GlobalMaxPoolV1 extends Operator {
-    def GlobalMaxPoolV1[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
+    def GlobalMaxPoolV1[@sp T <: Float16 | Float | Double: Numeric, N <: Dimension, C <: Dimension, H <: Dimension, W <: Dimension, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: N #: C #: H #: W #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: N #: C #: 1 #: 1 #: SNil](
         name: String,
         X: Tensor[T, Tuple3[Tt,Td,S]]
     )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
@@ -493,7 +495,7 @@ package object onnx {
     }
   }
 
-  //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
+  //TODO P2: Contrained to 2d image, means 4d tensor.
   //Consider enforcing denotations - NCHW
   trait InstanceNormalizationV6 extends Operator {
     def InstanceNormalizationV6[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: SNil, Tt2 <: TensorTypeDenotation](
@@ -520,7 +522,7 @@ package object onnx {
     }
   }
 
-  //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
+  //TODO P2: Contrained to 2d image, means 4d tensor.
   //Consider enforcing denotations - NCHW
   trait LRNV1 extends Operator {
     def LRNV1[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation](
@@ -588,9 +590,11 @@ package object onnx {
 
   //Missing in NDScala - P2
   //ONNX.js only supports up to V9, may work
-  //TODO P2: Contrained to 2d image, means 4d tensor. Expand to the more general case
+  //TODO P2: Contrained to 2d image, means 4d tensor.
   //Consider enforcing denotations
-  //TODO: output shape constraint
+  //output_spatial_shape[i] = floor((input_spatial_shape[i] + pad_shape[i] - ((kernel_spatial_shape[i] - 1) * dilations[i] + 1)) / strides_spatial_shape[i] + 1)
+  //pad_shape[i] is sum of pads along axis i
+  //^ for default case of ceil_mode = 0
   trait MaxPoolV10 extends Operator {
     def MaxPoolV10[
         @sp T <: Float16 | Float | Double | Byte | UByte: Numeric,
@@ -677,7 +681,7 @@ package object onnx {
       (callOp(name, "PRelu", allInputs, map))
     }
   }
-  //Missing in NDScala - ready - P1
+
   trait PadV11 extends Operator {
     def PadV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric

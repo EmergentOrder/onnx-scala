@@ -933,12 +933,10 @@ package object onnx {
       (callOp(name, "Selu", allInputs, map))
     }
   }
-  //Missing in NDScala - ready - P1
+
   trait ShapeV1 extends Operator {
     def ShapeV1[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]: Numeric,
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | Boolean | String | Complex[Float] | Complex[Double],
         @sp T1 <: Long: Numeric
     , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation](name: String, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[io.kjaer.compiletime.Shape.Rank[S] & Dimension #: SNil]): Tensor[T1, Tuple3[Tt1,Td1,io.kjaer.compiletime.Shape.Rank[S] & Dimension #: SNil]] = {
       val map: Map[String, Any] = Map()

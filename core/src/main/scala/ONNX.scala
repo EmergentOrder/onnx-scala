@@ -1293,23 +1293,23 @@ package object onnxruntime {
       (callOp(name, "BitShift", allInputs, map))
     }
   }
-  //Not supported, not in ONNXJS
-  /*
-  trait ClipV12 extends Operator {
+
+  //Diverging from the spec, min and max are optional there, but otherwise it's a no-op
+  trait ClipV12 extends onnx.Operator {
     def ClipV12[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric
-    , Ax <: Axes, Tt <: TensorTypeDenotation, Dd <: DimensionDenotation](
+        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 | Float | Double: Numeric
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
-        input: Tensor[T, Ax],
-        min: Option[Tensor[T, Scalar[Tt, Dd]]] = None,
-        max: Option[Tensor[T, Scalar[Tt, Dd]]] = None
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Ax] = {
+        input: Tensor[T, Tuple3[Tt,Td,S]],
+        min: Tensor[T, Tuple3[Tt, Td, SNil]],
+        max: Tensor[T, Tuple3[Tt, Td, SNil]]
+    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple3(input, min, max)
       (callOp(name, "Clip", allInputs, map))
     }
   }
-
+/*
   trait ClipV11 extends Operator {
     def ClipV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double: Numeric

@@ -34,6 +34,7 @@ class ORTOperatorBackendAll
     with CeluV12 //new in 1.7.0
     with ClipV6
 //    with ClipV11 //not supported in ONNX.js
+    with ClipV12
 //    with CompressV11 
     with ConcatV11
 //    with ConcatFromSequenceV11

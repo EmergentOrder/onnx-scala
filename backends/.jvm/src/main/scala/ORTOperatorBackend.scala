@@ -123,7 +123,7 @@ trait ORTOperatorBackend
     if(cacheValues.size == 0) return ModelProto()
     val nodes = cacheValues.map(_.getGraph.node).fold(Seq[NodeProto]())( (x,y) => x ++ y )
     val nodeOutputs = cacheValues.map(_.getGraph.output).fold(Seq[ValueInfoProto]())( (x,y) => x ++ y ).map(_.getName)
-    val inputs = cacheValues.map(_.getGraph.input).fold(Seq[ValueInfoProto]())( (x,y) => x ++ y ).filter(z => ! nodeOutputs.contains(z.getName)).distinct
+    val inputs = cacheValues.map(_.getGraph).filter(! _.node(0).opType.equals(Some("Constant"))).map(_.input).fold(Seq[ValueInfoProto]())( (x,y) => x ++ y ).filter(z => ! nodeOutputs.contains(z.getName)).distinct
     val outputs = cacheValues(cacheValues.size - 1).getGraph.output
     val modelProto = (cacheValues.head.clearGraph).withGraph((new GraphProto).withNode(nodes).withInput(inputs).withOutput(outputs))
     sessionCache.clear

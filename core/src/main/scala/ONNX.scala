@@ -123,7 +123,7 @@ package object onnx {
         keepdims: KeepDims = true,
         data: Tensor[T, Tuple3[Tt, Td, S]]
     )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axis" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+      val map: Map[String, Any] = Map("axis" -> indicesOf[Axis].indices.toArray.head, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ArgMax", allInputs, map))
     }
@@ -1217,7 +1217,7 @@ package object onnxruntime {
         selectLastIndex: Int = 0,
         data: Tensor[T, Tuple3[Tt, Td, S]]
     )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axis" -> indicesOf[Axis].indices.toArray, "select_last_index" -> selectLastIndex, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+      val map: Map[String, Any] = Map("axis" -> indicesOf[Axis].indices.toArray.head, "select_last_index" -> selectLastIndex, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ArgMax", allInputs, map))
     }
@@ -1234,7 +1234,7 @@ package object onnxruntime {
         selectLastIndex: Int = 0,
         data: Tensor[T, Tuple3[Tt, Td, S]]
     )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axis" -> indicesOf[Axis].indices.toArray, "select_last_index" -> selectLastIndex, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+      val map: Map[String, Any] = Map("axis" -> indicesOf[Axis].indices.toArray.head, "select_last_index" -> selectLastIndex, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ArgMin", allInputs, map))
     }
@@ -1249,7 +1249,7 @@ package object onnxruntime {
         keepdims: KeepDims = true,
         data: Tensor[T, Tuple3[Tt, Td, S]]
     )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[KeepOrReduceDimDenotations[Td,Axis,KeepDims]], s: ShapeOf[KeepOrReduceDims[S,Axis,KeepDims]], i: IndicesOf[Axis], k: ValueOf[KeepDims]): Tensor[Long, Tuple3[Tt1, KeepOrReduceDimDenotations[Td,Axis,KeepDims], KeepOrReduceDims[S,Axis,KeepDims]]] = {
-      val map: Map[String, Any] = Map("axis" -> indicesOf[Axis].indices.toArray, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
+      val map: Map[String, Any] = Map("axis" -> indicesOf[Axis].indices.toArray.head, "keepdims" -> (if(valueOf[KeepDims]) 1 else 0))
       val allInputs             = Tuple1(data)
       (callOp(name, "ArgMin", allInputs, map))
     }

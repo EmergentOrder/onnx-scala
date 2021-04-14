@@ -44,7 +44,7 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform)
       scala213Version
     ),
     libraryDependencies -= ("com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion),
-    libraryDependencies += ("com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion).withDottyCompat(scalaVersion.value),
+    libraryDependencies += ("com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion).cross(CrossVersion.for3Use2_13),
   PB.targets in Compile := Seq(
       scalapb.gen() -> (sourceManaged in Compile).value
     ),
@@ -73,7 +73,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
                             "Main.scala" | "ONNXJSOperatorBackend.scala" 
       }
     ),
-    scalacOptions ++= { if (isDotty.value) Seq("-source:3.0-migration") else Nil },
+//    scalacOptions ++= { if (isDotty.value) Seq("-source:3.0-migration") else Nil },
     libraryDependencies ++= Seq(
         "com.microsoft.onnxruntime" % "onnxruntime" % "1.7.0"
     ),
@@ -98,7 +98,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
   .settings(
     commonSettings,
     name := "onnx-scala",
-    scalacOptions ++= { if (isDotty.value) Seq("-source:3.0-migration") else Nil },
+//    scalacOptions ++= { if (isDotty.value) Seq("-source:3.0-migration") else Nil },
     excludeFilter in unmanagedSources := (CrossVersion
       .partialVersion(scalaVersion.value) match {
       case Some((2, 13)) => "ONNX.scala" | "OpToONNXBytesConverter.scala" | "Tensors.scala" | "ONNXBytesDataSource.scala"
@@ -117,7 +117,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
         )
       case _ =>
         Seq(
-          ("org.typelevel" %%% "spire" % spireVersion).withDottyCompat(dottyVersion),
+          ("org.typelevel" %%% "spire" % spireVersion).cross(CrossVersion.for3Use2_13),
         )
     })
 )

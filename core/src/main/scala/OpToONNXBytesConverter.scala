@@ -162,14 +162,16 @@ trait OpToONNXBytesConverter extends AutoCloseable {
                 case opt: Option[Tensor[T, Axes]] =>
                 opt match {
                   case Some(in) => {
-                        val incr = if(inputs.toArray.distinct.size == inputs.size) 0 else i
-                        Some((createInputValueInfoProto(in, (in.toString.hashCode + incr).toString), (in.toString.hashCode + incr).toString))
+                        val incr:String = if(inputs.toArray.distinct.size == inputs.size) "" else i.toString
+                        val name = (opt.toString + incr).hashCode.toString
+                        Some((createInputValueInfoProto(in, name), name))
                   }
                   case None => None
                 }
                 case tens: Tensor[T, Axes] =>  {
-                  val incr = if(inputs.toArray.distinct.size == inputs.size) 0 else i
-                  Some((createInputValueInfoProto(tens, (tens.toString.hashCode + incr).toString), (tens.toString.hashCode + incr).toString)
+                  val incr:String = if(inputs.toArray.distinct.size == inputs.size) "" else i.toString
+                  val name = ((tens.toString + incr).hashCode).toString 
+                  Some((createInputValueInfoProto(tens, name), name)
                                     )}  
               }
           } 

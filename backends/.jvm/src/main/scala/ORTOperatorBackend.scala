@@ -62,8 +62,8 @@ trait ORTOperatorBackend
       inputs: Tuple
   )(using s: ShapeOf[S], tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td]): Tensor[T, Tuple3[Tt, Td, S]] = {
     val input_node_names = inputs.toArray.zipWithIndex.map{(e, i) =>
-       val incr = if(inputs.toArray.distinct.size == inputs.size) 0 else i
-       (e.toString.hashCode + incr).toString
+       val incr:String = if(inputs.toArray.distinct.size == inputs.size) "" else i.toString
+       ((e.toString + incr).hashCode).toString
     }.toList
 
     //TODO: more outputs

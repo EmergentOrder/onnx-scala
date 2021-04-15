@@ -21,8 +21,6 @@ import org.emergentorder.compiletime.TensorShapeDenotation.Reverse
 import org.emergentorder.compiletime.TensorShapeDenotation.Concat
 import scala.collection.immutable.ArraySeq
 
-//TODO: replace use of Option/None with default params
-
 //ONNX domain: ai.onnx(default)
 //Only the ops which are supported in both ONNX Runtime and ONNX.js
 //See: https://github.com/onnx/onnx/blob/v1.8.1/docs/Operators.md#aionnx-default

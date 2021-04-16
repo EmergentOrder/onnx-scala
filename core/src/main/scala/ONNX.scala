@@ -346,7 +346,6 @@ package object onnx {
   }
 
   //Missing optional second output
-  //Training mode not exposed
   trait DropoutV12 extends Operator {
     def DropoutV12[
         @sp T <: Float16 | Float | Double: Numeric,
@@ -360,7 +359,7 @@ package object onnx {
         training_mode: Option[Tensor[T2, Tuple3[Tt2,Td2,S2]]] = None
     )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
       val map: Map[String, Any] = Map("seed" -> seed)
-      val allInputs             = Tuple2(data, ratio) //, training_mode)
+      val allInputs             = Tuple3(data, ratio, training_mode)
       (callOp(name, "Dropout", allInputs, map))
     }
   }

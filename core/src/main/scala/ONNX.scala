@@ -697,7 +697,7 @@ package object onnx {
       val map: Map[String, Any] = Map("mode" -> mode)
       val beforeArr = padsBefore.indices.toArray
       val afterArr = padsAfter.indices.toArray
-      val padsArr = beforeArr ++ afterArr
+      val padsArr = (beforeArr ++ afterArr).map(_.toLong)
       val pads = Tensor(padsArr, padsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
 
       val allInputs             = Tuple3(data, pads, constant_value)
@@ -1142,7 +1142,7 @@ package object onnx {
         repeats: AxisRepeats)
         (using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td], s: ShapeOf[TiledShape[S, AxisRepeats]]): Tensor[T, Tuple3[Tt2,Td,TiledShape[S, AxisRepeats]]] = {
       val map: Map[String, Any] = Map()
-      val repeatsArr = repeats.indices.toArray
+      val repeatsArr = repeats.indices.toArray.map(_.toLong)
       val repeatsTens = Tensor(repeatsArr, repeatsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
 
       val allInputs             = Tuple2(input, repeatsTens)

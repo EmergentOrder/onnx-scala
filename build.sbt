@@ -83,12 +83,12 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
 //TODO: move to utest
 libraryDependencies += ("org.scalatest" %% "scalatest" % scalaTestVersion) % Test,
 ).jsSettings(
-      scalaJSUseMainModuleInitializer := true, //Testing
-npmDependencies in Compile += "onnxjs" -> "0.1.8")
+      scalaJSUseMainModuleInitializer := true) //, //Testing
+//npmDependencies in Compile += "onnxjs" -> "0.1.8")
 //Seems to be a bundling issue, copying things manually seems to work
 //TODO NEW: try JS, bundler and converter beta/RC are out
 //     npmDependencies in Compile += "onnxjs" -> "0.1.8")
-.jsConfigure { project => project.enablePlugins(ScalaJSBundlerPlugin)} //ScalablyTypedConverterPlugin)}
+//.jsConfigure { project => project.enablePlugins(ScalaJSBundlerPlugin)} //ScalablyTypedConverterPlugin)}
 //ScalaJSBundlerPlugin)} //,ScalablyTypedConverterPlugin) }
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform)

@@ -346,7 +346,6 @@ package object onnx {
   }
 
   //Missing optional second output
-  //Not passing training mode, due to an ORT bug when we do: https://github.com/microsoft/onnxruntime/issues/7358
   trait DropoutV12 extends Operator {
     def DropoutV12[
         @sp T <: Float16 | Float | Double: Numeric,
@@ -357,10 +356,10 @@ package object onnx {
         seed: Int = 42,
         data: Tensor[T, Tuple3[Tt,Td,S]],
         ratio: Tensor[T1,Tuple3[Tt1,Td1,S1]] = Tensor(Array(0.5f), SNil),
-        training_mode: Tensor[T2, Tuple3[Tt2,Td2,S2]] = Tensor(Array(false), 1 #: SNil)
+        training_mode: Tensor[T2, Tuple3[Tt2,Td2,S2]] = Tensor(Array(false), SNil)
     )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Tuple3[Tt,Td,S]] = {
       val map: Map[String, Any] = Map("seed" -> seed)
-      val allInputs             = Tuple2(data, ratio) //, training_mode)
+      val allInputs             = Tuple3(data, ratio, training_mode)
       (callOp(name, "Dropout", allInputs, map))
     }
   }

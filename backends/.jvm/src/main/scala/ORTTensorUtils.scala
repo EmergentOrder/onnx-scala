@@ -52,8 +52,14 @@ object ORTTensorUtils{
   }
 
   private def getTensorBoolean(arr: Array[Boolean], shape: Array[Int], env: OrtEnvironment): OnnxTensor = {
-    val tensorIn = OrtUtil.reshape(arr, shape.map(_.toLong))
-    OnnxTensor.createTensor(env,tensorIn)
+    //working around: https://github.com/microsoft/onnxruntime/issues/7358
+    if (shape.size == 0 || (shape.size == 1 &&  shape(0) == 1)){
+      OnnxTensor.createTensor(env,arr)
+    }
+    else{
+      val tensorIn = OrtUtil.reshape(arr, shape.map(_.toLong))
+      OnnxTensor.createTensor(env,tensorIn)
+    }
   }
 
   def getArrayFromOnnxTensor[T] (value: OnnxTensor): Array[T] = {

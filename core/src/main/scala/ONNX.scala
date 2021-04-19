@@ -260,26 +260,39 @@ package object onnx {
       (callOp(name, "Concat", allInputs, map))
     }
   }
-  //Missing in NDScala - P1 - needs constraints
+
+  //TODO: remove the need to pass kernel_shape, it can be inferred
+  //Limited to 1 feature map, 1 group, stride 1
   trait ConvV11 extends Operator {
-    def ConvV11[@sp T <: Float16 | Float | Double: Numeric, N <: Dimension, C <: Dimension, H <: Dimension, W <: Dimension, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: N #: C #: H #: W #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Dimension #: SNil, Tt3 <: TensorTypeDenotation, Td3 <: TensorShapeDenotation, S3 <: Dimension #: Dimension #: Dimension #: Dimension #: SNil](
+    def ConvV11[@sp T <: Float16 | Float | Double: Numeric, N <: Dimension, C <: Dimension, H <: Dimension, W <: Dimension, KH <: Dimension, KW <: Dimension, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: N #: C #: H #: W #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: 1 #: C #: KH #: KW #: SNil, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: 1 #: SNil, Tt3 <: TensorTypeDenotation, Td3 <: TensorShapeDenotation, S3 <: KH #: KW #: SNil, PadsBefore <: None.type | Dimension #: Dimension #: SNil, PadsAfter <: None.type | Dimension #: Dimension #: SNil](
         name: String,
         auto_pad: String = "NOTSET",
         dilations: Option[(Array[Int])] = None,
         group: Int = 1,
-        kernel_shape: Option[(Array[Int])] = None,
-        pads: Option[(Array[Int])] = None,
+        kernel_shape: S3,
+        padsBefore: PadsBefore = None,
+        padsAfter: PadsAfter = None,
         strides: Option[(Array[Int])] = None,
         X: Tensor[T, Tuple3[Tt,Td,S]],
         W: Tensor[T, Tuple3[Tt1,Td1,S1]],
         B: Option[Tensor[T, Tuple3[Tt2, Td2, S2]]] = None
-    )(using tt: ValueOf[Tt3], td: TensorShapeDenotationOf[Td3], s: ShapeOf[S3]): Tensor[T, Tuple3[Tt3, Td3, S3]] = {
+    )(using tt: ValueOf[Tt3], td: TensorShapeDenotationOf[Td3], s: ShapeOf[PaddedShape[PoolShape[S,S3], PadsBefore, PadsAfter]], s3: ShapeOf[S3]): Tensor[T, Tuple3[Tt3, Td3, PaddedShape[PoolShape[S,S3], PadsBefore, PadsAfter]]] = {
+      val padsB: Array[Int] = padsBefore match {
+        case x: Shape => x.toSeq.toArray
+        case None => Array.fill(shapeOf[S3].toSeq.size)(0)
+      }
+
+      val padsA: Array[Int] = padsAfter match {
+        case x: Shape => x.toSeq.toArray
+        case None => Array.fill(shapeOf[S3].toSeq.size)(0)
+      }
+
       val map: Map[String, Any] = Map(
         "auto_pad"     -> auto_pad,
         "dilations"    -> dilations,
         "group"        -> group,
-        "kernel_shape" -> kernel_shape,
-        "pads"         -> pads,
+        "kernel_shape" -> kernel_shape.toSeq.toArray,
+        "pads"         -> (padsB ++ padsA),
         "strides"      -> strides
       )
       val allInputs = Tuple3(X, W, B)

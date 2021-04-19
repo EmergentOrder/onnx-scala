@@ -481,7 +481,7 @@ package object onnx {
       (callOp(name, "Gemm", allInputs, map))
     }
   } 
-  //Missing in NDScala - P2
+
   trait GlobalAveragePoolV1 extends Operator {
     def GlobalAveragePoolV1[@sp T <: Float16 | Float | Double: Numeric,  N <: Dimension, C <: Dimension, H <: Dimension, W <: Dimension, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: N #: C #: H #: W #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: N #: C #: 1 #: 1 #: SNil](
         name: String,
@@ -492,7 +492,7 @@ package object onnx {
       (callOp(name, "GlobalAveragePool", allInputs, map))
     }
   }
-  //Missing in NDScala - P2
+
   trait GlobalMaxPoolV1 extends Operator {
     def GlobalMaxPoolV1[@sp T <: Float16 | Float | Double: Numeric, N <: Dimension, C <: Dimension, H <: Dimension, W <: Dimension, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: N #: C #: H #: W #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: N #: C #: 1 #: 1 #: SNil](
         name: String,

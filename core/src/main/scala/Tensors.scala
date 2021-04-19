@@ -100,24 +100,27 @@ object Tensors{
     }
   }
 
-  type PaddedShape[PadFrom <: Shape, AxisIndicesBefore <: None.type | Indices, AxisIndicesAfter <: None.type | Indices] <: Shape = AxisIndicesBefore match {
+  type PaddedShape[PadFrom <: Shape, AxisBefore <: None.type | Shape, AxisAfter <: None.type | Shape] <: Shape = AxisBefore match {
     case None.type => SNil
-    case Indices => AxisIndicesAfter match {
+    case Shape => AxisAfter match {
       case None.type => SNil
-      case Indices => PaddedShapeLoop[PadFrom, AxisIndicesBefore, AxisIndicesAfter]
+      case Shape => Reverse[PaddedShapeLoop[Reverse[PadFrom], Reverse[AxisBefore], Reverse[AxisAfter]]]
     }
   }
 
-  protected type PaddedShapeLoop[PadFrom <: Shape, Before <: Indices, After <: Indices] <: Shape = Before match {
-    case head ::: tail => After match{
-      case afterHead ::: afterTail => PadFrom match {
+  protected type PaddedShapeLoop[PadFrom <: Shape, Before <: Shape, After <: Shape] <: Shape = Before match {
+    case head #: tail => After match{
+      case afterHead #: afterTail => PadFrom match {
         case padFromHead #: padFromTail => (head + padFromHead + afterHead) #: PaddedShapeLoop[padFromTail, tail, afterTail]
+        case SNil => SNil 
+      }
+      case SNil => SNil 
+    }
+    case SNil => After match {
+      case SNil => PadFrom match {
+        case padFromHead #: padFromTail => padFromHead #: PaddedShapeLoop[padFromTail, SNil, SNil]
         case SNil => SNil
       }
-      case INil => SNil
-    }
-    case INil => After match {
-      case INil => SNil
     }
   }
 
@@ -134,9 +137,9 @@ object Tensors{
     case INil => SNil
   }
 
-  type PoolShape[From <: Shape, AxisKernelShape <: None.type | Shape] <: Shape = AxisKernelShape match {
+  type PoolShape[From <: Shape, KernelShape <: None.type | Shape] <: Shape = KernelShape match {
     case None.type => SNil
-    case Shape => Reverse[PoolShapeLoop[Reverse[From], Reverse[AxisKernelShape]]]
+    case Shape => Reverse[PoolShapeLoop[Reverse[From], Reverse[KernelShape]]]
   }
 
   protected type PoolShapeLoop[From <: Shape, KernelShape <: Shape] <: Shape = KernelShape match {

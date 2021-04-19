@@ -7,6 +7,7 @@ import spire.math.ULong
 import spire.math.Complex
 import spire.math.Numeric
 import io.kjaer.compiletime._
+import io.kjaer.compiletime.Shape._
 import scala.compiletime.ops.int.*
 
 import org.emergentorder.compiletime.DimensionDenotation
@@ -131,6 +132,22 @@ object Tensors{
       case SNil => SNil
     }
     case INil => SNil
+  }
+
+  type PoolShape[From <: Shape, AxisKernelShape <: None.type | Shape] <: Shape = AxisKernelShape match {
+    case None.type => SNil
+    case Shape => Reverse[PoolShapeLoop[Reverse[From], Reverse[AxisKernelShape]]]
+  }
+
+  protected type PoolShapeLoop[From <: Shape, KernelShape <: Shape] <: Shape = KernelShape match {
+    case head #: tail => From match {
+      case fromHead #: fromTail => ((fromHead - head + 1)) #: PoolShapeLoop[fromTail, tail]
+      case SNil => SNil
+    }
+    case SNil => From match {
+      case fromHead #: fromTail => fromHead #: PoolShapeLoop[fromTail, SNil]
+      case SNil => SNil
+    }
   }
 
   //TODO: shape dimension values should be longs, not ints, but dotty compiletime ops only support ints

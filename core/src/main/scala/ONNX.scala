@@ -176,25 +176,24 @@ package object onnx {
   //Missing in NDScala - P2
   //Last version supported in ONNX.js
   // Contrained to 2d image, means 4d tensor.
-  //output_spatial_shape[i] = floor((input_spatial_shape[i] + pad_shape[i] - kernel_spatial_shape[i]) / strides_spatial_shape[i] + 1)
-  // - pad_shape[i] is sum of pads along axis i
-  // ^ for default case ceil_mode = 0
+  // output shape: output_spatial_shape[i] = ceil((input_spatial_shape[i] - kernel_spatial_shape[i] + 1) / strides_spatial_shape[i])
+  // TODO: handle pads, strides
   trait AveragePoolV10 extends Operator {
-    def AveragePoolV10[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: Dimension #: Dimension #: SNil](
+    def AveragePoolV10[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](
         name: String,
         auto_pad: String = "NOTSET",
         ceil_mode: Int = 0,
         count_include_pad: Int = 0,
-        kernel_shape: (Array[Int]),
+        kernel_shape: S1,
         pads: Option[(Array[Int])] = None,
         strides: Option[(Array[Int])] = None,
         X: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1, Td1, S1]] = {
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[PoolShape[S,S1]]): Tensor[T, Tuple3[Tt1, Td1, PoolShape[S,S1]]] = {
       val map: Map[String, Any] = Map(
-        "auto_pad"          -> auto_pad,
+        //"auto_pad"          -> auto_pad, // No padding
         "ceil_mode"         -> ceil_mode,
         "count_include_pad" -> count_include_pad,
-        "kernel_shape"      -> kernel_shape,
+        "kernel_shape"      -> kernel_shape.toSeq.toArray,
         "pads"              -> pads,
         "strides"           -> strides
       )
@@ -592,32 +591,32 @@ package object onnx {
   //ONNX.js only supports up to V9, may work
   //TODO P2: Contrained to 2d image, means 4d tensor.
   //Consider enforcing denotations
-  //output_spatial_shape[i] = floor((input_spatial_shape[i] + pad_shape[i] - ((kernel_spatial_shape[i] - 1) * dilations[i] + 1)) / strides_spatial_shape[i] + 1)
+  // output_spatial_shape[i] = ceil((input_spatial_shape[i] - ((kernel_spatial_shape[i] - 1) * dilations[i] + 1) + 1) / strides_spatial_shape[i])
   //pad_shape[i] is sum of pads along axis i
   //^ for default case of ceil_mode = 0
   trait MaxPoolV10 extends Operator {
     def MaxPoolV10[
         @sp T <: Float16 | Float | Double | Byte | UByte: Numeric,
         @sp I <: Long: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](
         name: String,
         auto_pad: String = "NOTSET",
         ceil_mode: Int= 0,
         dilations: Option[(Array[Int])] = None,
-        kernel_shape: (Array[Int]),
+        kernel_shape: S1,
         pads: Option[(Array[Int])] = None,
         storage_order: Int = 0,
         strides: Option[(Array[Int])] = None,
         X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[PoolShape[S,S1]]): Tensor[T, Tuple3[Tt1,Td1,PoolShape[S,S1]]] = {
       val map: Map[String, Any] = Map(
-        "auto_pad"      -> auto_pad,
-        "ceil_mode"     -> ceil_mode,
-        "dilations"     -> dilations,
-        "kernel_shape"  -> kernel_shape,
-        "pads"          -> pads,
-        "storage_order" -> storage_order,
-        "strides"       -> strides
+        //"auto_pad"      -> auto_pad,
+        //"ceil_mode"     -> ceil_mode,
+        //"dilations"     -> dilations,
+        "kernel_shape"  -> kernel_shape.toSeq.toArray,
+        //"pads"          -> pads,
+        //"storage_order" -> storage_order,
+        //"strides"       -> strides
       )
       val allInputs = Tuple1(X)
       (callOp(name, "MaxPool", allInputs, map))

@@ -101,9 +101,9 @@ object Tensors{
   }
 
   type PaddedShape[PadFrom <: Shape, AxisBefore <: None.type | Shape, AxisAfter <: None.type | Shape] <: Shape = AxisBefore match {
-    case None.type => SNil
+    case None.type => PadFrom
     case Shape => AxisAfter match {
-      case None.type => SNil
+      case None.type => PadFrom
       case Shape => Reverse[PaddedShapeLoop[Reverse[PadFrom], Reverse[AxisBefore], Reverse[AxisAfter]]]
     }
   }

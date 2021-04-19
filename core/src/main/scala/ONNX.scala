@@ -178,24 +178,24 @@ package object onnx {
   // output shape: output_spatial_shape[i] = ceil((input_spatial_shape[i] - kernel_spatial_shape[i] + 1) / strides_spatial_shape[i])
   // TODO: handle pads, strides
   trait AveragePoolV10 extends Operator {
-    def AveragePoolV10[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil, PadsBefore <: Dimension #: Dimension #: SNil, PadsAfter <: Dimension #: Dimension #: SNil](
+    def AveragePoolV10[@sp T <: Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil, PadsBefore <: None.type | Dimension #: Dimension #: SNil, PadsAfter <: None.type | Dimension #: Dimension #: SNil](
         name: String,
         auto_pad: String = "NOTSET",
         ceil_mode: Int = 0,
         count_include_pad: Int = 0,
         kernel_shape: S1,
-        padsBefore: Option[PadsBefore] = None,
-        padsAfter: Option[PadsAfter] = None,
+        padsBefore: PadsBefore = None,
+        padsAfter: PadsAfter = None,
         strides: Option[(Array[Int])] = None,
         X: Tensor[T, Tuple3[Tt, Td, S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[PoolShape[S,S1]], s1: ShapeOf[S1]): Tensor[T, Tuple3[Tt1, Td1, PoolShape[S,S1]]] = {
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[PaddedShape[PoolShape[S,S1], PadsBefore, PadsAfter]] , s1: ShapeOf[S1]): Tensor[T, Tuple3[Tt1, Td1, PaddedShape[PoolShape[S,S1], PadsBefore, PadsAfter]]] = {
       val padsB: Array[Int] = padsBefore match {
-        case Some(x) => x.toSeq.toArray
+        case x: Shape => x.toSeq.toArray
         case None => Array.fill(shapeOf[S1].toSeq.size)(0)
       }
 
       val padsA: Array[Int] = padsAfter match { 
-        case Some(x) => x.toSeq.toArray
+        case x: Shape => x.toSeq.toArray
         case None => Array.fill(shapeOf[S1].toSeq.size)(0)
       }
 
@@ -605,25 +605,25 @@ package object onnx {
     def MaxPoolV10[
         @sp T <: Float16 | Float | Double | Byte | UByte: Numeric,
         @sp I <: Long: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil, PadsBefore <: Dimension #: Dimension #: SNil, PadsAfter <: Dimension #: Dimension #: SNil](
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil, PadsBefore <: None.type | Dimension #: Dimension #: SNil, PadsAfter <: None.type | Dimension #: Dimension #: SNil](
         name: String,
         auto_pad: String = "NOTSET",
         ceil_mode: Int= 0,
         dilations: Option[(Array[Int])] = None,
         kernel_shape: S1,
-        padsBefore: Option[PadsBefore] = None,
-        padsAfter: Option[PadsAfter] = None,
+        padsBefore: PadsBefore = None,
+        padsAfter: PadsAfter = None,
         storage_order: Int = 0,
         strides: Option[(Array[Int])] = None,
         X: Tensor[T, Tuple3[Tt,Td,S]]
-    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[PoolShape[S,S1]], s1: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,PoolShape[S,S1]]] = {
+    )(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[PaddedShape[PoolShape[S,S1], PadsBefore, PadsAfter]], s1: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,PaddedShape[PoolShape[S,S1], PadsBefore, PadsAfter]]] = {
       val padsB: Array[Int] = padsBefore match {
-        case Some(x) => x.toSeq.toArray
+        case x: Shape => x.toSeq.toArray
         case None => Array.fill(shapeOf[S1].toSeq.size)(0)
       }
 
       val padsA: Array[Int] = padsAfter match {
-        case Some(x) => x.toSeq.toArray
+        case x: Shape => x.toSeq.toArray
         case None => Array.fill(shapeOf[S1].toSeq.size)(0)
       }
 

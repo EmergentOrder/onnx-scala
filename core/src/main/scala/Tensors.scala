@@ -82,6 +82,21 @@ object Tensors{
     }
   }
 
+ type FlattenedShape[S <: Shape, AxisIndex <: None.type | Indices] <: Shape = AxisIndex match {
+    case None.type => SNil
+    case Indices => FlattenedShapeLoop[S, AxisIndex, 0, 1]
+  }
+
+  protected type FlattenedShapeLoop[ToFlatten <: Shape, AxisIndex <: Indices, I <: Index, Acc <: Index] <: Shape = ToFlatten match {
+    case head #: tail => Indices.Contains[AxisIndex, I] match {
+      case true => Acc #: FlattenedShapeLoop[tail, Indices.RemoveValue[AxisIndex, I], S[I], head]
+      case false => FlattenedShapeLoop[tail, AxisIndex, S[I], head * Acc]
+    }
+    case SNil => AxisIndex match {
+      case INil => Acc #: SNil
+    }
+  }
+
   type SlicedShape[AxisIndicesStarts <: None.type | Indices, AxisIndicesEnds <: None.type | Indices] <: Shape = AxisIndicesStarts match {
     case None.type => SNil
     case Indices => AxisIndicesEnds match {

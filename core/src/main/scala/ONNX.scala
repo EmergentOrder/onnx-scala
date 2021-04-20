@@ -400,14 +400,18 @@ package object onnx {
       (callOp(name, "Expand", allInputs, map))
     }
   }
-  //Missing in NDScala - P2 - needs flatten match type
+
   trait FlattenV13 extends Operator {
     def FlattenV13[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 | Float | Double | String | Boolean | Complex[
           Float
         ] | Complex[Double]: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Dimension #: Dimension #: SNil](name: String, axis: Int = 1, input: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td1], s: ShapeOf[S1]): Tensor[T, Tuple3[Tt1,Td1,S1]] = {
-      val map: Map[String, Any] = Map("axis" -> axis)
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axis <: Index ::: INil](
+        name: String,
+        axis: Axis,
+        input: Tensor[T, Tuple3[Tt,Td,S]])
+    (using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s: ShapeOf[FlattenedShape[S, Axis]]): Tensor[T, Tuple3[Tt1,Td,FlattenedShape[S, Axis]]] = {
+      val map: Map[String, Any] = Map("axis" -> axis.indices.toArray.head)
       val allInputs             = Tuple1(input)
       (callOp(name, "Flatten", allInputs, map))
     }

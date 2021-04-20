@@ -82,6 +82,22 @@ object Tensors{
     }
   }
 
+  type UnsqueezeShape[S <: Shape, AxisIndex <: None.type | Indices] <: Shape = AxisIndex match {
+    case None.type => SNil
+    case Indices => UnsqueezeShapeLoop[S, AxisIndex, 0]
+  }
+
+  protected type UnsqueezeShapeLoop[ToUnsqueeze <: Shape, AxisIndex <: Indices, I <: Index] <: Shape = ToUnsqueeze match {
+    case head #: tail => Indices.Contains[AxisIndex, I] match {
+      case true => 1 #: head #: UnsqueezeShapeLoop[tail, Indices.RemoveValue[AxisIndex, I], S[I]]
+      case false => head #: UnsqueezeShapeLoop[tail, AxisIndex, S[I]]
+    }
+    case SNil => AxisIndex match {
+      case INil => SNil
+    }
+  }
+
+
  type FlattenedShape[S <: Shape, AxisIndex <: None.type | Indices] <: Shape = AxisIndex match {
     case None.type => SNil
     case Indices => FlattenedShapeLoop[S, AxisIndex, 0, 1]

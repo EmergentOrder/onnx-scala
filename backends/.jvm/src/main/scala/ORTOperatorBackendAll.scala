@@ -26,7 +26,7 @@ class ORTOperatorBackendAll
     with BatchNormalizationV9
 //    with BinarizerV1 //ONNX ML, not tested for in scoreboard
 //    with BitShiftV11 //not supported in ONNX.js
-    with CastV13
+//    with CastV13
 //    with CastMapV1 //ONNX ML, not tested for in scoreboard
 //    with CategoryMapperV1 //ONNX ML, not tested for in scoreboard
 //    with CeilV1

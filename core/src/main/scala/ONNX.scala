@@ -429,20 +429,21 @@ package object onnx {
     }
   }
   //Missing in NDScala - P3
+  //need a match type
   trait GatherV13 extends Operator {
     def GatherV13[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 | Float | Double | String | Boolean | Complex[
           Float
-        ] | Complex[Double]: Numeric,
-        @sp Tind <: Int | Long: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](
+        ] | Complex[Double],
+        @sp Tind <: Int : Numeric, //Spec also supports long
+     Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, AxisIndex <: Index ::: INil, AxisIndices <: Indices](
         name: String,
-        axis: Int = 0,
+        axis: AxisIndex = 0 ::: INil,
         data: Tensor[T, Tuple3[Tt,Td,S]],
-        indices: Tensor[Tind, Tuple3[Tt1,Td1,S1]]
-    )(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
-      val map: Map[String, Any] = Map("axis" -> axis)
-      val allInputs             = Tuple2(data, indices)
+        indices: AxisIndices
+    )(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[GatheredShape[S, AxisIndex, AxisIndices]], i: IndicesOf[AxisIndex], i2: IndicesOf[AxisIndices]): Tensor[T, Tuple3[Tt2,Td2,GatheredShape[S, AxisIndex, AxisIndices]]] = {
+      val map: Map[String, Any] = Map("axis" -> indicesOf[AxisIndex].indices.toArray.head)
+      val allInputs             = Tuple2(data, Tensor(indicesOf[AxisIndices].indices.toArray, indicesOf[AxisIndices].indices.toArray.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil))
       (callOp(name, "Gather", allInputs, map))
     }
   }

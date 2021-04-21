@@ -97,6 +97,27 @@ object Tensors{
     }
   }
 
+  type GatheredShape[S <: Shape, AxisIndex <: None.type | Indices, AxisIndices <: Indices] <: Shape = AxisIndex match {
+    case None.type => SNil
+    case Indices => GatheredShapeLoop[S, AxisIndex, 0, AxisIndices]
+  }
+
+  protected type GatheredShapeLoop[ToGather <: Shape, AxisIndex <: Indices, I <: Index, AxisIndices <: Indices] <: Shape = ToGather match {
+    case head #: tail => Indices.Contains[AxisIndex, I] match {
+      case true => IndicesSize[AxisIndices] #: GatheredShapeLoop[tail, Indices.RemoveValue[AxisIndex, I], S[I], AxisIndices]
+      case false => head #: GatheredShapeLoop[tail, AxisIndex, S[I], AxisIndices]
+    }
+    case SNil => AxisIndex match {
+      case INil => SNil
+    }
+  }
+
+  type IndicesSize[AxisIndices <: Indices] = IndicesSizeLoop[AxisIndices, 0]
+
+  type IndicesSizeLoop[AxisIndices <: Indices, Acc <: Dimension] = AxisIndices match {
+    case head ::: tail => IndicesSizeLoop[tail, S[Acc]]
+    case INil => Acc
+  }
 
  type FlattenedShape[S <: Shape, AxisIndex <: None.type | Indices] <: Shape = AxisIndex match {
     case None.type => SNil

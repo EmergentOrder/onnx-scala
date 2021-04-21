@@ -388,16 +388,16 @@ package object onnx {
     }
   }
 
-  //Missing in NDScala - P2 - needs expand match type - WIP
-  //Explicit broadcasting
+  //Missing constraint - need an equivalent of the size equality constraint on Squeeze, but that asserts the shapes are broadcastable
+  //Explicit broadcasting - can fail
   trait ExpandV13 extends Operator {
     def ExpandV13[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 | Float | Double | String | Boolean | Complex[
           Float
-        ] | Complex[Double]: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](name: String, input: Tensor[T, Tuple3[Tt,Td,S]], shapeInput: S2)(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
+        ] | Complex[Double]
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Td1 <: TensorShapeDenotation, S1 <: Shape, Tt2 <: TensorTypeDenotation, Td2 <: TensorShapeDenotation, S2 <: Shape](name: String, input: Tensor[T, Tuple3[Tt,Td,S]], shapeInput: Tensor[Long, Tuple3[Tt1,Td1,S1]])(using tt: ValueOf[Tt2], td: TensorShapeDenotationOf[Td2], s: ShapeOf[S2]): Tensor[T, Tuple3[Tt2,Td2,S2]] = {
       val map: Map[String, Any] = Map()
-      val allInputs             = Tuple2(input, shapeInput.toSeq.toArray)
+      val allInputs             = Tuple2(input, shapeInput)
       (callOp(name, "Expand", allInputs, map))
     }
   }
@@ -1147,14 +1147,13 @@ package object onnx {
       (callOp(name, "Transpose", allInputs, map))
     }
   }
-  //Missing in NDScala - P2 - Needs expand match type for output - WIP
   //Missing in ONNX.js
   trait UnsqueezeV13 extends Operator {
     def UnsqueezeV13[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 | Float | Double | String | Boolean | Complex[
           Float
-        ] | Complex[Double]: Numeric
-    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Axes, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s: ShapeOf[UnsqueezeShape[S,Axes]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,Td,UnsqueezeShape[S,Axes]]] =  {
+        ] | Complex[Double]
+    , Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape, Tt1 <: TensorTypeDenotation, Axes <: Indices](name: String, axes: Option[Axes] = None, data: Tensor[T, Tuple3[Tt,Td,S]])(using tt: ValueOf[Tt1], td: TensorShapeDenotationOf[Td], s: ShapeOf[UnsqueezeShape[S,Axes]], i: IndicesOf[Axes]): Tensor[T, Tuple3[Tt1,Td,UnsqueezeShape[S,Axes]]] =  {
       val axes = indicesOf[Axes].indices.toArray
       val map: Map[String, Any] = Map()
       val allInputs             = Tuple2(data, Tensor(axes.map(_.toLong), Shape.fromSeq(ArraySeq.unsafeWrapArray(Array(axes.size)))))

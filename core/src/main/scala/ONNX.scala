@@ -1240,7 +1240,7 @@ package object onnxruntime {
       (callOp(name, "Clip", allInputs, map))
     }
   }
- //Not supported, missing from ONNXJS
+ //TODO
   /*
   trait CompressV11 extends Operator {
     def CompressV11[
@@ -1288,7 +1288,7 @@ package object onnxruntime {
     }
   }
 */
-  //Not supported - missing from ONNXjs
+  //TODO
   /*
    trait ConstantOfShapeV9 extends Operator {
     def ConstantOfShapeV9[
@@ -1304,7 +1304,7 @@ package object onnxruntime {
     }
   }
 */
-  //Bug in ORT here, it forces us to set shape as an input even thought in the spec there are 0 inputs, it uses ConstantOfShape op instead
+  //Bug in ORT here, it forces us to set shape as an input even though in the spec there are 0 inputs, it uses ConstantOfShape op instead
   trait ConstantV13 extends onnx.Operator {
     def ConstantV13[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.BFloat16 | onnx.Float16 | Float | Double | String | Boolean | Complex[
@@ -1338,24 +1338,7 @@ package object onnxruntime {
     }
   }
 
-  /*
-  trait ConstantV11 extends Operator {
-    def ConstantV11[
-        @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
-          Float
-        ] | Complex[Double]: Numeric
-    , Ax <: Axes, Bx <: Axes, Cx <: Axes](
-        name: String,
-        sparse_value: Option[(SparseTensor[T, Ax])] = None,
-        value: Option[(Tensor[T, Bx])] = None
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, Cx] = {
-      val map: Map[String, Any] = Map("sparse_value" -> sparse_value, "value" -> value)
-      val allInputs             = EmptyTuple
-      (callOp(name, "Constant", allInputs, map))
-    }
-  } 
-*/
- //Not supported, missing from ONNXJS
+ //TODO
   /*
   trait ConvIntegerV10 extends Operator {
     def ConvIntegerV10[
@@ -1418,7 +1401,7 @@ package object onnxruntime {
     }
   } 
 */
- //Not supported for now, missing from ONNXJS
+ //TODO
   /*
   trait CumSumV11 extends Operator {
     def CumSumV11[
@@ -1478,7 +1461,7 @@ package object onnxruntime {
     }
   }
 */
-  //Not supported for now, missing from ONNXJS
+  //TODO
   /*
   trait DynamicQuantizeLinearV11 extends Operator {
     def DynamicQuantizeLinearV11[
@@ -1502,7 +1485,7 @@ package object onnxruntime {
   }
 */
 
-  //Not supported, missing from ONNXJS
+  //TODO
   /*
   trait ErfV9 extends Operator {
     def ErfV9[
@@ -1515,7 +1498,7 @@ package object onnxruntime {
   }
 */
 
-  //Not supported, missing from ONNXJS
+  //TODO
   /*
   trait EyeLikeV9 extends Operator {
     def EyeLikeV9[
@@ -1533,7 +1516,7 @@ package object onnxruntime {
     }
   }
 */
-  //Not supported, missing from ONNXJS
+  //Not supported, ORT fails in backend scoreboard
   /*
   trait GRUV7 extends Operator {
     def GRUV7[
@@ -1568,7 +1551,10 @@ package object onnxruntime {
       (callOp(name, "GRU", allInputs, map))
     }
   }
+*/
 
+  //TODO
+  /*
  trait GatherElementsV11 extends Operator {
     def GatherElementsV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -1616,7 +1602,7 @@ package object onnxruntime {
     }
   }
 */
-  //Not supported, missing from ONNXJS, fail in ORT scoreboard
+  //Not supported, ORT fails in backend scoreboard
   /*
   trait GlobalLpPoolV2 extends Operator {
     def GlobalLpPoolV2[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -1653,7 +1639,7 @@ package object onnxruntime {
       (callOp(name, "Greater", allInputs, map))
     }
   }
- //Not supported, missing in ONNXJS
+ //TODO
   /*
   trait HardSigmoidV6 extends Operator {
     def HardSigmoidV6[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -1696,7 +1682,7 @@ package object onnxruntime {
   }
 
   //Missing V13
-  //Fails in ORT scoreboard
+  //
   trait IfV11 extends Operator {
     def IfV11[
         @sp B <: Boolean,
@@ -1715,7 +1701,7 @@ package object onnxruntime {
     }
   }
 */
-  //Not supported, missing from ONNXJS
+  //TODO
   /*
   trait IsInfV10 extends Operator {
     def IsInfV10[@sp T1 <: Float | Double: Numeric, @sp T2 <: Boolean, Ax <: Axes](
@@ -1731,7 +1717,7 @@ package object onnxruntime {
     }
   }
 */
-  //Not supported, missing from ONNXJS
+  //Not supported, ORT fails in backend scoreboard
   /*
   trait LSTMV7 extends Operator {
     def LSTMV7[
@@ -1779,7 +1765,7 @@ package object onnxruntime {
       (callOp(name, "LessOrEqual", allInputs, map))
     }
   }
-  //Not supported, missing from ONNXJS, missing V13
+  //TODO, missing V13
   /*
   trait LogSoftmaxV11 extends Operator {
     def LogSoftmaxV11[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -1793,7 +1779,7 @@ package object onnxruntime {
     }
   } 
 */
-//Not supported, missing from ONNXJS, Missing V13
+//TODO, Missing V13
   /*
   trait LoopV11 extends Operator {
     def LoopV11[
@@ -1817,7 +1803,7 @@ package object onnxruntime {
     }
   } 
 
-  //Fails in ORT scoreboard
+  //Not supported, ORT fails in backend scoreboard
   trait LpNormalizationV1 extends Operator {
     def LpNormalizationV1[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
         name: String,
@@ -1831,7 +1817,7 @@ package object onnxruntime {
     }
   }
 
-  //Fails in ORT scoreboard
+  //Not supported, ORT fails in backend scoreboard
   trait LpPoolV11 extends Operator {
     def LpPoolV11[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
         name: String,
@@ -1872,10 +1858,7 @@ package object onnxruntime {
     }
   }
 */
-  //Not supported, missing from ONNXJS
-  /*
-*/
- //Not supported, missing from ONNXJS, fails in ORT scoreboard
+ //Not supported, ORT fails in backend scoreboard
   /*
   trait MaxRoiPoolV1 extends Operator {
     def MaxRoiPoolV1[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -1891,7 +1874,10 @@ package object onnxruntime {
       (callOp(name, "MaxRoiPool", allInputs, map))
     }
   }
+*/
 
+  //TODO
+  /*
   trait MaxUnpoolV11 extends Operator {
     def MaxUnpoolV11[
         @sp T1 <: Float16 | Float | Double: Numeric,
@@ -1924,22 +1910,6 @@ package object onnxruntime {
     }
   }
 
-  //Not supported, missing in ONNXJS
-  /*
-  trait MeanSquaredDistanceV12 extends Operator {
-    def MeanSquaredDistanceV12[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
-        name: String,
-        reduction: Option[(String)] = None,
-        scores: Tensor[T, _],
-        labels: Tensor[T, _],
-        weights: Option[Tensor[T, _]] = None
-    )(using tt: ValueOf[Tt], td: TensorShapeDenotationOf[Td], s: ShapeOf[S]): Tensor[T, _] = {
-      val map: Map[String, Any] = Map("reduction" -> reduction)
-      val allInputs             = Tuple3(scores, labels, weights)
-      (callOp(name, "MeanSquaredDistance", allInputs, map))
-    }
-  }
-*/
   trait MeanV13 extends onnx.Operator {
     def MeanV13[@sp T <: onnx.BFloat16 | onnx.Float16 | Float | Double: Numeric, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
         name: String,
@@ -1951,6 +1921,7 @@ package object onnxruntime {
     }
   }
 
+  //TODO
 /*
 
   trait MeanVarianceNormalizationV9 extends Operator {
@@ -1984,7 +1955,7 @@ package object onnxruntime {
       (callOp(name, "Mod", allInputs, map))
     }
   }
-  //Not supported, missing from ONNXJS, Fails in ORT scoreboard
+  //Not supported, ORT fails in backend scoreboard
   /*
   trait MultinomialV7 extends Operator {
     def MultinomialV7[
@@ -2005,7 +1976,7 @@ package object onnxruntime {
   }
 */
 
-  //Not supported, missing from ONNXJS, missing V13
+  //TODO
   /*
   trait NegativeLogLikelihoodLossV12 extends Operator {
     def NegativeLogLikelihoodLossV12[
@@ -2053,7 +2024,7 @@ package object onnxruntime {
     }
   }
 */
-  //Not supported, missing from ONNXJS
+  //TODO
 /*
   trait OneHotV11 extends Operator {
     def OneHotV11[
@@ -2076,7 +2047,7 @@ package object onnxruntime {
   } 
 */
 
-  //Not supported, missing from ONNXJS
+  //TODO
   /*
   trait QLinearConvV10 extends Operator {
     def QLinearConvV10[
@@ -2155,7 +2126,10 @@ package object onnxruntime {
       (callOp(name, "QuantizeLinear", allInputs, map))
     }
   }
+*/
 
+//Not supported, ORT fails in backend scoreboard
+  /*
   trait RNNV7 extends Operator {
     def RNNV7[
         @sp T <: Float16 | Float | Double: Numeric,
@@ -2188,7 +2162,6 @@ package object onnxruntime {
     }
   }
 
-  //Fails in ORT scoreboard
   trait RandomNormalLikeV1 extends Operator {
     def RandomNormalLikeV1[
         @sp T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -2210,7 +2183,6 @@ package object onnxruntime {
     }
   }
 
-  //Fails in ORT scoreboard
   trait RandomNormalV1 extends Operator {
     def RandomNormalV1[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
         name: String,
@@ -2231,7 +2203,7 @@ package object onnxruntime {
       (callOp(name, "RandomNormal", allInputs, map))
     }
   }
-  //Fails in ORT scoreboard
+
   trait RandomUniformLikeV1 extends Operator {
     def RandomUniformLikeV1[
         @sp T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -2252,7 +2224,7 @@ package object onnxruntime {
       (callOp(name, "RandomUniformLike", allInputs, map))
     }
   }
-  //Fails in ORT scoreboard
+
   trait RandomUniformV1 extends Operator {
     def RandomUniformV1[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
         name: String,
@@ -2282,7 +2254,7 @@ package object onnxruntime {
       (callOp(name, "Range", allInputs, map))
     }
   }
-  //Not supported, missing in ONNXJS
+  //TODO
   /*
   trait ReduceL1V11 extends Operator {
     def ReduceL1V11[
@@ -2350,7 +2322,7 @@ package object onnxruntime {
     }
   }
 */
-  //Not supported, missing from ONNXJS
+  //TODO
   /*
   trait RoiAlignV10 extends Operator {
     def RoiAlignV10[
@@ -2379,7 +2351,7 @@ package object onnxruntime {
     }
   }
 */
-  //Not supported, missing from ONNXJS
+  //TODO
   /*
   trait ScanV11 extends Operator {
     def ScanV11[
@@ -2573,7 +2545,7 @@ package object onnxruntime {
     }
   }
 */
-  //Not supported, missing from ONNXJS
+  //TODO
   /*
   trait ShrinkV9 extends Operator {
     def ShrinkV9[
@@ -2590,7 +2562,7 @@ package object onnxruntime {
     }
   }
 */
-  //Not supported, missing from ONNXJS
+  //TODO
   /*
   trait SizeV1 extends Operator {
     def SizeV1[
@@ -2605,7 +2577,7 @@ package object onnxruntime {
     }
   }
 */
-  //Not supported, missing in ONNXJS, missing V13
+  //TODO, missing V13
   /*
    //To consider restoring, need a loss function
   trait SoftmaxCrossEntropyLossV12 extends Operator {
@@ -2625,7 +2597,7 @@ package object onnxruntime {
     }
   }
 */
-//Not supported, missing from ONNXJS
+//TODO
   /*
   trait SoftplusV1 extends Operator {
     def SoftplusV1[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -2648,7 +2620,7 @@ package object onnxruntime {
       (callOp(name, "Softsign", allInputs, map))
     }
   }
-  //Fails in ORT scoreboard
+  //Not supported, ORT fails in backend scoreboard
   trait SpaceToDepthV1 extends Operator {
     def SpaceToDepthV1[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -2661,7 +2633,7 @@ package object onnxruntime {
     }
   }
 
-  //Sequence op, disabled
+  //Not supported, sequence op
   trait SplitToSequenceV11 extends Operator {
     def SplitToSequenceV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -2765,7 +2737,7 @@ package object onnxruntime {
     }
   }
 */
-  //Not supported, missing from ONNXJS
+  //TODO
   /*
   trait ThresholdedReluV10 extends Operator {
     def ThresholdedReluV10[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -2779,7 +2751,7 @@ package object onnxruntime {
     }
   }
 */
-  //Not supported, missing from ONNXJS
+  //TODO
   /*
   trait TopKV11 extends Operator {
     def TopKV11[
@@ -2801,7 +2773,7 @@ package object onnxruntime {
 
 */
 
-  //Not supported, missing in ONNXJS
+  //TODO
   /*
   trait UniqueV11 extends Operator {
     def UniqueV11[
@@ -2821,7 +2793,7 @@ package object onnxruntime {
   }
 */
 
-  //Not supported, missing from ONNXJS
+  //TODO
   /*
   trait WhereV9 extends Operator {
     def WhereV9[

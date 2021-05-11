@@ -62,7 +62,7 @@ class ORTOperatorBackendAll
 //  with FeatureVectorizerV1 //ONNX ML, not tested for in scoreboard
     with FlattenV13
     with FloorV13
-//    with GRUV7
+//    with GRUV7 //fails in scoreboard
     with GatherV13
 //    with GatherElementsV11
 //    with GatherNDV11
@@ -77,14 +77,14 @@ class ORTOperatorBackendAll
 //    with HardSigmoidV6
 //    with HardmaxV11
 //    with IdentityV1
-//    with IfV11 //fails in scoreboard
+//    with IfV11
 //    with ImputerV1 //ONNX ML, not tested for in scoreboard
     with InstanceNormalizationV6
     with InverseV1 //New in 1.7.0
 //    with IsInfV10
     with IsNaNV13
     with LRNV13
-//    with LSTMV7
+//    with LSTMV7 //fails in scoreboard
 //    with LabelEncoderV2 //ONNX ML, not tested for in scoreboard
     with LeakyReluV6
     with LessV13 //Missing in ONNX.js, but we need it
@@ -126,7 +126,7 @@ class ORTOperatorBackendAll
 //    with QLinearConvV10
 //    with QLinearMatMulV10
 //    with QuantizeLinearV10
-//    with RNNV7
+//    with RNNV7 //fails in scoreboard
 //    with RandomNormalV1 //fails in scoreboard
 //    with RandomNormalLikeV1 //fails in scoreboard
 //    with RandomUniformV1 //fails in scoreboard

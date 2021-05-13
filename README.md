@@ -83,7 +83,7 @@ Feel free to wrap your calls into it in a facade with typed inputs.
 
 ## Project Details
 
-The ONNX-Scala is cross-built against Scala JVM and Scala.js/JavaScript (for Scala 2.13 and Dotty/3.0)
+ONNX-Scala is cross-built against Scala JVM and Scala.js/JavaScript (for Scala 2.13 and Dotty/3.0)
 
 Currently at ONNX 1.8.0 (Backward compatible to at least 1.2.0 for the full model API, 1.7.0 for the fine-grained API), ONNX Runtime 1.7.0.
  

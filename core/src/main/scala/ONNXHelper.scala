@@ -192,9 +192,9 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
    lazy val params =
       initializer.map { x =>
-         val dimsCount      = x.dims.size
-         val dimsList       = (0 until dimsCount.toInt).map(y => x.dims(y))
-         val name           = x.name.map(y => y.replaceAll("-", "_").replaceAll("/", "_")).getOrElse("none")
+         val dimsCount = x.dims.size
+         val dimsList  = (0 until dimsCount.toInt).map(y => x.dims(y))
+         val name = x.name.map(y => y.replaceAll("-", "_").replaceAll("/", "_")).getOrElse("none")
          val tensorElemType = x.dataType.map(y => tensorElemTypeMap(y)).getOrElse("none")
          val arrX           = onnxTensorProtoToArray(x)
          (name, tensorElemType, arrX, dimsList.map(y => y.toInt).toArray)

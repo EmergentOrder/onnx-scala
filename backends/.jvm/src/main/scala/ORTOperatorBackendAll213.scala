@@ -1,7 +1,6 @@
 package org.emergentorder.onnx.backends
 import org.emergentorder.onnx._
 
-
 //Going forward we only support ops (and their versions) which are supported in both ONNX Runtime & ONNX.js (CPU), opset 6+
 //Plus a handful of others we need
 //Current ONNX opset 12, no new ops in opset 13, just support for training
@@ -35,12 +34,12 @@ class ORTOperatorBackendAll
 //    with CeluV12 //new in 1.7.0
     with ClipV6
 //    with ClipV11 //not supported in ONNX.js
-//    with CompressV11 
+//    with CompressV11
     with ConcatV4 //Retained for Squeezenet v1.1
     with ConcatV11
 //    with ConcatFromSequenceV11
     with ConstantV11
-//    with ConstantOfShapeV9 
+//    with ConstantOfShapeV9
     with ConvV1 //Retained for Squeezenet v1.1
     with ConvV11
 //   with ConvIntegerV10
@@ -76,7 +75,7 @@ class ORTOperatorBackendAll
     with GlobalMaxPoolV1
 //    with GradientV1 //Training, new in 1.7.0
 //    with GraphCallV1 //Training, new in 1.7.0
-    with GreaterV9 //Missing in ONNX.js, but we need it
+    with GreaterV9         //Missing in ONNX.js, but we need it
     with GreaterOrEqualV12 //Missing in ONNX.js, but we need it
 //    with HardSigmoidV6
 //    with HardmaxV11
@@ -91,7 +90,7 @@ class ORTOperatorBackendAll
 //    with LSTMV7
 //    with LabelEncoderV2 //ONNX ML, not tested for in scoreboard
     with LeakyReluV6
-    with LessV9 //Missing in ONNX.js, but we need it
+    with LessV9         //Missing in ONNX.js, but we need it
     with LessOrEqualV12 //Missing in ONNX.js, but we need it
 //    with LinearClassifierV1 //ONNX ML, not tested for in scoreboard
 //    with LinearRegressorV1 //ONNX ML, not tested for in scoreboard
@@ -102,7 +101,7 @@ class ORTOperatorBackendAll
 //    with LpPoolV11 //fails in scoreboard
     with MatMulV9
 //    with MatMulIntegerV10
-    with MaxV8 //Fails in ONNX.js, but we need it
+    with MaxV8     //Fails in ONNX.js, but we need it
     with MaxPoolV1 //Retained for Squeezenet v1.1
 //    with MaxPoolV11 //Missing in ONNX.js
 //    with MaxRoiPoolV1 //fails in scoreboard
@@ -110,8 +109,8 @@ class ORTOperatorBackendAll
 //    with MeanV8 //Missing in ONNX.js, we can use ReduceMean instead
 //    with MeanSquaredDistanceV12
 //    with MeanVarianceNormalizationV9
-    with MinV8 //Missing in ONNX.js, but we need it
-    with ModV10 //Missing in ONNX.js, but we need it 
+    with MinV8  //Missing in ONNX.js, but we need it
+    with ModV10 //Missing in ONNX.js, but we need it
 //    with MomentumV1 //Training, new in 1.7.0
     with MulV7
 //    with MultinomialV7 //fails in scoreboard
@@ -124,7 +123,6 @@ class ORTOperatorBackendAll
 //    with OneHotV11
 //    with OneHotEncoderV1 //ONNX ML, not tested in scoreboard
     with OrV7
-
     with PReluV9
     with PadV11
     with PowV7
@@ -148,7 +146,6 @@ class ORTOperatorBackendAll
 //    with ReduceMeanV1
     with ReduceMeanV11
     with ReduceMinV11
-
     with ReduceProdV11
     with ReduceSumV11
     with ReduceSumSquareV11

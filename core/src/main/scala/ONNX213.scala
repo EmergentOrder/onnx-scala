@@ -15,100 +15,96 @@ import org.emergentorder.onnx.Tensors._
 
 package object onnx {
 
-  //TODO: Push constraints on binary ops using =!= to here
-  //TODO: match types to avoid instance of?
-  //TODO:Typed axis semantics, JS support
-  //Note: shape constraints will disallow broadcasting
-  //In progress: Add shapes, constraints (at first only to NDScala-exposed ops)
-  //TODO: add ORT contrib ops
-  //TODO: Remove requirement to be Numeric for ops with non-numeric outputs / inputs
-  //TODO: Encode node names as types
-  //TODO: fix encoding of type constraints, use Tensor as part of definition of types
-  //TODO: Use  monadless(except dead, find followup) / scala-async (with -Xasync?) / dotty-cps-async to replace for comprehensions
+   //TODO: Push constraints on binary ops using =!= to here
+   //TODO: match types to avoid instance of?
+   //TODO:Typed axis semantics, JS support
+   //Note: shape constraints will disallow broadcasting
+   //In progress: Add shapes, constraints (at first only to NDScala-exposed ops)
+   //TODO: add ORT contrib ops
+   //TODO: Remove requirement to be Numeric for ops with non-numeric outputs / inputs
+   //TODO: Encode node names as types
+   //TODO: fix encoding of type constraints, use Tensor as part of definition of types
+   //TODO: Use  monadless(except dead, find followup) / scala-async (with -Xasync?) / dotty-cps-async to replace for comprehensions
 
-  type ![A]  = A => Nothing
-  type !![A] = ![![A]]
+   type ![A]  = A => Nothing
+   type !![A] = ![![A]]
 
-  trait Disjunction[T] {
-    type or[S]  = Disjunction[T with ![S]]
-    type create = ![T]
-  }
+   trait Disjunction[T] {
+      type or[S]  = Disjunction[T with ![S]]
+      type create = ![T]
+   }
 
-  type Union[T] = {
-    type or[S] = Disjunction[![T]]#or[S]
-  }
+   type Union[T] = {
+      type or[S] = Disjunction[![T]]#or[S]
+   }
 
-  type Contains[S, T] = !![S] <:< T
+   type Contains[S, T] = !![S] <:< T
 
-  type UNil
+   type UNil
 
-  sealed trait Operator {
-    def callOp[T, Ax <: Axes](
-        name: String,
-        opName: String,
-        inputs: Seq[_],
-        //    outName: String,
-        attrs: Map[String, Any]
-    ): Tensor[T, Ax]
-  }
+   sealed trait Operator {
+      def callOp[T, Ax <: Axes](
+          name: String,
+          opName: String,
+          inputs: Seq[_],
+          //    outName: String,
+          attrs: Map[String, Any]
+      ): Tensor[T, Ax]
+   }
 
-  abstract class Model(onnxBytes: Array[Byte]) extends Operator {
-    def fullModel[
-        T
-    , Ax <: Axes](
-        inputs: Seq[_]
-    ): Tensor[T, Ax]
-  }
+   abstract class Model(onnxBytes: Array[Byte]) extends Operator {
+      def fullModel[T, Ax <: Axes](
+          inputs: Seq[_]
+      ): Tensor[T, Ax]
+   }
 
-  trait Graph
-  trait DataSource {
-    def getParams[T, Ax <: Axes](name: String): Tensor[T, Ax]
-  }
-  trait AbsV6 extends Operator {
-    def AbsV6[
-        @sp T
-    , Ax <: Axes](name: String, X: Tensor[T, Ax])(implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-            Short
-          ]#or[Int]#or[Long]#or[UNil]#create
-        ]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(X)
-      (callOp(name, "Abs", allInputs, map))
-    }
-  }
+   trait Graph
+   trait DataSource {
+      def getParams[T, Ax <: Axes](name: String): Tensor[T, Ax]
+   }
+   trait AbsV6 extends Operator {
+      def AbsV6[@sp T, Ax <: Axes](name: String, X: Tensor[T, Ax])(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+              Short
+            ]#or[Int]#or[Long]#or[UNil]#create
+          ]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(X)
+         (callOp(name, "Abs", allInputs, map))
+      }
+   }
 
-  trait AcosV7 extends Operator {
-    def AcosV7[@sp T, Ax <: Axes](
-        name: String,
-        input: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input)
-      (callOp(name, "Acos", allInputs, map))
-    }
-  }
+   trait AcosV7 extends Operator {
+      def AcosV7[@sp T, Ax <: Axes](
+          name: String,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input)
+         (callOp(name, "Acos", allInputs, map))
+      }
+   }
 
-  trait AcoshV9 extends Operator {
-    def AcoshV9[@sp T, Ax <: Axes](
-        name: String,
-        input: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input)
-      (callOp(name, "Acosh", allInputs, map))
-    }
-  }
+   trait AcoshV9 extends Operator {
+      def AcoshV9[@sp T, Ax <: Axes](
+          name: String,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input)
+         (callOp(name, "Acosh", allInputs, map))
+      }
+   }
 
-  //Not yet supported, training has yet to GA
-  /*
+   //Not yet supported, training has yet to GA
+   /*
   trait AdagradV1 extends Operator {
     def AdagradV1[
         @sp T1 <: Float | Double,
@@ -133,76 +129,72 @@ package object onnx {
       (callOp(name, "Adagrad", allInputs, map))
     }
   }
-*/
-  trait AddV7 extends Operator {
-    def AddV7[@sp T, Ax <: Axes](
-        name: String,
-        A: Tensor[T, Ax],
-        B: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-        ]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(A,B)
-      (callOp(name, "Add", allInputs, map))
-    }
-  }
+    */
+   trait AddV7 extends Operator {
+      def AddV7[@sp T, Ax <: Axes](
+          name: String,
+          A: Tensor[T, Ax],
+          B: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
+          ]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(A, B)
+         (callOp(name, "Add", allInputs, map))
+      }
+   }
 
-  trait AndV7 extends Operator {
-    def AndV7[@sp T <: Boolean, @sp T1 <: Boolean, Ax <: Axes](
-        name: String,
-        A: Tensor[T, Ax],
-        B: Tensor[T, Ax]
-    ): Tensor[T1,Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(A,B)
-      (callOp(name, "And", allInputs, map))
-    }
-  }
+   trait AndV7 extends Operator {
+      def AndV7[@sp T <: Boolean, @sp T1 <: Boolean, Ax <: Axes](
+          name: String,
+          A: Tensor[T, Ax],
+          B: Tensor[T, Ax]
+      ): Tensor[T1, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(A, B)
+         (callOp(name, "And", allInputs, map))
+      }
+   }
 
-  trait ArgMaxV11 extends Operator {
-    def ArgMaxV11[
-        @sp T
-    , Ax <: Axes, Bx <: Axes](
-        name: String,
-        axis: Option[(Int)] = None,
-        keepdims: Option[(Int)] = None,
-        data: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-          Int
-        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[Long, Bx] = {
-      val map: Map[String, Any] = Map("axis" -> axis, "keepdims" -> keepdims)
-      val allInputs             = Seq(data)
-      (callOp(name, "ArgMax", allInputs, map))
-    }
-  }
-  
-  trait ArgMinV11 extends Operator {
-    def ArgMinV11[
-        @sp T 
-    , Ax <: Axes, Bx <: Axes](
-        name: String,
-        axis: Option[(Int)] = None,
-        keepdims: Option[(Int)] = None,
-        data: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-          Int
-        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[Long, Bx] = {
-      val map: Map[String, Any] = Map("axis" -> axis, "keepdims" -> keepdims)
-      val allInputs             = Seq(data)
-      (callOp(name, "ArgMin", allInputs, map))
-    }
-  }
-  
-  //Not supported, ONNX ML
-  /*
+   trait ArgMaxV11 extends Operator {
+      def ArgMaxV11[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          axis: Option[(Int)] = None,
+          keepdims: Option[(Int)] = None,
+          data: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+            Int
+          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[Long, Bx] = {
+         val map: Map[String, Any] = Map("axis" -> axis, "keepdims" -> keepdims)
+         val allInputs             = Seq(data)
+         (callOp(name, "ArgMax", allInputs, map))
+      }
+   }
+
+   trait ArgMinV11 extends Operator {
+      def ArgMinV11[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          axis: Option[(Int)] = None,
+          keepdims: Option[(Int)] = None,
+          data: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+            Int
+          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[Long, Bx] = {
+         val map: Map[String, Any] = Map("axis" -> axis, "keepdims" -> keepdims)
+         val allInputs             = Seq(data)
+         (callOp(name, "ArgMin", allInputs, map))
+      }
+   }
+
+   //Not supported, ONNX ML
+   /*
   trait ArrayFeatureExtractorV1 extends Operator {
     def ArrayFeatureExtractorV1[@sp T <: Float | Double | Long | Int | String, Ax <: Axes, Bx <: Axes, Cx <: Axes](
         name: String,
@@ -214,61 +206,61 @@ package object onnx {
       (callOp(name, "ArrayFeatureExtractor", allInputs, map))
     }
   }
-*/
-  trait AsinV7 extends Operator {
-    def AsinV7[@sp T, Ax <: Axes](
-        name: String,
-        input: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input)
-      (callOp(name, "Asin", allInputs, map))
-    }
-  }
+    */
+   trait AsinV7 extends Operator {
+      def AsinV7[@sp T, Ax <: Axes](
+          name: String,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input)
+         (callOp(name, "Asin", allInputs, map))
+      }
+   }
 
-  trait AsinhV9 extends Operator {
-    def AsinhV9[@sp T, Ax <: Axes](
-        name: String,
-        input: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input)
-      (callOp(name, "Asinh", allInputs, map))
-    }
-  }
+   trait AsinhV9 extends Operator {
+      def AsinhV9[@sp T, Ax <: Axes](
+          name: String,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input)
+         (callOp(name, "Asinh", allInputs, map))
+      }
+   }
 
-  trait AtanV7 extends Operator {
-    def AtanV7[@sp T, Ax <: Axes](
-        name: String,
-        input: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input)
-      (callOp(name, "Atan", allInputs, map))
-    }
-  }
+   trait AtanV7 extends Operator {
+      def AtanV7[@sp T, Ax <: Axes](
+          name: String,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input)
+         (callOp(name, "Atan", allInputs, map))
+      }
+   }
 
-  trait AtanhV9 extends Operator {
-    def AtanhV9[@sp T, Ax <: Axes](
-        name: String,
-        input: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input)
-      (callOp(name, "Atanh", allInputs, map))
-    }
-  }
+   trait AtanhV9 extends Operator {
+      def AtanhV9[@sp T, Ax <: Axes](
+          name: String,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input)
+         (callOp(name, "Atanh", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait AveragePoolV11 extends Operator {
     def AveragePoolV11[@sp T <: Float16 | Float | Double, Ax <: Axes, Bx <: Axes](
         name: String,
@@ -292,125 +284,125 @@ package object onnx {
       (callOp(name, "AveragePool", allInputs, map))
     }
   }
-*/
-  trait AveragePoolV10 extends Operator {
-    def AveragePoolV10[@sp T, Ax <: Axes, Bx <: Axes](
-        name: String,
-        auto_pad: Option[(String)] = None,
-        ceil_mode: Option[(Int)] = None,
-        count_include_pad: Option[(Int)] = None,
-        kernel_shape: (Array[Int]),
-        pads: Option[(Array[Int])] = None,
-        strides: Option[(Array[Int])] = None,
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map(
-        "auto_pad"          -> auto_pad,
-        "ceil_mode"         -> ceil_mode,
-        "count_include_pad" -> count_include_pad,
-        "kernel_shape"      -> kernel_shape,
-        "pads"              -> pads,
-        "strides"           -> strides
-      )
-      val allInputs = Seq(X)
-      (callOp(name, "AveragePool", allInputs, map))
-    }
-  }
+    */
+   trait AveragePoolV10 extends Operator {
+      def AveragePoolV10[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          auto_pad: Option[(String)] = None,
+          ceil_mode: Option[(Int)] = None,
+          count_include_pad: Option[(Int)] = None,
+          kernel_shape: (Array[Int]),
+          pads: Option[(Array[Int])] = None,
+          strides: Option[(Array[Int])] = None,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map(
+           "auto_pad"          -> auto_pad,
+           "ceil_mode"         -> ceil_mode,
+           "count_include_pad" -> count_include_pad,
+           "kernel_shape"      -> kernel_shape,
+           "pads"              -> pads,
+           "strides"           -> strides
+         )
+         val allInputs = Seq(X)
+         (callOp(name, "AveragePool", allInputs, map))
+      }
+   }
 
-  trait AveragePoolV7 extends Operator {
-    def AveragePoolV7[@sp T, Ax <: Axes, Bx <: Axes](
-        name: String,
-        auto_pad: Option[(String)] = None,
-        count_include_pad: Option[(Int)] = None,
-        kernel_shape: (Array[Int]),
-        pads: Option[(Array[Int])] = None,
-        strides: Option[(Array[Int])] = None,
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map(
-        "auto_pad"          -> auto_pad,
-        "count_include_pad" -> count_include_pad,
-        "kernel_shape"      -> kernel_shape,
-        "pads"              -> pads,
-        "strides"           -> strides
-      )
-      val allInputs = Seq(X)
-      (callOp(name, "AveragePool", allInputs, map))
-    }
-  }
+   trait AveragePoolV7 extends Operator {
+      def AveragePoolV7[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          auto_pad: Option[(String)] = None,
+          count_include_pad: Option[(Int)] = None,
+          kernel_shape: (Array[Int]),
+          pads: Option[(Array[Int])] = None,
+          strides: Option[(Array[Int])] = None,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map(
+           "auto_pad"          -> auto_pad,
+           "count_include_pad" -> count_include_pad,
+           "kernel_shape"      -> kernel_shape,
+           "pads"              -> pads,
+           "strides"           -> strides
+         )
+         val allInputs = Seq(X)
+         (callOp(name, "AveragePool", allInputs, map))
+      }
+   }
 
-  trait BatchNormalizationV9 extends Operator {
-    def BatchNormalizationV9[@sp T, Ax <: Axes, Bx <: Axes](
-        name: String,
-        epsilon: Option[(Float)] = None,
-        momentum: Option[(Float)] = None,
-        X: Tensor[T, Ax],
-        scale: Tensor[T, Bx],
-        B: Tensor[T, Bx],
-        mean: Tensor[T, Bx],
-        someVar: Tensor[T, Bx]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map("epsilon" -> epsilon, "momentum" -> momentum)
-      val allInputs             = Seq(X, scale, B, mean, someVar)
-      (callOp(name, "BatchNormalization", allInputs, map))
-    }
-  }
+   trait BatchNormalizationV9 extends Operator {
+      def BatchNormalizationV9[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          epsilon: Option[(Float)] = None,
+          momentum: Option[(Float)] = None,
+          X: Tensor[T, Ax],
+          scale: Tensor[T, Bx],
+          B: Tensor[T, Bx],
+          mean: Tensor[T, Bx],
+          someVar: Tensor[T, Bx]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map("epsilon" -> epsilon, "momentum" -> momentum)
+         val allInputs             = Seq(X, scale, B, mean, someVar)
+         (callOp(name, "BatchNormalization", allInputs, map))
+      }
+   }
 
-  trait BatchNormalizationV7 extends Operator {
-    def BatchNormalizationV7[@sp T, Ax <: Axes, Bx <: Axes](
-        name: String,
-        epsilon: Option[(Float)] = None,
-        momentum: Option[(Float)] = None,
-        spatial: Option[(Int)] = None,
-        X: Tensor[T, Ax],
-        scale: Tensor[T, Bx],
-        B: Tensor[T, Bx],
-        mean: Tensor[T, Bx],
-        someVar: Tensor[T, Bx]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] =
-        Map("epsilon" -> epsilon, "momentum" -> momentum, "spatial" -> spatial)
-      val allInputs = Seq(X, scale, B, mean, someVar)
-      (callOp(name, "BatchNormalization", allInputs, map))
-    }
-  }
+   trait BatchNormalizationV7 extends Operator {
+      def BatchNormalizationV7[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          epsilon: Option[(Float)] = None,
+          momentum: Option[(Float)] = None,
+          spatial: Option[(Int)] = None,
+          X: Tensor[T, Ax],
+          scale: Tensor[T, Bx],
+          B: Tensor[T, Bx],
+          mean: Tensor[T, Bx],
+          someVar: Tensor[T, Bx]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] =
+            Map("epsilon" -> epsilon, "momentum" -> momentum, "spatial" -> spatial)
+         val allInputs = Seq(X, scale, B, mean, someVar)
+         (callOp(name, "BatchNormalization", allInputs, map))
+      }
+   }
 
-  trait BatchNormalizationV6 extends Operator {
-    def BatchNormalizationV6[@sp T, Ax <: Axes, Bx <: Axes](
-        name: String,
-        epsilon: Option[(Float)] = None,
-        is_test: Option[(Int)] = None,
-        momentum: Option[(Float)] = None,
-        spatial: Option[(Int)] = None,
-        X: Tensor[T, Ax],
-        scale: Tensor[T, Bx],
-        B: Tensor[T, Bx],
-        mean: Tensor[T, Bx],
-        someVar: Tensor[T, Bx]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map(
-        "epsilon"  -> epsilon,
-        "is_test"  -> is_test,
-        "momentum" -> momentum,
-        "spatial"  -> spatial
-      )
-      val allInputs = Seq(X, scale, B, mean, someVar)
-      (callOp(name, "BatchNormalization", allInputs, map))
-    }
-  }
+   trait BatchNormalizationV6 extends Operator {
+      def BatchNormalizationV6[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          epsilon: Option[(Float)] = None,
+          is_test: Option[(Int)] = None,
+          momentum: Option[(Float)] = None,
+          spatial: Option[(Int)] = None,
+          X: Tensor[T, Ax],
+          scale: Tensor[T, Bx],
+          B: Tensor[T, Bx],
+          mean: Tensor[T, Bx],
+          someVar: Tensor[T, Bx]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map(
+           "epsilon"  -> epsilon,
+           "is_test"  -> is_test,
+           "momentum" -> momentum,
+           "spatial"  -> spatial
+         )
+         val allInputs = Seq(X, scale, B, mean, someVar)
+         (callOp(name, "BatchNormalization", allInputs, map))
+      }
+   }
 
-  //Not supported, ONNX ML
-  /*
+   //Not supported, ONNX ML
+   /*
   trait BinarizerV1 extends Operator {
     def BinarizerV1[@sp T <: Float | Double | Long | Int, Ax <: Axes](
         name: String,
@@ -422,25 +414,25 @@ package object onnx {
       (callOp(name, "Binarizer", allInputs, map))
     }
   }
-*/
-  //Not supported, missing from ONNXJS
-  trait BitShiftV11 extends Operator {
-    def BitShiftV11[@sp T, Ax <: Axes](
-        name: String,
-        direction: (String),
-        X: Tensor[T, Ax],
-        Y: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map("direction" -> direction)
-      val allInputs             = Seq(X,Y)
-      (callOp(name, "BitShift", allInputs, map))
-    }
-  }
+    */
+   //Not supported, missing from ONNXJS
+   trait BitShiftV11 extends Operator {
+      def BitShiftV11[@sp T, Ax <: Axes](
+          name: String,
+          direction: (String),
+          X: Tensor[T, Ax],
+          Y: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map("direction" -> direction)
+         val allInputs             = Seq(X, Y)
+         (callOp(name, "BitShift", allInputs, map))
+      }
+   }
 
-  //Not supported, ONNX ML\
-  /*
+   //Not supported, ONNX ML\
+   /*
   trait CastMapV1 extends Operator {
     def CastMapV1[@sp T1 <: Map[Long, String] | Map[
       Long,
@@ -458,33 +450,31 @@ package object onnx {
       (callOp(name, "CastMap", allInputs, map))
     }
   }
-*/
-  trait CastV9 extends Operator {
-    def CastV9[
-        @sp T1,
-        @sp T2
-    , Ax <: Axes](name: String, to: (Int), input: Tensor[T1,Ax])(implicit
-        evT1: Contains[
-          T1,
-          Union[Float16]#or[Float]#or[Double]#or[Byte]#or[Short]#or[Int]#or[Long]#or[UByte]#or[
-            UShort
-          ]#or[UInt]#or[ULong]#or[Boolean]#or[String]#or[UNil]#create
-        ],
-        evT2: Contains[
-          T2,
-          Union[Float16]#or[Float]#or[Double]#or[Byte]#or[Short]#or[Int]#or[Long]#or[UByte]#or[
-            UShort
-          ]#or[UInt]#or[ULong]#or[Boolean]#or[String]#or[UNil]#create
-        ]
-    ): Tensor[T2, Ax] = {
-      val map: Map[String, Any] = Map("to" -> to)
-      val allInputs             = Seq(input)
-      (callOp(name, "Cast", allInputs, map))
-    }
-  }
+    */
+   trait CastV9 extends Operator {
+      def CastV9[@sp T1, @sp T2, Ax <: Axes](name: String, to: (Int), input: Tensor[T1, Ax])(
+          implicit
+          evT1: Contains[
+            T1,
+            Union[Float16]#or[Float]#or[Double]#or[Byte]#or[Short]#or[Int]#or[Long]#or[UByte]#or[
+              UShort
+            ]#or[UInt]#or[ULong]#or[Boolean]#or[String]#or[UNil]#create
+          ],
+          evT2: Contains[
+            T2,
+            Union[Float16]#or[Float]#or[Double]#or[Byte]#or[Short]#or[Int]#or[Long]#or[UByte]#or[
+              UShort
+            ]#or[UInt]#or[ULong]#or[Boolean]#or[String]#or[UNil]#create
+          ]
+      ): Tensor[T2, Ax] = {
+         val map: Map[String, Any] = Map("to" -> to)
+         val allInputs             = Seq(input)
+         (callOp(name, "Cast", allInputs, map))
+      }
+   }
 
-  //Not supported, ONNX ML
-  /*
+   //Not supported, ONNX ML
+   /*
   trait CategoryMapperV1 extends Operator {
     def CategoryMapperV1[
         @sp T1 <: String | Long,
@@ -507,36 +497,36 @@ package object onnx {
       (callOp(name, "CategoryMapper", allInputs, map))
     }
   }
-*/
-  trait CeilV6 extends Operator {
-    def CeilV6[@sp T, Ax <: Axes](
-        name: String,
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(X)
-      (callOp(name, "Ceil", allInputs, map))
-    }
-  }
+    */
+   trait CeilV6 extends Operator {
+      def CeilV6[@sp T, Ax <: Axes](
+          name: String,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(X)
+         (callOp(name, "Ceil", allInputs, map))
+      }
+   }
 
-  trait CeluV12 extends Operator {
-    def CeluV12[@sp T, Ax <: Axes](
-        name: String,
-        alpha: Option[(Float)] = None,
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map("alpha" -> alpha)
-      val allInputs             = Seq(X)
-      (callOp(name, "Celu", allInputs, map))
-    }
-  }
+   trait CeluV12 extends Operator {
+      def CeluV12[@sp T, Ax <: Axes](
+          name: String,
+          alpha: Option[(Float)] = None,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map("alpha" -> alpha)
+         val allInputs             = Seq(X)
+         (callOp(name, "Celu", allInputs, map))
+      }
+   }
 
-  //Not supported, not in ONNXJS
-  /*
+   //Not supported, not in ONNXJS
+   /*
   trait ClipV12 extends Operator {
     def ClipV12[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double
@@ -566,26 +556,24 @@ package object onnx {
       (callOp(name, "Clip", allInputs, map))
     }
   }
-*/
-  trait ClipV6 extends Operator {
-    def ClipV6[
-        @sp T 
-    , Ax <: Axes](
-        name: String,
-        max: Option[(Float)] = None,
-        min: Option[(Float)] = None,
-        input: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map("max" -> max, "min" -> min)
-      val allInputs             = Seq(input)
-      (callOp(name, "Clip", allInputs, map))
-    }
-  }
+    */
+   trait ClipV6 extends Operator {
+      def ClipV6[@sp T, Ax <: Axes](
+          name: String,
+          max: Option[(Float)] = None,
+          min: Option[(Float)] = None,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map("max" -> max, "min" -> min)
+         val allInputs             = Seq(input)
+         (callOp(name, "Clip", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait CompressV11 extends Operator {
     def CompressV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -621,10 +609,10 @@ package object onnx {
       (callOp(name, "Compress", allInputs, map))
     }
   }
-  */
+    */
 
-  //Not supported, sequence op
-  /*
+   //Not supported, sequence op
+   /*
   trait ConcatFromSequenceV11 extends Operator {
     def ConcatFromSequenceV11[@sp S <: Seq[Tensor[UByte, _]] | Seq[Tensor[UShort, _]] | Seq[
       Tensor[UInt, _]
@@ -649,90 +637,93 @@ package object onnx {
       (callOp(name, "ConcatFromSequence", allInputs, map))
     }
   }
-*/
+    */
 
-  //TODO: constraint 
-  trait ConcatV11 extends Operator {
-    def ConcatV11[
-        @sp T  
-    , Ax <: Axes, Bx <: Axes](name: String, axis: (Int), inputs: Seq[Tensor[T, Ax]])(implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-            Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
-            UNil
-          ]#create
-        ]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map("axis" -> axis)
-      val allInputs             = inputs 
-      (callOp(name, "Concat", allInputs, map))
-    }
-  }
+   //TODO: constraint
+   trait ConcatV11 extends Operator {
+      def ConcatV11[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          axis: (Int),
+          inputs: Seq[Tensor[T, Ax]]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+              Short
+            ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+              UNil
+            ]#create
+          ]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map("axis" -> axis)
+         val allInputs             = inputs
+         (callOp(name, "Concat", allInputs, map))
+      }
+   }
 
-  trait ConcatV4 extends Operator {
-    def ConcatV4[
-        @sp T  
-    , Ax <: Axes, Bx <: Axes](name: String, axis: (Int), inputs: Seq[Tensor[T, Ax]])(implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-            Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
-            UNil
-          ]#create
-        ]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map("axis" -> axis)
-      val allInputs             = inputs 
-      (callOp(name, "Concat", allInputs, map))
-    }
-  }
+   trait ConcatV4 extends Operator {
+      def ConcatV4[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          axis: (Int),
+          inputs: Seq[Tensor[T, Ax]]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+              Short
+            ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+              UNil
+            ]#create
+          ]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map("axis" -> axis)
+         val allInputs             = inputs
+         (callOp(name, "Concat", allInputs, map))
+      }
+   }
 
-  trait ConstantOfShapeV9 extends Operator {
-    def ConstantOfShapeV9[
-        @sp T1,
-        @sp T2 
-    , Ax <: Axes, Bx <: Axes, Cx <: Axes](name: String, value: Option[(Tensor[T2, Ax])] = None, input: Tensor[T1, Bx])(implicit
-        evT1: Contains[T1, Union[Long]#or[UNil]#create],
-        evT2: Contains[
-          T2,
-          Union[Float16]#or[Float]#or[Double]#or[Byte]#or[Short]#or[Int]#or[Long]#or[UByte]#or[
-            UShort
-          ]#or[UInt]#or[ULong]#or[Boolean]#or[UNil]#create
-        ]
-    ): Tensor[T2, Cx] = {
-      val map: Map[String, Any] = Map("value" -> value)
-      val allInputs             = Seq(input)
-      (callOp(name, "ConstantOfShape", allInputs, map))
-    }
-  }
-  trait ConstantV11 extends Operator {
-    def ConstantV11[
-        @sp T 
-    , Ax <: Axes, Bx <: Axes, Cx <: Axes](
-        name: String,
-        sparse_value: Option[(SparseTensor[T, Ax])] = None,
-        value: Option[(Tensor[T, Bx])] = None
-    )(implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-            Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
-            UNil
-          ]#create
-        ]
-    ): Tensor[T, Cx] = {
-      val map: Map[String, Any] = Map("sparse_value" -> sparse_value, "value" -> value)
-      val allInputs             = Seq()
-      (callOp(name, "Constant", allInputs, map))
-    }
-  }
+   trait ConstantOfShapeV9 extends Operator {
+      def ConstantOfShapeV9[@sp T1, @sp T2, Ax <: Axes, Bx <: Axes, Cx <: Axes](
+          name: String,
+          value: Option[(Tensor[T2, Ax])] = None,
+          input: Tensor[T1, Bx]
+      )(implicit
+          evT1: Contains[T1, Union[Long]#or[UNil]#create],
+          evT2: Contains[
+            T2,
+            Union[Float16]#or[Float]#or[Double]#or[Byte]#or[Short]#or[Int]#or[Long]#or[UByte]#or[
+              UShort
+            ]#or[UInt]#or[ULong]#or[Boolean]#or[UNil]#create
+          ]
+      ): Tensor[T2, Cx] = {
+         val map: Map[String, Any] = Map("value" -> value)
+         val allInputs             = Seq(input)
+         (callOp(name, "ConstantOfShape", allInputs, map))
+      }
+   }
+   trait ConstantV11 extends Operator {
+      def ConstantV11[@sp T, Ax <: Axes, Bx <: Axes, Cx <: Axes](
+          name: String,
+          sparse_value: Option[(SparseTensor[T, Ax])] = None,
+          value: Option[(Tensor[T, Bx])] = None
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+              Short
+            ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+              UNil
+            ]#create
+          ]
+      ): Tensor[T, Cx] = {
+         val map: Map[String, Any] = Map("sparse_value" -> sparse_value, "value" -> value)
+         val allInputs             = Seq()
+         (callOp(name, "Constant", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait ConvIntegerV10 extends Operator {
     def ConvIntegerV10[
         @sp T1 <: Byte | UByte,
@@ -823,92 +814,92 @@ package object onnx {
       (callOp(name, "ConvTranspose", allInputs, map))
     }
   }
-*/
-  //TODO: Constraints
-  trait ConvV11 extends Operator {
-    def ConvV11[@sp T, Ax <: Axes, Bx <: Axes, Cx <: Axes, Dx <: Axes](
-        name: String,
-        auto_pad: Option[(String)] = None,
-        dilations: Option[(Array[Int])] = None,
-        group: Option[(Int)] = None,
-        kernel_shape: Option[(Array[Int])] = None,
-        pads: Option[(Array[Int])] = None,
-        strides: Option[(Array[Int])] = None,
-        X: Tensor[T, Ax],
-        W: Tensor[T, Bx],
-        B: Option[Tensor[T, Cx]] = None
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Dx] = {
-      val map: Map[String, Any] = Map(
-        "auto_pad"     -> auto_pad,
-        "dilations"    -> dilations,
-        "group"        -> group,
-        "kernel_shape" -> kernel_shape,
-        "pads"         -> pads,
-        "strides"      -> strides
-      )
-      val allInputs = Seq(X, W, B)
-      (callOp(name, "Conv", allInputs, map))
-    }
-  }
+    */
+   //TODO: Constraints
+   trait ConvV11 extends Operator {
+      def ConvV11[@sp T, Ax <: Axes, Bx <: Axes, Cx <: Axes, Dx <: Axes](
+          name: String,
+          auto_pad: Option[(String)] = None,
+          dilations: Option[(Array[Int])] = None,
+          group: Option[(Int)] = None,
+          kernel_shape: Option[(Array[Int])] = None,
+          pads: Option[(Array[Int])] = None,
+          strides: Option[(Array[Int])] = None,
+          X: Tensor[T, Ax],
+          W: Tensor[T, Bx],
+          B: Option[Tensor[T, Cx]] = None
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Dx] = {
+         val map: Map[String, Any] = Map(
+           "auto_pad"     -> auto_pad,
+           "dilations"    -> dilations,
+           "group"        -> group,
+           "kernel_shape" -> kernel_shape,
+           "pads"         -> pads,
+           "strides"      -> strides
+         )
+         val allInputs = Seq(X, W, B)
+         (callOp(name, "Conv", allInputs, map))
+      }
+   }
 
-  trait ConvV1 extends Operator {
-    def ConvV1[@sp T, Ax <: Axes, Bx <: Axes, Cx <: Axes, Dx <: Axes](
-        name: String,
-        auto_pad: Option[(String)] = None,
-        dilations: Option[(Array[Int])] = None,
-        group: Option[(Int)] = None,
-        kernel_shape: Option[(Array[Int])] = None,
-        pads: Option[(Array[Int])] = None,
-        strides: Option[(Array[Int])] = None,
-        X: Tensor[T, Ax],
-        W: Tensor[T, Bx],
-        B: Option[Tensor[T, Cx]] = None
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Dx] = {
-      val map: Map[String, Any] = Map(
-        "auto_pad"     -> auto_pad,
-        "dilations"    -> dilations,
-        "group"        -> group,
-        "kernel_shape" -> kernel_shape,
-        "pads"         -> pads,
-        "strides"      -> strides
-      )
-      val allInputs = Seq(X, W, B)
-      (callOp(name, "Conv", allInputs, map))
-    }
-  }
+   trait ConvV1 extends Operator {
+      def ConvV1[@sp T, Ax <: Axes, Bx <: Axes, Cx <: Axes, Dx <: Axes](
+          name: String,
+          auto_pad: Option[(String)] = None,
+          dilations: Option[(Array[Int])] = None,
+          group: Option[(Int)] = None,
+          kernel_shape: Option[(Array[Int])] = None,
+          pads: Option[(Array[Int])] = None,
+          strides: Option[(Array[Int])] = None,
+          X: Tensor[T, Ax],
+          W: Tensor[T, Bx],
+          B: Option[Tensor[T, Cx]] = None
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Dx] = {
+         val map: Map[String, Any] = Map(
+           "auto_pad"     -> auto_pad,
+           "dilations"    -> dilations,
+           "group"        -> group,
+           "kernel_shape" -> kernel_shape,
+           "pads"         -> pads,
+           "strides"      -> strides
+         )
+         val allInputs = Seq(X, W, B)
+         (callOp(name, "Conv", allInputs, map))
+      }
+   }
 
-  trait CosV7 extends Operator {
-    def CosV7[@sp T, Ax <: Axes](
-        name: String,
-        input: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input)
-      (callOp(name, "Cos", allInputs, map))
-    }
-  }
+   trait CosV7 extends Operator {
+      def CosV7[@sp T, Ax <: Axes](
+          name: String,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input)
+         (callOp(name, "Cos", allInputs, map))
+      }
+   }
 
-  trait CoshV9 extends Operator {
-    def CoshV9[@sp T, Ax <: Axes](
-        name: String,
-        input: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input)
-      (callOp(name, "Cosh", allInputs, map))
-    }
-  }
+   trait CoshV9 extends Operator {
+      def CoshV9[@sp T, Ax <: Axes](
+          name: String,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input)
+         (callOp(name, "Cosh", allInputs, map))
+      }
+   }
 
-  //Not supported for now, missing from ONNXJS
-  /*
+   //Not supported for now, missing from ONNXJS
+   /*
   trait CumSumV11 extends Operator {
     def CumSumV11[
         @sp T <: UInt | ULong | Int | Long | Float | Double,
@@ -998,55 +989,55 @@ package object onnx {
       (callOp(name, "DictVectorizer", allInputs, map))
     }
   }
-*/
-  trait DivV7 extends Operator {
-    def DivV7[@sp T, Ax <: Axes](
-        name: String,
-        A: Tensor[T, Ax],
-        B: Tensor[T, Ax]
-    )(
-        implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-        ]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(A,B)
-      (callOp(name, "Div", allInputs, map))
-    }
-  }
-  
-  trait DropoutV10 extends Operator {
-    def DropoutV10[
-        @sp T,
-        @sp T1
-    , Ax <: Axes](name: String, ratio: Option[(Float)] = None, data: Tensor[T, Ax])(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
-        evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map("ratio" -> ratio)
-      val allInputs             = Seq(data)
-      (callOp(name, "Dropout", allInputs, map))
-    }
-  }
+    */
+   trait DivV7 extends Operator {
+      def DivV7[@sp T, Ax <: Axes](
+          name: String,
+          A: Tensor[T, Ax],
+          B: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
+          ]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(A, B)
+         (callOp(name, "Div", allInputs, map))
+      }
+   }
 
-  trait DropoutV7 extends Operator {
-    def DropoutV7[@sp T, Ax <: Axes](
-        name: String,
-        ratio: Option[(Float)] = None,
-        data: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map("ratio" -> ratio)
-      val allInputs             = Seq(data)
-      (callOp(name, "Dropout", allInputs, map))
-    }
-  }
+   trait DropoutV10 extends Operator {
+      def DropoutV10[@sp T, @sp T1, Ax <: Axes](
+          name: String,
+          ratio: Option[(Float)] = None,
+          data: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+          evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map("ratio" -> ratio)
+         val allInputs             = Seq(data)
+         (callOp(name, "Dropout", allInputs, map))
+      }
+   }
 
-  //Not supported for now, missing from ONNXJS
-  /*
+   trait DropoutV7 extends Operator {
+      def DropoutV7[@sp T, Ax <: Axes](
+          name: String,
+          ratio: Option[(Float)] = None,
+          data: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map("ratio" -> ratio)
+         val allInputs             = Seq(data)
+         (callOp(name, "Dropout", allInputs, map))
+      }
+   }
+
+   //Not supported for now, missing from ONNXJS
+   /*
   trait DynamicQuantizeLinearV11 extends Operator {
     def DynamicQuantizeLinearV11[
         @sp T1 <: Float,
@@ -1067,39 +1058,37 @@ package object onnx {
       (callOp(name, "Einsum", allInputs, map))
     }
   }
-*/
-  trait EluV6 extends Operator {
-    def EluV6[@sp T, Ax <: Axes](
-        name: String,
-        alpha: Option[(Float)] = None,
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map("alpha" -> alpha)
-      val allInputs             = Seq(X)
-      (callOp(name, "Elu", allInputs, map))
-    }
-  }
+    */
+   trait EluV6 extends Operator {
+      def EluV6[@sp T, Ax <: Axes](
+          name: String,
+          alpha: Option[(Float)] = None,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map("alpha" -> alpha)
+         val allInputs             = Seq(X)
+         (callOp(name, "Elu", allInputs, map))
+      }
+   }
 
-  trait EqualV11 extends Operator {
-    def EqualV11[
-        @sp T,
-        @sp T1
-    , Ax <: Axes](name: String, A: Tensor[T, Ax], B: Tensor[T, Ax])(implicit
-        evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
-          ULong
-        ]#or[Byte]#or[Short]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
-        evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
-    ): Tensor[T1, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(A,B)
-      (callOp(name, "Equal", allInputs, map))
-    }
-  }
+   trait EqualV11 extends Operator {
+      def EqualV11[@sp T, @sp T1, Ax <: Axes](name: String, A: Tensor[T, Ax], B: Tensor[T, Ax])(
+          implicit
+          evT: Contains[T, Union[Boolean]#or[Int]#or[Long]#or[UByte]#or[UShort]#or[UInt]#or[
+            ULong
+          ]#or[Byte]#or[Short]#or[Float16]#or[Float]#or[Double]#or[UNil]#create],
+          evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
+      ): Tensor[T1, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(A, B)
+         (callOp(name, "Equal", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait ErfV9 extends Operator {
     def ErfV9[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double
@@ -1109,39 +1098,41 @@ package object onnx {
       (callOp(name, "Erf", allInputs, map))
     }
   }
-*/
+    */
 
-  trait ExpV6 extends Operator {
-    def ExpV6[@sp T, Ax <: Axes](
-        name: String,
-        input: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input)
-      (callOp(name, "Exp", allInputs, map))
-    }
-  }
+   trait ExpV6 extends Operator {
+      def ExpV6[@sp T, Ax <: Axes](
+          name: String,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input)
+         (callOp(name, "Exp", allInputs, map))
+      }
+   }
 
-  trait ExpandV8 extends Operator {
-    def ExpandV8[
-        @sp T  
-    , Ax <: Axes, Bx <: Axes, Cx <: Axes](name: String, input: Tensor[T, Ax], shapeInput: Tensor[Long, Bx])(implicit
-        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-          Int
-        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
-          Complex[Double]
-        ]#or[UNil]#create]
-    ): Tensor[T, Cx] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input, shapeInput)
-      (callOp(name, "Expand", allInputs, map))
-    }
-  }
+   trait ExpandV8 extends Operator {
+      def ExpandV8[@sp T, Ax <: Axes, Bx <: Axes, Cx <: Axes](
+          name: String,
+          input: Tensor[T, Ax],
+          shapeInput: Tensor[Long, Bx]
+      )(implicit
+          evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+            Int
+          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+            Complex[Double]
+          ]#or[UNil]#create]
+      ): Tensor[T, Cx] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input, shapeInput)
+         (callOp(name, "Expand", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait EyeLikeV9 extends Operator {
     def EyeLikeV9[
         @sp T1 <: Float16 | Float | Double | Byte | Short | Int | Long | UByte | UShort | UInt | ULong | Boolean,
@@ -1157,9 +1148,9 @@ package object onnx {
       (callOp(name, "EyeLike", allInputs, map))
     }
   }
-*/
-  //Not supported, ONNX ML
-  /*
+    */
+   //Not supported, ONNX ML
+   /*
   trait FeatureVectorizerV1 extends Operator {
     def FeatureVectorizerV1[@sp T1 <: Int | Long | Float | Double, Ax <: Axes](
         name: String,
@@ -1171,42 +1162,44 @@ package object onnx {
       (callOp(name, "FeatureVectorizer", allInputs, map))
     }
   }
-*/
+    */
 
-  trait FlattenV11 extends Operator {
-    def FlattenV11[
-        @sp T 
-    , Ax <: Axes, Bx <: Axes](name: String, axis: Option[(Int)] = None, input: Tensor[T, Ax])(implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-            Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
-            UNil
-          ]#create
-        ]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map("axis" -> axis)
-      val allInputs             = Seq(input)
-      (callOp(name, "Flatten", allInputs, map))
-    }
-  }
+   trait FlattenV11 extends Operator {
+      def FlattenV11[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          axis: Option[(Int)] = None,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+              Short
+            ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+              UNil
+            ]#create
+          ]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map("axis" -> axis)
+         val allInputs             = Seq(input)
+         (callOp(name, "Flatten", allInputs, map))
+      }
+   }
 
-  trait FloorV6 extends Operator {
-    def FloorV6[@sp T, Ax <: Axes](
-        name: String,
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(X)
-      (callOp(name, "Floor", allInputs, map))
-    }
-  }
+   trait FloorV6 extends Operator {
+      def FloorV6[@sp T, Ax <: Axes](
+          name: String,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(X)
+         (callOp(name, "Floor", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait GRUV7 extends Operator {
     def GRUV7[
         @sp T <: Float16 | Float | Double,
@@ -1357,68 +1350,65 @@ package object onnx {
       (callOp(name, "GatherND", allInputs, map))
     }
   }
-*/
-  trait GatherV11 extends Operator {
-    def GatherV11[
-        @sp T, 
-        @sp Tind
-    , Ax <: Axes, Bx <: Axes, Cx <: Axes](
-        name: String,
-        axis: Option[(Int)] = None,
-        data: Tensor[T, Ax],
-        indices: Tensor[Tind, Bx]
-    )(implicit
-        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-          Int
-        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
-          Complex[Double]
-        ]#or[UNil]#create],
-        evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
-    ): Tensor[T, Cx] = {
-      val map: Map[String, Any] = Map("axis" -> axis)
-      val allInputs             = Seq(data, indices)
-      (callOp(name, "Gather", allInputs, map))
-    }
-  }
+    */
+   trait GatherV11 extends Operator {
+      def GatherV11[@sp T, @sp Tind, Ax <: Axes, Bx <: Axes, Cx <: Axes](
+          name: String,
+          axis: Option[(Int)] = None,
+          data: Tensor[T, Ax],
+          indices: Tensor[Tind, Bx]
+      )(implicit
+          evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+            Int
+          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+            Complex[Double]
+          ]#or[UNil]#create],
+          evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
+      ): Tensor[T, Cx] = {
+         val map: Map[String, Any] = Map("axis" -> axis)
+         val allInputs             = Seq(data, indices)
+         (callOp(name, "Gather", allInputs, map))
+      }
+   }
 
-  trait GemmV11 extends Operator {
-    def GemmV11[@sp T, Ax <: Axes, Bx <: Axes, Cx <: Axes](
-        name: String,
-        alpha: Option[(Float)] = None,
-        beta: Option[(Float)] = None,
-        transA: Option[(Int)] = None,
-        transB: Option[(Int)] = None,
-        A: Tensor[T, Ax],
-        B: Tensor[T, Bx],
-        C: Option[Tensor[T, Cx]] = None
-    )(implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-        ]
-    ): Tensor[T, Cx] = {
-      val map: Map[String, Any] =
-        Map("alpha" -> alpha, "beta" -> beta, "transA" -> transA, "transB" -> transB)
-      val allInputs = Seq(A, B, C)
-      (callOp(name, "Gemm", allInputs, map))
-    }
-  }
+   trait GemmV11 extends Operator {
+      def GemmV11[@sp T, Ax <: Axes, Bx <: Axes, Cx <: Axes](
+          name: String,
+          alpha: Option[(Float)] = None,
+          beta: Option[(Float)] = None,
+          transA: Option[(Int)] = None,
+          transB: Option[(Int)] = None,
+          A: Tensor[T, Ax],
+          B: Tensor[T, Bx],
+          C: Option[Tensor[T, Cx]] = None
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
+          ]
+      ): Tensor[T, Cx] = {
+         val map: Map[String, Any] =
+            Map("alpha" -> alpha, "beta" -> beta, "transA" -> transA, "transB" -> transB)
+         val allInputs = Seq(A, B, C)
+         (callOp(name, "Gemm", allInputs, map))
+      }
+   }
 
-  trait GlobalAveragePoolV1 extends Operator {
-    def GlobalAveragePoolV1[@sp T, Ax <: Axes, Bx <: Axes](
-        name: String,
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(X)
-      (callOp(name, "GlobalAveragePool", allInputs, map))
-    }
-  }
+   trait GlobalAveragePoolV1 extends Operator {
+      def GlobalAveragePoolV1[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(X)
+         (callOp(name, "GlobalAveragePool", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait GlobalLpPoolV2 extends Operator {
     def GlobalLpPoolV2[@sp T <: Float16 | Float | Double, Ax <: Axes](
         name: String,
@@ -1442,23 +1432,23 @@ package object onnx {
       (callOp(name, "GlobalLpPool", allInputs, map))
     }
   }
-*/
+    */
 
-  trait GlobalMaxPoolV1 extends Operator {
-    def GlobalMaxPoolV1[@sp T, Ax <: Axes, Bx <: Axes](
-        name: String,
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(X)
-      (callOp(name, "GlobalMaxPool", allInputs, map))
-    }
-  }
+   trait GlobalMaxPoolV1 extends Operator {
+      def GlobalMaxPoolV1[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(X)
+         (callOp(name, "GlobalMaxPool", allInputs, map))
+      }
+   }
 
-  //Not supported, training is not yet GA
-  /*
+   //Not supported, training is not yet GA
+   /*
   trait GradientV1 extends Operator {
     def GradientV1[
         @sp T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -1489,47 +1479,47 @@ package object onnx {
       (callOp(name, "GraphCall", allInputs, map))
     }
   }
-*/
+    */
 
-  trait GreaterOrEqualV12 extends Operator {
-    def GreaterOrEqualV12[
-        @sp T,
-        @sp T1
-    , Ax <: Axes](name: String, A: Tensor[T, Ax], B: Tensor[T, Ax])(implicit evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-            Short
-          ]#or[Int]#or[Long]#or[UNil]#create
-        ], 
-        evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
-    ): Tensor[T1, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(A,B)
-      (callOp(name, "GreaterOrEqual", allInputs, map))
-    }
-  }
+   trait GreaterOrEqualV12 extends Operator {
+      def GreaterOrEqualV12[@sp T, @sp T1, Ax <: Axes](
+          name: String,
+          A: Tensor[T, Ax],
+          B: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+              Short
+            ]#or[Int]#or[Long]#or[UNil]#create
+          ],
+          evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
+      ): Tensor[T1, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(A, B)
+         (callOp(name, "GreaterOrEqual", allInputs, map))
+      }
+   }
 
-  trait GreaterV9 extends Operator {
-    def GreaterV9[
-        @sp T,
-        @sp T1
-    , Ax <: Axes](name: String, A: Tensor[T, Ax], B: Tensor[T, Ax])(implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-            Short
-          ]#or[Int]#or[Long]#or[UNil]#create
-        ],
-        evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
-    ): Tensor[T1, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(A,B)
-      (callOp(name, "Greater", allInputs, map))
-    }
-  }
+   trait GreaterV9 extends Operator {
+      def GreaterV9[@sp T, @sp T1, Ax <: Axes](name: String, A: Tensor[T, Ax], B: Tensor[T, Ax])(
+          implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+              Short
+            ]#or[Int]#or[Long]#or[UNil]#create
+          ],
+          evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
+      ): Tensor[T1, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(A, B)
+         (callOp(name, "Greater", allInputs, map))
+      }
+   }
 
-  //Not supported, missing in ONNXJS
-  /*
+   //Not supported, missing in ONNXJS
+   /*
   trait HardSigmoidV6 extends Operator {
     def HardSigmoidV6[@sp T <: Float16 | Float | Double, Ax <: Axes](
         name: String,
@@ -1649,25 +1639,25 @@ package object onnx {
       (callOp(name, "Imputer", allInputs, map))
     }
   }
-*/
-  trait InstanceNormalizationV6 extends Operator {
-    def InstanceNormalizationV6[@sp T, Ax <: Axes, Bx <: Axes](
-        name: String,
-        epsilon: Option[(Float)] = None,
-        input: Tensor[T, Ax],
-        scale: Tensor[T, Bx],
-        B: Tensor[T, Bx]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map("epsilon" -> epsilon)
-      val allInputs             = Seq(input, scale, B)
-      (callOp(name, "InstanceNormalization", allInputs, map))
-    }
-  }
+    */
+   trait InstanceNormalizationV6 extends Operator {
+      def InstanceNormalizationV6[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          epsilon: Option[(Float)] = None,
+          input: Tensor[T, Ax],
+          scale: Tensor[T, Bx],
+          B: Tensor[T, Bx]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map("epsilon" -> epsilon)
+         val allInputs             = Seq(input, scale, B)
+         (callOp(name, "InstanceNormalization", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait InstanceNormalizationV1 extends Operator {
     def InstanceNormalizationV1[@sp T <: Float16 | Float | Double, Ax <: Axes](
         name: String,
@@ -1706,41 +1696,38 @@ package object onnx {
       (callOp(name, "IsInf", allInputs, map))
     }
   }
-*/
-  trait IsNaNV9 extends Operator {
-    def IsNaNV9[
-        @sp T1,
-        @sp T2
-    , Ax <: Axes](name: String, X: Tensor[T1, Ax])(implicit
-        evT1: Contains[T1, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
-        evT2: Contains[T2, Union[Boolean]#or[UNil]#create]
-    ): Tensor[T2, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(X)
-      (callOp(name, "IsNaN", allInputs, map))
-    }
-  }
+    */
+   trait IsNaNV9 extends Operator {
+      def IsNaNV9[@sp T1, @sp T2, Ax <: Axes](name: String, X: Tensor[T1, Ax])(implicit
+          evT1: Contains[T1, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+          evT2: Contains[T2, Union[Boolean]#or[UNil]#create]
+      ): Tensor[T2, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(X)
+         (callOp(name, "IsNaN", allInputs, map))
+      }
+   }
 
-  trait LRNV1 extends Operator {
-    def LRNV1[@sp T, Ax <: Axes](
-        name: String,
-        alpha: Option[(Float)] = None,
-        beta: Option[(Float)] = None,
-        bias: Option[(Float)] = None,
-        size: (Int),
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] =
-        Map("alpha" -> alpha, "beta" -> beta, "bias" -> bias, "size" -> size)
-      val allInputs = Seq(X)
-      (callOp(name, "LRN", allInputs, map))
-    }
-  }
+   trait LRNV1 extends Operator {
+      def LRNV1[@sp T, Ax <: Axes](
+          name: String,
+          alpha: Option[(Float)] = None,
+          beta: Option[(Float)] = None,
+          bias: Option[(Float)] = None,
+          size: (Int),
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] =
+            Map("alpha" -> alpha, "beta" -> beta, "bias" -> bias, "size" -> size)
+         val allInputs = Seq(X)
+         (callOp(name, "LRN", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait LSTMV7 extends Operator {
     def LSTMV7[
         @sp T <: Float16 | Float | Double,
@@ -1814,9 +1801,9 @@ package object onnx {
       (callOp(name, "LSTM", allInputs, map))
     }
   }
-*/
-  //Not supported, ONNX ML
-  /*
+    */
+   //Not supported, ONNX ML
+   /*
   trait LabelEncoderV2 extends Operator {
     def LabelEncoderV2[
         @sp T1 <: String | Long | Float,
@@ -1870,61 +1857,61 @@ package object onnx {
       (callOp(name, "LabelEncoder", allInputs, map))
     }
   }
-*/
+    */
 
-  trait LeakyReluV6 extends Operator {
-    def LeakyReluV6[@sp T, Ax <: Axes](
-        name: String,
-        alpha: Option[(Float)] = None,
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map("alpha" -> alpha)
-      val allInputs             = Seq(X)
-      (callOp(name, "LeakyRelu", allInputs, map))
-    }
-  }
-  
-  trait LessOrEqualV12 extends Operator {
-    def LessOrEqualV12[
-        @sp T,
-        @sp T1
-    , Ax <: Axes](name: String, A: Tensor[T, Ax], B: Tensor[T, Ax])(implicit evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-            Short
-          ]#or[Int]#or[Long]#or[UNil]#create
-        ], 
-        evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
-    ): Tensor[T1, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(A,B)
-      (callOp(name, "LessOrEqual", allInputs, map))
-    }
-  }
+   trait LeakyReluV6 extends Operator {
+      def LeakyReluV6[@sp T, Ax <: Axes](
+          name: String,
+          alpha: Option[(Float)] = None,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map("alpha" -> alpha)
+         val allInputs             = Seq(X)
+         (callOp(name, "LeakyRelu", allInputs, map))
+      }
+   }
 
-  trait LessV9 extends Operator {
-    def LessV9[
-        @sp T,
-        @sp T1
-    , Ax <: Axes](name: String, A: Tensor[T, Ax], B: Tensor[T, Ax])(implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-            Short
-          ]#or[Int]#or[Long]#or[UNil]#create
-        ],
-        evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
-    ): Tensor[T1, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(A,B)
-      (callOp(name, "Less", allInputs, map))
-    }
-  }
+   trait LessOrEqualV12 extends Operator {
+      def LessOrEqualV12[@sp T, @sp T1, Ax <: Axes](
+          name: String,
+          A: Tensor[T, Ax],
+          B: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+              Short
+            ]#or[Int]#or[Long]#or[UNil]#create
+          ],
+          evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
+      ): Tensor[T1, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(A, B)
+         (callOp(name, "LessOrEqual", allInputs, map))
+      }
+   }
 
-  //Not supported, ONNX ML
-  /*
+   trait LessV9 extends Operator {
+      def LessV9[@sp T, @sp T1, Ax <: Axes](name: String, A: Tensor[T, Ax], B: Tensor[T, Ax])(
+          implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+              Short
+            ]#or[Int]#or[Long]#or[UNil]#create
+          ],
+          evT1: Contains[T1, Union[Boolean]#or[UNil]#create]
+      ): Tensor[T1, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(A, B)
+         (callOp(name, "Less", allInputs, map))
+      }
+   }
+
+   //Not supported, ONNX ML
+   /*
   trait LinearClassifierV1 extends Operator {
     def LinearClassifierV1[
         @sp T1 <: Float | Double | Long | Int,
@@ -1971,9 +1958,9 @@ package object onnx {
       (callOp(name, "LinearRegressor", allInputs, map))
     }
   }
-*/
-  //Not supported, missing from ONNXJS
-  /*
+    */
+   //Not supported, missing from ONNXJS
+   /*
   trait LogSoftmaxV11 extends Operator {
     def LogSoftmaxV11[@sp T <: Float16 | Float | Double, Ax <: Axes](
         name: String,
@@ -1997,22 +1984,22 @@ package object onnx {
       (callOp(name, "LogSoftmax", allInputs, map))
     }
   }
-*/
-  trait LogV6 extends Operator {
-    def LogV6[@sp T, Ax <: Axes](
-        name: String,
-        input: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-        ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input)
-      (callOp(name, "Log", allInputs, map))
-    }
-  }
+    */
+   trait LogV6 extends Operator {
+      def LogV6[@sp T, Ax <: Axes](
+          name: String,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input)
+         (callOp(name, "Log", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait LoopV11 extends Operator {
     def LoopV11[
         @sp I <: Long,
@@ -2028,7 +2015,7 @@ package object onnx {
         v_initial: Seq[Tensor[V, _]]
     ): Tensor[V, _] = {
       val map: Map[String, Any] = Map("body" -> body)
-      val allInputs = 
+      val allInputs =
         Seq(M, cond) ++ (Tuple.fromArray(v_initial.toArray).asInstanceOf[Tuple])
 
       (callOp(name, "Loop", allInputs, map))
@@ -2153,28 +2140,27 @@ package object onnx {
       (callOp(name, "MatMulInteger", allInputs, map))
     }
   }
-*/
-  //TODO: Constraint
-  trait MatMulV9 extends Operator {
-    def MatMulV9[@sp T, Ax <: Axes, Bx <: Axes, Cx <: Axes](
-        name: String,
-        A: Tensor[T, Ax],
-        B: Tensor[T, Bx]
-    )(
-        implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-        ]
-    ): Tensor[T, Cx] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(A,B)
-      (callOp(name, "MatMul", allInputs, map))
-    }
-  }
+    */
+   //TODO: Constraint
+   trait MatMulV9 extends Operator {
+      def MatMulV9[@sp T, Ax <: Axes, Bx <: Axes, Cx <: Axes](
+          name: String,
+          A: Tensor[T, Ax],
+          B: Tensor[T, Bx]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
+          ]
+      ): Tensor[T, Cx] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(A, B)
+         (callOp(name, "MatMul", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait MaxPoolV12 extends Operator {
     def MaxPoolV12[
         @sp T <: Float16 | Float | Double | Byte | UByte,
@@ -2232,65 +2218,62 @@ package object onnx {
       (callOp(name, "MaxPool", allInputs, map))
     }
   }
-*/
-  //TODO: constraints
-  trait MaxPoolV10 extends Operator {
-    def MaxPoolV10[
-        @sp T,
-        @sp I
-    , Ax <: Axes, Bx <: Axes](
-        name: String,
-        auto_pad: Option[(String)] = None,
-        ceil_mode: Option[(Int)] = None,
-        dilations: Option[(Array[Int])] = None,
-        kernel_shape: (Array[Int]),
-        pads: Option[(Array[Int])] = None,
-        storage_order: Option[(Int)] = None,
-        strides: Option[(Array[Int])] = None,
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
-        evI: Contains[I, Union[Long]#or[UNil]#create]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map(
-        "auto_pad"      -> auto_pad,
-        "ceil_mode"     -> ceil_mode,
-        "dilations"     -> dilations,
-        "kernel_shape"  -> kernel_shape,
-        "pads"          -> pads,
-        "storage_order" -> storage_order,
-        "strides"       -> strides
-      )
-      val allInputs = Seq(X)
-      (callOp(name, "MaxPool", allInputs, map))
-    }
-  }
-  
-  trait MaxPoolV1 extends Operator {
-    def MaxPoolV1[@sp T, Ax <: Axes, Bx <: Axes](
-        name: String,
-        auto_pad: Option[(String)] = None,
-        kernel_shape: (Array[Int]),
-        pads: Option[(Array[Int])] = None,
-        strides: Option[(Array[Int])] = None,
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-//        evI: Contains[I, Union[Long]#or[UNil]#create]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map(
-        "auto_pad"     -> auto_pad,
-        "kernel_shape" -> kernel_shape,
-        "pads"         -> pads,
-        "strides"      -> strides
-      )
-      val allInputs = Seq(X)
-      (callOp(name, "MaxPool", allInputs, map))
-    }
-  }
+    */
+   //TODO: constraints
+   trait MaxPoolV10 extends Operator {
+      def MaxPoolV10[@sp T, @sp I, Ax <: Axes, Bx <: Axes](
+          name: String,
+          auto_pad: Option[(String)] = None,
+          ceil_mode: Option[(Int)] = None,
+          dilations: Option[(Array[Int])] = None,
+          kernel_shape: (Array[Int]),
+          pads: Option[(Array[Int])] = None,
+          storage_order: Option[(Int)] = None,
+          strides: Option[(Array[Int])] = None,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create],
+          evI: Contains[I, Union[Long]#or[UNil]#create]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map(
+           "auto_pad"      -> auto_pad,
+           "ceil_mode"     -> ceil_mode,
+           "dilations"     -> dilations,
+           "kernel_shape"  -> kernel_shape,
+           "pads"          -> pads,
+           "storage_order" -> storage_order,
+           "strides"       -> strides
+         )
+         val allInputs = Seq(X)
+         (callOp(name, "MaxPool", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   trait MaxPoolV1 extends Operator {
+      def MaxPoolV1[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          auto_pad: Option[(String)] = None,
+          kernel_shape: (Array[Int]),
+          pads: Option[(Array[Int])] = None,
+          strides: Option[(Array[Int])] = None,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+//        evI: Contains[I, Union[Long]#or[UNil]#create]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map(
+           "auto_pad"     -> auto_pad,
+           "kernel_shape" -> kernel_shape,
+           "pads"         -> pads,
+           "strides"      -> strides
+         )
+         val allInputs = Seq(X)
+         (callOp(name, "MaxPool", allInputs, map))
+      }
+   }
+
+   //Not supported, missing from ONNXJS
+   /*
   trait MaxRoiPoolV1 extends Operator {
     def MaxRoiPoolV1[@sp T <: Float16 | Float | Double, Ax <: Axes](
         name: String,
@@ -2345,21 +2328,19 @@ package object onnx {
       (callOp(name, "MaxUnpool", allInputs, map))
     }
   }
-*/
-  trait MaxV8 extends Operator {
-    def MaxV8[
-        @sp T
-    , Ax <: Axes](name: String, data_0: Seq[Tensor[T, Ax]])(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = data_0 
-      (callOp(name, "Max", allInputs, map))
-    }
-  }
+    */
+   trait MaxV8 extends Operator {
+      def MaxV8[@sp T, Ax <: Axes](name: String, data_0: Seq[Tensor[T, Ax]])(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = data_0
+         (callOp(name, "Max", allInputs, map))
+      }
+   }
 
-  //Not supported, missing in ONNXJS
-  /*
+   //Not supported, missing in ONNXJS
+   /*
   trait MeanSquaredDistanceV12 extends Operator {
     def MeanSquaredDistanceV12[@sp T <: Float16 | Float | Double, Ax <: Axes](
         name: String,
@@ -2419,35 +2400,36 @@ package object onnx {
       (callOp(name, "MeanVarianceNormalization", allInputs, map))
     }
   }
-*/
-  trait MinV8 extends Operator {
-    def MinV8[
-        @sp T
-    , Ax <: Axes](name: String, data_0: Seq[Tensor[T, Ax]])(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = data_0
-      (callOp(name, "Min", allInputs, map))
-    }
-  }
+    */
+   trait MinV8 extends Operator {
+      def MinV8[@sp T, Ax <: Axes](name: String, data_0: Seq[Tensor[T, Ax]])(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = data_0
+         (callOp(name, "Min", allInputs, map))
+      }
+   }
 
-  trait ModV10 extends Operator {
-    def ModV10[
-        @sp T
-    , Ax <: Axes](name: String, fmod: Option[(Int)] = None, A: Tensor[T, Ax], B: Tensor[T, Ax])(implicit
-        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-          Int
-        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map("fmod" -> fmod)
-      val allInputs             = Seq(A,B)
-      (callOp(name, "Mod", allInputs, map))
-    }
-  }
+   trait ModV10 extends Operator {
+      def ModV10[@sp T, Ax <: Axes](
+          name: String,
+          fmod: Option[(Int)] = None,
+          A: Tensor[T, Ax],
+          B: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+            Int
+          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map("fmod" -> fmod)
+         val allInputs             = Seq(A, B)
+         (callOp(name, "Mod", allInputs, map))
+      }
+   }
 
-  //Not supported, training not yet GA
-  /*
+   //Not supported, training not yet GA
+   /*
   trait MomentumV1 extends Operator {
     def MomentumV1[
         @sp T1 <: Float | Double,
@@ -2469,32 +2451,31 @@ package object onnx {
         "mode"             -> mode,
         "norm_coefficient" -> norm_coefficient
       )
-      val allInputs = 
+      val allInputs =
         Seq(R, T) ++ (Tuple.fromArray(inputs.toArray).asInstanceOf[Tuple])
       (callOp(name, "Momentum", allInputs, map))
     }
   }
-*/
-  trait MulV7 extends Operator {
-    def MulV7[@sp T, Ax <: Axes](
-        name: String,
-        A: Tensor[T, Ax],
-        B: Tensor[T, Ax]
-    )(
-        implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-        ]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(A,B)
-      (callOp(name, "Mul", allInputs, map))
-    }
-  }
+    */
+   trait MulV7 extends Operator {
+      def MulV7[@sp T, Ax <: Axes](
+          name: String,
+          A: Tensor[T, Ax],
+          B: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
+          ]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(A, B)
+         (callOp(name, "Mul", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait MultinomialV7 extends Operator {
     def MultinomialV7[
         @sp T1 <: Float16 | Float | Double,
@@ -2512,26 +2493,26 @@ package object onnx {
       (callOp(name, "Multinomial", allInputs, map))
     }
   }
-*/
+    */
 
-  trait NegV6 extends Operator {
-    def NegV6[@sp T, Ax <: Axes](
-        name: String,
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[Int]#or[Byte]#or[Short]#or[Long]#or[UNil]#create
-        ]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(X)
-      (callOp(name, "Neg", allInputs, map))
-    }
-  }
-  
-  //Not supported, missing from ONNXJS
-  /*
+   trait NegV6 extends Operator {
+      def NegV6[@sp T, Ax <: Axes](
+          name: String,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[Int]#or[Byte]#or[Short]#or[Long]#or[UNil]#create
+          ]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(X)
+         (callOp(name, "Neg", allInputs, map))
+      }
+   }
+
+   //Not supported, missing from ONNXJS
+   /*
   trait NegativeLogLikelihoodLossV12 extends Operator {
     def NegativeLogLikelihoodLossV12[
         @sp T <: Float16 | Float | Double,
@@ -2560,7 +2541,7 @@ package object onnx {
         score_threshold: Option[Tensor[Float,_]] = None
     ): Tensor[Long, _] = {
       val map: Map[String, Any] = Map("center_point_box" -> center_point_box)
-      val allInputs = 
+      val allInputs =
         Seq(boxes, scores, max_output_boxes_per_class, iou_threshold, score_threshold)
       (callOp(name, "NonMaxSuppression", allInputs, map))
     }
@@ -2577,7 +2558,7 @@ package object onnx {
         score_threshold: Option[Tensor[Float,_]] = None
     ): Tensor[Long, _] = {
       val map: Map[String, Any] = Map("center_point_box" -> center_point_box)
-      val allInputs = 
+      val allInputs =
         Seq(boxes, scores, max_output_boxes_per_class, iou_threshold, score_threshold)
       (callOp(name, "NonMaxSuppression", allInputs, map))
     }
@@ -2594,9 +2575,9 @@ package object onnx {
       (callOp(name, "NonZero", allInputs, map))
     }
   }
-*/
-  //Not supported, ONNX ML
-  /*
+    */
+   //Not supported, ONNX ML
+   /*
   trait NormalizerV1 extends Operator {
     def NormalizerV1[@sp T <: Float | Double | Long | Int, Ax <: Axes](
         name: String,
@@ -2608,20 +2589,20 @@ package object onnx {
       (callOp(name, "Normalizer", allInputs, map))
     }
   }
-*/
-  trait NotV1 extends Operator {
-    def NotV1[@sp T <: Boolean, Ax <: Axes](
-        name: String,
-        X: Tensor[T, Ax]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(X)
-      (callOp(name, "Not", allInputs, map))
-    }
-  }
+    */
+   trait NotV1 extends Operator {
+      def NotV1[@sp T <: Boolean, Ax <: Axes](
+          name: String,
+          X: Tensor[T, Ax]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(X)
+         (callOp(name, "Not", allInputs, map))
+      }
+   }
 
-  //Not supported, ONNX ML
-  /*
+   //Not supported, ONNX ML
+   /*
   trait OneHotEncoderV1 extends Operator {
     def OneHotEncoderV1[@sp T <: String | Long | Int | Float | Double, Ax <: Axes](
         name: String,
@@ -2676,90 +2657,88 @@ package object onnx {
       (callOp(name, "OneHot", allInputs, map))
     }
   }
-*/
+    */
 
-  trait OrV7 extends Operator {
-    def OrV7[@sp T <: Boolean, @sp T1 <: Boolean, Ax <: Axes](
-        name: String,
-        A: Tensor[T, Ax],
-        B: Tensor[T, Ax]
-    ): Tensor[T1, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(A,B)
-      (callOp(name, "Or", allInputs, map))
-    }
-  }
+   trait OrV7 extends Operator {
+      def OrV7[@sp T <: Boolean, @sp T1 <: Boolean, Ax <: Axes](
+          name: String,
+          A: Tensor[T, Ax],
+          B: Tensor[T, Ax]
+      ): Tensor[T1, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(A, B)
+         (callOp(name, "Or", allInputs, map))
+      }
+   }
 
-  trait OrV1 extends Operator {
-    def OrV1[@sp T <: Boolean, @sp T1 <: Boolean, Ax <: Axes](
-        name: String,
-        axis: Option[(Int)] = None,
-        broadcast: Option[(Int)] = None,
-        A: Tensor[T, Ax],
-        B: Tensor[T, Ax]
-    ): Tensor[T1, Ax] = {
-      val map: Map[String, Any] = Map("axis" -> axis, "broadcast" -> broadcast)
-      val allInputs             = Seq(A,B)
-      (callOp(name, "Or", allInputs, map))
-    }
-  }
+   trait OrV1 extends Operator {
+      def OrV1[@sp T <: Boolean, @sp T1 <: Boolean, Ax <: Axes](
+          name: String,
+          axis: Option[(Int)] = None,
+          broadcast: Option[(Int)] = None,
+          A: Tensor[T, Ax],
+          B: Tensor[T, Ax]
+      ): Tensor[T1, Ax] = {
+         val map: Map[String, Any] = Map("axis" -> axis, "broadcast" -> broadcast)
+         val allInputs             = Seq(A, B)
+         (callOp(name, "Or", allInputs, map))
+      }
+   }
 
-  trait PReluV9 extends Operator {
-    def PReluV9[@sp T, Ax <: Axes](
-        name: String,
-        X: Tensor[T, Ax],
-        slope: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-        ]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(X, slope)
-      (callOp(name, "PRelu", allInputs, map))
-    }
-  } 
+   trait PReluV9 extends Operator {
+      def PReluV9[@sp T, Ax <: Axes](
+          name: String,
+          X: Tensor[T, Ax],
+          slope: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
+          ]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(X, slope)
+         (callOp(name, "PRelu", allInputs, map))
+      }
+   }
 
-  trait PadV11 extends Operator {
-    def PadV11[
-        @sp T
-    , Ax <: Axes, Bx <: Axes, Cx <: Axes, Dx <: Axes](
-        name: String,
-        mode: Option[(String)] = None,
-        data: Tensor[T, Ax],
-        pads: Tensor[Long, Bx],
-        constant_value: Option[Tensor[T, Cx]] = None
-    )(implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-            Short
-          ]#or[Int]#or[Long]#or[UNil]#create
-        ]
-    ): Tensor[T, Dx] = {
-      val map: Map[String, Any] = Map("mode" -> mode)
-      val allInputs             = Seq(data, pads, constant_value)
-      (callOp(name, "Pad", allInputs, map))
-    }
-  }
+   trait PadV11 extends Operator {
+      def PadV11[@sp T, Ax <: Axes, Bx <: Axes, Cx <: Axes, Dx <: Axes](
+          name: String,
+          mode: Option[(String)] = None,
+          data: Tensor[T, Ax],
+          pads: Tensor[Long, Bx],
+          constant_value: Option[Tensor[T, Cx]] = None
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+              Short
+            ]#or[Int]#or[Long]#or[UNil]#create
+          ]
+      ): Tensor[T, Dx] = {
+         val map: Map[String, Any] = Map("mode" -> mode)
+         val allInputs             = Seq(data, pads, constant_value)
+         (callOp(name, "Pad", allInputs, map))
+      }
+   }
 
-  trait PowV7 extends Operator {
-    def PowV7[@sp T, Ax <: Axes](
-        name: String,
-        X: Tensor[T, Ax],
-        Y: Tensor[T, Ax]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(X,Y)
-      (callOp(name, "Pow", allInputs, map))
-    }
-  }
+   trait PowV7 extends Operator {
+      def PowV7[@sp T, Ax <: Axes](
+          name: String,
+          X: Tensor[T, Ax],
+          Y: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(X, Y)
+         (callOp(name, "Pow", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait QLinearConvV10 extends Operator {
     def QLinearConvV10[
         @sp T1 <: Byte | UByte,
@@ -2792,7 +2771,7 @@ package object onnx {
         "pads"         -> pads,
         "strides"      -> strides
       )
-      val allInputs = 
+      val allInputs =
         Seq(x, x_scale, x_zero_point, w, w_scale, w_zero_point, y_scale, y_zero_point, B)
       (callOp(name, "QLinearConv", allInputs, map))
     }
@@ -2815,7 +2794,7 @@ package object onnx {
         y_zero_point: Tensor[T3, _]
     ): Tensor[T3, _] = {
       val map: Map[String, Any] = Map()
-      val allInputs = 
+      val allInputs =
         Seq(a, a_scale, a_zero_point, b, b_scale, b_zero_point, y_scale, y_zero_point)
       (callOp(name, "QLinearMatMul", allInputs, map))
     }
@@ -2981,37 +2960,37 @@ package object onnx {
       (callOp(name, "RandomUniform", allInputs, map))
     }
   }
-*/
-  trait RangeV11 extends Operator {
-    def RangeV11[@sp T, Ax <: Axes, Bx <: Axes, Cx <: Axes, Dx <: Axes](
-        name: String,
-        start: Tensor[T, Ax],
-        limit: Tensor[T, Bx],
-        delta: Tensor[T, Cx]
-    )(implicit
-        evT: Contains[T, Union[Float]#or[Double]#or[Short]#or[Int]#or[Long]#or[UNil]#create]
-        ): Tensor[T, Dx] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(start, limit, delta)
-      (callOp(name, "Range", allInputs, map))
-    }
-  }
+    */
+   trait RangeV11 extends Operator {
+      def RangeV11[@sp T, Ax <: Axes, Bx <: Axes, Cx <: Axes, Dx <: Axes](
+          name: String,
+          start: Tensor[T, Ax],
+          limit: Tensor[T, Bx],
+          delta: Tensor[T, Cx]
+      )(implicit
+          evT: Contains[T, Union[Float]#or[Double]#or[Short]#or[Int]#or[Long]#or[UNil]#create]
+      ): Tensor[T, Dx] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(start, limit, delta)
+         (callOp(name, "Range", allInputs, map))
+      }
+   }
 
-  trait ReciprocalV6 extends Operator {
-    def ReciprocalV6[@sp T, Ax <: Axes](
-        name: String,
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(X)
-      (callOp(name, "Reciprocal", allInputs, map))
-    }
-  }
+   trait ReciprocalV6 extends Operator {
+      def ReciprocalV6[@sp T, Ax <: Axes](
+          name: String,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(X)
+         (callOp(name, "Reciprocal", allInputs, map))
+      }
+   }
 
-  //Not supported, missing in ONNXJS
-  /*
+   //Not supported, missing in ONNXJS
+   /*
   trait ReduceL1V11 extends Operator {
     def ReduceL1V11[
         @sp T <: UInt | ULong | Int | Long | Float16 | Float | Double
@@ -3101,189 +3080,177 @@ package object onnx {
       (callOp(name, "ReduceLogSumExp", allInputs, map))
     }
   }
-*/
-  //tf-dotty reduce eligible
-  trait ReduceLogSumV11 extends Operator {
-    def ReduceLogSumV11[
-        @sp T
-        , Ax <: Axes, Bx <: Axes](
-        name: String,
-        axes: Option[(Array[Int])] = None,
-        keepdims: Option[(Int)] = None,
-        data: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[
-          T,
-          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
-        ]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map("axes" -> axes, "keepdims" -> keepdims)
-      val allInputs             = Seq(data)
-      (callOp(name, "ReduceLogSum", allInputs, map))
-    }
-  }
-  
-  trait ReduceMaxV11 extends Operator {
-    def ReduceMaxV11[
-        @sp T
-    , Ax <: Axes, Bx <: Axes](
-        name: String,
-        axes: Option[(Array[Int])] = None,
-        keepdims: Option[(Int)] = None,
-        data: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[
-          T,
-          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
-        ]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map("axes" -> axes, "keepdims" -> keepdims)
-      val allInputs             = Seq(data)
-      (callOp(name, "ReduceMax", allInputs, map))
-    }
-  }
-  
-  //tf-dotty reduce eligible
-  trait ReduceMeanV11 extends Operator {
-    def ReduceMeanV11[
-        @sp T
-    , Ax <: Axes, Bx <: Axes](
-        name: String,
-        axes: Option[(Array[Int])] = None,
-        keepdims: Option[(Int)] = None,
-        data: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[
-          T,
-          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
-        ]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map("axes" -> axes, "keepdims" -> keepdims)
-      val allInputs             = Seq(data)
-      (callOp(name, "ReduceMean", allInputs, map))
-    }
-  }
-  
-  trait ReduceMinV11 extends Operator {
-    def ReduceMinV11[
-        @sp T
-    , Ax <: Axes, Bx <: Axes](
-        name: String,
-        axes: Option[(Array[Int])] = None,
-        keepdims: Option[(Int)] = None,
-        data: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[
-          T,
-          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
-        ]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map("axes" -> axes, "keepdims" -> keepdims)
-      val allInputs             = Seq(data)
-      (callOp(name, "ReduceMin", allInputs, map))
-    }
-  }
-  
-  //tf-dotty reduce eligible
-  trait ReduceProdV11 extends Operator {
-    def ReduceProdV11[
-        @sp T
-    , Ax <: Axes, Bx <: Axes](
-        name: String,
-        axes: Option[(Array[Int])] = None,
-        keepdims: Option[(Int)] = None,
-        data: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[
-          T,
-          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
-        ]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map("axes" -> axes, "keepdims" -> keepdims)
-      val allInputs             = Seq(data)
-      (callOp(name, "ReduceProd", allInputs, map))
-    }
-  }
-  
-  //tf-dotty reduce eligible
-  trait ReduceSumSquareV11 extends Operator {
-    def ReduceSumSquareV11[
-        @sp T
-    , Ax <: Axes, Bx <: Axes](
-        name: String,
-        axes: Option[(Array[Int])] = None,
-        keepdims: Option[(Int)] = None,
-        data: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[
-          T,
-          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
-        ]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map("axes" -> axes, "keepdims" -> keepdims)
-      val allInputs             = Seq(data)
-      (callOp(name, "ReduceSumSquare", allInputs, map))
-    }
-  }
-  
-  //tf-dotty reduce eligible
-  trait ReduceSumV11 extends Operator {
-    def ReduceSumV11[
-        @sp T
-    , Ax <: Axes, Bx <: Axes](
-        name: String,
-        axes: Option[(Array[Int])] = None,
-        keepdims: Option[(Int)] = None,
-        data: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[
-          T,
-          Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
-        ]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map("axes" -> axes, "keepdims" -> keepdims)
-      val allInputs             = Seq(data)
-      (callOp(name, "ReduceSum", allInputs, map))
-    }
-  }
-  
-  trait ReluV6 extends Operator {
-    def ReluV6[@sp T, Ax <: Axes](
-        name: String,
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(X)
-      (callOp(name, "Relu", allInputs, map))
-    }
-  }
+    */
+   //tf-dotty reduce eligible
+   trait ReduceLogSumV11 extends Operator {
+      def ReduceLogSumV11[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          axes: Option[(Array[Int])] = None,
+          keepdims: Option[(Int)] = None,
+          data: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+          ]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map("axes" -> axes, "keepdims" -> keepdims)
+         val allInputs             = Seq(data)
+         (callOp(name, "ReduceLogSum", allInputs, map))
+      }
+   }
 
-  //TODO: Constraint, //tf-dotty reshape eligible
-  //(given NumElements[Old] =:= NumElements[New]
-  //+ match types on axes
-  trait ReshapeV5 extends Operator {
-    def ReshapeV5[
-        @sp T 
-    , Ax <: Axes, Bx <: Axes, Cx <: Axes](name: String, data: Tensor[T, Ax], shapeInput: Tensor[Long, Bx])(implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-            Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
-            UNil
-          ]#create
-        ]
-    ): Tensor[T, Cx] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(data, shapeInput)
-      (callOp(name, "Reshape", allInputs, map))
-    }
-  }
-  
-  //Not supported, missing from ONNXJS
-  /*
+   trait ReduceMaxV11 extends Operator {
+      def ReduceMaxV11[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          axes: Option[(Array[Int])] = None,
+          keepdims: Option[(Int)] = None,
+          data: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+          ]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map("axes" -> axes, "keepdims" -> keepdims)
+         val allInputs             = Seq(data)
+         (callOp(name, "ReduceMax", allInputs, map))
+      }
+   }
+
+   //tf-dotty reduce eligible
+   trait ReduceMeanV11 extends Operator {
+      def ReduceMeanV11[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          axes: Option[(Array[Int])] = None,
+          keepdims: Option[(Int)] = None,
+          data: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+          ]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map("axes" -> axes, "keepdims" -> keepdims)
+         val allInputs             = Seq(data)
+         (callOp(name, "ReduceMean", allInputs, map))
+      }
+   }
+
+   trait ReduceMinV11 extends Operator {
+      def ReduceMinV11[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          axes: Option[(Array[Int])] = None,
+          keepdims: Option[(Int)] = None,
+          data: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+          ]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map("axes" -> axes, "keepdims" -> keepdims)
+         val allInputs             = Seq(data)
+         (callOp(name, "ReduceMin", allInputs, map))
+      }
+   }
+
+   //tf-dotty reduce eligible
+   trait ReduceProdV11 extends Operator {
+      def ReduceProdV11[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          axes: Option[(Array[Int])] = None,
+          keepdims: Option[(Int)] = None,
+          data: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+          ]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map("axes" -> axes, "keepdims" -> keepdims)
+         val allInputs             = Seq(data)
+         (callOp(name, "ReduceProd", allInputs, map))
+      }
+   }
+
+   //tf-dotty reduce eligible
+   trait ReduceSumSquareV11 extends Operator {
+      def ReduceSumSquareV11[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          axes: Option[(Array[Int])] = None,
+          keepdims: Option[(Int)] = None,
+          data: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+          ]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map("axes" -> axes, "keepdims" -> keepdims)
+         val allInputs             = Seq(data)
+         (callOp(name, "ReduceSumSquare", allInputs, map))
+      }
+   }
+
+   //tf-dotty reduce eligible
+   trait ReduceSumV11 extends Operator {
+      def ReduceSumV11[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          axes: Option[(Array[Int])] = None,
+          keepdims: Option[(Int)] = None,
+          data: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[UInt]#or[ULong]#or[Int]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create
+          ]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map("axes" -> axes, "keepdims" -> keepdims)
+         val allInputs             = Seq(data)
+         (callOp(name, "ReduceSum", allInputs, map))
+      }
+   }
+
+   trait ReluV6 extends Operator {
+      def ReluV6[@sp T, Ax <: Axes](
+          name: String,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(X)
+         (callOp(name, "Relu", allInputs, map))
+      }
+   }
+
+   //TODO: Constraint, //tf-dotty reshape eligible
+   //(given NumElements[Old] =:= NumElements[New]
+   //+ match types on axes
+   trait ReshapeV5 extends Operator {
+      def ReshapeV5[@sp T, Ax <: Axes, Bx <: Axes, Cx <: Axes](
+          name: String,
+          data: Tensor[T, Ax],
+          shapeInput: Tensor[Long, Bx]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+              Short
+            ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+              UNil
+            ]#create
+          ]
+      ): Tensor[T, Cx] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(data, shapeInput)
+         (callOp(name, "Reshape", allInputs, map))
+      }
+   }
+
+   //Not supported, missing from ONNXJS
+   /*
   trait ResizeV11 extends Operator {
     def ResizeV11[
         @sp T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -3332,9 +3299,9 @@ package object onnx {
       (callOp(name, "Resize", allInputs, map))
     }
   }
-*/
-  //Not supported, sequence op
-  /*
+    */
+   //Not supported, sequence op
+   /*
   trait ReverseSequenceV10 extends Operator {
     def ReverseSequenceV10[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -3352,9 +3319,9 @@ package object onnx {
       (callOp(name, "ReverseSequence", allInputs, map))
     }
   }
-*/
-  //Not supported, missing from ONNXJS
-  /*
+    */
+   //Not supported, missing from ONNXJS
+   /*
   trait RoiAlignV10 extends Operator {
     def RoiAlignV10[
         @sp T1 <: Float16 | Float | Double,
@@ -3381,22 +3348,22 @@ package object onnx {
       (callOp(name, "RoiAlign", allInputs, map))
     }
   }
-*/
-  trait RoundV11 extends Operator {
-    def RoundV11[@sp T, Ax <: Axes](
-        name: String,
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(X)
-      (callOp(name, "Round", allInputs, map))
-    }
-  }
+    */
+   trait RoundV11 extends Operator {
+      def RoundV11[@sp T, Ax <: Axes](
+          name: String,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(X)
+         (callOp(name, "Round", allInputs, map))
+      }
+   }
 
-  //Not supported, ONNX ML
-  /*
+   //Not supported, ONNX ML
+   /*
   trait SVMClassifierV1 extends Operator {
     def SVMClassifierV1[
         @sp T1 <: Float | Double | Long | Int,
@@ -3474,9 +3441,9 @@ package object onnx {
       (callOp(name, "Scaler", allInputs, map))
     }
   }
-*/
-  //Not supported, missing from ONNXJS
-  /*
+    */
+   //Not supported, missing from ONNXJS
+   /*
   trait ScanV11 extends Operator {
     def ScanV11[
         @sp V <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -3500,7 +3467,7 @@ package object onnx {
         "scan_output_axes"       -> scan_output_axes,
         "scan_output_directions" -> scan_output_directions
       )
-      val allInputs = 
+      val allInputs =
         Tuple.fromArray(initial_state_and_scan_inputs.toArray).asInstanceOf[Tuple]
       (callOp(name, "Scan", allInputs, map))
     }
@@ -3529,7 +3496,7 @@ package object onnx {
         "scan_output_axes"       -> scan_output_axes,
         "scan_output_directions" -> scan_output_directions
       )
-      val allInputs = 
+      val allInputs =
         Tuple.fromArray(initial_state_and_scan_inputs.toArray).asInstanceOf[Tuple]
       (callOp(name, "Scan", allInputs, map))
     }
@@ -3551,7 +3518,7 @@ package object onnx {
     ): Tensor[V, _] = {
       val map: Map[String, Any] =
         Map("body" -> body, "directions" -> directions, "num_scan_inputs" -> num_scan_inputs)
-      val allInputs = 
+      val allInputs =
         Seq(sequence_lens) ++ (Tuple
           .fromArray(initial_state_and_scan_inputs.toArray)
           .asInstanceOf[Tuple])
@@ -3661,9 +3628,9 @@ package object onnx {
       (callOp(name, "Selu", allInputs, map))
     }
   }
-*/
-  //Not supported, sequence op
-  /*
+    */
+   //Not supported, sequence op
+   /*
   trait SequenceAtV11 extends Operator {
     def SequenceAtV11[@sp S <: Seq[Tensor[UByte, _]] | Seq[Tensor[UShort, _]] | Seq[Tensor[UInt, _]] | Seq[
       Tensor[ULong, _]
@@ -3789,27 +3756,25 @@ package object onnx {
       (callOp(name, "SequenceLength", allInputs, map))
     }
   }
-*/
-  trait ShapeV1 extends Operator {
-    def ShapeV1[
-        @sp T, 
-        @sp T1 <: Long
-    , Ax <: Axes, Bx <: Axes](name: String, data: Tensor[T, Ax])(implicit
-        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-          Int
-        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
-          Complex[Double]
-        ]#or[UNil]#create],
-        evT1: Contains[T1, Union[Long]#or[UNil]#create]
-    ): Tensor[T1, Bx] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(data)
-      (callOp(name, "Shape", allInputs, map))
-    }
-  }
+    */
+   trait ShapeV1 extends Operator {
+      def ShapeV1[@sp T, @sp T1 <: Long, Ax <: Axes, Bx <: Axes](name: String, data: Tensor[T, Ax])(
+          implicit
+          evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+            Int
+          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+            Complex[Double]
+          ]#or[UNil]#create],
+          evT1: Contains[T1, Union[Long]#or[UNil]#create]
+      ): Tensor[T1, Bx] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(data)
+         (callOp(name, "Shape", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait ShrinkV9 extends Operator {
     def ShrinkV9[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double
@@ -3824,62 +3789,60 @@ package object onnx {
       (callOp(name, "Shrink", allInputs, map))
     }
   }
-*/
-  trait SigmoidV6 extends Operator {
-    def SigmoidV6[@sp T, Ax <: Axes](
-        name: String,
-        X: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(X)
-      (callOp(name, "Sigmoid", allInputs, map))
-    }
-  }
+    */
+   trait SigmoidV6 extends Operator {
+      def SigmoidV6[@sp T, Ax <: Axes](
+          name: String,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(X)
+         (callOp(name, "Sigmoid", allInputs, map))
+      }
+   }
 
-  trait SignV9 extends Operator {
-    def SignV9[
-        @sp T
-    , Ax <: Axes](name: String, input: Tensor[T, Ax])(implicit
-        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-          Int
-        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input)
-      (callOp(name, "Sign", allInputs, map))
-    }
-  }
+   trait SignV9 extends Operator {
+      def SignV9[@sp T, Ax <: Axes](name: String, input: Tensor[T, Ax])(implicit
+          evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+            Int
+          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input)
+         (callOp(name, "Sign", allInputs, map))
+      }
+   }
 
-  trait SinV7 extends Operator {
-    def SinV7[@sp T, Ax <: Axes](
-        name: String,
-        input: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input)
-      (callOp(name, "Sin", allInputs, map))
-    }
-  }
+   trait SinV7 extends Operator {
+      def SinV7[@sp T, Ax <: Axes](
+          name: String,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input)
+         (callOp(name, "Sin", allInputs, map))
+      }
+   }
 
-  trait SinhV9 extends Operator {
-    def SinhV9[@sp T, Ax <: Axes](
-        name: String,
-        input: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input)
-      (callOp(name, "Sinh", allInputs, map))
-    }
-  }
+   trait SinhV9 extends Operator {
+      def SinhV9[@sp T, Ax <: Axes](
+          name: String,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input)
+         (callOp(name, "Sinh", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait SizeV1 extends Operator {
     def SizeV1[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -3892,35 +3855,41 @@ package object onnx {
       (callOp(name, "Size", allInputs, map))
     }
   }
-*/
-  //TODO: Constraint
-  trait SliceV11 extends Operator {
-    def SliceV11[
-        @sp T,
-        @sp Tind
-    , Ax <: Axes, Bx <: Axes, Cx <: Axes, Dx <: Axes, Ex <: Axes, Fx <: Axes](
-        name: String,
-        data: Tensor[T, Ax],
-        starts: Tensor[Tind, Bx],
-        ends: Tensor[Tind, Cx],
-        axes: Option[Tensor[Tind, Dx]] = None,
-        steps: Option[Tensor[Tind, Ex]] = None
-    )(implicit
-        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-          Int
-        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
-          Complex[Double]
-        ]#or[UNil]#create],
-        evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
-    ): Tensor[T, Fx] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(data, starts, ends, axes, steps)
-      (callOp(name, "Slice", allInputs, map))
-    }
-  }
+    */
+   //TODO: Constraint
+   trait SliceV11 extends Operator {
+      def SliceV11[
+          @sp T,
+          @sp Tind,
+          Ax <: Axes,
+          Bx <: Axes,
+          Cx <: Axes,
+          Dx <: Axes,
+          Ex <: Axes,
+          Fx <: Axes
+      ](
+          name: String,
+          data: Tensor[T, Ax],
+          starts: Tensor[Tind, Bx],
+          ends: Tensor[Tind, Cx],
+          axes: Option[Tensor[Tind, Dx]] = None,
+          steps: Option[Tensor[Tind, Ex]] = None
+      )(implicit
+          evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+            Int
+          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+            Complex[Double]
+          ]#or[UNil]#create],
+          evTind: Contains[Tind, Union[Int]#or[Long]#or[UNil]#create]
+      ): Tensor[T, Fx] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(data, starts, ends, axes, steps)
+         (callOp(name, "Slice", allInputs, map))
+      }
+   }
 
-  //Not supported, missing in ONNXJS
-  /*
+   //Not supported, missing in ONNXJS
+   /*
    //To consider restoring, need a loss function
   trait SoftmaxCrossEntropyLossV12 extends Operator {
     def SoftmaxCrossEntropyLossV12[
@@ -3938,23 +3907,23 @@ package object onnx {
       (callOp(name, "SoftmaxCrossEntropyLoss", allInputs, map))
     }
   }
-*/
-  trait SoftmaxV11 extends Operator {
-    def SoftmaxV11[@sp T, Ax <: Axes, Bx <: Axes](
-        name: String,
-        axis: Option[(Int)] = None,
-        input: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map("axis" -> axis)
-      val allInputs             = Seq(input)
-      (callOp(name, "Softmax", allInputs, map))
-    }
-  }
+    */
+   trait SoftmaxV11 extends Operator {
+      def SoftmaxV11[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          axis: Option[(Int)] = None,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map("axis" -> axis)
+         val allInputs             = Seq(input)
+         (callOp(name, "Softmax", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait SoftplusV1 extends Operator {
     def SoftplusV1[@sp T <: Float16 | Float | Double, Ax <: Axes](
         name: String,
@@ -4071,39 +4040,41 @@ package object onnx {
       (callOp(name, "Split", allInputs, map))
     }
   }
-*/
-  trait SqrtV6 extends Operator {
-    def SqrtV6[@sp T, Ax <: Axes](
-        name: String,
-        X: Tensor[T, Ax]
-    )(
-        implicit evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(X)
-      (callOp(name, "Sqrt", allInputs, map))
-    }
-  }
+    */
+   trait SqrtV6 extends Operator {
+      def SqrtV6[@sp T, Ax <: Axes](
+          name: String,
+          X: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(X)
+         (callOp(name, "Sqrt", allInputs, map))
+      }
+   }
 
-  //TODO: Constraint
-  trait SqueezeV11 extends Operator {
-    def SqueezeV11[
-        @sp T 
-    , Ax <: Axes, Bx <: Axes](name: String, axes: Option[(Array[Int])] = None, data: Tensor[T, Ax])(implicit
-        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-          Int
-        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
-          Complex[Double]
-        ]#or[UNil]#create]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map("axes" -> axes)
-      val allInputs             = Seq(data)
-      (callOp(name, "Squeeze", allInputs, map))
-    }
-  }
+   //TODO: Constraint
+   trait SqueezeV11 extends Operator {
+      def SqueezeV11[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          axes: Option[(Array[Int])] = None,
+          data: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+            Int
+          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+            Complex[Double]
+          ]#or[UNil]#create]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map("axes" -> axes)
+         val allInputs             = Seq(data)
+         (callOp(name, "Squeeze", allInputs, map))
+      }
+   }
 
-  //Not supported, ONNX ML
-  /*
+   //Not supported, ONNX ML
+   /*
   trait StringNormalizerV10 extends Operator {
     def StringNormalizerV10(
         name: String,
@@ -4123,66 +4094,65 @@ package object onnx {
       (callOp(name, "StringNormalizer", allInputs, map))
     }
   }
-*/
-  trait SubV7 extends Operator {
-    def SubV7[@sp T, Ax <: Axes](
-        name: String,
-        A: Tensor[T, Ax],
-        B: Tensor[T, Ax]
-    )(
-        implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
-        ]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(A,B)
-      (callOp(name, "Sub", allInputs, map))
-    }
-  }
+    */
+   trait SubV7 extends Operator {
+      def SubV7[@sp T, Ax <: Axes](
+          name: String,
+          A: Tensor[T, Ax],
+          B: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UInt]#or[ULong]#or[Int]#or[Long]#or[UNil]#create
+          ]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(A, B)
+         (callOp(name, "Sub", allInputs, map))
+      }
+   }
 
-  trait SumV8 extends Operator {
-    def SumV8[@sp T, Ax <: Axes](
-        name: String,
-        data_0: Seq[Tensor[T, Ax]]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = data_0 
-      (callOp(name, "Sum", allInputs, map))
-    }
-  } 
+   trait SumV8 extends Operator {
+      def SumV8[@sp T, Ax <: Axes](
+          name: String,
+          data_0: Seq[Tensor[T, Ax]]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = data_0
+         (callOp(name, "Sum", allInputs, map))
+      }
+   }
 
-  trait TanV7 extends Operator {
-    def TanV7[@sp T, Ax <: Axes](
-        name: String,
-        input: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input)
-      (callOp(name, "Tan", allInputs, map))
-    }
-  }
+   trait TanV7 extends Operator {
+      def TanV7[@sp T, Ax <: Axes](
+          name: String,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input)
+         (callOp(name, "Tan", allInputs, map))
+      }
+   }
 
-  trait TanhV6 extends Operator {
-    def TanhV6[@sp T, Ax <: Axes](
-        name: String,
-        input: Tensor[T, Ax]
-    )(implicit
-        evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
-    ): Tensor[T, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input)
-      (callOp(name, "Tanh", allInputs, map))
-    }
-  }
+   trait TanhV6 extends Operator {
+      def TanhV6[@sp T, Ax <: Axes](
+          name: String,
+          input: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[Float16]#or[Float]#or[Double]#or[UNil]#create]
+      ): Tensor[T, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input)
+         (callOp(name, "Tanh", allInputs, map))
+      }
+   }
 
-  //Not supported, ONNX ML
-  /*
+   //Not supported, ONNX ML
+   /*
   trait TfIdfVectorizerV9 extends Operator {
     def TfIdfVectorizerV9[
         @sp T <: String | Int | Long,
@@ -4215,9 +4185,9 @@ package object onnx {
       (callOp(name, "TfIdfVectorizer", allInputs, map))
     }
   }
-*/
-  //Not supported, missing from ONNXJS
-  /*
+    */
+   //Not supported, missing from ONNXJS
+   /*
   trait ThresholdedReluV10 extends Operator {
     def ThresholdedReluV10[@sp T <: Float16 | Float | Double, Ax <: Axes](
         name: String,
@@ -4229,30 +4199,31 @@ package object onnx {
       (callOp(name, "ThresholdedRelu", allInputs, map))
     }
   }
-*/
-  trait TileV6 extends Operator {
-    def TileV6[
-        @sp T, 
-        @sp T1
-    , Ax <: Axes, Bx <: Axes, Cx <: Axes](name: String, input: Tensor[T, Ax], repeats: Tensor[T1, Bx])(implicit
-        evT: Contains[
-          T,
-          Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
-            Short
-          ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
-            UNil
-          ]#create
-        ],
-        evT1: Contains[T1, Union[Long]#or[UNil]#create]
-    ): Tensor[T, Cx] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(input, repeats)
-      (callOp(name, "Tile", allInputs, map))
-    }
-  }
+    */
+   trait TileV6 extends Operator {
+      def TileV6[@sp T, @sp T1, Ax <: Axes, Bx <: Axes, Cx <: Axes](
+          name: String,
+          input: Tensor[T, Ax],
+          repeats: Tensor[T1, Bx]
+      )(implicit
+          evT: Contains[
+            T,
+            Union[Float16]#or[Float]#or[Double]#or[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[
+              Short
+            ]#or[Int]#or[Long]#or[String]#or[Boolean]#or[Complex[Float]]#or[Complex[Double]]#or[
+              UNil
+            ]#create
+          ],
+          evT1: Contains[T1, Union[Long]#or[UNil]#create]
+      ): Tensor[T, Cx] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(input, repeats)
+         (callOp(name, "Tile", allInputs, map))
+      }
+   }
 
-  //Not supported, missing from ONNXJS
-  /*
+   //Not supported, missing from ONNXJS
+   /*
   trait TopKV11 extends Operator {
     def TopKV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double,
@@ -4297,26 +4268,28 @@ package object onnx {
       (callOp(name, "TopK", allInputs, map))
     }
   }
-*/
-  //TODO: Constraint
-  trait TransposeV1 extends Operator {
-    def TransposeV1[
-        @sp T 
-    , Ax <: Axes, Bx <: Axes](name: String, perm: Option[(Array[Int])] = None, data: Tensor[T, Ax])(implicit
-        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-          Int
-        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
-          Complex[Double]
-        ]#or[UNil]#create]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map("perm" -> perm)
-      val allInputs             = Seq(data)
-      (callOp(name, "Transpose", allInputs, map))
-    }
-  }
+    */
+   //TODO: Constraint
+   trait TransposeV1 extends Operator {
+      def TransposeV1[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          perm: Option[(Array[Int])] = None,
+          data: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+            Int
+          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+            Complex[Double]
+          ]#or[UNil]#create]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map("perm" -> perm)
+         val allInputs             = Seq(data)
+         (callOp(name, "Transpose", allInputs, map))
+      }
+   }
 
-  //Not supported, ONNX ML
-  /*
+   //Not supported, ONNX ML
+   /*
   trait TreeEnsembleClassifierV1 extends Operator {
     def TreeEnsembleClassifierV1[
         @sp T1 <: Float | Double | Long | Int,
@@ -4411,10 +4384,10 @@ package object onnx {
       (callOp(name, "TreeEnsembleRegressor", allInputs, map))
     }
   }
-*/
+    */
 
-  //Not supported - ?
-  /*
+   //Not supported - ?
+   /*
   trait UnfoldToDepthV12 extends Operator {
     def UnfoldToDepthV12[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double
@@ -4436,9 +4409,9 @@ package object onnx {
       (callOp(name, "UnfoldToDepth", allInputs, map))
     }
   }
-*/
-  //Not supported, missing in ONNXJS
-  /*
+    */
+   //Not supported, missing in ONNXJS
+   /*
   trait UniqueV11 extends Operator {
     def UniqueV11[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -4455,25 +4428,27 @@ package object onnx {
       (callOp(name, "Unique", allInputs, map))
     }
   }
-*/
-  trait UnsqueezeV11 extends Operator {
-    def UnsqueezeV11[
-        @sp T 
-    , Ax <: Axes, Bx <: Axes](name: String, axes: (Array[Int]), data: Tensor[T, Ax])(implicit
-        evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
-          Int
-        ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
-          Complex[Double]
-        ]#or[UNil]#create]
-    ): Tensor[T, Bx] = {
-      val map: Map[String, Any] = Map("axes" -> axes)
-      val allInputs             = Seq(data)
-      (callOp(name, "Unsqueeze", allInputs, map))
-    }
-  }
+    */
+   trait UnsqueezeV11 extends Operator {
+      def UnsqueezeV11[@sp T, Ax <: Axes, Bx <: Axes](
+          name: String,
+          axes: (Array[Int]),
+          data: Tensor[T, Ax]
+      )(implicit
+          evT: Contains[T, Union[UByte]#or[UShort]#or[UInt]#or[ULong]#or[Byte]#or[Short]#or[
+            Int
+          ]#or[Long]#or[Float16]#or[Float]#or[Double]#or[String]#or[Boolean]#or[Complex[Float]]#or[
+            Complex[Double]
+          ]#or[UNil]#create]
+      ): Tensor[T, Bx] = {
+         val map: Map[String, Any] = Map("axes" -> axes)
+         val allInputs             = Seq(data)
+         (callOp(name, "Unsqueeze", allInputs, map))
+      }
+   }
 
-  //Not supported, Deprecated
-  /*
+   //Not supported, Deprecated
+   /*
   trait UpsampleV10 extends Operator {
     def UpsampleV10[
         @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | Float16 | Float | Double | String | Boolean | Complex[
@@ -4546,9 +4521,9 @@ package object onnx {
       (callOp(name, "Upsample", allInputs, map))
     }
   }
-*/
-  //Not supported, missing from ONNXJS
-  /*
+    */
+   //Not supported, missing from ONNXJS
+   /*
   trait WhereV9 extends Operator {
     def WhereV9[
         @sp B <: Boolean,
@@ -4561,35 +4536,35 @@ package object onnx {
       (callOp(name, "Where", allInputs, map))
     }
   }
-*/
+    */
 
-  trait XorV7 extends Operator {
-    def XorV7[@sp T <: Boolean, @sp T1 <: Boolean, Ax <: Axes](
-        name: String,
-        A: Tensor[T, Ax],
-        B: Tensor[T, Ax]
-    ): Tensor[T1, Ax] = {
-      val map: Map[String, Any] = Map()
-      val allInputs             = Seq(A,B)
-      (callOp(name, "Xor", allInputs, map))
-    }
-  }
+   trait XorV7 extends Operator {
+      def XorV7[@sp T <: Boolean, @sp T1 <: Boolean, Ax <: Axes](
+          name: String,
+          A: Tensor[T, Ax],
+          B: Tensor[T, Ax]
+      ): Tensor[T1, Ax] = {
+         val map: Map[String, Any] = Map()
+         val allInputs             = Seq(A, B)
+         (callOp(name, "Xor", allInputs, map))
+      }
+   }
 
-  trait XorV1 extends Operator {
-    def XorV1[@sp T <: Boolean, @sp T1 <: Boolean, Ax <: Axes](
-        name: String,
-        axis: Option[(Int)] = None,
-        broadcast: Option[(Int)] = None,
-        A: Tensor[T, Ax],
-        B: Tensor[T, Ax]
-    ): Tensor[T1, Ax] = {
-      val map: Map[String, Any] = Map("axis" -> axis, "broadcast" -> broadcast)
-      val allInputs             = Seq(A,B)
-      (callOp(name, "Xor", allInputs, map))
-    }
-  }
-  //Not supported, ONNX ML
-  /*
+   trait XorV1 extends Operator {
+      def XorV1[@sp T <: Boolean, @sp T1 <: Boolean, Ax <: Axes](
+          name: String,
+          axis: Option[(Int)] = None,
+          broadcast: Option[(Int)] = None,
+          A: Tensor[T, Ax],
+          B: Tensor[T, Ax]
+      ): Tensor[T1, Ax] = {
+         val map: Map[String, Any] = Map("axis" -> axis, "broadcast" -> broadcast)
+         val allInputs             = Seq(A, B)
+         (callOp(name, "Xor", allInputs, map))
+      }
+   }
+   //Not supported, ONNX ML
+   /*
   trait ZipMapV1 extends Operator {
     def ZipMapV1[@sp T <: Seq[Map[String, Float]] | Seq[Map[Long, Float]], Ax <: Axes](
         name: String,
@@ -4605,5 +4580,5 @@ package object onnx {
       (callOp(name, "ZipMap", allInputs, map))
     }
   }
-*/
+    */
 }

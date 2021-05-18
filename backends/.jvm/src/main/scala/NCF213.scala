@@ -17,36 +17,34 @@ import scala.io.Source
 class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[Long, Long])
     extends AutoCloseable {
 
+   val fullORTBackend = new ORTModelBackend(byteArray)
 
-  val fullORTBackend = new ORTModelBackend(byteArray)
-
-  def fullNCF(
-      inputDataactual_input_1: Tensor[Long, _],
-      inputDatalearned_0: Tensor[Long, _]
-  ): Tensor[Float, _] = {
+   def fullNCF(
+       inputDataactual_input_1: Tensor[Long, _],
+       inputDatalearned_0: Tensor[Long, _]
+   ): Tensor[Float, _] = {
 //    val scope = new PointerScope()
-    val nodeactual_input_1 = Tuple1((
-      inputDataactual_input_1._1.map(y => userIdsMap(y)),
-      inputDataactual_input_1._2)
-    )
+      val nodeactual_input_1 = Tuple1(
+        (inputDataactual_input_1._1.map(y => userIdsMap(y)), inputDataactual_input_1._2)
+      )
 
-    val nodelearned_0 = Tuple1((inputDatalearned_0._1.map(y => itemIdsMap(y)), inputDatalearned_0._2))
+      val nodelearned_0 = Tuple1(
+        (inputDatalearned_0._1.map(y => itemIdsMap(y)), inputDatalearned_0._2)
+      )
 
-    //Note: Don't need to specify all the type params except in Dotty
-    val nodeFullOutput: Tensor[Float, _] =
-      fullORTBackend
-        .fullModel[Float, Axes](
-          //TODO: testing less than enough inputs
-          Seq(nodeactual_input_1)
-        )
+      //Note: Don't need to specify all the type params except in Dotty
+      val nodeFullOutput: Tensor[Float, _] =
+         fullORTBackend
+            .fullModel[Float, Axes](
+              //TODO: testing less than enough inputs
+              Seq(nodeactual_input_1)
+            )
 
+      nodeFullOutput //.asInstanceOf[Tensor[Float]] //Bad
+   }
 
+   override def close(): Unit = {
+      fullORTBackend.close
 
-    nodeFullOutput //.asInstanceOf[Tensor[Float]] //Bad
-  }
-
-  override def close(): Unit = {
-    fullORTBackend.close
-
-  }
+   }
 }

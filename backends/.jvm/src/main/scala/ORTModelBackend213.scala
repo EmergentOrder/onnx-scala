@@ -15,53 +15,51 @@ class ORTModelBackend(onnxBytes: Array[Byte])
     with ORTOperatorBackend
     with AutoCloseable {
 
-  def getInputAndOutputNodeNamesAndDims(sess: OrtSession) = {
-    val input_node_names = session.getInputNames
- 
-    val inputNodeDims = session.getInputInfo.values.asScala.map(_.getInfo.asInstanceOf[TensorInfo].getShape)
+   def getInputAndOutputNodeNamesAndDims(sess: OrtSession) = {
+      val input_node_names = session.getInputNames
 
-    val output_node_names = session.getOutputNames
+      val inputNodeDims =
+         session.getInputInfo.values.asScala.map(_.getInfo.asInstanceOf[TensorInfo].getShape)
 
-    (input_node_names.asScala.toList, inputNodeDims.toArray, output_node_names.asScala.toList)
-  }
+      val output_node_names = session.getOutputNames
 
-  val session = getSession(onnxBytes)
+      (input_node_names.asScala.toList, inputNodeDims.toArray, output_node_names.asScala.toList)
+   }
 
-  val allNodeNamesAndDims = getInputAndOutputNodeNamesAndDims(session)
+   val session = getSession(onnxBytes)
 
-  override def fullModel[
-      T,
-      Ax <: Axes
-  ](
-      inputs: Seq[_]
-  ): Tensor[T, Ax] = {
+   val allNodeNamesAndDims = getInputAndOutputNodeNamesAndDims(session)
 
+   override def fullModel[
+       T,
+       Ax <: Axes
+   ](
+       inputs: Seq[_]
+   ): Tensor[T, Ax] = {
 
-
-
-        val size = inputs.size
-        val inputTensors = (0 until size).map { i =>
-          val t               = inputs(i)
+      val size = inputs.size
+      val inputTensors = (0 until size).map { i =>
+         val t = inputs(i)
 //          tup match {
 //            case t: Tuple1[_] =>
-              t match {
-                case tens: Tensor[T,Ax] => getOnnxTensor(data(tens), shape(tens), env)
-              }
+         t match {
+            case tens: Tensor[T, Ax] => getOnnxTensor(data(tens), shape(tens), env)
+         }
 //          }
-        }.toArray
+      }.toArray
 
-        val output = runModel(
-          session,
-          inputTensors,
-          allNodeNamesAndDims._1,
-          allNodeNamesAndDims._3
-        )
+      val output = runModel(
+        session,
+        inputTensors,
+        allNodeNamesAndDims._1,
+        allNodeNamesAndDims._3
+      )
 
-        output.asInstanceOf[Tensor[T, Ax]]
-  }
+      output.asInstanceOf[Tensor[T, Ax]]
+   }
 
-  override def close(): Unit = {
+   override def close(): Unit = {
 //    executable.close
 //    super.close
-  }
+   }
 }

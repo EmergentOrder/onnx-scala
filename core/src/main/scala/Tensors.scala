@@ -290,11 +290,7 @@ object Tensors {
             case fromHead #: fromTail => ((fromHead - head + 1)) #: PoolShapeLoop[fromTail, tail]
             case SNil                 => SNil
          }
-      case SNil =>
-         From match {
-            case fromHead #: fromTail => fromHead #: PoolShapeLoop[fromTail, SNil]
-            case SNil                 => SNil
-         }
+      case SNil => From
    }
 
    //TODO: shape dimension values should be longs, not ints, but dotty compiletime ops only support ints

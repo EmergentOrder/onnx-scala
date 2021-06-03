@@ -81,7 +81,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
      }),
 //    scalacOptions ++= { if (isDotty.value) Seq("-source:3.0-migration") else Nil },
      libraryDependencies ++= Seq(
-       "com.microsoft.onnxruntime" % "onnxruntime" % "1.7.0"
+       "com.microsoft.onnxruntime" % "onnxruntime" % "1.8.0"
      ),
      crossScalaVersions := Seq(dottyVersion, scala213Version)
    )

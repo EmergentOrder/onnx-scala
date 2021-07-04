@@ -11,7 +11,7 @@ scalaVersion := dottyVersion
 lazy val commonSettings = Seq(
 //  scalaJSUseMainModuleInitializer := true, //Test only
   organization := "org.emergentorder.onnx",
-  version := "0.15.0",
+  version      := "0.15.0",
   scalaVersion := dottyVersion,
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
@@ -148,12 +148,12 @@ lazy val docs = (crossProject(JVMPlatform)
 skip in publish := true
 
 lazy val sonatypeSettings = Seq(
-  sonatypeProfileName := "org.emergent-order",
-  sonatypeCredentialHost := "s01.oss.sonatype.org",
-  sonatypeRepository := "https://s01.oss.sonatype.org/service/local",
+  sonatypeProfileName                := "org.emergent-order",
+  sonatypeCredentialHost             := "s01.oss.sonatype.org",
+  sonatypeRepository                 := "https://s01.oss.sonatype.org/service/local",
   ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org",
-  organization := "org.emergent-order",
-  homepage := Some(url("https://github.com/EmergentOrder/onnx-scala")),
+  organization                       := "org.emergent-order",
+  homepage                           := Some(url("https://github.com/EmergentOrder/onnx-scala")),
   scmInfo := Some(
     ScmInfo(
       url("https://github.com/EmergentOrder/onnx-scala"),
@@ -169,8 +169,8 @@ lazy val sonatypeSettings = Seq(
     )
   ),
   licenses += ("AGPL-3.0", url("https://www.gnu.org/licenses/agpl-3.0.html")),
-  publishMavenStyle := true,
-  publishConfiguration := publishConfiguration.value.withOverwrite(true),
+  publishMavenStyle         := true,
+  publishConfiguration      := publishConfiguration.value.withOverwrite(true),
   publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true),
   publishTo := {
      val nexus = "https://s01.oss.sonatype.org/"

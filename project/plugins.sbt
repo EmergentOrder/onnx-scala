@@ -9,4 +9,4 @@ addSbtPlugin("com.github.sbt"     % "sbt-pgp"                       % "2.1.2")
 addSbtPlugin("org.scalameta"      % "sbt-mdoc"                      % "2.2.23")
 addSbtPlugin("ch.epfl.scala"      % "sbt-scalajs-bundler"           % "0.20.0") // "0.21.0-RC1")
 // for Scala.js 1.x.x
-addSbtPlugin("org.scalablytyped.converter" % "sbt-converter" % "1.0.0-beta32")
+addSbtPlugin("org.scalablytyped.converter" % "sbt-converter" % "1.0.0-beta36")

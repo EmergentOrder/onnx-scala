@@ -4,7 +4,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 val dottyVersion     = "3.1.0-RC1"
 val scala213Version  = "2.13.6"
 val spireVersion     = "0.17.0"
-val scalaTestVersion = "3.2.9"
+val scalaTestVersion = "3.2.10"
 
 scalaVersion := dottyVersion
 
@@ -81,7 +81,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
      }),
 //    scalacOptions ++= { if (isDotty.value) Seq("-source:3.0-migration") else Nil },
      libraryDependencies ++= Seq(
-       "com.microsoft.onnxruntime" % "onnxruntime" % "1.8.1"
+       "com.microsoft.onnxruntime" % "onnxruntime" % "1.9.0"
      ),
      crossScalaVersions := Seq(dottyVersion, scala213Version)
    )

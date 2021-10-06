@@ -1,8 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.1.0-RC2"
-val scala213Version  = "2.13.6"
+val dottyVersion     = "3.1.0-RC3"
 val spireVersion     = "0.17.0"
 val scalaTestVersion = "3.2.10"
 
@@ -27,15 +26,8 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform)
      commonSettings,
      name := "onnx-scala-common",
      crossScalaVersions := Seq(
-       dottyVersion,
-       scala213Version
+       dottyVersion
      ),
-     excludeFilter in unmanagedSources := (CrossVersion
-        .partialVersion(scalaVersion.value) match {
-        case Some((2, 13)) =>
-           "TensorShapeDenotation.scala" | "TensorShapeDenotationOf.scala" | "Shape.scala" | "ShapeOf.scala" | "Indices.scala" | "IndicesOf.scala" | "dependent.scala"
-        case _ => ""
-     })
    )
 
 lazy val proto = (crossProject(JSPlatform, JVMPlatform)
@@ -44,8 +36,7 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform)
      commonSettings,
      name := "onnx-scala-proto",
      crossScalaVersions := Seq(
-       dottyVersion,
-       scala213Version
+       dottyVersion
      ),
      libraryDependencies -= ("com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion),
      libraryDependencies += ("com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion)
@@ -67,23 +58,13 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
      name := "onnx-scala-backends",
      excludeFilter in unmanagedSources := (CrossVersion
         .partialVersion(scalaVersion.value) match {
-        case Some((2, 13)) =>
-           "NCF.scala" |
-              "ORTOperatorBackend.scala" |
-              "ORTOperatorBackendAll.scala" | "ORTOperatorBackendAtoL.scala" |
-              "ORTModelBackend.scala" |
-              "Main.scala" | "ONNXJSOperatorBackend.scala"
-        case _ =>
-           "ORTModelBackend213.scala" | "NCF213.scala" |
-              "ORTOperatorBackend213.scala" | "ORTOperatorBackendAll213.scala" |
-              "ORTOperatorBackendAtoL213.scala" |
-              "Main.scala" | "ONNXJSOperatorBackend.scala"
+          case _ => "Main.scala" | "ONNXJSOperatorBackend.scala"
      }),
 //    scalacOptions ++= { if (isDotty.value) Seq("-source:3.0-migration") else Nil },
      libraryDependencies ++= Seq(
        "com.microsoft.onnxruntime" % "onnxruntime" % "1.9.0"
      ),
-     crossScalaVersions := Seq(dottyVersion, scala213Version)
+     crossScalaVersions := Seq(dottyVersion)
    )
    .jvmSettings(
 //TODO: move to utest
@@ -104,24 +85,12 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
    .settings(
      commonSettings,
      name := "onnx-scala",
-//    scalacOptions ++= { if (isDotty.value) Seq("-source:3.0-migration") else Nil },
-     excludeFilter in unmanagedSources := (CrossVersion
-        .partialVersion(scalaVersion.value) match {
-        case Some((2, 13)) =>
-           "ONNX.scala" | "OpToONNXBytesConverter.scala" | "Tensors.scala" | "ONNXBytesDataSource.scala"
-        case _ =>
-           "ONNX213.scala" | "OpToONNXBytesConverter213.scala" | "Tensors213.scala" | "ONNXBytesDataSource213.scala"
-     }),
+//    scalacOptions ++= { if (isDotty.value) Seq("-source:3.0-migration") else Nil }, 
      crossScalaVersions := Seq(
-       dottyVersion,
-       scala213Version
+       dottyVersion
      ),
      libraryDependencies ++= (CrossVersion
         .partialVersion(scalaVersion.value) match {
-        case Some((2, n)) =>
-           Seq(
-             "org.typelevel" %%% "spire" % spireVersion
-           )
         case _ =>
            Seq(
              ("org.typelevel" %%% "spire" % spireVersion).cross(CrossVersion.for3Use2_13)
@@ -163,7 +132,7 @@ lazy val sonatypeSettings = Seq(
   developers := List(
     Developer(
       "EmergentOrder",
-      "Alexander Merritt",
+      "Alex Merritt",
       "lecaran@gmail.com",
       url("https://github.com/EmergentOrder")
     )

@@ -7,7 +7,7 @@ object Main {
 
       val t = new ONNXJSOperatorBackend {}
 
-      t.test
+      t.test()
       println(s"Using Scala.js version ${System.getProperty("java.vm.version")}")
    }
 }

@@ -52,14 +52,14 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
    .crossType(CrossType.Pure) in file("backends"))
    .dependsOn(core)
 //conditionally enabling/disable based on version, still not working
-//  .enablePlugins(ScalaJSBundlerPlugin)//, ScalablyTypedConverterPlugin)
+//  .enablePlugins(ScalablyTypedConverterPlugin)
    .settings(
      commonSettings,
      name := "onnx-scala-backends",
-     excludeFilter in unmanagedSources := (CrossVersion
-        .partialVersion(scalaVersion.value) match {
-          case _ => "Main.scala" | "ONNXJSOperatorBackend.scala"
-     }),
+//     excludeFilter in unmanagedSources := (CrossVersion
+//        .partialVersion(scalaVersion.value) match {
+//          case _ => "Main.scala" | "ONNXJSOperatorBackend.scala"
+//     }),
 //    scalacOptions ++= { if (isDotty.value) Seq("-source:3.0-migration") else Nil },
      libraryDependencies ++= Seq(
        "com.microsoft.onnxruntime" % "onnxruntime" % "1.9.0"
@@ -70,12 +70,12 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
 //TODO: move to utest
      libraryDependencies += ("org.scalatest" %% "scalatest" % scalaTestVersion) % Test
    )
-   .jsSettings(scalaJSUseMainModuleInitializer := true) //, //Testing
-//npmDependencies in Compile += "onnxjs" -> "0.1.8")
+   .jsSettings(scalaJSUseMainModuleInitializer := true, //, //Testing
+npmDependencies in Compile += "onnxruntime-web" -> "1.9.0")
 //Seems to be a bundling issue, copying things manually seems to work
 //TODO NEW: try JS, bundler and converter beta/RC are out
 //     npmDependencies in Compile += "onnxjs" -> "0.1.8")
-//.jsConfigure { project => project.enablePlugins(ScalaJSBundlerPlugin)} //ScalablyTypedConverterPlugin)}
+.jsConfigure { project => project.enablePlugins(ScalablyTypedConverterPlugin)}
 //ScalaJSBundlerPlugin)} //,ScalablyTypedConverterPlugin) }
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform)

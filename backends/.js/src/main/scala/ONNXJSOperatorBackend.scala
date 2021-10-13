@@ -1,12 +1,15 @@
 package org.emergentorder.onnx.backends
 
 import scala.concurrent.duration._
-import typings.onnxjs.onnxImplMod.Tensor.{^ => Tensor}
+import typings.onnxruntimeWeb.tensorMod.Tensor
+import typings.onnxruntimeWeb.tensorMod.Tensor.FloatType
+import typings.onnxruntimeWeb.tensorMod.Tensor.DataType
 //import typings.onnxjs.libTensorMod.Tensor.DataTypeMap.DataTypeMapOps
-import typings.onnxjs.onnxImplMod.InferenceSession.{^ => InferenceSession}
+import typings.onnxruntimeWeb.mod.InferenceSession
+//import typings.onnxruntimeWeb.ort.InferenceSession.{^ => InferenceSession}
 //import typings.onnxjs.onnxMod.Onnx
 
-import typings.onnxjs.onnxImplMod._
+//import typings.onnxruntimeWeb.onnxImplMod._
 
 import scala.scalajs.js.|
 
@@ -16,34 +19,23 @@ trait ONNXJSOperatorBackend {
    implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
    def test() = {
 
-      val session     = new InferenceSession()
-      val url         = "relu.onnx"
-      val modelFuture = session.loadModel(url).toFuture
+      val session     = InferenceSession.create("relu.onnx")
+      val dataTypes = new FloatType {}
 
-      val dataTypes = new typings.onnxjs.libTensorMod.Tensor.FloatType {}
-
-      val outputFuture = modelFuture.map { x =>
-         val inputs = Array(
+/*  
+      val inputs = Array(
            new Tensor(
-             scala.scalajs.js.Array[Boolean | Double](
-               (1 until 61).map(_.toDouble: Boolean | Double).toArray: _*
+             "float32",
+             scala.scalajs.js.Array[Double](
+               (1 until 61).map(_.toDouble: Double).toArray: _*
              ),
-             typings.onnxjs.onnxjsStrings.float32,
              scala.scalajs.js.Array(3.0, 4.0, 5.0)
-           ): typings.onnxjs.tensorMod.Tensor
-         );
-         println("before run")
-         val res = session.run(scala.scalajs.js.Array(inputs: _*)).toFuture
-         println("after run")
-         res
-      }.flatten
-
-      import scala.util.{Success, Failure}
-
-      outputFuture onComplete {
-         case Success(t)    => println(t.get("y").get.dims)
-         case Failure(fail) => println(fail)
-      }
-
+           )
+         )
+*/
+         //println("before run")
+         //val res = session.run(scala.scalajs.js.Array(inputs: _*))
+         //println("after run")
+         //res
    }
 }

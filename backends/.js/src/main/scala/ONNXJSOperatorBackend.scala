@@ -19,10 +19,10 @@ trait ONNXJSOperatorBackend {
    implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
    def test() = {
 
-      val session     = InferenceSession.create("relu.onnx")
+      val session   = InferenceSession.create("relu.onnx")
       val dataTypes = new FloatType {}
 
-/*  
+      /*
       val inputs = Array(
            new Tensor(
              "float32",
@@ -32,10 +32,10 @@ trait ONNXJSOperatorBackend {
              scala.scalajs.js.Array(3.0, 4.0, 5.0)
            )
          )
-*/
-         //println("before run")
-         //val res = session.run(scala.scalajs.js.Array(inputs: _*))
-         //println("after run")
-         //res
+       */
+      //println("before run")
+      //val res = session.run(scala.scalajs.js.Array(inputs: _*))
+      //println("after run")
+      //res
    }
 }

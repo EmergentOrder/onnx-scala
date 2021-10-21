@@ -25,7 +25,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform)
      name := "onnx-scala-common",
      crossScalaVersions := Seq(
        dottyVersion
-     ),
+     )
    )
 
 lazy val proto = (crossProject(JSPlatform, JVMPlatform)
@@ -61,10 +61,11 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
 //TODO: move to utest
      libraryDependencies += ("org.scalatest" %% "scalatest" % scalaTestVersion) % Test
    )
-   .jsSettings(scalaJSUseMainModuleInitializer := true, //, //Testing
-npmDependencies in Compile += "onnxruntime-web" -> "1.9.0")
-.jsConfigure { project => project.enablePlugins(ScalablyTypedConverterPlugin)}
-
+   .jsSettings(
+     scalaJSUseMainModuleInitializer                 := true, //, //Testing
+     npmDependencies in Compile += "onnxruntime-web" -> "1.9.0"
+   )
+   .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterPlugin) }
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform)
    .crossType(CrossType.Pure) in file("core"))

@@ -39,11 +39,11 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform)
      libraryDependencies -= ("com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion),
      libraryDependencies += ("com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion)
         .cross(CrossVersion.for3Use2_13),
-     PB.targets in Compile := Seq(
-       scalapb.gen() -> (sourceManaged in Compile).value
+     Compile / PB.targets := Seq(
+       scalapb.gen() -> (Compile / sourceManaged).value
      ),
      // The trick is in this line:
-     PB.protoSources in Compile := Seq(file("proto/src/main/protobuf"))
+     Compile / PB.protoSources := Seq(file("proto/src/main/protobuf"))
    )
 
 lazy val backends = (crossProject(JVMPlatform, JSPlatform)
@@ -63,7 +63,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
    )
    .jsSettings(
      scalaJSUseMainModuleInitializer                 := true, //, //Testing
-     npmDependencies in Compile += "onnxruntime-web" -> "1.9.0"
+     Compile / npmDependencies += "onnxruntime-web" -> "1.9.0"
    )
    .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterPlugin) }
 
@@ -102,7 +102,7 @@ lazy val docs = (crossProject(JVMPlatform)
   )
  */
 
-skip in publish := true
+publish / skip := true
 
 lazy val sonatypeSettings = Seq(
   sonatypeProfileName                := "org.emergent-order",

@@ -46,7 +46,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
            t = Some(
              TensorProto()
                 .withDataType(TensorProto.DataType.FLOAT.value)
-                .withDims(x.shape.map(_.toLong))
+                .withDims(ArraySeq.unsafeWrapArray(x.shape.map(_.toLong)))
                 .withFloatData(ArraySeq.unsafeWrapArray(x.data))
            )
          )

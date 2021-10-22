@@ -115,6 +115,12 @@ object ORTTensorUtils {
 
             value.getByteBuffer.array().map(x => if (x == 1) true else false)
          }
+         case ONNX_TENSOR_ELEMENT_DATA_TYPE_STRING => ??? //TODO
+         case ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8 => ??? //TODO, Newly supported in ORT Java 1.9.x
+         case ONNX_TENSOR_ELEMENT_DATA_TYPE_UNDEFINED | ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT16 |
+              ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT32 | ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT64 |
+              ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16 | ONNX_TENSOR_ELEMENT_DATA_TYPE_COMPLEX64 |
+              ONNX_TENSOR_ELEMENT_DATA_TYPE_COMPLEX128 | ONNX_TENSOR_ELEMENT_DATA_TYPE_BFLOAT16 => ??? //Unsupported
       }
       value.close()
       arr.asInstanceOf[Array[T]]

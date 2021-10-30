@@ -35,15 +35,15 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
         (inputDatalearned_0.data.map(y => itemIdsMap(y)), inputDatalearned_0.shape)
       )
 
-      //Note: Don't need to specify all the type params except in Dotty
+      // Note: Don't need to specify all the type params except in Dotty
       val nodeFullOutput: Tensor[Float, Axes] =
          fullORTBackend
             .fullModel[Float, "TensorType", "DimensionDenotation" ##: TSNil, 1 #: 1000 #: SNil](
-              //TODO: testing less than enough inputs
+              // TODO: testing less than enough inputs
               (nodeactual_input_1)
             )
 
-      nodeFullOutput //.asInstanceOf[Tensor[Float]] //Bad
+      nodeFullOutput // .asInstanceOf[Tensor[Float]] //Bad
    }
 
    override def close(): Unit = {

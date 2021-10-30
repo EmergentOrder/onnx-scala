@@ -24,12 +24,12 @@ object Tensors {
    type TensorTypeDenotation = String & Singleton
 
 //  case class Axes(ttd: TensorTypeDenotation,td: TensorShapeDenotation, shape: Shape)
-   //potential collision, use type name Axes elsewhere
+   // potential collision, use type name Axes elsewhere
    type Axes = Tuple3[TensorTypeDenotation, TensorShapeDenotation, Shape]
 
-   //Need this alias to not conflict with other Tensors
-   //TODO: consider using TF-Java ndarray as backing instead of Scala Array here
-   //S is overloaded
+   // Need this alias to not conflict with other Tensors
+   // TODO: consider using TF-Java ndarray as backing instead of Scala Array here
+   // S is overloaded
    opaque type Tensor[T <: Supported, +Ax <: Axes] = Tuple2[Array[T], Ax]
 
    type SparseTensor[T <: Supported, A <: Axes] = Tensor[T, A]
@@ -293,9 +293,9 @@ object Tensors {
       case SNil => From
    }
 
-   //TODO: shape dimension values should be longs, not ints, but dotty compiletime ops only support ints
-   //TODO: random nd access
-   //TODO: Benchmark Array[T] vs ArraySeq[T] vs IArray[T]
+   // TODO: shape dimension values should be longs, not ints, but dotty compiletime ops only support ints
+   // TODO: random nd access
+   // TODO: Benchmark Array[T] vs ArraySeq[T] vs IArray[T]
 
    object Tensor {
       extension [
@@ -318,10 +318,10 @@ object Tensors {
           Td <: TensorShapeDenotation,
           S <: Shape
       ](tens: Tensor[T, Tuple3[Tt, Td, S]]): Tensor[T, Tuple3[Tt, Td, S]] = {
-         //require(tens._2._2.toSeq.size == tens.shape.size) //We allow empty denotations
+         // require(tens._2._2.toSeq.size == tens.shape.size) //We allow empty denotations
          require(
            tens.data.size == tens.shape.foldLeft(1)(_ * _)
-         ) //This shouldn't fail at runtime, if so shape constraints need fixing
+         ) // This shouldn't fail at runtime, if so shape constraints need fixing
          tens
       }
       def apply[

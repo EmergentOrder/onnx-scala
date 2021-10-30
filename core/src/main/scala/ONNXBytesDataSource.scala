@@ -11,8 +11,8 @@ class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends AutoCloseable with Dat
 
    val onnxHelper = new ONNXHelper(onnxBytes)
 
-   //TODO: produce tensors with axes derived from denotations
-   //TODO: return non-tensor params
+   // TODO: produce tensors with axes derived from denotations
+   // TODO: return non-tensor params
    override def getParams[
        T <: Supported,
        Tt <: TensorTypeDenotation,

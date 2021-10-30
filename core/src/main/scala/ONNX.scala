@@ -28,12 +28,12 @@ import scala.collection.immutable.ArraySeq
 //Also: https://github.com/microsoft/onnxjs/blob/master/docs/operators.md
 //Tests currently live one level up at: https://github.com/SciScala/NDScala/blob/master/ONNXScala/src/test/scala/ndscala/ONNXScalaNDArraySpec.scala
 package object onnx {
-   //TODO P2: Symbolic shape values
-   //TODO P2: Support bfloat16 type (new in ONNX 1.8.0)
-   //TODO P3: Encode node names as types
+   // TODO P2: Symbolic shape values
+   // TODO P2: Support bfloat16 type (new in ONNX 1.8.0)
+   // TODO P3: Encode node names as types
 
-   //Note: Indices should at least optionally be longs, but currently compiletime ops in Scala 3 are only defined for ints
-   //Note: Broadcasting is not supported, by design
+   // Note: Indices should at least optionally be longs, but currently compiletime ops in Scala 3 are only defined for ints
+   // Note: Broadcasting is not supported, by design
    sealed trait Operator {
       def callOp[
           T <: Supported,
@@ -62,7 +62,7 @@ package object onnx {
       ): Tensor[T, Tuple3[Tt, Td, S]]
    }
 
-   //Not in the spec, allows access to params from within the loaded model
+   // Not in the spec, allows access to params from within the loaded model
    trait DataSource {
       def getParams[
           T <: Supported,
@@ -310,7 +310,7 @@ package object onnx {
       }
    }
 
-   //Missing optional outputs, only needed for training mode
+   // Missing optional outputs, only needed for training mode
    trait BatchNormalizationV9 extends Operator {
       def BatchNormalizationV9[
           @sp T <: Float16 | Float | Double: Numeric,
@@ -399,8 +399,8 @@ package object onnx {
       }
    }
 
-   //FIXME: "All input tensors must have the same shape, except for the dimension size of the axis to concatenate on". Currently assumes tensors to be concated are same shape except the leading dimension
-   //TODO P1: Arbitrary arity inputs
+   // FIXME: "All input tensors must have the same shape, except for the dimension size of the axis to concatenate on". Currently assumes tensors to be concated are same shape except the leading dimension
+   // TODO P1: Arbitrary arity inputs
    trait ConcatV13 extends Operator {
       def ConcatV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
@@ -430,8 +430,8 @@ package object onnx {
       }
    }
 
-   //TODO: remove the need to pass kernel_shape, it can be inferred
-   //Limited to 1 feature map, 1 group, stride 1
+   // TODO: remove the need to pass kernel_shape, it can be inferred
+   // Limited to 1 feature map, 1 group, stride 1
    trait ConvV11 extends Operator {
       def ConvV11[
           @sp T <: Float16 | Float | Double: Numeric,
@@ -557,7 +557,7 @@ package object onnx {
       }
    }
 
-   //Missing optional second output
+   // Missing optional second output
    trait DropoutV13 extends Operator {
       def DropoutV13[
           @sp T <: BFloat16 | Float16 | Float | Double: Numeric,
@@ -651,8 +651,8 @@ package object onnx {
       }
    }
 
-   //Missing constraint - need an equivalent of the size equality constraint on Squeeze, but that asserts the shapes are broadcastable
-   //Explicit broadcasting - can fail
+   // Missing constraint - need an equivalent of the size equality constraint on Squeeze, but that asserts the shapes are broadcastable
+   // Explicit broadcasting - can fail
    trait ExpandV13 extends Operator {
       def ExpandV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
@@ -726,8 +726,8 @@ package object onnx {
          (callOp(name, "Floor", allInputs, map))
       }
    }
-   //Missing in NDScala - P3
-   //need a match type
+   // Missing in NDScala - P3
+   // need a match type
    trait GatherV13 extends Operator {
       def GatherV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
@@ -735,7 +735,7 @@ package object onnx {
              Complex[
                Float
              ] | Complex[Double],
-          @sp Tind <: Int: Numeric, //Spec also supports long
+          @sp Tind <: Int: Numeric, // Spec also supports long
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -771,8 +771,8 @@ package object onnx {
       }
    }
 
-   //Bug in ORT where the bias tensor C should be optional, but is in fact required
-   //See: https://github.com/microsoft/onnxruntime/issues/6423
+   // Bug in ORT where the bias tensor C should be optional, but is in fact required
+   // See: https://github.com/microsoft/onnxruntime/issues/6423
    trait GemmV13 extends Operator {
       def GemmV13[
           @sp T <: BFloat16 | Float16 | Float | Double | UInt | ULong | Int | Long: Numeric,
@@ -860,8 +860,8 @@ package object onnx {
       }
    }
 
-   //TODO P2: Contrained to 2d image, means 4d tensor.
-   //Consider enforcing denotations - NCHW
+   // TODO P2: Contrained to 2d image, means 4d tensor.
+   // Consider enforcing denotations - NCHW
    trait InstanceNormalizationV6 extends Operator {
       def InstanceNormalizationV6[
           @sp T <: Float16 | Float | Double: Numeric,
@@ -907,8 +907,8 @@ package object onnx {
       }
    }
 
-   //TODO P2: Contrained to 2d image, means 4d tensor.
-   //Consider enforcing denotations - NCHW
+   // TODO P2: Contrained to 2d image, means 4d tensor.
+   // Consider enforcing denotations - NCHW
    trait LRNV13 extends Operator {
       def LRNV13[
           @sp T <: BFloat16 | Float16 | Float | Double: Numeric,
@@ -1021,7 +1021,7 @@ package object onnx {
           vd1: ValueOf[scala.compiletime.ops.int.S[Dim1]],
           vd2: ValueOf[scala.compiletime.ops.int.S[Dim2]]
       )
-      //,vd0:ValueOf[scala.compiletime.S[Dim0]],vd1:ValueOf[scala.compiletime.S[Dim1]], vd2: ValueOf[scala.compiletime.S[Dim2]])
+      // ,vd0:ValueOf[scala.compiletime.S[Dim0]],vd1:ValueOf[scala.compiletime.S[Dim1]], vd2: ValueOf[scala.compiletime.S[Dim2]])
           : Tensor[T, Tuple3[Tt, Td, Dim0 #: Dim2 #: SNil]] = {
          val map: Map[String, Any] = Map()
          val allInputs             = Tuple2(A, B)
@@ -1029,8 +1029,8 @@ package object onnx {
       }
    }
 
-   //TODO : bring up to date, missing V11, V12 changes
-   //TODO P2: Contrained to 2d image, means 4d tensor.
+   // TODO : bring up to date, missing V11, V12 changes
+   // TODO P2: Contrained to 2d image, means 4d tensor.
    // output_spatial_shape[i] = ceil((input_spatial_shape[i] - ((kernel_spatial_shape[i] - 1) * dilations[i] + 1) + 1) / strides_spatial_shape[i])
    // TODO: pads, strides, dilations
    trait MaxPoolV12 extends Operator {
@@ -1208,7 +1208,7 @@ package object onnx {
           mode: String = "constant",
           data: Tensor[T, Tuple3[Tt, Td, S]],
           padsBefore: AxesBefore,
-          padsAfter: AxesAfter, //Tensor[Long, Tuple3[Tt1,Td1,S1]], //`pads` should be a 1D tensor of shape [2 * input_rank].
+          padsAfter: AxesAfter, // Tensor[Long, Tuple3[Tt1,Td1,S1]], //`pads` should be a 1D tensor of shape [2 * input_rank].
           constant_value: Option[Tensor[T, Tuple3[Tt2, Td2, S2]]] = None
       )(using
           tt: ValueOf[Tt3],
@@ -1266,7 +1266,7 @@ package object onnx {
       }
    }
 
-   //TODO P2: make axes param optional at the type level
+   // TODO P2: make axes param optional at the type level
    trait ReduceLogSumV13 extends Operator {
       def ReduceLogSumV13[
           @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double: Numeric,
@@ -1473,7 +1473,7 @@ package object onnx {
       }
    }
 
-   //TODO: new attr : noop_with_empty_axes
+   // TODO: new attr : noop_with_empty_axes
    trait ReduceSumV13 extends Operator {
       def ReduceSumV13[
           @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double: Numeric,
@@ -1561,7 +1561,7 @@ package object onnx {
       }
    }
 
-   //TODO P2: Add, was added to ONNXJS recently, WebGl only
+   // TODO P2: Add, was added to ONNXJS recently, WebGl only
    /*
   trait ResizeV11 extends Operator {
     def ResizeV11[
@@ -1754,8 +1754,8 @@ package object onnx {
       }
    }
 
-   //TODO P1: All 4 params must be 1D vectors of same size - to enforce
-   //TODO P2: Constraints on axes / steps params
+   // TODO P1: All 4 params must be 1D vectors of same size - to enforce
+   // TODO P2: Constraints on axes / steps params
    trait SliceV13 extends Operator {
       def SliceV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
@@ -1813,8 +1813,8 @@ package object onnx {
       }
    }
 
-   //From the spec : "The input does not need to explicitly be a 2D vector; rather, it will be coerced into one"
-   //Here we require that it is 2D
+   // From the spec : "The input does not need to explicitly be a 2D vector; rather, it will be coerced into one"
+   // Here we require that it is 2D
    trait SoftmaxV13 extends Operator {
       def SoftmaxV13[
           @sp T <: BFloat16 | Float16 | Float | Double: Numeric,
@@ -1857,8 +1857,8 @@ package object onnx {
       }
    }
 
-   //"If axes is not provided, all the single dimensions will be removed from the shape"
-   //Missing in ONNX.js
+   // "If axes is not provided, all the single dimensions will be removed from the shape"
+   // Missing in ONNX.js
    trait SqueezeV13 extends Operator {
       def SqueezeV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
@@ -2016,7 +2016,7 @@ package object onnx {
          (callOp(name, "Transpose", allInputs, map))
       }
    }
-   //Missing in ONNX.js
+   // Missing in ONNX.js
    trait UnsqueezeV13 extends Operator {
       def UnsqueezeV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
@@ -2168,7 +2168,7 @@ package object onnxruntime {
       }
    }
 
-   //Diverging from the spec, min and max are optional there, but otherwise it's a no-op
+   // Diverging from the spec, min and max are optional there, but otherwise it's a no-op
    trait ClipV13 extends onnx.Operator {
       def ClipV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.BFloat16 |
@@ -2191,7 +2191,7 @@ package object onnxruntime {
          (callOp(name, "Clip", allInputs, map))
       }
    }
-   //TODO
+   // TODO
    /*
   trait CompressV11 extends Operator {
     def CompressV11[
@@ -2212,7 +2212,7 @@ package object onnxruntime {
   }
     */
 
-   //Not supported, sequence op
+   // Not supported, sequence op
    /*
   trait ConcatFromSequenceV11 extends Operator {
     def ConcatFromSequenceV11[@sp S <: Seq[Tensor[UByte, _]] | Seq[Tensor[UShort, _]] | Seq[
@@ -2239,7 +2239,7 @@ package object onnxruntime {
     }
   }
     */
-   //TODO
+   // TODO
    /*
    trait ConstantOfShapeV9 extends Operator {
     def ConstantOfShapeV9[
@@ -2255,7 +2255,7 @@ package object onnxruntime {
     }
   }
     */
-   //Bug in ORT here, it forces us to set shape as an input even though in the spec there are 0 inputs, it uses ConstantOfShape op instead
+   // Bug in ORT here, it forces us to set shape as an input even though in the spec there are 0 inputs, it uses ConstantOfShape op instead
    trait ConstantV13 extends onnx.Operator {
       def ConstantV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.BFloat16 |
@@ -2298,7 +2298,7 @@ package object onnxruntime {
       }
    }
 
-   //TODO
+   // TODO
    /*
   trait ConvIntegerV10 extends Operator {
     def ConvIntegerV10[
@@ -2361,7 +2361,7 @@ package object onnxruntime {
     }
   }
     */
-   //TODO
+   // TODO
    /*
   trait CumSumV11 extends Operator {
     def CumSumV11[
@@ -2421,7 +2421,7 @@ package object onnxruntime {
     }
   }
     */
-   //TODO
+   // TODO
    /*
   trait DynamicQuantizeLinearV11 extends Operator {
     def DynamicQuantizeLinearV11[
@@ -2445,7 +2445,7 @@ package object onnxruntime {
   }
     */
 
-   //TODO
+   // TODO
    /*
   trait ErfV9 extends Operator {
     def ErfV9[
@@ -2458,7 +2458,7 @@ package object onnxruntime {
   }
     */
 
-   //TODO
+   // TODO
    /*
   trait EyeLikeV9 extends Operator {
     def EyeLikeV9[
@@ -2476,7 +2476,7 @@ package object onnxruntime {
     }
   }
     */
-   //Not supported, ORT fails in backend scoreboard
+   // Not supported, ORT fails in backend scoreboard
    /*
   trait GRUV7 extends Operator {
     def GRUV7[
@@ -2513,7 +2513,7 @@ package object onnxruntime {
   }
     */
 
-   //TODO
+   // TODO
    /*
  trait GatherElementsV11 extends Operator {
     def GatherElementsV11[
@@ -2562,7 +2562,7 @@ package object onnxruntime {
     }
   }
     */
-   //Not supported, ORT fails in backend scoreboard
+   // Not supported, ORT fails in backend scoreboard
    /*
   trait GlobalLpPoolV2 extends Operator {
     def GlobalLpPoolV2[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -2619,7 +2619,7 @@ package object onnxruntime {
          (callOp(name, "Greater", allInputs, map))
       }
    }
-   //TODO
+   // TODO
    /*
   trait HardSigmoidV6 extends Operator {
     def HardSigmoidV6[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -2681,7 +2681,7 @@ package object onnxruntime {
     }
   }
     */
-   //TODO
+   // TODO
    /*
   trait IsInfV10 extends Operator {
     def IsInfV10[@sp T1 <: Float | Double: Numeric, @sp T2 <: Boolean, Ax <: Axes](
@@ -2697,7 +2697,7 @@ package object onnxruntime {
     }
   }
     */
-   //Not supported, ORT fails in backend scoreboard
+   // Not supported, ORT fails in backend scoreboard
    /*
   trait LSTMV7 extends Operator {
     def LSTMV7[
@@ -2755,7 +2755,7 @@ package object onnxruntime {
          (callOp(name, "LessOrEqual", allInputs, map))
       }
    }
-   //TODO, missing V13
+   // TODO, missing V13
    /*
   trait LogSoftmaxV11 extends Operator {
     def LogSoftmaxV11[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -2848,7 +2848,7 @@ package object onnxruntime {
     }
   }
     */
-   //Not supported, ORT fails in backend scoreboard
+   // Not supported, ORT fails in backend scoreboard
    /*
   trait MaxRoiPoolV1 extends Operator {
     def MaxRoiPoolV1[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -2866,7 +2866,7 @@ package object onnxruntime {
   }
     */
 
-   //TODO
+   // TODO
    /*
   trait MaxUnpoolV11 extends Operator {
     def MaxUnpoolV11[
@@ -2928,7 +2928,7 @@ package object onnxruntime {
       }
    }
 
-   //TODO
+   // TODO
    /*
 
   trait MeanVarianceNormalizationV9 extends Operator {
@@ -2983,7 +2983,7 @@ package object onnxruntime {
          (callOp(name, "Mod", allInputs, map))
       }
    }
-   //Not supported, ORT fails in backend scoreboard
+   // Not supported, ORT fails in backend scoreboard
    /*
   trait MultinomialV7 extends Operator {
     def MultinomialV7[
@@ -3004,7 +3004,7 @@ package object onnxruntime {
   }
     */
 
-   //TODO
+   // TODO
    /*
   trait NegativeLogLikelihoodLossV12 extends Operator {
     def NegativeLogLikelihoodLossV12[
@@ -3052,7 +3052,7 @@ package object onnxruntime {
     }
   }
     */
-   //TODO
+   // TODO
    /*
   trait OneHotV11 extends Operator {
     def OneHotV11[
@@ -3075,7 +3075,7 @@ package object onnxruntime {
   }
     */
 
-   //TODO
+   // TODO
    /*
   trait QLinearConvV10 extends Operator {
     def QLinearConvV10[
@@ -3300,7 +3300,7 @@ package object onnxruntime {
          (callOp(name, "Range", allInputs, map))
       }
    }
-   //TODO
+   // TODO
    /*
   trait ReduceL1V11 extends Operator {
     def ReduceL1V11[
@@ -3348,7 +3348,7 @@ package object onnxruntime {
   }
 
     */
-   //Not supported, sequence op
+   // Not supported, sequence op
    /*
   trait ReverseSequenceV10 extends Operator {
     def ReverseSequenceV10[
@@ -3368,7 +3368,7 @@ package object onnxruntime {
     }
   }
     */
-   //TODO
+   // TODO
    /*
   trait RoiAlignV10 extends Operator {
     def RoiAlignV10[
@@ -3397,7 +3397,7 @@ package object onnxruntime {
     }
   }
     */
-   //TODO
+   // TODO
    /*
   trait ScanV11 extends Operator {
     def ScanV11[
@@ -3463,7 +3463,7 @@ package object onnxruntime {
     }
   }
     */
-   //Not supported, sequence op
+   // Not supported, sequence op
    /*
   trait SequenceAtV11 extends Operator {
     def SequenceAtV11[@sp S <: Seq[Tensor[UByte, _]] | Seq[Tensor[UShort, _]] | Seq[Tensor[UInt, _]] | Seq[
@@ -3591,7 +3591,7 @@ package object onnxruntime {
     }
   }
     */
-   //TODO
+   // TODO
    /*
   trait ShrinkV9 extends Operator {
     def ShrinkV9[
@@ -3608,7 +3608,7 @@ package object onnxruntime {
     }
   }
     */
-   //TODO
+   // TODO
    /*
   trait SizeV1 extends Operator {
     def SizeV1[
@@ -3623,7 +3623,7 @@ package object onnxruntime {
     }
   }
     */
-   //TODO, missing V13
+   // TODO, missing V13
    /*
    //To consider restoring, need a loss function
   trait SoftmaxCrossEntropyLossV12 extends Operator {
@@ -3783,7 +3783,7 @@ package object onnxruntime {
     }
   }
     */
-   //TODO
+   // TODO
    /*
   trait ThresholdedReluV10 extends Operator {
     def ThresholdedReluV10[@sp T <: Float16 | Float | Double: Numeric, Ax <: Axes](
@@ -3797,7 +3797,7 @@ package object onnxruntime {
     }
   }
     */
-   //TODO
+   // TODO
    /*
   trait TopKV11 extends Operator {
     def TopKV11[
@@ -3819,7 +3819,7 @@ package object onnxruntime {
 
     */
 
-   //TODO
+   // TODO
    /*
   trait UniqueV11 extends Operator {
     def UniqueV11[
@@ -3839,7 +3839,7 @@ package object onnxruntime {
   }
     */
 
-   //TODO
+   // TODO
    /*
   trait WhereV9 extends Operator {
     def WhereV9[
@@ -3884,7 +3884,7 @@ package object onnxruntimecontrib {
 //ONNX domain: ai.onnx.ml
 //See: https://github.com/onnx/onnx/blob/v1.8.1/docs/Operators-ml.md
 package object onnxml {
-   //TODO: P3 shape constraints
+   // TODO: P3 shape constraints
    trait ArrayFeatureExtractorV1 extends onnx.Operator {
       def ArrayFeatureExtractorV1[
           @sp T <: Float | Double | Long | Int | String: Numeric,
@@ -3934,7 +3934,7 @@ package object onnxml {
       }
    }
 
-   //Not supported, ONNX ML - using ONNX Map
+   // Not supported, ONNX ML - using ONNX Map
    /*
   trait CastMapV1 extends Operator {
     def CastMapV1[@sp T1 <: Map[Long, String] | Map[
@@ -3955,8 +3955,8 @@ package object onnxml {
   }
     */
 
-   //TODO: P3 constraints -
-   //split out to Int -> String and String -> Int
+   // TODO: P3 constraints -
+   // split out to Int -> String and String -> Int
    trait CategoryMapperV1 extends onnx.Operator {
       def CategoryMapperV1[
           @sp T1 <: String | Long: Numeric,
@@ -4011,8 +4011,8 @@ package object onnxml {
   }
     */
 
-   //All input shapes are 2-D and are concatenated along the second dimension
-   //TODO: P3 output shape constraint - match type summing over second dim, similar to concat op
+   // All input shapes are 2-D and are concatenated along the second dimension
+   // TODO: P3 output shape constraint - match type summing over second dim, similar to concat op
    trait FeatureVectorizerV1 extends onnx.Operator {
       def FeatureVectorizerV1[
           @sp T1 <: Int | Long | Float | Double: Numeric,
@@ -4037,8 +4037,8 @@ package object onnxml {
       }
    }
 
-   //TODO: P3 constraints
-   //split out to floats / ints
+   // TODO: P3 constraints
+   // split out to floats / ints
    trait ImputerV1 extends onnx.Operator {
       def ImputerV1[
           @sp T <: Float | Double | Long | Int: Numeric,
@@ -4071,8 +4071,8 @@ package object onnxml {
       }
    }
 
-   //TODO: P3 constraints
-   //split out to floats / ints / strings ?
+   // TODO: P3 constraints
+   // split out to floats / ints / strings ?
    trait LabelEncoderV2 extends onnx.Operator {
       def LabelEncoderV2[
           @sp T1 <: String | Long | Float: Numeric,
@@ -4114,8 +4114,8 @@ package object onnxml {
       }
    }
 
-   //TODO: P3 constraints
-   //split out to strings / ints
+   // TODO: P3 constraints
+   // split out to strings / ints
    trait LinearClassifierV1 extends onnx.Operator {
       def LinearClassifierV1[
           @sp T1 <: Float | Double | Long | Int: Numeric,
@@ -4152,7 +4152,7 @@ package object onnxml {
          (callOp(name, "LinearClassifier", allInputs, map))
       }
    }
-   //TODO: P3 constraints
+   // TODO: P3 constraints
    trait LinearRegressorV1 extends onnx.Operator {
       def LinearRegressorV1[
           @sp T <: Float | Double | Long | Int: Numeric,
@@ -4206,8 +4206,8 @@ package object onnxml {
       }
    }
 
-   //TODO: P3 constraints
-   //split out to ints / strings
+   // TODO: P3 constraints
+   // split out to ints / strings
    trait OneHotEncoderV1 extends onnx.Operator {
       def OneHotEncoderV1[
           @sp T <: String | Long | Int | Float | Double: Numeric,
@@ -4235,8 +4235,8 @@ package object onnxml {
       }
    }
 
-   //TODO: P3 constraints
-   //split out to strings / ints
+   // TODO: P3 constraints
+   // split out to strings / ints
    trait SVMClassifierV1 extends onnx.Operator {
       def SVMClassifierV1[
           @sp T1 <: Float | Double | Long | Int: Numeric,
@@ -4283,7 +4283,7 @@ package object onnxml {
          (callOp(name, "SVMClassifier", allInputs, map))
       }
    }
-   //TODO: P3 constraints
+   // TODO: P3 constraints
    trait SVMRegressorV1 extends onnx.Operator {
       def SVMRegressorV1[
           @sp T <: Float | Double | Long | Int: Numeric,
@@ -4324,7 +4324,7 @@ package object onnxml {
       }
    }
 
-   //TODO: P3 constraints on offset / scaleAttr
+   // TODO: P3 constraints on offset / scaleAttr
    trait ScalerV1 extends onnx.Operator {
       def ScalerV1[
           @sp T <: Float | Double | Long | Int: Numeric,
@@ -4348,8 +4348,8 @@ package object onnxml {
       }
    }
 
-   //TODO: P3 constraints
-   //split out to strings / ints
+   // TODO: P3 constraints
+   // split out to strings / ints
    trait TreeEnsembleClassifierV1 extends onnx.Operator {
       def TreeEnsembleClassifierV1[
           @sp T1 <: Float | Double | Long | Int: Numeric,
@@ -4409,7 +4409,7 @@ package object onnxml {
       }
    }
 
-   //TODO: P3 constraints
+   // TODO: P3 constraints
    trait TreeEnsembleRegressorV1 extends onnx.Operator {
       def TreeEnsembleRegressorV1[
           @sp T <: Float | Double | Long | Int: Numeric,
@@ -4468,7 +4468,7 @@ package object onnxml {
       }
    }
 
-   //Not supported, ONNX ML - uses ONNX Map
+   // Not supported, ONNX ML - uses ONNX Map
    /*
   trait ZipMapV1 extends Operator {
     def ZipMapV1[@sp T <: Seq[Map[String, Float]] | Seq[Map[Long, Float]]: Numeric, Ax <: Axes](
@@ -4494,7 +4494,7 @@ package object onnxml {
 //Missing: Adam
 package object onnxtraining {
 
-   //Not yet supported, training has yet to GA
+   // Not yet supported, training has yet to GA
    /*
   trait AdagradV1 extends Operator {
     def AdagradV1[

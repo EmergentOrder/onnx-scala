@@ -23,7 +23,7 @@ class ONNXScalaSpec extends AnyFlatSpec with Matchers {
       val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.1.onnx"))
       val squeezenet      = new ORTModelBackend(squeezenetBytes)
       val data            = Array.fill(1 * 3 * 224 * 224) { 42f }
-      //In NCHW tensor image format
+      // In NCHW tensor image format
       val shape                 = 1 #: 3 #: 224 #: 224 #: SNil
       val tensorShapeDenotation = "Batch" ##: "Channel" ##: "Height" ##: "Width" ##: TSNil
 
@@ -31,7 +31,7 @@ class ONNXScalaSpec extends AnyFlatSpec with Matchers {
 
       val imageTens = Tensor(data, tensorDenotation, tensorShapeDenotation, shape)
 
-      //or as a shorthand if you aren't concerned with enforcing denotations
+      // or as a shorthand if you aren't concerned with enforcing denotations
       val imageTensDefaultDenotations = Tensor(data, shape)
       val out = squeezenet.fullModel[
         Float,
@@ -40,11 +40,11 @@ class ONNXScalaSpec extends AnyFlatSpec with Matchers {
         1 #: 1000 #: SNil
       ](Tuple(imageTens))
 
-      //The output shape
+      // The output shape
       assert(out.shape(0) == 1)
       assert(out.shape(1) == 1000)
 
-      //The highest probability (predicted) class
+      // The highest probability (predicted) class
       assert(out.data.indices.maxBy(out.data) == 418)
    }
 }

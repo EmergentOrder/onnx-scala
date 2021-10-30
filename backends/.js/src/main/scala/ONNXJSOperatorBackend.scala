@@ -33,9 +33,9 @@ trait ONNXJSOperatorBackend {
            )
          )
        */
-      //println("before run")
-      //val res = session.run(scala.scalajs.js.Array(inputs: _*))
-      //println("after run")
-      //res
+      // println("before run")
+      // val res = session.run(scala.scalajs.js.Array(inputs: _*))
+      // println("after run")
+      // res
    }
 }

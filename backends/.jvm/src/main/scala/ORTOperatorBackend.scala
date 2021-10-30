@@ -18,14 +18,14 @@ import ORTTensorUtils._
 
 trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 
-   //Java map performs better
+   // Java map performs better
    val sessionCache = new java.util.LinkedHashMap[String, ModelProto]
 
    val env = OrtEnvironment.getEnvironment()
 
    val coreCount = java.lang.Runtime.getRuntime().availableProcessors()
    def getSession(bytes: Array[Byte]) = {
-      //Can now set symbolic dimension values, but only at session creation time
+      // Can now set symbolic dimension values, but only at session creation time
       val session_options = new OrtSession.SessionOptions()
       session_options.setIntraOpNumThreads(coreCount)
 //    session_options.addCUDA()
@@ -50,7 +50,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
       val inputs = (inputNames zip input_tensor_values).toMap.asJava
 
-      //TODO: More outputs / handle via ONNXSequence / ONNXMap
+      // TODO: More outputs / handle via ONNXSequence / ONNXMap
       val output_tensor                 = sess.run(inputs)
       val firstOut                      = output_tensor.get(0).asInstanceOf[OnnxTensor]
       val shape                         = firstOut.getInfo.getShape.map(_.toInt)
@@ -58,7 +58,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       val tensorTypeDenotationFromType  = tt.value
       val tensorShapeDenotationFromType = td.value
       require(shape sameElements shapeFromType.toSeq)
-      //TODO: Denotations
+      // TODO: Denotations
       val result: Tensor[T, Tuple3[Tt, Td, S]] = Tensor(
         getArrayFromOnnxTensor(firstOut),
         tensorTypeDenotationFromType,
@@ -86,11 +86,11 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
          ((e.toString + incr).hashCode).toString
       }.toList
 
-      //TODO: more outputs
+      // TODO: more outputs
       val output_node_names = List(input_node_names.toString)
 
-      //Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
-      //TODO: don't mix up Options and Tensors here
+      // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
+      // TODO: don't mix up Options and Tensors here
       val inputTensors: Array[OnnxTensor] = inputs.toArray.map { elem =>
          elem match {
             case opt: Option[Tensor[T, Tuple3[Tt, Td, S]]] =>
@@ -125,7 +125,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
        td: TensorShapeDenotationOf[Td],
        s: ShapeOf[S]
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
-      //TODO: prevent passing input to opToONNXBytes
+      // TODO: prevent passing input to opToONNXBytes
 
       val modelProto = opToModelProto(opName, inputs, attrs)
 
@@ -145,8 +145,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       mod.clearGraph.withGraph(graphToPersist)
    }
 
-   //WARNING: not referentially transparent
-   //Limitation: same reference cannot appear multiple times in a single op internally to the fused graph
+   // WARNING: not referentially transparent
+   // Limitation: same reference cannot appear multiple times in a single op internally to the fused graph
    def fuseOps: ModelProto = {
       val cacheValues = sessionCache.values.asScala.toList
       if (cacheValues.size == 0) return ModelProto()

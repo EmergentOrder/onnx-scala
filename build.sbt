@@ -62,7 +62,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
      libraryDependencies += ("org.scalatest" %% "scalatest" % scalaTestVersion) % Test
    )
    .jsSettings(
-     scalaJSUseMainModuleInitializer                 := true, //, //Testing
+     scalaJSUseMainModuleInitializer                := true, // , //Testing
      Compile / npmDependencies += "onnxruntime-web" -> "1.9.0"
    )
    .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterPlugin) }

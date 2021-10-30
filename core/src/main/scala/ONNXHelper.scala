@@ -59,7 +59,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
    def onnxTensorProtoToArray(tensorProto: TensorProto) = {
 
-      //TODEFER: Get dim and type denotations, encode into types here in 2.13 / earlier if possible
+      // TODEFER: Get dim and type denotations, encode into types here in 2.13 / earlier if possible
 
       val onnxDataType = tensorProto.dataType
       val dimsCount    = tensorProto.dims.size
@@ -75,7 +75,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
       val TensProtoFloat  = FLOAT.index
       val TensProtoDouble = DOUBLE.index
 
-      //TODO: asXBuffer then put
+      // TODO: asXBuffer then put
       val array = onnxDataType.getOrElse(1) match {
          case TensProtoByte => {
             rawData.map(x => x.toByteArray())

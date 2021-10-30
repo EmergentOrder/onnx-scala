@@ -100,7 +100,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
          )
       }
 
-      //TODO: more attr types
+      // TODO: more attr types
       def attrProtos[Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape]
           : Array[AttributeProto] =
          attrs
@@ -215,12 +215,12 @@ trait OpToONNXBytesConverter extends AutoCloseable {
          }
       }
 
-      //Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
+      // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
       val inputValueInfosAndExistingInputs: IndexedSeq[Tuple2[ValueInfoProto, String]] =
          (0 until inputs.size).map { i =>
             val t = inputs.drop(i).take(1)
             t match {
-               case tup: Tuple1[_] => //TODO: union type
+               case tup: Tuple1[_] => // TODO: union type
                   tup(0) match {
                      case opt: Option[Tensor[T, Axes]] =>
                         opt match {

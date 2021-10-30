@@ -49,7 +49,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
       val size = inputs.size
       val inputTensors = (0 until size).map { i =>
          val tup = inputs.drop(i).take(1)
-         tup match { //Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
+         tup match { // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
             case t: Tuple1[_] =>
                t(0) match {
                   case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
@@ -65,7 +65,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
         allNodeNamesAndDims._3
       )
 
-      output //.asInstanceOf[Tensor[T, Tuple3[Tt, Td, S]]]
+      output // .asInstanceOf[Tensor[T, Tuple3[Tt, Td, S]]]
    }
 
    override def close(): Unit = {

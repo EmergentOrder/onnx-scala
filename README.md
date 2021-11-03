@@ -8,7 +8,7 @@
 Add this to the build.sbt in your project:
 
 ```scala
-libraryDependencies += "org.emergent-order" %% "onnx-scala-backends" % "0.13.0"
+libraryDependencies += "org.emergent-order" %% "onnx-scala-backends" % "0.15.0"
 ```
 
 A short, recent talk I gave about the project: [ONNX-Scala: Typeful, Functional Deep Learning / Dotty Meets an Open AI Standard](https://youtu.be/8HuZTeHi7lg?t=1156)
@@ -83,9 +83,9 @@ Feel free to wrap your calls into it in a facade with typed inputs.
 
 ## Project Details
 
-ONNX-Scala is cross-built against Scala JVM and Scala.js/JavaScript (for Scala 2.13 and Dotty/3.0)
+ONNX-Scala is cross-built against Scala JVM and Scala.js/JavaScript (for Scala 3 / Dotty )
 
-Currently at ONNX 1.8.0 (Backward compatible to at least 1.2.0 for the full model API, 1.7.0 for the fine-grained API), ONNX Runtime 1.7.0.
+Currently at ONNX 1.10.0 (Backward compatible to at least 1.2.0 for the full model API, 1.7.0 for the fine-grained API), ONNX Runtime 1.9.0.
  
 ### Fine-grained API
 A complete\*, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep learning and classical machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++). 
@@ -142,14 +142,6 @@ To build and publish locally:
 ```
 sbt publishLocal
 ```
-
-or
-
-```
-sbt +publishLocal
-```
-
-to build against Scala 2.13 and Dotty/3.0, where possible.
 
 ### Built With
 

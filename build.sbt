@@ -53,7 +53,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
      commonSettings,
      name := "onnx-scala-backends",
      libraryDependencies ++= Seq(
-       "com.microsoft.onnxruntime" % "onnxruntime" % "1.9.0"
+       "com.microsoft.onnxruntime" % "onnxruntime" % "1.10.0"
      ),
      crossScalaVersions := Seq(dottyVersion)
    )

@@ -72,7 +72,7 @@ out.data.indices.maxBy(out.data)
 
 Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "ballpoint pen".
 
-Based on a simple benchmark of 100000 iterations of SqueezeNet inference (run on my laptop), the run time is roughly on par (within 10% of) ONNX Runtime (via Python).
+Based on a simple benchmark of 100000 iterations of SqueezeNet inference, the run time is on par (within 3% of) ONNX Runtime (via Python).
 The discrepancy can be accounted for by the overhead of shipping data between the JVM and native memory.
 
 When using this API, we load the provided ONNX model file and pass it as-is to the underlying ONNX backend.

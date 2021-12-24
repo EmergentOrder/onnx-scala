@@ -9,7 +9,7 @@ scalaVersion := dottyVersion
 
 lazy val commonSettings = Seq(
   organization := "org.emergentorder.onnx",
-  version      := "0.15.0",
+  version      := "0.16.0",
   scalaVersion := dottyVersion,
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
@@ -63,7 +63,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
    )
    .jsSettings(
      scalaJSUseMainModuleInitializer                := true, // , //Testing
-     Compile / npmDependencies += "onnxruntime-web" -> "1.9.0"
+     Compile / npmDependencies += "onnxruntime-web" -> "1.10.0"
    )
    .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterPlugin) }
 

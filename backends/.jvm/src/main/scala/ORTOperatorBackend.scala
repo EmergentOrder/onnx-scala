@@ -2,7 +2,6 @@ package org.emergentorder.onnx.backends
 
 import java.nio._
 import scala.jdk.CollectionConverters._
-import scala.reflect.ClassTag
 import scala.language.implicitConversions
 import scala.util.Using
 import ai.onnxruntime._
@@ -82,7 +81,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
        td: TensorShapeDenotationOf[Td]
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
       val input_node_names = inputs.toArray.zipWithIndex.map { (e, i) =>
-         val incr: String = if (inputs.toArray.distinct.size == inputs.size) "" else i.toString
+         val incr: String = if inputs.toArray.distinct.size == inputs.size then "" else i.toString
          ((e.toString + incr).hashCode).toString
       }.toList
 
@@ -150,7 +149,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
    // Limitation: same reference cannot appear multiple times in a single op internally to the fused graph
    def fuseOps: ModelProto = {
       val cacheValues = sessionCache.values.asScala.toList
-      if (cacheValues.size == 0) return ModelProto()
+      if cacheValues.size == 0 then return ModelProto()
       val nodes = cacheValues.map(_.getGraph.node).fold(Seq[NodeProto]())((x, y) => x ++ y)
       val nodeOutputs = cacheValues
          .map(_.getGraph.output)

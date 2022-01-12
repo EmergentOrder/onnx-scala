@@ -21,7 +21,6 @@ package org.emergentorder.onnx
 import java.nio.file._
 import java.nio.ByteBuffer
 import collection.JavaConverters._
-import scala.reflect.ClassTag
 import scala.language.implicitConversions
 
 import java.io.File
@@ -188,7 +187,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
       val someNodes = input.map { inputOpt =>
          inputOpt.map { x =>
             val name = x.name.getOrElse("MissingName")
-            if (params exists (_._1.equals(name)))
+            if params exists (_._1.equals(name)) then
                ("param_" + name)
             else ("input_" + name)
          } ++ nodeOutputs.flatten.map(y => ("output_" + y))

@@ -207,7 +207,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
        attrs: Map[String, Any]
    ): ModelProto = {
 
-      val thisDomain = if (opName.equals("Inverse")) "com.microsoft" else "ai.onnx"
+      val thisDomain = if opName.equals("Inverse") then "com.microsoft" else "ai.onnx"
 
       def nodeWithAddedInputs(inputNames: List[String], node: NodeProto): NodeProto = {
          inputNames match {
@@ -228,7 +228,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
                         opt match {
                            case Some(in) => {
                               val incr: String =
-                                 if (inputs.toArray.distinct.size == inputs.size) "" else i.toString
+                                 if inputs.toArray.distinct.size == inputs.size then "" else i.toString
                               val name = (opt.toString + incr).hashCode.toString
                               Some((createInputValueInfoProto(in, name), name))
                            }
@@ -236,7 +236,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
                         }
                      case tens: Tensor[T, Axes] => {
                         val incr: String =
-                           if (inputs.toArray.distinct.size == inputs.size) "" else i.toString
+                           if inputs.toArray.distinct.size == inputs.size then "" else i.toString
                         val name = ((tens.toString + incr).hashCode).toString
                         Some((createInputValueInfoProto(tens, name), name))
                      }
@@ -258,7 +258,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
         node = Seq(node)
       )
 
-      val thisOpset = if (opName.equals("Inverse")) 1 else 13
+      val thisOpset = if opName.equals("Inverse") then 1 else 13
       val model = ModelProto(
         producerName = Some("ONNX-Scala"),
         graph = Some(newGraph),

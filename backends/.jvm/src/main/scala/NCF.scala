@@ -3,7 +3,6 @@ package org.emergentorder.onnx
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.backends._
-import scala.reflect.ClassTag
 import spire.implicits._
 import spire.math.UByte
 import spire.math.UShort

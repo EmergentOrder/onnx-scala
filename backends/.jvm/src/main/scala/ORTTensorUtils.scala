@@ -77,7 +77,7 @@ object ORTTensorUtils {
        env: OrtEnvironment
    ): OnnxTensor = {
       // working around: https://github.com/microsoft/onnxruntime/issues/7358
-      if (shape.size == 0 || (shape.size == 1 && shape(0) == 1)) {
+      if shape.size == 0 || (shape.size == 1 && shape(0) == 1) then {
          OnnxTensor.createTensor(env, arr)
       } else {
          val tensorIn = OrtUtil.reshape(arr, shape.map(_.toLong))
@@ -113,7 +113,7 @@ object ORTTensorUtils {
          }
          case ONNX_TENSOR_ELEMENT_DATA_TYPE_BOOL => {
 
-            value.getByteBuffer.array().map(x => if (x == 1) true else false)
+            value.getByteBuffer.array().map(x => if x == 1 then true else false)
          }
          case ONNX_TENSOR_ELEMENT_DATA_TYPE_STRING => ??? // TODO
          case ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8  => ??? // TODO, Newly supported in ORT Java 1.9.x

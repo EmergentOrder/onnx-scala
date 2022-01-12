@@ -1,6 +1,5 @@
 package org.emergentorder.onnx
 
-import scala.reflect.ClassTag
 import spire.math.Numeric
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._

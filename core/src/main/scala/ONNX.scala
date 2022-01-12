@@ -1294,7 +1294,7 @@ package object onnx {
       ]] = {
          val map: Map[String, Any] = Map(
            "axes"     -> indicesOf[Axes].indices.toArray,
-           "keepdims" -> (if (valueOf[KeepDims]) 1 else 0)
+           "keepdims" -> (if valueOf[KeepDims] then 1 else 0)
          )
          val allInputs = Tuple1(data)
          (callOp(name, "ReduceLogSum", allInputs, map))
@@ -1329,7 +1329,7 @@ package object onnx {
       ]] = {
          val map: Map[String, Any] = Map(
            "axes"     -> indicesOf[Axes].indices.toArray,
-           "keepdims" -> (if (valueOf[KeepDims]) 1 else 0)
+           "keepdims" -> (if valueOf[KeepDims] then 1 else 0)
          )
          val allInputs = Tuple1(data)
          (callOp(name, "ReduceMax", allInputs, map))
@@ -1363,7 +1363,7 @@ package object onnx {
       ]] = {
          val map: Map[String, Any] = Map(
            "axes"     -> indicesOf[Axes].indices.toArray,
-           "keepdims" -> (if (valueOf[KeepDims]) 1 else 0)
+           "keepdims" -> (if valueOf[KeepDims] then 1 else 0)
          )
          val allInputs = Tuple1(data)
          (callOp(name, "ReduceMean", allInputs, map))
@@ -1398,7 +1398,7 @@ package object onnx {
       ]] = {
          val map: Map[String, Any] = Map(
            "axes"     -> indicesOf[Axes].indices.toArray,
-           "keepdims" -> (if (valueOf[KeepDims]) 1 else 0)
+           "keepdims" -> (if valueOf[KeepDims] then 1 else 0)
          )
          val allInputs = Tuple1(data)
          (callOp(name, "ReduceMin", allInputs, map))
@@ -1432,7 +1432,7 @@ package object onnx {
       ]] = {
          val map: Map[String, Any] = Map(
            "axes"     -> indicesOf[Axes].indices.toArray,
-           "keepdims" -> (if (valueOf[KeepDims]) 1 else 0)
+           "keepdims" -> (if valueOf[KeepDims] then 1 else 0)
          )
          val allInputs = Tuple1(data)
          (callOp(name, "ReduceProd", allInputs, map))
@@ -1466,7 +1466,7 @@ package object onnx {
       ]] = {
          val map: Map[String, Any] = Map(
            "axes"     -> indicesOf[Axes].indices.toArray,
-           "keepdims" -> (if (valueOf[KeepDims]) 1 else 0)
+           "keepdims" -> (if valueOf[KeepDims] then 1 else 0)
          )
          val allInputs = Tuple1(data)
          (callOp(name, "ReduceSumSquare", allInputs, map))
@@ -1500,7 +1500,7 @@ package object onnx {
         KeepOrReduceDims[S, Axes, KeepDims]
       ]] = {
          val axes                  = indicesOf[Axes].indices.toArray
-         val map: Map[String, Any] = Map("keepdims" -> (if (valueOf[KeepDims]) 1 else 0))
+         val map: Map[String, Any] = Map("keepdims" -> (if valueOf[KeepDims] then 1 else 0))
          val allInputs = Tuple2(
            data,
            Tensor(axes.map(_.toLong), Shape.fromSeq(ArraySeq.unsafeWrapArray(Array(axes.size))))
@@ -2102,7 +2102,7 @@ package object onnxruntime {
          val map: Map[String, Any] = Map(
            "axis"              -> indicesOf[Axis].indices.toArray.head,
            "select_last_index" -> selectLastIndex,
-           "keepdims"          -> (if (valueOf[KeepDims]) 1 else 0)
+           "keepdims"          -> (if valueOf[KeepDims] then 1 else 0)
          )
          val allInputs = Tuple1(data)
          (callOp(name, "ArgMax", allInputs, map))
@@ -2139,7 +2139,7 @@ package object onnxruntime {
          val map: Map[String, Any] = Map(
            "axis"              -> indicesOf[Axis].indices.toArray.head,
            "select_last_index" -> selectLastIndex,
-           "keepdims"          -> (if (valueOf[KeepDims]) 1 else 0)
+           "keepdims"          -> (if valueOf[KeepDims] then 1 else 0)
          )
          val allInputs = Tuple1(data)
          (callOp(name, "ArgMin", allInputs, map))

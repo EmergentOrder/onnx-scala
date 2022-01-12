@@ -47,6 +47,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
 
       val size = inputs.size
+      @annotation.nowarn
       val inputTensors = (0 until size).map { i =>
          val tup = inputs.drop(i).take(1)
          tup match { // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318

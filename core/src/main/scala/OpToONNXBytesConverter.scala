@@ -101,6 +101,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
       }
 
       // TODO: more attr types
+      @annotation.nowarn
       def attrProtos[Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape]
           : Array[AttributeProto] =
          attrs
@@ -216,6 +217,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
       }
 
       // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
+      @annotation.nowarn
       val inputValueInfosAndExistingInputs: IndexedSeq[Tuple2[ValueInfoProto, String]] =
          (0 until inputs.size).map { i =>
             val t = inputs.drop(i).take(1)

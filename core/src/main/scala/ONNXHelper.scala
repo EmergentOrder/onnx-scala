@@ -26,28 +26,12 @@ import scala.language.implicitConversions
 
 import java.io.File
 //import org.bytedeco.javacpp._
-//import org.bytedeco.onnx._
-//import org.bytedeco.onnx.global.onnx.check_model
 import onnx.onnx._
 import onnx.onnx.TensorProto.DataType._
 
-class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
+class ONNXHelper(val byteArray: Array[Byte]) {
    lazy val model = ModelProto.parseFrom(byteArray)
-//  check_model(model.toProtoString)
-   /*
-  = {
-    val r     = (new ModelProto)
-    val bytes = new BytePointer(byteArray: _*)
-    ParseProtoFromBytes(
-      r,
-      bytes,
-      byteArray.length.toLong
-    )
-    //check_model(r) //TODO: restore
-    r
-  }
-    */
-//  val testproto = TensorProto(name = "test")
+   //  check_model(model.toProtoString)
    private val graph = model.graph
 
    val maxOpsetVersion: Long =
@@ -59,7 +43,7 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
 
    def onnxTensorProtoToArray(tensorProto: TensorProto) = {
 
-      // TODEFER: Get dim and type denotations, encode into types here in 2.13 / earlier if possible
+      // TODEFER: Get dim and type denotations, encode into types here
 
       val onnxDataType = tensorProto.dataType
       val dimsCount    = tensorProto.dims.size
@@ -264,10 +248,4 @@ class ONNXHelper(val byteArray: Array[Byte]) extends AutoCloseable {
          .filter(opt => opt.map(z => !(params exists (_._1.equals(z._1)))).getOrElse(false))
          .flatten
    }
-
-   override def close(): Unit = {
-//    model.close
-//    scope.close
-   }
-
 }

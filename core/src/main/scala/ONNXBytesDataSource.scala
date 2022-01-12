@@ -7,7 +7,7 @@ import org.emergentorder.onnx.Tensors._
 import org.emergentorder.compiletime._
 import io.kjaer.compiletime._
 
-class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends AutoCloseable with DataSource {
+class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends DataSource {
 
    val onnxHelper = new ONNXHelper(onnxBytes)
 
@@ -47,11 +47,4 @@ class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends AutoCloseable with Dat
             throw new Exception("No params found for param name: " + name)
       }
    }
-
-   override def close(): Unit = {
-
-//    onnxHelper.close
-
-   }
-
 }

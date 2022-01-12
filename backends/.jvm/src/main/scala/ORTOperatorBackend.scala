@@ -91,6 +91,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 
       // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
       // TODO: don't mix up Options and Tensors here
+      @annotation.nowarn
       val inputTensors: Array[OnnxTensor] = inputs.toArray.map { elem =>
          elem match {
             case opt: Option[Tensor[T, Tuple3[Tt, Td, S]]] =>

@@ -27,14 +27,11 @@ import scala.language.implicitConversions
   *
   * Binary representation:
   *
-  * sign (1 bit)
-  * |
-  * | exponent (8 bits)
+  * sign (1 bit) \| \| exponent (8 bits)
   * |  |
   * |:-|
   * |  |
-  * mantissa (7 bits)
-  * | | | x xxxxxxxx xxxxxxx
+  * mantissa (7 bits) \| | | x xxxxxxxx xxxxxxx
   *
   * Value interpretation (in order of precedence, with _ wild):
   *

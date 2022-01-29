@@ -228,7 +228,8 @@ trait OpToONNXBytesConverter extends AutoCloseable {
                         opt match {
                            case Some(in) => {
                               val incr: String =
-                                 if inputs.toArray.distinct.size == inputs.size then "" else i.toString
+                                 if inputs.toArray.distinct.size == inputs.size then ""
+                                 else i.toString
                               val name = (opt.toString + incr).hashCode.toString
                               Some((createInputValueInfoProto(in, name), name))
                            }

@@ -187,8 +187,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
       val someNodes = input.map { inputOpt =>
          inputOpt.map { x =>
             val name = x.name.getOrElse("MissingName")
-            if params exists (_._1.equals(name)) then
-               ("param_" + name)
+            if params exists (_._1.equals(name)) then ("param_" + name)
             else ("input_" + name)
          } ++ nodeOutputs.flatten.map(y => ("output_" + y))
       }

@@ -1,7 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.1.1"
+val dottyVersion     = "3.1.2-RC1"
 val spireVersion     = "0.18.0-M3"
 val scalaTestVersion = "3.2.11"
 
@@ -14,7 +14,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
-  scalacOptions ++= Seq("-feature", "-Xfatal-warnings", "-unchecked", "-deprecation"),
+  scalacOptions ++= Seq("-explain-types", "-feature", "-Xfatal-warnings", "-unchecked", "-deprecation"),
   autoCompilerPlugins := true
 ) ++ sonatypeSettings
 

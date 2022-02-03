@@ -66,11 +66,9 @@ class ORTModelBackend(onnxBytes: Array[Byte])
         allNodeNamesAndDims._3
       )
 
-      output // .asInstanceOf[Tensor[T, Tuple3[Tt, Td, S]]]
+      output
    }
 
    override def close(): Unit = {
-//    executable.close
-//    super.close
    }
 }

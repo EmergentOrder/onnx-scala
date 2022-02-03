@@ -35,7 +35,6 @@ sealed trait TensorShapeDenotation extends Product with Serializable {
 final case class ##:[+H <: DimensionDenotation, +T <: TensorShapeDenotation](head: H, tail: T)
     extends TensorShapeDenotation {
    override def toString = head match {
-      case _ ##: _ => s"($head) ##: $tail"
       case _       => s"$head ##: $tail"
    }
 }

@@ -69,6 +69,5 @@ class ORTModelBackend(onnxBytes: Array[Byte])
       output
    }
 
-   override def close(): Unit = {
-   }
+   override def close(): Unit = {}
 }

@@ -33,7 +33,7 @@ sealed trait Shape extends Product with Serializable {
 
 final case class #:[+H <: Dimension, +T <: Shape](head: H, tail: T) extends Shape {
    override def toString = head match {
-      case _      => s"$head #: $tail"
+      case _ => s"$head #: $tail"
    }
 }
 

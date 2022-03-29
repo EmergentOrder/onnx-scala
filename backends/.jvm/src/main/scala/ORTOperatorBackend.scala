@@ -17,9 +17,6 @@ import ORTTensorUtils._
 
 trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 
-   // Java map performs better
-   val sessionCache = new java.util.LinkedHashMap[String, ModelProto]
-
    val env = OrtEnvironment.getEnvironment()
 
    val coreCount = java.lang.Runtime.getRuntime().availableProcessors()
@@ -130,10 +127,6 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       val modelProto = opToModelProto(opName, inputs, attrs)
 
       val result: Tensor[T, Tuple3[Tt, Td, S]] = callByteArrayOp(modelProto.toByteArray, inputs)
-      sessionCache.computeIfAbsent(
-        opName + inputs.toArray.toList.toString + attrs.toString,
-        _ => modelToPersist(modelProto, result.toString.hashCode.toString)
-      )
       result
    }
 
@@ -145,33 +138,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       mod.clearGraph.withGraph(graphToPersist)
    }
 
-   // WARNING: not referentially transparent
-   // Limitation: same reference cannot appear multiple times in a single op internally to the fused graph
-   def fuseOps: ModelProto = {
-      val cacheValues = sessionCache.values.asScala.toList
-      if cacheValues.size == 0 then return ModelProto()
-      val nodes = cacheValues.map(_.getGraph.node).fold(Seq[NodeProto]())((x, y) => x ++ y)
-      val nodeOutputs = cacheValues
-         .map(_.getGraph.output)
-         .fold(Seq[ValueInfoProto]())((x, y) => x ++ y)
-         .map(_.getName)
-      val inputs = cacheValues
-         .map(_.getGraph)
-         .filter(!_.node(0).opType.equals(Some("Constant")))
-         .map(_.input)
-         .fold(Seq[ValueInfoProto]())((x, y) => x ++ y)
-         .filter(z => !nodeOutputs.contains(z.getName))
-         .distinct
-      val outputs = cacheValues(cacheValues.size - 1).getGraph.output
-      val modelProto = (cacheValues.head.clearGraph).withGraph(
-        (new GraphProto).withNode(nodes).withInput(inputs).withOutput(outputs)
-      )
-      sessionCache.clear
-      modelProto
-   }
-
    override def close(): Unit = {
       env.close
-//    super.close
    }
 }

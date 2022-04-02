@@ -91,12 +91,13 @@ object Tensors {
             case true =>
                Second match {
                   case secondHead #: secondTail =>
-                     (head + secondHead) #: AddGivenAxisSizeLoop[
-                       tail,
-                       secondTail,
-                       Indices.RemoveValue[AxisIndex, I],
-                       S[I]
-                     ]
+                     (head + secondHead) #:
+                        AddGivenAxisSizeLoop[
+                          tail,
+                          secondTail,
+                          Indices.RemoveValue[AxisIndex, I],
+                          S[I]
+                        ]
                   case SNil =>
                      AxisIndex match {
                         case INil => SNil
@@ -154,12 +155,13 @@ object Tensors {
       case head #: tail =>
          Indices.Contains[AxisIndex, I] match {
             case true =>
-               IndicesSize[AxisIndices] #: GatheredShapeLoop[
-                 tail,
-                 Indices.RemoveValue[AxisIndex, I],
-                 S[I],
-                 AxisIndices
-               ]
+               IndicesSize[AxisIndices] #:
+                  GatheredShapeLoop[
+                    tail,
+                    Indices.RemoveValue[AxisIndex, I],
+                    S[I],
+                    AxisIndices
+                  ]
             case false => head #: GatheredShapeLoop[tail, AxisIndex, S[I], AxisIndices]
          }
       case SNil =>
@@ -243,11 +245,12 @@ object Tensors {
                case afterHead #: afterTail =>
                   PadFrom match {
                      case padFromHead #: padFromTail =>
-                        (head + padFromHead + afterHead) #: PaddedShapeLoop[
-                          padFromTail,
-                          tail,
-                          afterTail
-                        ]
+                        (head + padFromHead + afterHead) #:
+                           PaddedShapeLoop[
+                             padFromTail,
+                             tail,
+                             afterTail
+                           ]
                      case SNil => SNil
                   }
                case SNil => SNil

@@ -9,7 +9,7 @@ scalaVersion := dottyVersion
 
 lazy val commonSettings = Seq(
   organization := "org.emergentorder.onnx",
-  version      := "0.16.0",
+  version      := "0.17.0",
   scalaVersion := dottyVersion,
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",

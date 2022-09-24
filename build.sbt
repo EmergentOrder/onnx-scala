@@ -1,7 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.1.2"
+val dottyVersion     = "3.2.1-RC2"
 val spireVersion     = "0.18.0"
 val scalaTestVersion = "3.2.13"
 
@@ -19,7 +19,9 @@ lazy val commonSettings = Seq(
     "-feature",
     "-Xfatal-warnings",
     "-unchecked",
-    "-deprecation"
+    "-deprecation",
+    "-release:17",
+    "-source:3.2"
   ),
   autoCompilerPlugins := true
 ) ++ sonatypeSettings
@@ -69,7 +71,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
    )
    .jsSettings(
      scalaJSUseMainModuleInitializer                := true, // , //Testing
-     Compile / npmDependencies += "onnxruntime-web" -> "1.11.0"
+     Compile / npmDependencies += "onnxruntime-web" -> "1.12.1"
    )
    .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterPlugin) }
 

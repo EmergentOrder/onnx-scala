@@ -20,7 +20,7 @@ package org.emergentorder.onnx
 
 import java.nio.file._
 import java.nio.ByteBuffer
-import collection.JavaConverters._
+//import scala.jdk.CollectionConverters
 import scala.language.implicitConversions
 
 import java.io.File

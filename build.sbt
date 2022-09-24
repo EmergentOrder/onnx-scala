@@ -20,7 +20,7 @@ lazy val commonSettings = Seq(
     "-Xfatal-warnings",
     "-unchecked",
     "-deprecation",
-    "-release:17",
+//    "-release:17",
     "-source:3.2"
   ),
   autoCompilerPlugins := true

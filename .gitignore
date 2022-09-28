@@ -1,14 +1,10 @@
+backends/.js/
 common/.js/
 common/.jvm/
 common/.native/
-commonDotty/.jvm/
 core/.js/
 core/.jvm/
 core/.native/
-coreDotty/.jvm/
-zio/.js/
-zio/.jvm/
-zio/.native/
 node_modules/
 programGenerator/.jvm/
 project/project/

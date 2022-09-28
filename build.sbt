@@ -1,7 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.2.1-RC2"
+val dottyVersion     = "3.2.0"
 val spireVersion     = "0.18.0"
 val scalaTestVersion = "3.2.13"
 
@@ -26,7 +26,7 @@ lazy val commonSettings = Seq(
   autoCompilerPlugins := true
 ) ++ sonatypeSettings
 
-lazy val common = (crossProject(JSPlatform, JVMPlatform)
+lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .crossType(CrossType.Pure) in file("common"))
    .settings(
      commonSettings,
@@ -44,11 +44,8 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform)
      crossScalaVersions := Seq(
        dottyVersion
      ),
-     libraryDependencies -= ("com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion),
-     libraryDependencies += ("com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion)
-        .cross(CrossVersion.for3Use2_13),
      Compile / PB.targets := Seq(
-       scalapb.gen() -> (Compile / sourceManaged).value
+       scalapb.gen() -> (Compile / sourceManaged).value / "scalapb"
      ),
      // The trick is in this line:
      Compile / PB.protoSources := Seq(file("proto/src/main/protobuf"))

@@ -3,7 +3,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 //val dottyVersion = dottyLatestNightlyBuild.get
 val dottyVersion     = "3.2.0"
 val spireVersion     = "0.18.0"
-val scalaTestVersion = "3.2.13"
+val scalaTestVersion = "3.2.14"
 
 scalaVersion := dottyVersion
 
@@ -20,7 +20,7 @@ lazy val commonSettings = Seq(
     "-Xfatal-warnings",
     "-unchecked",
     "-deprecation",
-//    "-release:17",
+//    "-release:19",
     "-source:3.2"
   ),
   autoCompilerPlugins := true
@@ -36,6 +36,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      )
    )
 
+//TODO: NativePlatform here, once ScalaPB native + Scala 3 jars are published. Tested with local ScalaPB build
 lazy val proto = (crossProject(JSPlatform, JVMPlatform)
    .crossType(CrossType.Pure) in file("proto"))
    .settings(

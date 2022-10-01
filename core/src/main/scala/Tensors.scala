@@ -101,6 +101,7 @@ object Tensors {
                   case SNil =>
                      AxisIndex match {
                         case INil => SNil
+                        case _ => Nothing
                      }
                }
             case false =>
@@ -112,6 +113,7 @@ object Tensors {
       case SNil =>
          AxisIndex match {
             case INil => SNil
+            case _ => Nothing
          }
    }
 
@@ -167,6 +169,8 @@ object Tensors {
       case SNil =>
          AxisIndex match {
             case INil => SNil
+            case _ => SNil
+            //FIXME
          }
    }
 
@@ -197,6 +201,7 @@ object Tensors {
       case SNil =>
          AxisIndex match {
             case INil => Acc #: SNil
+            case _ => Nothing
          }
    }
 

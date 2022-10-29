@@ -15,6 +15,7 @@ lazy val commonSettings = Seq(
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
   scalacOptions ++= Seq(
+    "-explain",
     "-explain-types",
     "-feature",
     "-Xfatal-warnings",

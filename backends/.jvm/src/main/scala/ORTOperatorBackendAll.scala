@@ -11,7 +11,7 @@ class ORTOperatorBackendAll
     with AcosV7
     with AcoshV9
 //    with AdagradV1 //New in 1.7.0, training
-    with AddV13
+    with AddV14
     with AndV7
     with ArgMaxV13
     with ArgMinV13
@@ -21,7 +21,7 @@ class ORTOperatorBackendAll
     with AtanV7
     with AtanhV9
     with AveragePoolV11
-    with BatchNormalizationV9
+    with BatchNormalizationV15
 //    with BinarizerV1 //ONNX ML, not tested for in scoreboard
     with BitShiftV11 //TODO: Add to NDScala
 //    with CastV13
@@ -46,7 +46,7 @@ class ORTOperatorBackendAll
 //    with DequantizeLinearV10
 //    with DetV11
 //    with DictVectorizerV1 //ONNX ML, not tested for in scoreboard
-    with DivV13
+    with DivV14
     with DropoutV13
 //    with DynamicQuantizeLinearV11
 // with EinsumV12 //new in 1.7.0
@@ -70,7 +70,7 @@ class ORTOperatorBackendAll
 //    with GradientV1 //Training, new in 1.7.0
 //    with GraphCallV1 //Training, new in 1.7.0
     with GreaterV13
-    with GreaterOrEqualV12
+    with GreaterOrEqualV16
 //    with HardSigmoidV6
 //    with HardmaxV11
 //    with IdentityV1
@@ -85,7 +85,7 @@ class ORTOperatorBackendAll
 //    with LabelEncoderV2 //ONNX ML, not tested for in scoreboard
     with LeakyReluV6
     with LessV13
-    with LessOrEqualV12
+    with LessOrEqualV16
 //    with LinearClassifierV1 //ONNX ML, not tested for in scoreboard
 //    with LinearRegressorV1 //ONNX ML, not tested for in scoreboard
     with LogV13
@@ -106,7 +106,7 @@ class ORTOperatorBackendAll
     with MinV13
     with ModV13
 //    with MomentumV1 //Training, new in 1.7.0
-    with MulV13
+    with MulV14
 //    with MultinomialV7 //fails in scoreboard
     with NegV13
 // with NegativeLogLikelihoodLossV12 //new in 1.7.0
@@ -117,9 +117,9 @@ class ORTOperatorBackendAll
 //    with OneHotV11
 //    with OneHotEncoderV1 //ONNX ML, not tested in scoreboard
     with OrV7
-    with PReluV9
+    with PReluV16
     with PadV13
-    with PowV13
+    with PowV15
 //    with QLinearConvV10
 //    with QLinearMatMulV10
 //    with QuantizeLinearV10
@@ -141,8 +141,8 @@ class ORTOperatorBackendAll
     with ReduceProdV13
     with ReduceSumV13
     with ReduceSumSquareV13
-    with ReluV13
-    with ReshapeV13
+    with ReluV14
+    with ReshapeV14
 //    with ResizeV11
 //    with ReverseSequenceV10
 //    with RoiAlignV10
@@ -161,7 +161,7 @@ class ORTOperatorBackendAll
 //    with SequenceEraseV11
 //    with SequenceInsertV11
 //    with SequenceLengthV11
-    with ShapeV13
+    with ShapeV15
 //    with ShrinkV9
 //    with SigmoidV1
     with SigmoidV13
@@ -182,7 +182,7 @@ class ORTOperatorBackendAll
     with SqrtV13
     with SqueezeV13
 //    with StringNormalizerV10
-    with SubV13
+    with SubV14
     with SumV13
     with TanV7
     with TanhV13

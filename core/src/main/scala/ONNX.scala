@@ -1562,7 +1562,10 @@ package object onnx {
           s: ShapeOf[S2],
           sizeSeq: NumElements[S] =:= NumElements[S2]
       ): Tensor[T, Tuple3[Tt2, Td2, S2]] = {
-         val map: Map[String, Any] = Map("allowzero" -> allowzero)
+         val map: Map[String, Any] = allowzero match {
+           case None => Map()
+           case Some(x) => Map("allowzero" -> x)
+         }
          val allInputs             = Tuple2(data, shapeInput)
          (callOp(name, "Reshape", allInputs, map))
       }

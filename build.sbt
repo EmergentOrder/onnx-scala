@@ -58,17 +58,17 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
      commonSettings,
      name := "onnx-scala-backends",
      libraryDependencies ++= Seq(
-       "com.microsoft.onnxruntime" % "onnxruntime" % "1.12.1"
+       "com.microsoft.onnxruntime" % "onnxruntime" % "1.13.1"
      ),
+     libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
      crossScalaVersions := Seq(dottyVersion)
    )
    .jvmSettings(
-//TODO: move to utest
-     libraryDependencies += ("org.scalatest" %% "scalatest" % scalaTestVersion) % Test
    )
    .jsSettings(
      scalaJSUseMainModuleInitializer                := true, // , //Testing
-     Compile / npmDependencies += "onnxruntime-web" -> "1.12.1"
+     Compile / npmDependencies += "onnxruntime-node" -> "1.13.1",
+     Compile / npmDependencies += "onnxruntime-common" -> "1.13.1"
    )
    .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterPlugin) }
 

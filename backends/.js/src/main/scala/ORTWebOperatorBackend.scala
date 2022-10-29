@@ -5,8 +5,8 @@ import scala.concurrent.duration._
 //import typings.onnxruntimeWeb.tensorMod.Tensor.FloatType
 //import typings.onnxruntimeWeb.tensorMod.Tensor.DataType
 //import typings.onnxjs.libTensorMod.Tensor.DataTypeMap.DataTypeMapOps
-import typings.onnxruntimeWeb.mod.{InferenceSession => OrtSession}
-import typings.onnxruntimeWeb.mod.Tensor.{^ => OnnxTensor}
+import typings.onnxruntimeNode.mod.{InferenceSession => OrtSession}
+import typings.onnxruntimeNode.mod.Tensor.{^ => OnnxTensor}
 //import typings.onnxruntimeWeb.ort.InferenceSession.{^ => InferenceSess}
 //import typings.onnxjs.onnxMod.Onnx
 import scala.scalajs.js.typedarray
@@ -17,6 +17,7 @@ import scala.concurrent.Future
 import scala.language.postfixOps
 import scala.scalajs.js
 
+import ORTTensorUtils._
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.Tensors.Tensor._
@@ -24,6 +25,32 @@ import org.emergentorder.compiletime._
 import io.kjaer.compiletime._
 
 trait ORTWebOperatorBackend {
+
+
+   def callOp[T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+       name: String,
+       opName: String,
+       inputs: Tuple,
+       //    outName: String,
+       attrs: Map[String, Any]
+   )(using
+       tt: ValueOf[Tt],
+       td: TensorShapeDenotationOf[Td],
+       s: ShapeOf[S]
+   ): Tensor[T, Tuple3[Tt, Td, S]] = {
+     ???
+     //TODO
+     //
+     //
+     /*
+     // TODO: prevent passing input to opToONNXBytes
+
+      val modelProto = opToModelProto(opName, inputs, attrs)
+
+      val result: Tensor[T, Tuple3[Tt, Td, S]] = callByteArrayOp(modelProto.toByteArray, inputs)
+      result
+      */
+   }
 
    def runModel[
        T <: Supported,
@@ -185,6 +212,8 @@ trait ORTWebOperatorBackend {
       ](session, inputs, List("data"), List("squeezenet0_flatten0_reshape0"))
 
       res.foreach(tens => tens.data.foreach(println))
+      println(res)
+      res.andThen(x => println(x))
 //      res.foreach(tens => println(tens.shape))
 
       /*

@@ -33,7 +33,7 @@ class ONNXScalaSpec extends AnyFlatSpec with Matchers {
 
       // or as a shorthand if you aren't concerned with enforcing denotations
       val imageTensDefaultDenotations = Tensor(data, shape)
-      val out = squeezenet.fullModel[
+      val out = squeezenet.fullModelResult[
         Float,
         "ImageNetClassification",
         "Batch" ##: "Class" ##: TSNil,

@@ -37,7 +37,7 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
       // Note: Don't need to specify all the type params except in Dotty
       val nodeFullOutput: Tensor[Float, Axes] =
          fullORTBackend
-            .fullModel[Float, "TensorType", "DimensionDenotation" ##: TSNil, 1 #: 1000 #: SNil](
+            .fullModelResult[Float, "TensorType", "DimensionDenotation" ##: TSNil, 1 #: 1000 #: SNil](
               // TODO: testing less than enough inputs
               (nodeactual_input_1)
             )

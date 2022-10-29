@@ -1,5 +1,6 @@
 package org.emergentorder
 
+import scala.concurrent.Future
 import scala.language.higherKinds
 import scala.{specialized => sp}
 //import java.util.Map
@@ -47,7 +48,8 @@ package object onnx {
       ): Tensor[T, Tuple3[Tt, Td, S]]
    }
 
-   abstract class Model(onnxBytes: Array[Byte]) extends Operator {
+   //TODO: restore onnxbytes here
+   abstract class Model() extends Operator {
       def fullModel[
           T <: Supported,
           Tt <: TensorTypeDenotation,
@@ -59,7 +61,7 @@ package object onnx {
           tt: ValueOf[Tt],
           td: TensorShapeDenotationOf[Td],
           s: ShapeOf[S]
-      ): Tensor[T, Tuple3[Tt, Td, S]]
+      ): Future[Tensor[T, Tuple3[Tt, Td, S]]]
    }
 
    // Not in the spec, allows access to params from within the loaded model

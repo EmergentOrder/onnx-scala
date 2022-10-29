@@ -1,12 +1,14 @@
 package org.emergentorder.onnx.backends
 
 import scala.language.implicitConversions
-import scala.concurrent._
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
-import ai.onnxruntime._
+import scala.concurrent.Future
 import scala.jdk.CollectionConverters._
+import scala.scalajs.js.Array
+import scalajs.js.JSConverters._
 
+//import typings.onnxruntimeNode.mod.{InferenceSession => OrtSession}
+import typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession
+import typings.onnxruntimeNode.mod.Tensor.{^ => OnnxTensor}
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.Tensors.Tensor._
@@ -16,23 +18,17 @@ import io.kjaer.compiletime._
 import ORTTensorUtils._
 
 //TODO: Clean up, remove asInstaceOf, etc.
-class ORTModelBackend(onnxBytes: Array[Byte])
+class ORTWebModelBackend(session: InferenceSession)
     extends Model()
-    with ORTOperatorBackend
-    with AutoCloseable {
+    with ORTWebOperatorBackend {
 
-   def getInputAndOutputNodeNamesAndDims(sess: OrtSession) = {
-      val input_node_names = session.getInputNames
+   def getInputAndOutputNodeNamesAndDims(sess: InferenceSession) = {
+      val input_node_names = sess.inputNames
 
-      val inputNodeDims =
-         session.getInputInfo.values.asScala.map(_.getInfo.asInstanceOf[TensorInfo].getShape)
+      val output_node_names = sess.outputNames
 
-      val output_node_names = session.getOutputNames
-
-      (input_node_names.asScala.toList, inputNodeDims.toArray, output_node_names.asScala.toList)
+      (input_node_names.toList, None, output_node_names.toList)
    }
-
-   val session = getSession(onnxBytes)
 
    val allNodeNamesAndDims = getInputAndOutputNodeNamesAndDims(session)
 
@@ -57,37 +53,19 @@ class ORTModelBackend(onnxBytes: Array[Byte])
             case t: Tuple1[_] =>
                t(0) match {
                   case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
-                     getOnnxTensor(tens.data, tens.shape, env)
+                     getOnnxTensor(tens.data, tens.shape).asInstanceOf[OnnxTensor[T]]
                }
          }
       }.toArray
 
       val output = runModel[T, Tt, Td, S](
-        session,
+        Future{session}.toJSPromise,
         inputTensors,
         allNodeNamesAndDims._1,
         allNodeNamesAndDims._3
       )
 
-      Future{output}
+      output
    }
 
-   def fullModelResult[
-       T <: Supported,
-       Tt <: TensorTypeDenotation,
-       Td <: TensorShapeDenotation,
-       S <: Shape
-   ](
-       inputs: Tuple
-   )(using
-       tt: ValueOf[Tt],
-       td: TensorShapeDenotationOf[Td],
-       s: ShapeOf[S]
-   ): Tensor[T, Tuple3[Tt, Td, S]] = {
-     val res: Future[Tensor[T, Tuple3[Tt, Td, S]]] = fullModel(inputs)
-     Await.result(res, Duration.Inf)
-   }
-
-
-   override def close(): Unit = {}
 }

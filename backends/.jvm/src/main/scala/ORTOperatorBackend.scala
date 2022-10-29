@@ -26,6 +26,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       session_options.setIntraOpNumThreads(coreCount)
 //    session_options.addCUDA()
 //    session_options.addDnnl(true)
+//      session_options.addXnnpack(java.util.Collections.emptyMap())
       env.createSession(bytes, session_options)
    }
 
@@ -64,6 +65,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       result
    }
 
+   //Idea: prepopulate models for ops with no params
    def callByteArrayOp[
        T <: Supported,
        Tt <: TensorTypeDenotation,

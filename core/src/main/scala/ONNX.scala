@@ -22,6 +22,9 @@ import org.emergentorder.compiletime.TensorShapeDenotation.Reverse
 import org.emergentorder.compiletime.TensorShapeDenotation.Concat
 import scala.collection.immutable.ArraySeq
 
+//TODO: Add new Optional, OptionalGetElement, OptionalHasElement operators from V15 and map to Scala Option
+//TODO: Add new Trilu operator from V14, other "function" operators, as need be
+
 //ONNX domain: ai.onnx(default)
 //Only the ops which are supported in both ONNX Runtime and ONNX.js
 //See: https://github.com/onnx/onnx/blob/v1.8.1/docs/Operators.md#aionnx-default
@@ -136,6 +139,7 @@ package object onnx {
       }
    }
 
+   //TODO: Missing V14
    trait AddV13 extends Operator {
       def AddV13[
           @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double: Numeric,
@@ -312,6 +316,7 @@ package object onnx {
       }
    }
 
+   //TODO: Missing V15
    // Missing optional outputs, only needed for training mode
    trait BatchNormalizationV9 extends Operator {
       def BatchNormalizationV9[
@@ -538,6 +543,7 @@ package object onnx {
       }
    }
 
+   //TODO: Missing V14
    trait DivV13 extends Operator {
       def DivV13[
           @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double: Numeric,
@@ -1088,6 +1094,7 @@ package object onnx {
       }
    }
 
+   //TODO: Missing V14
    trait MulV13 extends Operator {
       def MulV13[
           @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double: Numeric,
@@ -1171,6 +1178,7 @@ package object onnx {
       }
    }
 
+   //TODO: Missing V16
    trait PReluV9 extends Operator {
       def PReluV9[
           @sp T <: Float16 | Float | Double | UInt | ULong | Int | Long: Numeric,
@@ -1229,6 +1237,7 @@ package object onnx {
       }
    }
 
+   //TODO: Missing V15
    trait PowV13 extends Operator {
       def PowV13[
           @sp T <: Int | Long | Float16 | Float | Double: Numeric,
@@ -1511,6 +1520,7 @@ package object onnx {
       }
    }
 
+   //TODO: Missing V14
    trait ReluV13 extends Operator {
       def ReluV13[
           @sp T <: BFloat16 | Float16 | Float | Double: Numeric,
@@ -1531,6 +1541,7 @@ package object onnx {
       }
    }
 
+   //TODO: Missing V14
    trait ReshapeV13 extends Operator {
       def ReshapeV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
@@ -1657,6 +1668,7 @@ package object onnx {
       }
    }
 
+   //TODO: Missing V15
    trait ShapeV13 extends Operator {
       def ShapeV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
@@ -1860,7 +1872,6 @@ package object onnx {
    }
 
    // "If axes is not provided, all the single dimensions will be removed from the shape"
-   // Missing in ONNX.js
    trait SqueezeV13 extends Operator {
       def SqueezeV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
@@ -1893,6 +1904,7 @@ package object onnx {
       }
    }
 
+   //TODO: Missing V14
    trait SubV13 extends Operator {
       def SubV13[
           @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double: Numeric,
@@ -2018,7 +2030,7 @@ package object onnx {
          (callOp(name, "Transpose", allInputs, map))
       }
    }
-   // Missing in ONNX.js
+
    trait UnsqueezeV13 extends Operator {
       def UnsqueezeV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
@@ -2580,6 +2592,7 @@ package object onnxruntime {
 
     */
 
+   //TODO: Missing V16
    trait GreaterOrEqualV12 extends onnx.Operator {
       def GreaterOrEqualV12[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 |
@@ -2737,6 +2750,7 @@ package object onnxruntime {
     }
   }
     */
+   //TODO: Missing V16
    trait LessOrEqualV12 extends onnx.Operator {
       def LessOrEqualV12[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 |

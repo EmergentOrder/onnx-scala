@@ -36,8 +36,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      )
    )
 
-//TODO: NativePlatform here, once ScalaPB native + Scala 3 jars are published. Tested with local ScalaPB build
-lazy val proto = (crossProject(JSPlatform, JVMPlatform)
+lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .crossType(CrossType.Pure) in file("proto"))
    .settings(
      commonSettings,
@@ -73,7 +72,7 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
    )
    .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterPlugin) }
 
-lazy val core = (crossProject(JSPlatform, JVMPlatform)
+lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .crossType(CrossType.Pure) in file("core"))
    .dependsOn(common)
    .dependsOn(proto)

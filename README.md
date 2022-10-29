@@ -65,7 +65,7 @@ out.shape
 // val res0: Array[Int] = Array(1, 1000)
 
 
-//The highest probability (predicted) class
+//The highest scoring and thus highest probability (predicted) class
 out.data.indices.maxBy(out.data)
 // val res1: Int = 418
 ```
@@ -83,9 +83,9 @@ Feel free to wrap your calls into it in a facade with typed inputs.
 
 ## Project Details
 
-ONNX-Scala is cross-built against Scala JVM and Scala.js/JavaScript (for Scala 3 / Dotty )
+ONNX-Scala is cross-built against Scala JVM, Scala.js/JavaScript and Scala Native (for Scala 3 / Dotty )
 
-Currently at ONNX 1.11.0 (Backward compatible to at least 1.2.0 for the full model API, 1.7.0 for the fine-grained API), ONNX Runtime 1.11.0.
+Currently at ONNX 1.12.0 (Backward compatible to at least 1.2.0 for the full model API, 1.7.0 for the fine-grained API), ONNX Runtime 1.13.1.
  
 ### Fine-grained API
 A complete\*, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep learning and classical machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++). 
@@ -95,7 +95,7 @@ For more details on the low-level fine-grained API see [here](FineGrainedAPI.md)
 
 The preferred high-level fine-grained API, most suitable for the end user, is [NDScala](https://github.com/SciScala/NDScala)
 
-\* Up to roughly the intersection of supported ops in ONNX Runtime and ONNX.js
+\* Up to roughly the intersection of supported ops in ONNX Runtime and (the now defunct) ONNX.js
 
 #### Training
 Automatic differentiation to enable training is under consideration (ONNX currently provides facilities for training as a tech preview only).
@@ -109,23 +109,22 @@ and inspired by [Nexus](https://github.com/ctongfei/nexus), [Neurocat](https://g
 ### Backend
 There is one backend per Scala platform.
 For the JVM the backend is based on [ONNX Runtime](https://github.com/microsoft/onnxruntime), via their official Java API.
-For Scala.js / JavaScript a backend based on [ONNX.js](https://github.com/microsoft/onnxjs) is coming soon (blocked on new Scala.js bundler / ScalablyTyped converter releases for dotty support). 
+For Scala.js / JavaScript the backend is based on the [ONNX Runtime Node.js Binding](https://github.com/microsoft/onnxruntime/tree/main/js/node).
 
 Supported ONNX input and output tensor data types:
 * Byte
 * Short
 * Int
-* Long
+* Long (Except with NodeJS backend)
 * Float
 * Double
-* Boolean
+* Boolean (Except with NodeJS backend)
 
 Supported ONNX ops:
-* ONNX-Scala, Fine-grained API: 88/156 total 
-* ONNX-Scala, Full model API: Same as below, depending on platform
+* ONNX-Scala, Fine-grained API: 87/178 total
+* ONNX-Scala, Full model API: Same as below
 
-* ONNX Runtime: 145/156 total.
-* ONNX JS: 72/156 total.
+* ONNX Runtime / ONNX Runtime NodeJS: 165/178 total.
 
 See the [ONNX backend scoreboard](http://onnx.ai/backend-scoreboard/index.html) 
 

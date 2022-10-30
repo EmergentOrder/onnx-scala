@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "onnxruntime-common": "1.13.1",
+    "onnxruntime-node": "1.13.1"
+  },
+  "devDependencies": {
+    "concat-with-sourcemaps": "1.0.7",
+    "source-map-loader": "2.0.0",
+    "webpack": "5.24.3",
+    "webpack-cli": "4.5.0",
+    "webpack-dev-server": "^4.11.1"
+  }
+}

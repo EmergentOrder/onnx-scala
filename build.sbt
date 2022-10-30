@@ -52,7 +52,7 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      Compile / PB.protoSources := Seq(file("proto/src/main/protobuf"))
    )
 
-lazy val backends = (crossProject(JVMPlatform, JSPlatform)
+lazy val backends = (crossProject(JVMPlatform, JSPlatform, NativePlatform)
    .crossType(CrossType.Pure) in file("backends"))
    .dependsOn(core)
    .settings(

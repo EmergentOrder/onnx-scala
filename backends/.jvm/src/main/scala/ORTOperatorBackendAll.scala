@@ -4,7 +4,7 @@ import org.emergentorder.onnxruntime._
 import org.emergentorder.onnxruntimecontrib._
 
 //Going forward we only support ops (and their versions) which are supported in ONNX Runtime, opset 6+
-//Current ONNX opset 13
+//Current ONNX opset 16
 class ORTOperatorBackendAll
     extends ORTOperatorBackend
     with AbsV13

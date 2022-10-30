@@ -259,7 +259,7 @@ trait OpToONNXBytesConverter extends AutoCloseable {
         node = Seq(node)
       )
 
-      val thisOpset = if opName.equals("Inverse") then 1 else 13
+      val thisOpset = if opName.equals("Inverse") then 1 else 16
       val model = ModelProto(
         producerName = Some("ONNX-Scala"),
         graph = Some(newGraph),

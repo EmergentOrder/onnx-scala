@@ -64,9 +64,10 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform)
      libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
      crossScalaVersions := Seq(dottyVersion)
    )
-   .jvmSettings(
-   )
    .jsSettings(
+     webpack / version := "5.74.0",
+     webpackCliVersion := "4.10.0",
+     startWebpackDevServer / version := "4.11.1",
      scalaJSUseMainModuleInitializer                := true, // , //Testing
      Compile / npmDependencies += "onnxruntime-node" -> "1.13.1",
      Compile / npmDependencies += "onnxruntime-common" -> "1.13.1"

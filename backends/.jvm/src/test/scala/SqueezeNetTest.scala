@@ -16,11 +16,11 @@ import org.scalatest.matchers.should._
 class ONNXScalaSpec extends AnyFlatSpec with Matchers {
 
    new URL(
-     "https://s3.amazonaws.com/onnx-model-zoo/squeezenet/squeezenet1.1/squeezenet1.1.onnx"
-   ) #> new File("squeezenet1.1.onnx") !!
+     "https://media.githubusercontent.com/media/onnx/models/main/vision/classification/squeezenet/model/squeezenet1.0-12.onnx"
+   ) #> new File("squeezenet1.0-12.onnx") !!
 
    "SqueezeNet ONNX-Scala model" should "predict dummy image class" in {
-      val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.1.onnx"))
+      val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.0-12.onnx"))
       val squeezenet      = new ORTModelBackend(squeezenetBytes)
       val data            = Array.fill(1 * 3 * 224 * 224) { 42f }
       // In NCHW tensor image format
@@ -37,7 +37,7 @@ class ONNXScalaSpec extends AnyFlatSpec with Matchers {
         Float,
         "ImageNetClassification",
         "Batch" ##: "Class" ##: TSNil,
-        1 #: 1000 #: SNil
+        1 #: 1000 #: 1 #: 1 #: SNil
       ](Tuple(imageTens))
 
       // The output shape
@@ -45,6 +45,6 @@ class ONNXScalaSpec extends AnyFlatSpec with Matchers {
       assert(out.shape(1) == 1000)
 
       // The highest probability (predicted) class
-      assert(out.data.indices.maxBy(out.data) == 418)
+      assert(out.data.indices.maxBy(out.data) == 549)
    }
 }

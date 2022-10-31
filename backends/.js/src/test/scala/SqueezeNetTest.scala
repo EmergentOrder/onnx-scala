@@ -19,7 +19,7 @@ class ONNXScalaSpec extends AsyncFlatSpec with Matchers {
   //TODO: push this inside ORTWebModelBackend, and use other create() which takes arraybufferlike
    val sess: scala.scalajs.js.Promise[
         typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession
-      ] = OrtSession.create("squeezenet1.1.onnx")
+      ] = OrtSession.create("squeezenet1.0-12.onnx")
 
 
    "SqueezeNet ONNX-Scala model" should "predict dummy image class" in {
@@ -42,7 +42,7 @@ class ONNXScalaSpec extends AsyncFlatSpec with Matchers {
           Float,
           "ImageNetClassification",
           "Batch" ##: "Class" ##: TSNil,
-          1 #: 1000 #: SNil
+          1 #: 1000 #: 1 #: 1 #: SNil
         ](Tuple(imageTens))
  
         // The output shape
@@ -50,7 +50,7 @@ class ONNXScalaSpec extends AsyncFlatSpec with Matchers {
           assert(res.shape(0) == 1)
           assert(res.shape(1) == 1000)
           // The highest probability (predicted) class
-          assert(res.data.indices.maxBy(res.data) == 418)
+          assert(res.data.indices.maxBy(res.data) == 549)
         }
       }.flatten
    }

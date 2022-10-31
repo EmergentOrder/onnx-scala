@@ -71,7 +71,7 @@ trait ORTWebOperatorBackend {
    ): Future[Tensor[T, Tuple3[Tt, Td, S]]] = {
 
       // Limited to 1 input right now
-      val feeds   = js.Dictionary("data" -> input_tensor_values.head)
+      val feeds   = js.Dictionary(inputNames(0) -> input_tensor_values.head)
       val sessFut = sess.toFuture
       val output_tensors: Future[typings.onnxruntimeCommon.tensorMod.Tensor] =
          sessFut
@@ -89,7 +89,7 @@ trait ORTWebOperatorBackend {
                   .asInstanceOf[
                     typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession.OnnxValueMapType
                   ]
-                  .get("squeezenet0_flatten0_reshape0")
+                  .get(outputNames(0))
                   .getOrElse(null)
             }
 
@@ -184,7 +184,7 @@ trait ORTWebOperatorBackend {
 
       val session: scala.scalajs.js.Promise[
         typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession
-      ] = OrtSession.create("squeezenet1.1.onnx")
+      ] = OrtSession.create("squeezenet1.0-12.onnx")
 //      val dataTypes = new FloatType {}
 
       val dataType = "float32"
@@ -208,8 +208,8 @@ trait ORTWebOperatorBackend {
         Float,
         "ImageNetClassification",
         "Batch" ##: "Class" ##: TSNil,
-        1 #: 1000 #: SNil
-      ](session, inputs, List("data"), List("squeezenet0_flatten0_reshape0"))
+        1 #: 1000 #: 1 #: 1 #: SNil
+      ](session, inputs, List("data_0"), List("squeezenet0_flatten0_reshape0"))
 
       res.foreach(tens => tens.data.foreach(println))
       println(res)

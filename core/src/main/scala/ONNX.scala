@@ -1,6 +1,5 @@
 package org.emergentorder
 
-import scala.concurrent.Future
 import scala.language.higherKinds
 import scala.{specialized => sp}
 //import java.util.Map
@@ -12,6 +11,8 @@ import spire.math.Complex
 import spire.math.Numeric
 import spire.implicits._
 import spire.algebra.Field
+import cats.effect.IO
+
 import org.emergentorder.onnx.Tensors._
 //import scala.compiletime.ops.int //For RC2
 import scala.compiletime.ops.int._
@@ -64,7 +65,7 @@ package object onnx {
           tt: ValueOf[Tt],
           td: TensorShapeDenotationOf[Td],
           s: ShapeOf[S]
-      ): Future[Tensor[T, Tuple3[Tt, Td, S]]]
+      ): IO[Tensor[T, Tuple3[Tt, Td, S]]]
    }
 
    // Not in the spec, allows access to params from within the loaded model

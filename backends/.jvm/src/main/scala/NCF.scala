@@ -13,6 +13,7 @@ import scala.language.higherKinds
 import scala.io.Source
 import org.emergentorder.compiletime._
 import io.kjaer.compiletime._
+import cats.effect.IO
 
 //TODO: Add changes to generator; Generate both full model and layerwise programs each time
 class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[Long, Long])
@@ -23,7 +24,7 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
    def fullNCF(
        inputDataactual_input_1: Tensor[Long, Axes],
        inputDatalearned_0: Tensor[Long, Axes]
-   ): Tensor[Float, Axes] = {
+   ): IO[Tensor[Float, Axes]] = {
 //    val scope = new PointerScope()
       val nodeactual_input_1 = Tuple1(
         (inputDataactual_input_1.data.map(y => userIdsMap(y)), inputDataactual_input_1.shape)
@@ -35,9 +36,9 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
       )
 
       // Note: Don't need to specify all the type params except in Dotty
-      val nodeFullOutput: Tensor[Float, Axes] =
+      val nodeFullOutput: IO[Tensor[Float, Axes]] =
          fullORTBackend
-            .fullModelResult[Float, "TensorType", "DimensionDenotation" ##: TSNil, 1 #: 1000 #: SNil](
+            .fullModel[Float, "TensorType", "DimensionDenotation" ##: TSNil, 1 #: 1000 #: SNil](
               // TODO: testing less than enough inputs
               (nodeactual_input_1)
             )

@@ -6,6 +6,7 @@ import scala.jdk.CollectionConverters._
 import scala.scalajs.js.Array
 import scalajs.js.JSConverters._
 
+import cats.effect.IO
 //import typings.onnxruntimeNode.mod.{InferenceSession => OrtSession}
 import typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession
 import typings.onnxruntimeNode.mod.Tensor.{^ => OnnxTensor}
@@ -18,7 +19,7 @@ import io.kjaer.compiletime._
 import ORTTensorUtils._
 
 //TODO: Clean up, remove asInstaceOf, etc.
-class ORTWebModelBackend(session: InferenceSession)
+class ORTWebModelBackend(session: IO[InferenceSession])
     extends Model()
     with ORTWebOperatorBackend {
 
@@ -27,10 +28,11 @@ class ORTWebModelBackend(session: InferenceSession)
 
       val output_node_names = sess.outputNames
 
-      (input_node_names.toList, None, output_node_names.toList)
+      (input_node_names.toList, output_node_names.toList)
    }
 
-   val allNodeNamesAndDims = getInputAndOutputNodeNamesAndDims(session)
+   val inputNames = session.map(getInputAndOutputNodeNamesAndDims(_)._1)
+   val outputNames = session.map(getInputAndOutputNodeNamesAndDims(_)._2)
 
    override def fullModel[
        T <: Supported,
@@ -43,7 +45,7 @@ class ORTWebModelBackend(session: InferenceSession)
        tt: ValueOf[Tt],
        td: TensorShapeDenotationOf[Td],
        s: ShapeOf[S]
-   ): Future[Tensor[T, Tuple3[Tt, Td, S]]] = {
+   ): IO[Tensor[T, Tuple3[Tt, Td, S]]] = {
 
       val size = inputs.size
       @annotation.nowarn
@@ -59,10 +61,10 @@ class ORTWebModelBackend(session: InferenceSession)
       }.toArray
 
       val output = runModel[T, Tt, Td, S](
-        Future{session}.toJSPromise,
+        session,
         inputTensors,
-        allNodeNamesAndDims._1,
-        allNodeNamesAndDims._3
+        inputNames,
+        outputNames
       )
 
       output

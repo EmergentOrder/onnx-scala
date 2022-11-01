@@ -11,15 +11,17 @@ import org.emergentorder.compiletime._
 import io.kjaer.compiletime._
 
 import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.should._
+import cats.effect.testing.scalatest.AsyncIOSpec
 
-class ONNXScalaSpec extends AnyFlatSpec with Matchers {
+class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
 
    new URL(
      "https://media.githubusercontent.com/media/onnx/models/main/vision/classification/squeezenet/model/squeezenet1.0-12.onnx"
    ) #> new File("squeezenet1.0-12.onnx") !!
 
-   "SqueezeNet ONNX-Scala model" should "predict dummy image class" in {
+   "SqueezeNet ONNX-Scala model should predict dummy image class" in {
       val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.0-12.onnx"))
       val squeezenet      = new ORTModelBackend(squeezenetBytes)
       val data            = Array.fill(1 * 3 * 224 * 224) { 42f }
@@ -33,7 +35,7 @@ class ONNXScalaSpec extends AnyFlatSpec with Matchers {
 
       // or as a shorthand if you aren't concerned with enforcing denotations
       val imageTensDefaultDenotations = Tensor(data, shape)
-      val out = squeezenet.fullModelResult[
+      val out = squeezenet.fullModel[
         Float,
         "ImageNetClassification",
         "Batch" ##: "Class" ##: TSNil,
@@ -41,10 +43,10 @@ class ONNXScalaSpec extends AnyFlatSpec with Matchers {
       ](Tuple(imageTens))
 
       // The output shape
-      assert(out.shape(0) == 1)
-      assert(out.shape(1) == 1000)
+      out.asserting(_.shape(0) shouldBe 1)
+      out.asserting(_.shape(1) shouldBe 1000)
 
       // The highest probability (predicted) class
-      assert(out.data.indices.maxBy(out.data) == 549)
+      out.asserting(x => x.data.indices.maxBy(x.data) shouldBe 549)
    }
 }

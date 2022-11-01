@@ -7,6 +7,7 @@ import scala.concurrent.duration._
 import ai.onnxruntime._
 import scala.jdk.CollectionConverters._
 
+import cats.effect.IO
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.Tensors.Tensor._
@@ -47,7 +48,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
        tt: ValueOf[Tt],
        td: TensorShapeDenotationOf[Td],
        s: ShapeOf[S]
-   ): Future[Tensor[T, Tuple3[Tt, Td, S]]] = {
+   ): IO[Tensor[T, Tuple3[Tt, Td, S]]] = {
 
       val size = inputs.size
       @annotation.nowarn
@@ -69,25 +70,8 @@ class ORTModelBackend(onnxBytes: Array[Byte])
         allNodeNamesAndDims._3
       )
 
-      Future{output}
+      IO{output}
    }
-
-   def fullModelResult[
-       T <: Supported,
-       Tt <: TensorTypeDenotation,
-       Td <: TensorShapeDenotation,
-       S <: Shape
-   ](
-       inputs: Tuple
-   )(using
-       tt: ValueOf[Tt],
-       td: TensorShapeDenotationOf[Td],
-       s: ShapeOf[S]
-   ): Tensor[T, Tuple3[Tt, Td, S]] = {
-     val res: Future[Tensor[T, Tuple3[Tt, Td, S]]] = fullModel(inputs)
-     Await.result(res, Duration.Inf)
-   }
-
 
    override def close(): Unit = {}
 }

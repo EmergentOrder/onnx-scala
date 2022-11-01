@@ -7,25 +7,25 @@ import org.emergentorder.onnx.backends._
 import org.emergentorder.compiletime._
 import io.kjaer.compiletime._
 import typings.onnxruntimeNode.mod.{InferenceSession => OrtSession}
+import cats.effect.IO
 
 import org.scalatest._
 
 import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.should._
+import cats.effect.testing.scalatest.AsyncIOSpec
 
-class ONNXScalaSpec extends AsyncFlatSpec with Matchers {
+class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
 
   implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
   //TODO: push this inside ORTWebModelBackend, and use other create() which takes arraybufferlike
-   val sess: scala.scalajs.js.Promise[
+   val session: IO[
         typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession
-      ] = OrtSession.create("squeezenet1.0-12.onnx")
+      ] = IO.fromFuture(IO {OrtSession.create("squeezenet1.0-12.onnx").toFuture})
 
 
-   "SqueezeNet ONNX-Scala model" should "predict dummy image class" in {
- 
-      val futSess = sess.toFuture
-      futSess.map{ session =>
+   "SqueezeNet ONNX-Scala model should predict dummy image class" in {
         val squeezenet      = new ORTWebModelBackend(session)
         val data            = Array.fill(1 * 3 * 224 * 224) { 42f }
         // In NCHW tensor image format
@@ -44,14 +44,11 @@ class ONNXScalaSpec extends AsyncFlatSpec with Matchers {
           "Batch" ##: "Class" ##: TSNil,
           1 #: 1000 #: 1 #: 1 #: SNil
         ](Tuple(imageTens))
- 
-        // The output shape
-        out.map{ res =>
-          assert(res.shape(0) == 1)
-          assert(res.shape(1) == 1000)
-          // The highest probability (predicted) class
-          assert(res.data.indices.maxBy(res.data) == 549)
-        }
-      }.flatten
+
+        //The output shape
+        out.asserting(_.shape(0) shouldBe 1)
+        out.asserting(_.shape(1) shouldBe 1000)
+        // The highest probability (predicted) class
+        out.asserting(x => x.data.indices.maxBy(x.data) shouldBe 549)
    }
 }

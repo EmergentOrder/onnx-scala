@@ -14,9 +14,11 @@ import scala.scalajs.js.typedarray
 
 //import scala.scalajs.js.Thenable.Implicits._
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps
 import scala.scalajs.js
 
+import cats.effect.{IO}
 import ORTTensorUtils._
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
@@ -25,7 +27,6 @@ import org.emergentorder.compiletime._
 import io.kjaer.compiletime._
 
 trait ORTWebOperatorBackend {
-
 
    def callOp[T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
        name: String,
@@ -58,40 +59,43 @@ trait ORTWebOperatorBackend {
        Td <: TensorShapeDenotation,
        S <: Shape
    ](
-       sess: scala.scalajs.js.Promise[
+       sess: IO[
          typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession
        ],
        input_tensor_values: Array[OnnxTensor[T]],
-       inputNames: List[String],
-       outputNames: List[String]
+       inputNames: IO[List[String]],
+       outputNames: IO[List[String]]
    )(using
        tt: ValueOf[Tt],
        td: TensorShapeDenotationOf[Td],
        s: ShapeOf[S]
-   ): Future[Tensor[T, Tuple3[Tt, Td, S]]] = {
+   ): IO[Tensor[T, Tuple3[Tt, Td, S]]] = {
 
       // Limited to 1 input right now
-      val feeds   = js.Dictionary(inputNames(0) -> input_tensor_values.head)
-      val sessFut = sess.toFuture
-      val output_tensors: Future[typings.onnxruntimeCommon.tensorMod.Tensor] =
-         sessFut
+      val feeds   = inputNames.map(x => js.Dictionary(x(0) -> input_tensor_values.head))
+
+      val output_tensors: IO[typings.onnxruntimeCommon.tensorMod.Tensor] =
+         IO.fromFuture{sess
             .map { realSess =>
-               val res = realSess.run(
-                 feeds.asInstanceOf[
-                   typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession.FeedsType
-                 ]
-               )
-               res.toFuture
-            }
-            .flatten
-            .map { result =>
-               result
-                  .asInstanceOf[
-                    typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession.OnnxValueMapType
+              feeds.map{ realFeeds =>
+                val res = realSess.run(
+                  realFeeds.asInstanceOf[
+                    typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession.FeedsType
                   ]
-                  .get(outputNames(0))
-                  .getOrElse(null)
-            }
+                )
+                outputNames.map{ names =>
+                  res.toFuture.map { result =>
+                    result
+                      .asInstanceOf[
+                        typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession.OnnxValueMapType
+                      ]
+                      .get(names(0))
+                      .getOrElse(null)
+                  }
+                }
+              }.flatten
+            }.flatten
+         }
 
       output_tensors.map { output_tensor =>
          {
@@ -179,12 +183,12 @@ trait ORTWebOperatorBackend {
 
    //  extends OpToONNXBytesConverter
    // with AutoCloseable {
-   implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
+
    def test() = {
 
-      val session: scala.scalajs.js.Promise[
+      val session: IO[
         typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession
-      ] = OrtSession.create("squeezenet1.0-12.onnx")
+      ] = IO.fromFuture{IO {OrtSession.create("squeezenet1.0-12.onnx").toFuture}}
 //      val dataTypes = new FloatType {}
 
       val dataType = "float32"
@@ -209,11 +213,11 @@ trait ORTWebOperatorBackend {
         "ImageNetClassification",
         "Batch" ##: "Class" ##: TSNil,
         1 #: 1000 #: 1 #: 1 #: SNil
-      ](session, inputs, List("data_0"), List("squeezenet0_flatten0_reshape0"))
+      ](session, inputs, IO{List("data_0")}, IO{List("squeezenet0_flatten0_reshape0")})
 
-      res.foreach(tens => tens.data.foreach(println))
-      println(res)
-      res.andThen(x => println(x))
+      //res.foreach(tens => tens.data.foreach(println))
+      //println(res)
+      //res.andThen(x => println(x))
 //      res.foreach(tens => println(tens.shape))
 
       /*

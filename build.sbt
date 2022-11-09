@@ -1,7 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.2.0"
+val dottyVersion     = "3.2.1"
 val spireVersion     = "0.18.0"
 val scalaTestVersion = "3.2.14"
 
@@ -52,7 +52,7 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      Compile / PB.protoSources := Seq(file("proto/src/main/protobuf"))
    )
 
-lazy val backends = (crossProject(JVMPlatform, JSPlatform, NativePlatform)
+lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .crossType(CrossType.Pure) in file("backends"))
    .dependsOn(core)
    .settings(
@@ -74,9 +74,10 @@ lazy val backends = (crossProject(JVMPlatform, JSPlatform, NativePlatform)
      scalaJSUseMainModuleInitializer                := true, // , //Testing
      Compile / npmDependencies += "onnxruntime-node" -> "1.13.1",
      Compile / npmDependencies += "onnxruntime-common" -> "1.13.1",
-     libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.4.0" % Test
+     libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.4.0" % Test,
+     stOutputPackage := "org.emergentorder.onnx"
    )
-   .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterPlugin) }
+   .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterPlugin) } //For distribution as a library use: ScalablyTypedConverterGenSourcePlugin
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .crossType(CrossType.Pure) in file("core"))

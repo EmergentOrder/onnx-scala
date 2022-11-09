@@ -2,12 +2,15 @@ package org.emergentorder.onnx.backends
 
 import scala.language.implicitConversions
 import scala.concurrent._
+import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import ai.onnxruntime._
 import scala.jdk.CollectionConverters._
 
 import cats.effect.IO
+import cats.implicits._
+import cats.effect.unsafe.implicits.global
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.Tensors.Tensor._
@@ -48,7 +51,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
        tt: ValueOf[Tt],
        td: TensorShapeDenotationOf[Td],
        s: ShapeOf[S]
-   ): IO[Tensor[T, Tuple3[Tt, Td, S]]] = {
+   ): Tensor[T, Tuple3[Tt, Td, S]] = {
 
       val size = inputs.size
       @annotation.nowarn
@@ -58,19 +61,25 @@ class ORTModelBackend(onnxBytes: Array[Byte])
             case t: Tuple1[_] =>
                t(0) match {
                   case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
-                     getOnnxTensor(tens.data, tens.shape, env)
+                     tens.data.map(x =>
+                         tens.shape.map(y =>
+                             getOnnxTensor(x, y, env)
+                             )
+                     ).flatten
                }
          }
-      }.toArray
+      }.toList.sequence.map(_.toArray)
 
-      val output = runModel[T, Tt, Td, S](
-        session,
-        inputTensors,
-        allNodeNamesAndDims._1,
-        allNodeNamesAndDims._3
+      val output = inputTensors.flatMap(x =>
+          runModel[T, Tt, Td, S](
+            session,
+            x,
+            allNodeNamesAndDims._1,
+            allNodeNamesAndDims._3
+          )
       )
 
-      IO{output}
+      output.memoize.unsafeRunSync()
    }
 
    override def close(): Unit = {}

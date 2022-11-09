@@ -7,9 +7,10 @@ import scala.scalajs.js.Array
 import scalajs.js.JSConverters._
 
 import cats.effect.IO
+import cats.implicits._
 //import typings.onnxruntimeNode.mod.{InferenceSession => OrtSession}
-import typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession
-import typings.onnxruntimeNode.mod.Tensor.{^ => OnnxTensor}
+import org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
+import org.emergentorder.onnx.onnxruntimeNode.mod.Tensor.{^ => OnnxTensor}
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.Tensors.Tensor._
@@ -45,7 +46,7 @@ class ORTWebModelBackend(session: IO[InferenceSession])
        tt: ValueOf[Tt],
        td: TensorShapeDenotationOf[Td],
        s: ShapeOf[S]
-   ): IO[Tensor[T, Tuple3[Tt, Td, S]]] = {
+   ): Tensor[T, Tuple3[Tt, Td, S]] = {
 
       val size = inputs.size
       @annotation.nowarn
@@ -55,18 +56,23 @@ class ORTWebModelBackend(session: IO[InferenceSession])
             case t: Tuple1[_] =>
                t(0) match {
                   case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
-                     getOnnxTensor(tens.data, tens.shape).asInstanceOf[OnnxTensor[T]]
+                     tens.data.flatMap(dat =>
+                         tens.shape.map(shap =>
+                             getOnnxTensor(dat, shap).asInstanceOf[OnnxTensor[T]]
+                             )
+                     )
                }
          }
-      }.toArray
+      }.toList.sequence.map(_.toArray)
 
-      val output = runModel[T, Tt, Td, S](
-        session,
-        inputTensors,
-        inputNames,
-        outputNames
-      )
-
+      val output = inputTensors.flatMap{tns =>
+        runModel[T, Tt, Td, S](
+          session,
+          tns,
+          inputNames,
+          outputNames
+        )
+        }
       output
    }
 

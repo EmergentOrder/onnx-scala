@@ -11,7 +11,6 @@ import spire.math.Complex
 import spire.math.Numeric
 import spire.implicits._
 import spire.algebra.Field
-import cats.effect.IO
 
 import org.emergentorder.onnx.Tensors._
 //import scala.compiletime.ops.int //For RC2
@@ -65,7 +64,7 @@ package object onnx {
           tt: ValueOf[Tt],
           td: TensorShapeDenotationOf[Td],
           s: ShapeOf[S]
-      ): IO[Tensor[T, Tuple3[Tt, Td, S]]]
+      ): Tensor[T, Tuple3[Tt, Td, S]]
    }
 
    // Not in the spec, allows access to params from within the loaded model

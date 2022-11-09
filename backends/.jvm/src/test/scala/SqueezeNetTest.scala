@@ -6,6 +6,7 @@ import java.io.File
 import java.nio.file.{Files, Paths}
 import scala.language.postfixOps
 import org.emergentorder.onnx.Tensors._
+import org.emergentorder.onnx.Tensors.Tensor._
 import org.emergentorder.onnx.backends._
 import org.emergentorder.compiletime._
 import io.kjaer.compiletime._
@@ -43,10 +44,10 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
       ](Tuple(imageTens))
 
       // The output shape
-      out.asserting(_.shape(0) shouldBe 1)
-      out.asserting(_.shape(1) shouldBe 1000)
+      out.shape.asserting(_(0) shouldBe 1)
+      out.shape.asserting(_(1) shouldBe 1000)
 
       // The highest probability (predicted) class
-      out.asserting(x => x.data.indices.maxBy(x.data) shouldBe 549)
+      out.data.asserting(x => x.indices.maxBy(x) shouldBe 549)
    }
 }

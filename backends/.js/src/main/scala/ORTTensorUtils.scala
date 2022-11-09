@@ -2,7 +2,7 @@ package org.emergentorder.onnx.backends
 
 //import scala.scalajs.js.Array
 import org.emergentorder.onnx.Tensors._
-import typings.onnxruntimeNode.mod.Tensor.{^ => OnnxTensor}
+import org.emergentorder.onnx.onnxruntimeNode.mod.Tensor.{^ => OnnxTensor}
 import scalajs.js.JSConverters._
 import scala.scalajs.js.typedarray
 
@@ -85,7 +85,7 @@ object ORTTensorUtils {
    val ONNX_TENSOR_ELEMENT_DATA_TYPE_COMPLEX128 = 15
    val ONNX_TENSOR_ELEMENT_DATA_TYPE_BFLOAT16   = 16
 
-   def getArrayFromOnnxTensor[T](value: typings.onnxruntimeCommon.tensorMod.Tensor): Array[T] = {
+   def getArrayFromOnnxTensor[T](value: org.emergentorder.onnx.onnxruntimeCommon.tensorMod.Tensor): Array[T] = {
       val data = value.data
       val arr = data match {
 

@@ -5,8 +5,8 @@ import scala.concurrent.duration._
 //import typings.onnxruntimeWeb.tensorMod.Tensor.FloatType
 //import typings.onnxruntimeWeb.tensorMod.Tensor.DataType
 //import typings.onnxjs.libTensorMod.Tensor.DataTypeMap.DataTypeMapOps
-import typings.onnxruntimeNode.mod.{InferenceSession => OrtSession}
-import typings.onnxruntimeNode.mod.Tensor.{^ => OnnxTensor}
+import org.emergentorder.onnx.onnxruntimeNode.mod.{InferenceSession => OrtSession}
+import org.emergentorder.onnx.onnxruntimeNode.mod.Tensor.{^ => OnnxTensor}
 //import typings.onnxruntimeWeb.ort.InferenceSession.{^ => InferenceSess}
 //import typings.onnxjs.onnxMod.Onnx
 import scala.scalajs.js.typedarray
@@ -17,7 +17,10 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps
 import scala.scalajs.js
+import scalajs.js.JSConverters._
+import scala.scalajs.js.typedarray._
 
+import cats.implicits._
 import cats.effect.{IO}
 import ORTTensorUtils._
 import org.emergentorder.onnx._
@@ -26,7 +29,94 @@ import org.emergentorder.onnx.Tensors.Tensor._
 import org.emergentorder.compiletime._
 import io.kjaer.compiletime._
 
-trait ORTWebOperatorBackend {
+trait ORTWebOperatorBackend extends OpToONNXBytesConverter {
+
+   def getSession(bytes: Array[Byte]) = {
+
+     val bytesArrayBuffer = bytes.toTypedArray.buffer
+     val session: IO[
+       org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
+       ] = IO.fromFuture(IO {OrtSession.create(bytesArrayBuffer).toFuture})
+     session
+   }
+
+   //Idea: prepopulate models for ops with no params
+   def callByteArrayOp[
+       T <: Supported,
+       Tt <: TensorTypeDenotation,
+       Td <: TensorShapeDenotation,
+       S <: Shape
+   ](
+       opModel: Array[Byte],
+       inputs: Tuple,
+       input_node_names: IO[List[String]]
+   )(using
+       s: ShapeOf[S],
+       tt: ValueOf[Tt],
+       td: TensorShapeDenotationOf[Td]
+   ): Tensor[T, Tuple3[Tt, Td, S]] = {
+     /*
+     val input_node_names = inputs.toArray.zipWithIndex.map { (e, i) =>
+         val incr: String = if inputs.toArray.distinct.size == inputs.size then "" else i.toString
+         val tensE = e.asInstanceOf[Tensor[T, Tuple3[Tt, Td, S]]]
+         tensE.map{x =>
+           val t = ((x.toString + incr).hashCode).toString
+           println("ANESMMMS " + t + " " + i)
+           t
+         }
+      }.toList.sequence
+      */
+
+      // TODO: more outputs
+      val output_node_names = IO{List(input_node_names.toString)}
+
+      // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
+      // TODO: don't mix up Options and Tensors here
+      @annotation.nowarn
+      val inputTensors: IO[Array[OnnxTensor[T]]] = {
+
+        inputs.toArray.flatMap { elem =>
+         elem match {
+            case opt: Option[Tensor[T, Tuple3[Tt, Td, S]]] =>
+               opt match {
+                  case Some(x) => 
+                    Some(x.data.flatMap{y =>
+                      x.shape.map{z =>
+                        getOnnxTensor(y, z)
+                      }
+                    })
+                  case None    => None
+               }
+            case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
+               Some(tens.data.flatMap{x =>
+                 tens.shape.map{y =>
+                   getOnnxTensor(x, y)
+                 }
+               })
+         }
+      }.toList.sequence.map(_.toArray)
+      }
+
+      val res: Tensor[T, Tuple3[Tt, Td, S]] = {
+//        val resource = cats.effect.Resource.make(IO{getSession(opModel)})(sess => IO{sess.close})
+        //resource.use( sess =>
+          inputTensors.flatMap{x => 
+            //input_node_names.flatMap{y =>
+              cats.effect.Resource.make(IO(getSession(opModel)))(sess => IO{}).use(sess =>
+                runModel(
+                  sess,
+                  x,
+                  input_node_names,
+                  output_node_names
+                )
+              )
+            //}
+          }
+        
+      }
+      //res.flatMap(IO.println("Post run").as(_))
+      res
+   }
 
    def callOp[T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
        name: String,
@@ -39,18 +129,17 @@ trait ORTWebOperatorBackend {
        td: TensorShapeDenotationOf[Td],
        s: ShapeOf[S]
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
-     ???
-     //TODO
-     //
-     //
-     /*
-     // TODO: prevent passing input to opToONNXBytes
+      // TODO: prevent passing input to opToONNXBytes
 
       val modelProto = opToModelProto(opName, inputs, attrs)
 
-      val result: Tensor[T, Tuple3[Tt, Td, S]] = callByteArrayOp(modelProto.toByteArray, inputs)
-      result
-      */
+      val result: Tensor[T, Tuple3[Tt, Td, S]] =
+        for {
+          mp <- modelProto //modelProto.flatMap(IO.println("OpName => " + opName).as(_))
+          res: Tuple2[Array[T], Tuple3[Tt, Td, S]] <- callByteArrayOp(mp.toByteArray, inputs, IO{mp.graph.map(_.input.map(_.name.getOrElse(""))).getOrElse(List[String]()).toList})
+        }
+        yield res
+      result //TODO: //.memoize.unsafeRunSync() //TODO: Determine if there is a way to avoid unsafe here, while still retaining full memoization
    }
 
    def runModel[
@@ -60,7 +149,7 @@ trait ORTWebOperatorBackend {
        S <: Shape
    ](
        sess: IO[
-         typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession
+         org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
        ],
        input_tensor_values: Array[OnnxTensor[T]],
        inputNames: IO[List[String]],
@@ -69,35 +158,35 @@ trait ORTWebOperatorBackend {
        tt: ValueOf[Tt],
        td: TensorShapeDenotationOf[Td],
        s: ShapeOf[S]
-   ): IO[Tensor[T, Tuple3[Tt, Td, S]]] = {
+   ): Tensor[T, Tuple3[Tt, Td, S]] = {
 
       // Limited to 1 input right now
       val feeds   = inputNames.map(x => js.Dictionary(x(0) -> input_tensor_values.head))
 
-      val output_tensors: IO[typings.onnxruntimeCommon.tensorMod.Tensor] =
+      val output_tensors: IO[org.emergentorder.onnx.onnxruntimeCommon.tensorMod.Tensor] =
          IO.fromFuture{sess
-            .map { realSess =>
-              feeds.map{ realFeeds =>
+            .flatMap { realSess =>
+              feeds.flatMap{ realFeeds =>
                 val res = realSess.run(
                   realFeeds.asInstanceOf[
-                    typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession.FeedsType
+                    org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession.FeedsType
                   ]
                 )
                 outputNames.map{ names =>
                   res.toFuture.map { result =>
                     result
                       .asInstanceOf[
-                        typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession.OnnxValueMapType
+                        org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession.OnnxValueMapType
                       ]
                       .get(names(0))
                       .getOrElse(null)
                   }
                 }
-              }.flatten
-            }.flatten
+              }
+            }
          }
 
-      output_tensors.map { output_tensor =>
+      output_tensors.flatMap { output_tensor =>
          {
             val firstOut                      = output_tensor
             val shape                         = firstOut.dims
@@ -138,7 +227,7 @@ trait ORTWebOperatorBackend {
    val ONNX_TENSOR_ELEMENT_DATA_TYPE_COMPLEX128 = 15
    val ONNX_TENSOR_ELEMENT_DATA_TYPE_BFLOAT16   = 16
 
-   def getArrayFromOnnxTensor[T](value: typings.onnxruntimeCommon.tensorMod.Tensor): Array[T] = {
+   def getArrayFromOnnxTensor[T](value: org.emergentorder.onnx.onnxruntimeCommon.tensorMod.Tensor): Array[T] = {
       val data = value.data
       val arr = data match {
 
@@ -187,7 +276,7 @@ trait ORTWebOperatorBackend {
    def test() = {
 
       val session: IO[
-        typings.onnxruntimeCommon.inferenceSessionMod.InferenceSession
+        org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
       ] = IO.fromFuture{IO {OrtSession.create("squeezenet1.0-12.onnx").toFuture}}
 //      val dataTypes = new FloatType {}
 

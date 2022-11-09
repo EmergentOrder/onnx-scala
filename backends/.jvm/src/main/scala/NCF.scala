@@ -2,6 +2,7 @@ package org.emergentorder.onnx
 
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
+import org.emergentorder.onnx.Tensors.Tensor._
 import org.emergentorder.onnx.backends._
 import spire.implicits._
 import spire.math.UByte
@@ -24,19 +25,23 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
    def fullNCF(
        inputDataactual_input_1: Tensor[Long, Axes],
        inputDatalearned_0: Tensor[Long, Axes]
-   ): IO[Tensor[Float, Axes]] = {
+   ): Tensor[Float, Axes] = {
 //    val scope = new PointerScope()
+      def dataToUserIds(in: IO[Array[Long]]) = in.map(x => x.map(y => userIdsMap(y)))
+    
+      def dataToItemIds(in: IO[Array[Long]]) = in.map(x => x.map(y => itemIdsMap(y))) 
+
       val nodeactual_input_1 = Tuple1(
-        (inputDataactual_input_1.data.map(y => userIdsMap(y)), inputDataactual_input_1.shape)
+        IO(dataToUserIds(inputDataactual_input_1.data), inputDataactual_input_1.shape)
       )
 
       val tensorType: String with Singleton = "TensorType"
       val nodelearned_0 = Tuple1(
-        (inputDatalearned_0.data.map(y => itemIdsMap(y)), inputDatalearned_0.shape)
+        IO(dataToItemIds(inputDatalearned_0.data), inputDatalearned_0.shape)
       )
 
       // Note: Don't need to specify all the type params except in Dotty
-      val nodeFullOutput: IO[Tensor[Float, Axes]] =
+      val nodeFullOutput: Tensor[Float, Axes] =
          fullORTBackend
             .fullModel[Float, "TensorType", "DimensionDenotation" ##: TSNil, 1 #: 1000 #: SNil](
               // TODO: testing less than enough inputs

@@ -75,7 +75,9 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      Compile / npmDependencies += "onnxruntime-node" -> "1.13.1",
      Compile / npmDependencies += "onnxruntime-common" -> "1.13.1",
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.4.0" % Test,
-     stOutputPackage := "org.emergentorder.onnx"
+     stOutputPackage := "org.emergentorder.onnx",
+     scalaJSLinkerConfig ~= (_.withESFeatures(_.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021)))
+//     scalaJSLinkerConfig ~= { _.withESFeatures(_.withESVersion(scala.scalajs.LinkingInfo.ESVersion.ES2021)) }
    )
    .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterPlugin) } //For distribution as a library use: ScalablyTypedConverterGenSourcePlugin
 

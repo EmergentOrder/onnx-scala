@@ -68,7 +68,7 @@ trait ORTWebOperatorBackend extends OpToONNXBytesConverter {
       */
 
       // TODO: more outputs
-      val output_node_names = IO{List(input_node_names.toString)}
+      val output_node_names = input_node_names.map(x => {List(x.toString)})
 
       // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
       // TODO: don't mix up Options and Tensors here
@@ -131,12 +131,16 @@ trait ORTWebOperatorBackend extends OpToONNXBytesConverter {
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
       // TODO: prevent passing input to opToONNXBytes
 
+//      println("ATTR " + attrs)
       val modelProto = opToModelProto(opName, inputs, attrs)
 
       val result: Tensor[T, Tuple3[Tt, Td, S]] =
         for {
           mp <- modelProto //modelProto.flatMap(IO.println("OpName => " + opName).as(_))
-          res: Tuple2[Array[T], Tuple3[Tt, Td, S]] <- callByteArrayOp(mp.toByteArray, inputs, IO{mp.graph.map(_.input.map(_.name.getOrElse(""))).getOrElse(List[String]()).toList})
+          res: Tuple2[Array[T], Tuple3[Tt, Td, S]] <- {
+//            println(mp)
+            callByteArrayOp(mp.toByteArray, inputs, IO{mp.graph.map(_.input.map(_.name.getOrElse(""))).getOrElse(List[String]()).toList})
+          }
         }
         yield res
       result //TODO: //.memoize.unsafeRunSync() //TODO: Determine if there is a way to avoid unsafe here, while still retaining full memoization
@@ -159,9 +163,12 @@ trait ORTWebOperatorBackend extends OpToONNXBytesConverter {
        td: TensorShapeDenotationOf[Td],
        s: ShapeOf[S]
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
-
-      // Limited to 1 input right now
-      val feeds   = inputNames.map(x => js.Dictionary(x(0) -> input_tensor_values.head))
+ 
+      val feeds: IO[js.Dictionary[OnnxTensor[T]]]   = inputNames.map(x => {
+                                                        val zipped = x.toArray zip input_tensor_values
+                                                        js.Dictionary(zipped.map(z => z._1 -> z._2):_*)
+                                                      }
+                                                      )
 
       val output_tensors: IO[org.emergentorder.onnx.onnxruntimeCommon.tensorMod.Tensor] =
          IO.fromFuture{sess
@@ -174,12 +181,13 @@ trait ORTWebOperatorBackend extends OpToONNXBytesConverter {
                 )
                 outputNames.map{ names =>
                   res.toFuture.map { result =>
+//                    println(realSess.outputNames.toList)
                     result
-                      .asInstanceOf[
-                        org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession.OnnxValueMapType
-                      ]
-                      .get(names(0))
-                      .getOrElse(null)
+//                      .asInstanceOf[
+//                        org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession.OnnxValueMapType
+//                      ]
+                      .get(realSess.outputNames.toList(0))
+                      .get
                   }
                 }
               }
@@ -246,7 +254,12 @@ trait ORTWebOperatorBackend extends OpToONNXBytesConverter {
          case e: scala.scalajs.js.typedarray.Int32Array => {
             scala.scalajs.js.typedarray.int32Array2IntArray(e)
          }
-
+         case f: scala.scalajs.js.typedarray.Uint8Array => { //Conflating bool and uint8 here
+           f.toArray.map(x => if x == 1 then true else false)
+         }
+         case g: scala.scalajs.js.typedarray.BigInt64Array => {
+           g.toArray
+         }
          case _ => ???
          /*
          case ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64 => {

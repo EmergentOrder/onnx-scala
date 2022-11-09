@@ -134,18 +134,6 @@ trait OpToONNXBytesConverter {
                   case Some(x: Tensor[Float, Tuple3[Tt, Td, S]]) => {
                      Some(createFloatTensorAttr(x, key))
                   }
-                  case x: Float => {
-                     Some(createFloatAttr(x, key))
-                  }
-                  case Some(x: Float) => {
-                     Some(createFloatAttr(x, key))
-                  }
-                  case x: Array[Float] => {
-                     Some(createFloatArrayAttr(x, key))
-                  }
-                  case Some(x: Array[Float]) => {
-                     Some(createFloatArrayAttr(x, key))
-                  }
                   case x: Int => {
                      Some(createIntAttr(x, key))
                   }
@@ -157,6 +145,18 @@ trait OpToONNXBytesConverter {
                   }
                   case Some(x: Array[Int]) => {
                      Some(createIntArrayAttr(x, key))
+                  }
+                  case x: Float => {
+                     Some(createFloatAttr(x, key))
+                  }
+                  case Some(x: Float) => {
+                     Some(createFloatAttr(x, key))
+                  }
+                  case x: Array[Float] => {
+                     Some(createFloatArrayAttr(x, key))
+                  }
+                  case Some(x: Array[Float]) => {
+                     Some(createFloatArrayAttr(x, key))
                   }
                   case x: String => {
                      Some(createStrAttr(x, key))
@@ -200,6 +200,7 @@ trait OpToONNXBytesConverter {
           case i: Array[Int]     => INT32.index
           case l: Array[Long]    => INT64.index
           case b: Array[Boolean] => BOOL.index
+          case _    => INT64.index //In case of Scala.js BigInt
         }
         tens.shape.map{y =>
             ValueInfoProto(

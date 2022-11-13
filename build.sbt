@@ -74,12 +74,16 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      scalaJSUseMainModuleInitializer                := true, // , //Testing
      Compile / npmDependencies += "onnxruntime-node" -> "1.13.1",
      Compile / npmDependencies += "onnxruntime-common" -> "1.13.1",
+     Compile / npmDependencies += "typescript" -> "4.8.4",
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.4.0" % Test,
      stOutputPackage := "org.emergentorder.onnx",
      scalaJSLinkerConfig ~= (_.withESFeatures(_.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021)))
 //     scalaJSLinkerConfig ~= { _.withESFeatures(_.withESVersion(scala.scalajs.LinkingInfo.ESVersion.ES2021)) }
    )
-   .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterPlugin) } //For distribution as a library use: ScalablyTypedConverterGenSourcePlugin
+   //For distribution as a library, using ScalablyTypedConverterGenSourcePlugin (vs ScalablyTypedConverterPlugin) is required
+   //which slows down the build considerably
+   //TODO: minimize to reduce build time and size of js output
+   .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterGenSourcePlugin) }
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .crossType(CrossType.Pure) in file("core"))

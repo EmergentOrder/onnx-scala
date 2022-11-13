@@ -314,13 +314,13 @@ trait OpToONNXBytesConverter {
           }
       }
 
-      val thisOpset = if opName.equals("Inverse") then 1 else 16
+      val thisOpset = if opName.equals("Inverse") then 1 else 17
       val model = newGraph.map{x =>
         val mod = ModelProto(
           producerName = Some("ONNX-Scala"),
           graph = Some(x),
           domain = Some(thisDomain),
-          irVersion = Some(7),
+          irVersion = Some(8),
           opsetImport = Seq(OperatorSetIdProto(version = Some(thisOpset)))
         ) 
         mod

@@ -81,7 +81,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
 //     scalaJSLinkerConfig ~= { _.withESFeatures(_.withESVersion(scala.scalajs.LinkingInfo.ESVersion.ES2021)) }
    )
    //For distribution as a library, using ScalablyTypedConverterGenSourcePlugin (vs ScalablyTypedConverterPlugin) is required
-   //which slows down the build considerably
+   //which slows down the build (particularly the doc build, for publishing) considerably
    //TODO: minimize to reduce build time and size of js output
    .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterGenSourcePlugin) }
 
@@ -100,7 +100,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
         case _ =>
            Seq(
              ("org.typelevel" %%% "spire" % spireVersion),
-             ("org.typelevel" %%% "cats-effect" % "3.3.14")
+             ("org.typelevel" %%% "cats-effect" % "3.4.0")
            )
      })
    )

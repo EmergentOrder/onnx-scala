@@ -340,7 +340,7 @@ object Tensors {
           Tt <: TensorTypeDenotation,
           TD <: TensorShapeDenotation
       ](element: T, tt: Tt, td: TD): Tensor[T, Tuple3[Tt, TD, 1 #: SNil]] = tensorRequires(
-        IO{(Array[T](element), (tt, td, 1 #: SNil))}
+        IO.pure{(Array[T](element), (tt, td, 1 #: SNil))}
       )
 
       def apply[
@@ -349,25 +349,25 @@ object Tensors {
           TD <: TensorShapeDenotation,
           S <: Shape
       ](arr: Array[T], tt0: Tt, td0: TD, d0: S): Tensor[T, Tuple3[Tt, TD, S]] = tensorRequires(
-        IO{(arr, (tt0, td0, d0))}
+        IO.pure{(arr, (tt0, td0, d0))}
       )
 
       def apply[T <: Supported: scala.reflect.ClassTag](
           element: T
       ): Tensor[T, Tuple3["", org.emergentorder.compiletime.TSNil, 1 #: SNil]] = tensorRequires(
-        IO{(Array(element), ("", TSNil, 1 #: SNil))}
+        IO.pure{(Array(element), ("", TSNil, 1 #: SNil))}
       )
 
       def apply[T <: Supported, TD <: TensorShapeDenotation, S <: Shape](
           arr: Array[T],
           td0: TD,
           d0: S
-      ): Tensor[T, Tuple3["", TD, S]] = tensorRequires(IO{(arr, ("", td0, d0))})
+      ): Tensor[T, Tuple3["", TD, S]] = tensorRequires(IO.pure{(arr, ("", td0, d0))})
 
       def apply[T <: Supported, S <: Shape](
           arr: Array[T],
           d0: S
-      ): Tensor[T, Tuple3["", "" ##: TSNil, S]] = tensorRequires(IO{(arr, ("", "" ##: TSNil, d0))})
+      ): Tensor[T, Tuple3["", "" ##: TSNil, S]] = tensorRequires(IO.pure{(arr, ("", "" ##: TSNil, d0))})
 
    }
 }

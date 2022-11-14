@@ -28,8 +28,8 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
    ): Tensor[Float, Axes] = {
 //    val scope = new PointerScope()
       def dataToUserIds(in: IO[Array[Long]]) = in.map(x => x.map(y => userIdsMap(y)))
-    
-      def dataToItemIds(in: IO[Array[Long]]) = in.map(x => x.map(y => itemIdsMap(y))) 
+
+      def dataToItemIds(in: IO[Array[Long]]) = in.map(x => x.map(y => itemIdsMap(y)))
 
       val nodeactual_input_1 = Tuple1(
         IO(dataToUserIds(inputDataactual_input_1.data), inputDataactual_input_1.shape)

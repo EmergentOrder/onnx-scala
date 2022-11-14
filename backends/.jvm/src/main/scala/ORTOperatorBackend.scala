@@ -26,7 +26,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
    def getSession(bytes: Array[Byte]) = {
       // Can now set symbolic dimension values, but only at session creation time
       val session_options = new OrtSession.SessionOptions()
-      session_options.setIntraOpNumThreads(coreCount)
+//      session_options.setIntraOpNumThreads(coreCount)
 //    session_options.addCUDA()
 //    session_options.addDnnl(true)
 //      session_options.addXnnpack(java.util.Collections.emptyMap())
@@ -65,11 +65,11 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
         tensorShapeDenotationFromType,
         shapeFromType
       )
-      //result.flatMap(IO.println("Invoking run").as(_))
+      // result.flatMap(IO.println("Invoking run").as(_))
       result
-    }
+   }
 
-   //Idea: prepopulate models for ops with no params
+   // Idea: prepopulate models for ops with no params
    def callByteArrayOp[
        T <: Supported,
        Tt <: TensorTypeDenotation,
@@ -84,7 +84,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
        tt: ValueOf[Tt],
        td: TensorShapeDenotationOf[Td]
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
-     /*
+      /*
      val input_node_names = inputs.toArray.zipWithIndex.map { (e, i) =>
          val incr: String = if inputs.toArray.distinct.size == inputs.size then "" else i.toString
          val tensE = e.asInstanceOf[Tensor[T, Tuple3[Tt, Td, S]]]
@@ -94,7 +94,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
            t
          }
       }.toList.sequence
-      */
+       */
 
       // TODO: more outputs
       val output_node_names = List(input_node_names.toString)
@@ -104,46 +104,52 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       @annotation.nowarn
       val inputTensors: IO[Array[OnnxTensor]] = {
 
-        inputs.toArray.flatMap { elem =>
-         elem match {
-            case opt: Option[Tensor[T, Tuple3[Tt, Td, S]]] =>
-               opt match {
-                  case Some(x) => 
-                    Some(x.data.flatMap{y =>
-                      x.shape.map{z =>
-                        getOnnxTensor(y, z, env)
-                      }
-                    })
-                  case None    => None
+         inputs.toArray
+            .flatMap { elem =>
+               elem match {
+                  case opt: Option[Tensor[T, Tuple3[Tt, Td, S]]] =>
+                     opt match {
+                        case Some(x) =>
+                           Some(x.data.flatMap { y =>
+                              x.shape.map { z =>
+                                 getOnnxTensor(y, z, env)
+                              }
+                           })
+                        case None => None
+                     }
+                  case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
+                     Some(tens.data.flatMap { x =>
+                        tens.shape.map { y =>
+                           getOnnxTensor(x, y, env)
+                        }
+                     })
                }
-            case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
-               Some(tens.data.flatMap{x =>
-                 tens.shape.map{y =>
-                   getOnnxTensor(x, y, env)
-                 }
-               })
-         }
-      }.toList.sequence.map(_.toArray)
+            }
+            .toList
+            .sequence
+            .map(_.toArray)
       }
 
       val res: Tensor[T, Tuple3[Tt, Td, S]] = {
 //        val resource = cats.effect.Resource.make(IO{getSession(opModel)})(sess => IO{sess.close})
-        //resource.use( sess =>
-          inputTensors.flatMap{x => 
-            input_node_names.flatMap{y =>
-              cats.effect.Resource.make(IO(getSession(opModel)))(sess => IO{sess.close}).use(sess =>
-                runModel(
-                  sess,
-                  x,
-                  y,
-                  output_node_names
-                )
-              )
+         // resource.use( sess =>
+         inputTensors.flatMap { x =>
+            input_node_names.flatMap { y =>
+               cats.effect.Resource
+                  .make(IO(getSession(opModel)))(sess => IO { sess.close })
+                  .use(sess =>
+                     runModel(
+                       sess,
+                       x,
+                       y,
+                       output_node_names
+                     )
+                  )
             }
-          }
-        
+         }
+
       }
-      //res.flatMap(IO.println("Post run").as(_))
+      // res.flatMap(IO.println("Post run").as(_))
       res
    }
 
@@ -165,12 +171,18 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 //      val mp = opToModelProto(opName, inputs, attrs)
 
       val result: Tensor[T, Tuple3[Tt, Td, S]] =
-        for {
-          mp <- modelProto //modelProto.flatMap(IO.println("OpName => " + opName).as(_))
-          res: Tuple2[Array[T], Tuple3[Tt, Td, S]] <- callByteArrayOp(mp.toByteArray, inputs, IO{mp.graph.map(_.input.map(_.name.getOrElse(""))).getOrElse(List[String]()).toList}) 
-        }
-        yield res
-      result.memoize.unsafeRunSync() //TODO: Determine if there is a way to avoid unsafe here, while still retaining full memoization
+         for {
+            mp <- modelProto // modelProto.flatMap(IO.println("OpName => " + opName).as(_))
+            res: Tuple2[Array[T], Tuple3[Tt, Td, S]] <- callByteArrayOp(
+              mp.toByteArray,
+              inputs,
+              IO.pure {
+                 mp.graph.map(_.input.map(_.name.getOrElse(""))).getOrElse(List[String]()).toList
+              }
+            )
+         } yield res
+      result.memoize
+         .unsafeRunSync() // TODO: Determine if there is a way to avoid unsafe here, while still retaining full memoization
    }
 
    def modelToPersist(mod: ModelProto, outName: String) = {
@@ -182,6 +194,6 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
    }
 
    override def close(): Unit = {
-      //env.close
+      // env.close
    }
 }

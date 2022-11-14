@@ -55,28 +55,28 @@ class ORTModelBackend(onnxBytes: Array[Byte])
 
       val size = inputs.size
       @annotation.nowarn
-      val inputTensors = (0 until size).map { i =>
-         val tup = inputs.drop(i).take(1)
-         tup match { // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
-            case t: Tuple1[_] =>
-               t(0) match {
-                  case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
-                     tens.data.map(x =>
-                         tens.shape.map(y =>
-                             getOnnxTensor(x, y, env)
-                             )
-                     ).flatten
-               }
+      val inputTensors = (0 until size)
+         .map { i =>
+            val tup = inputs.drop(i).take(1)
+            tup match { // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
+               case t: Tuple1[_] =>
+                  t(0) match {
+                     case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
+                        tens.data.map(x => tens.shape.map(y => getOnnxTensor(x, y, env))).flatten
+                  }
+            }
          }
-      }.toList.sequence.map(_.toArray)
+         .toList
+         .sequence
+         .map(_.toArray)
 
       val output = inputTensors.flatMap(x =>
-          runModel[T, Tt, Td, S](
-            session,
-            x,
-            allNodeNamesAndDims._1,
-            allNodeNamesAndDims._3
-          )
+         runModel[T, Tt, Td, S](
+           session,
+           x,
+           allNodeNamesAndDims._1,
+           allNodeNamesAndDims._3
+         )
       )
 
       output.memoize.unsafeRunSync()

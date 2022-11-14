@@ -62,27 +62,29 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
        "com.microsoft.onnxruntime" % "onnxruntime" % "1.13.1"
      ),
      libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
-     crossScalaVersions := Seq(dottyVersion)
+     crossScalaVersions                       := Seq(dottyVersion)
    )
    .jvmSettings(
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.4.0" % Test
    )
    .jsSettings(
-     webpack / version := "5.74.0",
-     webpackCliVersion := "4.10.0",
-     startWebpackDevServer / version := "4.11.1",
-     scalaJSUseMainModuleInitializer                := true, // , //Testing
-     Compile / npmDependencies += "onnxruntime-node" -> "1.13.1",
+     webpack / version                                 := "5.74.0",
+     webpackCliVersion                                 := "4.10.0",
+     startWebpackDevServer / version                   := "4.11.1",
+     scalaJSUseMainModuleInitializer                   := true, // , //Testing
+     Compile / npmDependencies += "onnxruntime-node"   -> "1.13.1",
      Compile / npmDependencies += "onnxruntime-common" -> "1.13.1",
-     Compile / npmDependencies += "typescript" -> "4.8.4",
+     Compile / npmDependencies += "typescript"         -> "4.8.4",
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.4.0" % Test,
-     stOutputPackage := "org.emergentorder.onnx",
-     scalaJSLinkerConfig ~= (_.withESFeatures(_.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021)))
+     stOutputPackage                         := "org.emergentorder.onnx",
+     scalaJSLinkerConfig ~= (_.withESFeatures(
+       _.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021)
+     ))
 //     scalaJSLinkerConfig ~= { _.withESFeatures(_.withESVersion(scala.scalajs.LinkingInfo.ESVersion.ES2021)) }
    )
-   //For distribution as a library, using ScalablyTypedConverterGenSourcePlugin (vs ScalablyTypedConverterPlugin) is required
-   //which slows down the build (particularly the doc build, for publishing) considerably
-   //TODO: minimize to reduce build time and size of js output
+   // For distribution as a library, using ScalablyTypedConverterGenSourcePlugin (vs ScalablyTypedConverterPlugin) is required
+   // which slows down the build (particularly the doc build, for publishing) considerably
+   // TODO: minimize to reduce build time and size of js output
    .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterGenSourcePlugin) }
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
@@ -99,7 +101,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
         .partialVersion(scalaVersion.value) match {
         case _ =>
            Seq(
-             ("org.typelevel" %%% "spire" % spireVersion),
+             ("org.typelevel" %%% "spire"       % spireVersion),
              ("org.typelevel" %%% "cats-effect" % "3.4.0")
            )
      })

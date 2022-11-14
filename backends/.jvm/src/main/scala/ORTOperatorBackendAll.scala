@@ -23,7 +23,7 @@ class ORTOperatorBackendAll
     with AveragePoolV11
     with BatchNormalizationV15
 //    with BinarizerV1 //ONNX ML, not tested for in scoreboard
-    with BitShiftV11 //TODO: Add to NDScala
+    with BitShiftV11 // TODO: Add to NDScala
 //    with CastV13
 //    with CastMapV1 //ONNX ML, not tested for in scoreboard
 //    with CategoryMapperV1 //ONNX ML, not tested for in scoreboard

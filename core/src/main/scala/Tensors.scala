@@ -102,7 +102,7 @@ object Tensors {
                   case SNil =>
                      AxisIndex match {
                         case INil => SNil
-                        case _ => Nothing
+                        case _    => Nothing
                      }
                }
             case false =>
@@ -114,7 +114,7 @@ object Tensors {
       case SNil =>
          AxisIndex match {
             case INil => SNil
-            case _ => Nothing
+            case _    => Nothing
          }
    }
 
@@ -170,8 +170,8 @@ object Tensors {
       case SNil =>
          AxisIndex match {
             case INil => SNil
-            case _ => SNil
-            //FIXME
+            case _    => SNil
+            // FIXME
          }
    }
 
@@ -202,7 +202,7 @@ object Tensors {
       case SNil =>
          AxisIndex match {
             case INil => Acc #: SNil
-            case _ => Nothing
+            case _    => Nothing
          }
    }
 
@@ -319,7 +319,8 @@ object Tensors {
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
-      ](tens: Tensor[T, Tuple3[Tt, Td, S]]) def shape: IO[Array[Int]] = tens.map(_._2._3.toSeq.toArray)
+      ](tens: Tensor[T, Tuple3[Tt, Td, S]])
+         def shape: IO[Array[Int]] = tens.map(_._2._3.toSeq.toArray)
 
       def tensorRequires[
           T <: Supported,
@@ -329,10 +330,10 @@ object Tensors {
       ](tens: Tensor[T, Tuple3[Tt, Td, S]]): Tensor[T, Tuple3[Tt, Td, S]] = {
          // require(tens._2._2.toSeq.size == tens.shape.size) //We allow empty denotations
          tens.map(x =>
-           require(
-             x._1.size == x._2._3.toSeq.toArray.foldLeft(1)(_ * _)
-           ) // This shouldn't fail at runtime, if so shape constraints need fixing
-           x
+            require(
+              x._1.size == x._2._3.toSeq.toArray.foldLeft(1)(_ * _)
+            ) // This shouldn't fail at runtime, if so shape constraints need fixing
+            x
          )
       }
       def apply[
@@ -340,7 +341,7 @@ object Tensors {
           Tt <: TensorTypeDenotation,
           TD <: TensorShapeDenotation
       ](element: T, tt: Tt, td: TD): Tensor[T, Tuple3[Tt, TD, 1 #: SNil]] = tensorRequires(
-        IO.pure{(Array[T](element), (tt, td, 1 #: SNil))}
+        IO.pure { (Array[T](element), (tt, td, 1 #: SNil)) }
       )
 
       def apply[
@@ -349,25 +350,27 @@ object Tensors {
           TD <: TensorShapeDenotation,
           S <: Shape
       ](arr: Array[T], tt0: Tt, td0: TD, d0: S): Tensor[T, Tuple3[Tt, TD, S]] = tensorRequires(
-        IO.pure{(arr, (tt0, td0, d0))}
+        IO.pure { (arr, (tt0, td0, d0)) }
       )
 
       def apply[T <: Supported: scala.reflect.ClassTag](
           element: T
       ): Tensor[T, Tuple3["", org.emergentorder.compiletime.TSNil, 1 #: SNil]] = tensorRequires(
-        IO.pure{(Array(element), ("", TSNil, 1 #: SNil))}
+        IO.pure { (Array(element), ("", TSNil, 1 #: SNil)) }
       )
 
       def apply[T <: Supported, TD <: TensorShapeDenotation, S <: Shape](
           arr: Array[T],
           td0: TD,
           d0: S
-      ): Tensor[T, Tuple3["", TD, S]] = tensorRequires(IO.pure{(arr, ("", td0, d0))})
+      ): Tensor[T, Tuple3["", TD, S]] = tensorRequires(IO.pure { (arr, ("", td0, d0)) })
 
       def apply[T <: Supported, S <: Shape](
           arr: Array[T],
           d0: S
-      ): Tensor[T, Tuple3["", "" ##: TSNil, S]] = tensorRequires(IO.pure{(arr, ("", "" ##: TSNil, d0))})
+      ): Tensor[T, Tuple3["", "" ##: TSNil, S]] = tensorRequires(IO.pure {
+         (arr, ("", "" ##: TSNil, d0))
+      })
 
    }
 }

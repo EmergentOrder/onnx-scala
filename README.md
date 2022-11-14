@@ -115,10 +115,10 @@ Supported ONNX input and output tensor data types:
 * Byte
 * Short
 * Int
-* Long (Except with NodeJS backend)
+* Long
 * Float
 * Double
-* Boolean (Except with NodeJS backend)
+* Boolean
 
 Supported ONNX ops:
 * ONNX-Scala, Fine-grained API: 87/178 total

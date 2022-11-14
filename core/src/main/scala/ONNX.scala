@@ -51,7 +51,7 @@ package object onnx {
       ): Tensor[T, Tuple3[Tt, Td, S]]
    }
 
-   //TODO: restore onnxbytes here
+   // TODO: restore onnxbytes here
    abstract class Model() extends Operator {
       def fullModel[
           T <: Supported,
@@ -141,7 +141,8 @@ package object onnx {
 
    trait AddV14 extends Operator {
       def AddV14[
-          @sp T <: UByte | Byte | UShort | Short | UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double: Numeric,
+          @sp T <: UByte | Byte | UShort | Short | UInt | ULong | Int | Long | BFloat16 | Float16 |
+             Float | Double: Numeric,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -544,7 +545,8 @@ package object onnx {
 
    trait DivV14 extends Operator {
       def DivV14[
-          @sp T <: UByte | Byte | UShort | Short | UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double: Numeric,
+          @sp T <: UByte | Byte | UShort | Short | UInt | ULong | Int | Long | BFloat16 | Float16 |
+             Float | Double: Numeric,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1094,7 +1096,8 @@ package object onnx {
 
    trait MulV14 extends Operator {
       def MulV14[
-          @sp T <: UByte | Byte | UShort | Short | UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double: Numeric,
+          @sp T <: UByte | Byte | UShort | Short | UInt | ULong | Int | Long | BFloat16 | Float16 |
+             Float | Double: Numeric,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1563,10 +1566,10 @@ package object onnx {
           sizeSeq: NumElements[S] =:= NumElements[S2]
       ): Tensor[T, Tuple3[Tt2, Td2, S2]] = {
          val map: Map[String, Any] = allowzero match {
-           case None => Map()
-           case Some(x) => Map("allowzero" -> x)
+            case None    => Map()
+            case Some(x) => Map("allowzero" -> x)
          }
-         val allInputs             = Tuple2(data, shapeInput)
+         val allInputs = Tuple2(data, shapeInput)
          (callOp(name, "Reshape", allInputs, map))
       }
    }
@@ -1675,10 +1678,12 @@ package object onnx {
           S <: Shape,
           Tt1 <: TensorTypeDenotation,
           Td1 <: TensorShapeDenotation
-      ](name: String, 
-        end: Option[Int] = None,
-        start: Option[Int] = None,
-        data: Tensor[T, Tuple3[Tt, Td, S]])(using
+      ](
+          name: String,
+          end: Option[Int] = None,
+          start: Option[Int] = None,
+          data: Tensor[T, Tuple3[Tt, Td, S]]
+      )(using
           tt: ValueOf[Tt1],
           td: TensorShapeDenotationOf[Td1],
           s: ShapeOf[io.kjaer.compiletime.Shape.Rank[S] & (Dimension #: SNil)]
@@ -1905,7 +1910,8 @@ package object onnx {
 
    trait SubV14 extends Operator {
       def SubV14[
-          @sp T <: UByte | Byte | UShort | Short | UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double: Numeric,
+          @sp T <: UByte | Byte | UShort | Short | UInt | ULong | Int | Long | BFloat16 | Float16 |
+             Float | Double: Numeric,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -2592,8 +2598,8 @@ package object onnxruntime {
 
    trait GreaterOrEqualV16 extends onnx.Operator {
       def GreaterOrEqualV16[
-          @sp T <: onnx.BFloat16 | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 |
-             Float | Double: Numeric,
+          @sp T <: onnx.BFloat16 | UByte | UShort | UInt | ULong | Byte | Short | Int | Long |
+             onnx.Float16 | Float | Double: Numeric,
           @sp T1 <: Boolean,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
@@ -2750,8 +2756,8 @@ package object onnxruntime {
 
    trait LessOrEqualV16 extends onnx.Operator {
       def LessOrEqualV16[
-          @sp T <: onnx.BFloat16 | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.Float16 |
-             Float | Double: Numeric,
+          @sp T <: onnx.BFloat16 | UByte | UShort | UInt | ULong | Byte | Short | Int | Long |
+             onnx.Float16 | Float | Double: Numeric,
           @sp T1 <: Boolean,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,

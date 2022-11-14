@@ -8,20 +8,28 @@ import scala.scalajs.js.typedarray
 
 object ORTTensorUtils {
 
-   //CAUTION: not even Scala.js can fix JS strangeness around numbers
-   //They may end up changing types based on the value, i.e. 1.0 becomes an Int, while 1.1 remains a Float
+   // CAUTION: not even Scala.js can fix JS strangeness around numbers
+   // They may end up changing types based on the value, i.e. 1.0 becomes an Int, while 1.1 remains a Float
    //
    def getOnnxTensor[T](arr: scala.Array[T], shape: scala.Array[Int]): OnnxTensor[T] = {
       arr match {
-         case b: Array[Byte]    => getTensorByte(arr.asInstanceOf[Array[Byte]], shape).asInstanceOf[OnnxTensor[T]]
-         case s: Array[Short]   => getTensorShort(arr.asInstanceOf[Array[Short]], shape).asInstanceOf[OnnxTensor[T]]
-         case d: Array[Double]  => getTensorDouble(arr.asInstanceOf[Array[Double]], shape).asInstanceOf[OnnxTensor[T]]
-         case f: Array[Float]   => getTensorFloat(arr.asInstanceOf[Array[Float]], shape).asInstanceOf[OnnxTensor[T]]
-         case i: Array[Int]     => getTensorInt(arr.asInstanceOf[Array[Int]], shape).asInstanceOf[OnnxTensor[T]]
-         case l: Array[Long]    => getTensorLong(arr.asInstanceOf[Array[Long]], shape).asInstanceOf[OnnxTensor[T]]
-         case b: Array[Boolean] => getTensorBoolean(arr.asInstanceOf[Array[Boolean]], shape).asInstanceOf[OnnxTensor[T]]
-         case _          => getTensorLong(arr.map(x =>
-                              x.toString.toLong).toArray, shape).asInstanceOf[OnnxTensor[T]]
+         case b: Array[Byte] =>
+            getTensorByte(arr.asInstanceOf[Array[Byte]], shape).asInstanceOf[OnnxTensor[T]]
+         case s: Array[Short] =>
+            getTensorShort(arr.asInstanceOf[Array[Short]], shape).asInstanceOf[OnnxTensor[T]]
+         case d: Array[Double] =>
+            getTensorDouble(arr.asInstanceOf[Array[Double]], shape).asInstanceOf[OnnxTensor[T]]
+         case f: Array[Float] =>
+            getTensorFloat(arr.asInstanceOf[Array[Float]], shape).asInstanceOf[OnnxTensor[T]]
+         case i: Array[Int] =>
+            getTensorInt(arr.asInstanceOf[Array[Int]], shape).asInstanceOf[OnnxTensor[T]]
+         case l: Array[Long] =>
+            getTensorLong(arr.asInstanceOf[Array[Long]], shape).asInstanceOf[OnnxTensor[T]]
+         case b: Array[Boolean] =>
+            getTensorBoolean(arr.asInstanceOf[Array[Boolean]], shape).asInstanceOf[OnnxTensor[T]]
+         case _ =>
+            getTensorLong(arr.map(x => x.toString.toLong).toArray, shape)
+               .asInstanceOf[OnnxTensor[T]]
       }
    }
 
@@ -29,46 +37,53 @@ object ORTTensorUtils {
        arr: Array[Byte],
        shape: Array[Int]
    ): OnnxTensor[Byte] = {
-      (new OnnxTensor(typedarray.byteArray2Int8Array(arr), shape.map(_.toDouble).toJSArray)).asInstanceOf[OnnxTensor[Byte]]
+      (new OnnxTensor(typedarray.byteArray2Int8Array(arr), shape.map(_.toDouble).toJSArray))
+         .asInstanceOf[OnnxTensor[Byte]]
    }
 
    private def getTensorShort(
        arr: Array[Short],
        shape: Array[Int]
    ): OnnxTensor[Short] = {
-      (new OnnxTensor(typedarray.shortArray2Int16Array(arr), shape.map(_.toDouble).toJSArray)).asInstanceOf[OnnxTensor[Short]]
+      (new OnnxTensor(typedarray.shortArray2Int16Array(arr), shape.map(_.toDouble).toJSArray))
+         .asInstanceOf[OnnxTensor[Short]]
    }
 
    private def getTensorDouble(
        arr: Array[Double],
        shape: Array[Int]
    ): OnnxTensor[Double] = {
-      (new OnnxTensor(typedarray.doubleArray2Float64Array(arr), shape.map(_.toDouble).toJSArray)).asInstanceOf[OnnxTensor[Double]]
+      (new OnnxTensor(typedarray.doubleArray2Float64Array(arr), shape.map(_.toDouble).toJSArray))
+         .asInstanceOf[OnnxTensor[Double]]
    }
 
    private def getTensorInt(arr: Array[Int], shape: Array[Int]): OnnxTensor[Int] = {
-      (new OnnxTensor(typedarray.intArray2Int32Array(arr), shape.map(_.toDouble).toJSArray)).asInstanceOf[OnnxTensor[Int]]
+      (new OnnxTensor(typedarray.intArray2Int32Array(arr), shape.map(_.toDouble).toJSArray))
+         .asInstanceOf[OnnxTensor[Int]]
    }
 
    private def getTensorLong(
        arr: Array[Long],
        shape: Array[Int]
    ): OnnxTensor[Long] = {
-      (new OnnxTensor("int64", arr.toJSArray, shape.map(_.toDouble).toJSArray)).asInstanceOf[OnnxTensor[Long]]
+      (new OnnxTensor("int64", arr.toJSArray, shape.map(_.toDouble).toJSArray))
+         .asInstanceOf[OnnxTensor[Long]]
    }
 
    private def getTensorFloat(
        arr: Array[Float],
        shape: Array[Int]
    ): OnnxTensor[Float] = {
-      (new OnnxTensor(typedarray.floatArray2Float32Array(arr), shape.map(_.toDouble).toJSArray)).asInstanceOf[OnnxTensor[Float]]
+      (new OnnxTensor(typedarray.floatArray2Float32Array(arr), shape.map(_.toDouble).toJSArray))
+         .asInstanceOf[OnnxTensor[Float]]
    }
 
    private def getTensorBoolean(
        arr: Array[Boolean],
        shape: Array[Int]
    ): OnnxTensor[Boolean] = {
-     (new OnnxTensor("bool", arr.toJSArray, shape.map(_.toDouble).toJSArray)).asInstanceOf[OnnxTensor[Boolean]]
+      (new OnnxTensor("bool", arr.toJSArray, shape.map(_.toDouble).toJSArray))
+         .asInstanceOf[OnnxTensor[Boolean]]
    }
 
    val ONNX_TENSOR_ELEMENT_DATA_TYPE_UNDEFINED  = 0
@@ -89,7 +104,9 @@ object ORTTensorUtils {
    val ONNX_TENSOR_ELEMENT_DATA_TYPE_COMPLEX128 = 15
    val ONNX_TENSOR_ELEMENT_DATA_TYPE_BFLOAT16   = 16
 
-   def getArrayFromOnnxTensor[T](value: org.emergentorder.onnx.onnxruntimeCommon.tensorMod.Tensor): Array[T] = {
+   def getArrayFromOnnxTensor[T](
+       value: org.emergentorder.onnx.onnxruntimeCommon.tensorMod.Tensor
+   ): Array[T] = {
       val data = value.data
       val arr = data match {
 

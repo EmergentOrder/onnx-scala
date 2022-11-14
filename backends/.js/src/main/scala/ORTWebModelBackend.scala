@@ -20,9 +20,7 @@ import io.kjaer.compiletime._
 import ORTTensorUtils._
 
 //TODO: Clean up, remove asInstaceOf, etc.
-class ORTWebModelBackend(session: IO[InferenceSession])
-    extends Model()
-    with ORTWebOperatorBackend {
+class ORTWebModelBackend(session: IO[InferenceSession]) extends Model() with ORTWebOperatorBackend {
 
    def getInputAndOutputNodeNamesAndDims(sess: InferenceSession) = {
       val input_node_names = sess.inputNames
@@ -32,7 +30,7 @@ class ORTWebModelBackend(session: IO[InferenceSession])
       (input_node_names.toList, output_node_names.toList)
    }
 
-   val inputNames = session.map(getInputAndOutputNodeNamesAndDims(_)._1)
+   val inputNames  = session.map(getInputAndOutputNodeNamesAndDims(_)._1)
    val outputNames = session.map(getInputAndOutputNodeNamesAndDims(_)._2)
 
    override def fullModel[
@@ -50,29 +48,33 @@ class ORTWebModelBackend(session: IO[InferenceSession])
 
       val size = inputs.size
       @annotation.nowarn
-      val inputTensors = (0 until size).map { i =>
-         val tup = inputs.drop(i).take(1)
-         tup match { // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
-            case t: Tuple1[_] =>
-               t(0) match {
-                  case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
-                     tens.data.flatMap(dat =>
-                         tens.shape.map(shap =>
-                             getOnnxTensor(dat, shap).asInstanceOf[OnnxTensor[T]]
-                             )
-                     )
-               }
+      val inputTensors = (0 until size)
+         .map { i =>
+            val tup = inputs.drop(i).take(1)
+            tup match { // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
+               case t: Tuple1[_] =>
+                  t(0) match {
+                     case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
+                        tens.data.flatMap(dat =>
+                           tens.shape.map(shap =>
+                              getOnnxTensor(dat, shap).asInstanceOf[OnnxTensor[T]]
+                           )
+                        )
+                  }
+            }
          }
-      }.toList.sequence.map(_.toArray)
+         .toList
+         .sequence
+         .map(_.toArray)
 
-      val output = inputTensors.flatMap{tns =>
-        runModel[T, Tt, Td, S](
-          session,
-          tns,
-          inputNames,
-          outputNames
-        )
-        }
+      val output = inputTensors.flatMap { tns =>
+         runModel[T, Tt, Td, S](
+           session,
+           tns,
+           inputNames,
+           outputNames
+         )
+      }
       output
    }
 

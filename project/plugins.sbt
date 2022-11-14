@@ -7,6 +7,6 @@ addSbtPlugin("org.scalameta"      % "sbt-scalafmt"                  % "2.4.6")
 addSbtPlugin("org.xerial.sbt"     % "sbt-sonatype"                  % "3.9.14")
 addSbtPlugin("com.github.sbt"     % "sbt-pgp"                       % "2.1.2")
 addSbtPlugin("org.scalameta"      % "sbt-mdoc"                      % "2.3.6")
-addSbtPlugin("ch.epfl.scala"      % "sbt-scalajs-bundler"           % "0.21.0")
+addSbtPlugin("ch.epfl.scala"      % "sbt-scalajs-bundler"           % "0.21.1")
 // for Scala.js 1.x.x
 addSbtPlugin("org.scalablytyped.converter" % "sbt-converter" % "1.0.0-beta39")

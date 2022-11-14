@@ -36,6 +36,9 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
        dottyVersion
      )
    )
+   .jsSettings(
+   scalaJSStage := FullOptStage
+   )
 
 lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .crossType(CrossType.Pure) in file("proto"))
@@ -50,6 +53,9 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      ),
      // The trick is in this line:
      Compile / PB.protoSources := Seq(file("proto/src/main/protobuf"))
+   )
+   .jsSettings(
+   scalaJSStage := FullOptStage
    )
 
 lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
@@ -77,6 +83,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      Compile / npmDependencies += "typescript"         -> "4.8.4",
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.4.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",
+     scalaJSStage := FullOptStage,
      scalaJSLinkerConfig ~= (_.withESFeatures(
        _.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021)
      ))
@@ -105,6 +112,9 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
              ("org.typelevel" %%% "cats-effect" % "3.4.0")
            )
      })
+   )
+   .jsSettings(
+   scalaJSStage in Global := FullOptStage
    )
 
 /*

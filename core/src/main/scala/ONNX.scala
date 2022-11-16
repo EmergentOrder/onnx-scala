@@ -22,7 +22,6 @@ import org.emergentorder.compiletime.TensorShapeDenotation.Reverse
 import org.emergentorder.compiletime.TensorShapeDenotation.Concat
 import scala.collection.immutable.ArraySeq
 
-//TODO: Add new Optional, OptionalGetElement, OptionalHasElement operators from V15 and map to Scala Option
 //TODO: Add new Trilu operator from V14, other "function" operators, as need be
 
 //ONNX domain: ai.onnx(default)
@@ -352,6 +351,12 @@ package object onnx {
          (callOp(name, "BatchNormalization", allInputs, map))
       }
    }
+
+   // TODO:
+   // New op: Bernoulli - Since opset 15
+   // New ops: Bitwise (And, Not, Or, Xor) - since opset 18
+   // New Op: Blackman window - since opset 17
+
    /* - Not supported - cast on the JVM side
   //Missing in NDScala P2 - needs match type from data type to int
   trait CastV13 extends Operator {
@@ -365,6 +370,9 @@ package object onnx {
     }
   }
     */
+
+   // Missing (unsupported) op: CastLike - since opset 15
+
    trait CeilV13 extends Operator {
       def CeilV13[
           @sp T <: BFloat16 | Float16 | Float | Double: Numeric,
@@ -406,6 +414,10 @@ package object onnx {
       }
    }
 
+   // TODO:
+   // New op:  CenterCropPad - since opset 18
+   // New op: Col2lm - since opset 18
+   //
    // FIXME: "All input tensors must have the same shape, except for the dimension size of the axis to concatenate on". Currently assumes tensors to be concated are same shape except the leading dimension
    // TODO P1: Arbitrary arity inputs
    trait ConcatV13 extends Operator {
@@ -543,6 +555,8 @@ package object onnx {
       }
    }
 
+   // TODO:
+   // New op: DFT - since opset 17
    trait DivV14 extends Operator {
       def DivV14[
           @sp T <: UByte | Byte | UShort | Short | UInt | ULong | Int | Long | BFloat16 | Float16 |
@@ -985,6 +999,8 @@ package object onnx {
       }
    }
 
+   // TODO:
+   // New Op: LayerNormalization - since opset 17
    trait LogV13 extends Operator {
       def LogV13[
           @sp T <: BFloat16 | Float16 | Float | Double: Numeric,
@@ -1156,6 +1172,10 @@ package object onnx {
       }
    }
 
+   // TODO:
+   // New ops: Optional, OptionalGetElement, OptionalHasElement from opset 15
+   // Map to Scala Option
+   //
    trait OrV7 extends Operator {
       def OrV7[
           @sp T <: Boolean,
@@ -1646,6 +1666,8 @@ package object onnx {
       }
    }
 
+   // TODO:
+   // New Op: STFT - since opset 17
    trait SeluV6 extends Operator {
       def SeluV6[
           @sp T <: Float16 | Float | Double: Numeric,
@@ -2637,6 +2659,12 @@ package object onnxruntime {
          (callOp(name, "Greater", allInputs, map))
       }
    }
+
+   // TODO:
+   // New op: GridSample - since opset 16
+   // New op: GroupNormalization - since opset 18
+   // New op: HammingWindow - since opset 17
+   // New op: HannWindow - since opset 17
    // TODO
    /*
   trait HardSigmoidV6 extends Operator {
@@ -2664,6 +2692,8 @@ package object onnxruntime {
       (callOp(name, "Hardmax", allInputs, map))
     }
   }
+  //TODO
+  //New op: HardSwish - since opset 14
 
   //Doesn't make sense in this context, this makes a copy, which in this case means scala -> backend -> scala round trip, essentially no-op
   //And it's eliminated in graph optimization anyway
@@ -2947,6 +2977,9 @@ package object onnxruntime {
       }
    }
 
+   // TODO:
+   // New op: MelWeightMatrix - since opset 17
+
    // TODO
    /*
 
@@ -2980,6 +3013,8 @@ package object onnxruntime {
       }
    }
 
+   // TODO:
+   // New Op: Mish - since opset 18
    trait ModV13 extends onnx.Operator {
       def ModV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.BFloat16 |
@@ -3591,6 +3626,8 @@ package object onnxruntime {
     }
   }
 
+  //TODO:
+  //New Op: SequenceMap - since opset 17
   trait SequenceLengthV11 extends Operator {
     def SequenceLengthV11[@sp S <: Seq[Tensor[UByte, _]] | Seq[Tensor[UShort, _]] | Seq[
       Tensor[UInt, _]

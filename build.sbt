@@ -83,6 +83,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      Compile / npmDependencies += "typescript"         -> "4.8.4",
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",
+     stShortModuleNames := true,
      scalaJSStage                            := FullOptStage,
      scalaJSLinkerConfig ~= (_.withESFeatures(
        _.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021)

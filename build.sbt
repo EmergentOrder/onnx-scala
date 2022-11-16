@@ -37,7 +37,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      )
    )
    .jsSettings(
-   scalaJSStage := FullOptStage
+     scalaJSStage := FullOptStage
    )
 
 lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
@@ -55,7 +55,7 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      Compile / PB.protoSources := Seq(file("proto/src/main/protobuf"))
    )
    .jsSettings(
-   scalaJSStage := FullOptStage
+     scalaJSStage := FullOptStage
    )
 
 lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
@@ -71,7 +71,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      crossScalaVersions                       := Seq(dottyVersion)
    )
    .jvmSettings(
-     libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.4.0" % Test
+     libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test
    )
    .jsSettings(
      webpack / version                                 := "5.74.0",
@@ -81,9 +81,9 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      Compile / npmDependencies += "onnxruntime-node"   -> "1.13.1",
      Compile / npmDependencies += "onnxruntime-common" -> "1.13.1",
      Compile / npmDependencies += "typescript"         -> "4.8.4",
-     libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.4.0" % Test,
+     libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",
-     scalaJSStage := FullOptStage,
+     scalaJSStage                            := FullOptStage,
      scalaJSLinkerConfig ~= (_.withESFeatures(
        _.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021)
      ))
@@ -114,7 +114,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      })
    )
    .jsSettings(
-   scalaJSStage in Global := FullOptStage
+     scalaJSStage in Global := FullOptStage
    )
 
 /*

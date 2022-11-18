@@ -18,6 +18,7 @@ object ORTTensorUtils {
          case i: Int     => getTensorInt(arr.asInstanceOf[Array[Int]], shape, env)
          case l: Long    => getTensorLong(arr.asInstanceOf[Array[Long]], shape, env)
          case b: Boolean => getTensorBoolean(arr.asInstanceOf[Array[Boolean]], shape, env)
+         case st: String => getTensorString(arr.asInstanceOf[Array[String]], shape, env)
       }
    }
 
@@ -71,8 +72,8 @@ object ORTTensorUtils {
       OnnxTensor.createTensor(env, buff, shape.map(_.toLong))
    }
 
-   private def getTensorBoolean(
-       arr: Array[Boolean],
+   private def getTensorString(
+       arr: Array[String],
        shape: Array[Int],
        env: OrtEnvironment
    ): OnnxTensor = {
@@ -82,6 +83,22 @@ object ORTTensorUtils {
       } else {
          val tensorIn = OrtUtil.reshape(arr, shape.map(_.toLong))
          OnnxTensor.createTensor(env, tensorIn)
+      }
+   }
+
+   private def getTensorBoolean(
+       arr: Array[Boolean],
+       shape: Array[Int],
+       env: OrtEnvironment
+   ): OnnxTensor = {
+      // working around: https://github.com/microsoft/onnxruntime/issues/7358
+      if shape.size == 0 || (shape.size == 1 && shape(0) == 1) then {
+         OnnxTensor.createTensor(env, arr)
+      } else {
+
+         val tensorIn = OrtUtil.reshape(arr, shape.map(_.toLong))
+         OnnxTensor.createTensor(env, tensorIn)
+
       }
    }
 

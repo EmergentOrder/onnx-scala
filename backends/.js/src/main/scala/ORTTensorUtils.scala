@@ -27,6 +27,8 @@ object ORTTensorUtils {
             getTensorLong(arr.asInstanceOf[Array[Long]], shape).asInstanceOf[OnnxTensor[T]]
          case b: Array[Boolean] =>
             getTensorBoolean(arr.asInstanceOf[Array[Boolean]], shape).asInstanceOf[OnnxTensor[T]]
+         case st: Array[String] =>
+            getTensorString(arr.asInstanceOf[Array[String]], shape).asInstanceOf[OnnxTensor[T]]
          case _ =>
             getTensorLong(arr.map(x => x.toString.toLong).toArray, shape)
                .asInstanceOf[OnnxTensor[T]]
@@ -76,6 +78,14 @@ object ORTTensorUtils {
    ): OnnxTensor[Float] = {
       (new OnnxTensor(typedarray.floatArray2Float32Array(arr), shape.map(_.toDouble).toJSArray))
          .asInstanceOf[OnnxTensor[Float]]
+   }
+
+   private def getTensorString(
+       arr: Array[String],
+       shape: Array[Int]
+   ): OnnxTensor[String] = {
+      (new OnnxTensor("string", arr.toJSArray, shape.map(_.toDouble).toJSArray))
+         .asInstanceOf[OnnxTensor[String]]
    }
 
    private def getTensorBoolean(

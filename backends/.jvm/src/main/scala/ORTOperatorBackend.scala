@@ -26,7 +26,9 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
    def getSession(bytes: Array[Byte]) = {
       // Can now set symbolic dimension values, but only at session creation time
       val session_options = new OrtSession.SessionOptions()
-//      session_options.setIntraOpNumThreads(coreCount)
+//      session_options.addCPU(false)
+//      session_options.setMemoryPatternOptimization(true)
+      session_options.setIntraOpNumThreads(coreCount)
 //    session_options.addCUDA()
 //    session_options.addDnnl(true)
 //      session_options.addXnnpack(java.util.Collections.emptyMap())

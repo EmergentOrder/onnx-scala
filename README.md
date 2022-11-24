@@ -103,7 +103,7 @@ Automatic differentiation to enable training is under consideration (ONNX curren
 #### Type-safe Tensors
 Featuring type-level tensor and axis labels/denotations, which along with literal types for dimension sizes allow for tensor/axes/shape/data-typed tensors.
 Type constraints, as per the ONNX spec, are implemented at the operation level on inputs and outputs, using union types, match types and compiletime singleton ops (thanks to @MaximeKjaer for getting the latter into dotty).
-Using ONNX docs for [dimension](https://github.com/onnx/onnx/blob/master/docs/DimensionDenotation.md) and [type](https://github.com/onnx/onnx/blob/master/docs/TypeDenotation.md) denotation, as well as the [operators doc](https://github.com/onnx/onnx/blob/v1.7.0/docs/Operators.md) as a reference,
+Using ONNX docs for [dimension](https://github.com/onnx/onnx/blob/main/docs/DimensionDenotation.md) and [type](https://github.com/onnx/onnx/blob/main/docs/TypeDenotation.md) denotation, as well as the [operators doc](https://github.com/onnx/onnx/blob/v1.7.0/docs/Operators.md) as a reference,
 and inspired by [Nexus](https://github.com/ctongfei/nexus), [Neurocat](https://github.com/mandubian/neurocat) and [Named Tensors](https://pytorch.org/docs/stable/named_tensor.html).
 
 ### Backend
@@ -154,7 +154,9 @@ sbt publishLocal
 
 #### Backends
 
-* [ONNX Runtime via ORT Java API](https://github.com/microsoft/onnxruntime/tree/master/java) - ONNX Runtime: cross-platform, high performance ML inferencing and training accelerator
+* [ONNX Runtime via ORT Java API](https://github.com/microsoft/onnxruntime/tree/main/java) - ONNX Runtime: cross-platform, high performance ML inferencing and training accelerator
+
+* [ONNX Runtime Node.js Binding](https://github.com/microsoft/onnxruntime/tree/main/js/node)
 
 ### Inspiration
 

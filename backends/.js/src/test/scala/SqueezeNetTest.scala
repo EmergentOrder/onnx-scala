@@ -46,10 +46,16 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
         1 #: 1000 #: 1 #: 1 #: SNil
       ](Tuple(imageTens))
 
-      // The output shape
-      out.shape.asserting(_(0) shouldBe 1)
-      out.shape.asserting(_(1) shouldBe 1000)
-      // The highest probability (predicted) class
-      out.data.asserting(x => x.indices.maxBy(x) shouldBe 549)
+            // The output shape
+      // and the highest probability (predicted) class
+      val singleIO = cats.effect.IO.both(out.shape, out.data)
+      singleIO.asserting(x => ((x._1(0),
+                                x._1(1),
+                                x._2.indices.maxBy(x._2))
+                              shouldBe
+                               (1,
+                                1000,
+                                549)))
+
    }
 }

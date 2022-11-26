@@ -55,7 +55,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
 
       val size = inputs.size
       @annotation.nowarn
-      val inputTensors = (0 until size)
+      def inputTensors = (0 until size)
          .map { i =>
             val tup = inputs.drop(i).take(1)
             tup match { // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
@@ -70,16 +70,17 @@ class ORTModelBackend(onnxBytes: Array[Byte])
          .sequence
          .map(_.toArray)
 
-      val output = inputTensors.flatMap(x =>
-         runModel[T, Tt, Td, S](
+      val output = cats.effect.Resource.make(inputTensors)(inTens => IO{inTens.map(_.close)}).use(inTens =>
+         IO{runModel[T, Tt, Td, S](
            session,
-           x,
+           inTens,
            allNodeNamesAndDims._1,
            allNodeNamesAndDims._3
          )
+         }
       )
 
-      output.memoize.unsafeRunSync()
+      output.unsafeRunSync()
    }
 
    override def close(): Unit = {}

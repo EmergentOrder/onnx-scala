@@ -140,7 +140,6 @@ object ORTTensorUtils {
              ONNX_TENSOR_ELEMENT_DATA_TYPE_COMPLEX128 | ONNX_TENSOR_ELEMENT_DATA_TYPE_BFLOAT16 =>
             ??? // Unsupported
       }
-      value.close()
       arr.asInstanceOf[Array[T]]
    }
 }

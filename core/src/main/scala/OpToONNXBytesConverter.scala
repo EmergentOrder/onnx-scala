@@ -259,41 +259,36 @@ trait OpToONNXBytesConverter {
                            opt match {
                               case Some(in) => {
 
-                                 val name = in.map { x =>
+                                 val name = {
                                     val incr: String =
                                        if inputs.toArray.distinct.size == inputs.size then ""
                                        else i.toString
-                                    val t = ((x.toString + incr).hashCode).toString
+                                    val t = ((in.hashCode + incr)).toString
 
                                     t
                                  }
                                  Some(
-                                   name.flatMap(nm =>
-                                      createInputValueInfoProto(in, nm).map { inf =>
-                                         (inf, nm)
+                                      createInputValueInfoProto(in, name).map { inf =>
+                                         (inf, name)
                                       }
                                    )
-                                 )
 
                               }
                               case None => None
                            }
                         case tens: Tensor[T, Axes] => {
-                           val name = tens.map { x =>
+                           val name = {
                               val incr: String =
                                  if inputs.toArray.distinct.size == inputs.size then ""
                                  else i.toString
-                              val t = ((x.toString + incr).hashCode).toString
+                              val t = ((tens.hashCode + incr)).toString
                               t
                            }
                            Some(
-                             name.flatMap(nm =>
-                                createInputValueInfoProto(tens, nm).map { inf =>
-                                   (inf, nm)
+                                createInputValueInfoProto(tens, name).map { inf =>
+                                   (inf, name)
                                 }
                              )
-                           )
-
                         }
                      }
                }

@@ -31,7 +31,7 @@ object Tensors {
    // Need this alias to not conflict with other Tensors
    // TODO: consider using TF-Java ndarray as backing instead of Scala Array here
    // S is overloaded
-   type Tensor[T <: Supported, +Ax <: Axes] = IO[Tuple2[Array[T], Ax]]
+   opaque type Tensor[T <: Supported, +Ax <: Axes] = IO[Tuple2[Array[T], Ax]]
 
    type SparseTensor[T <: Supported, A <: Axes] = Tensor[T, A]
 

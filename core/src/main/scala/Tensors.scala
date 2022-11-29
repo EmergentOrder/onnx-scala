@@ -6,8 +6,8 @@ import spire.math.UInt
 import spire.math.ULong
 import spire.math.Complex
 import spire.math.Numeric
-import io.kjaer.compiletime._
-import io.kjaer.compiletime.Shape._
+import io.kjaer.compiletime.*
+import io.kjaer.compiletime.Shape.*
 import scala.compiletime.ops.int.*
 
 import cats.effect.IO

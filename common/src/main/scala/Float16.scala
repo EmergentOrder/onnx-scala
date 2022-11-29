@@ -16,7 +16,7 @@
 
 package org.emergentorder.onnx
 
-import java.lang.{Float => JFloat}
+import java.lang.{Float as JFloat}
 import java.lang.Integer.numberOfLeadingZeros
 import java.lang.Math.pow
 import scala.language.implicitConversions

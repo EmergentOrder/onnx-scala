@@ -18,15 +18,15 @@
 
 package org.emergentorder.onnx
 
-import java.nio.file._
+import java.nio.file.*
 import java.nio.ByteBuffer
 //import scala.jdk.CollectionConverters
 import scala.language.implicitConversions
 
 import java.io.File
 //import org.bytedeco.javacpp._
-import onnx.onnx._
-import onnx.onnx.TensorProto.DataType._
+import onnx.onnx.*
+import onnx.onnx.TensorProto.DataType.*
 
 class ONNXHelper(val byteArray: Array[Byte]) {
    lazy val model = ModelProto.parseFrom(byteArray)

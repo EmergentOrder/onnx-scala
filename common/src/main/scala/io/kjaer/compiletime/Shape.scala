@@ -7,14 +7,14 @@ import scala.compiletime.ops.boolean.&&
 type Dimension = Int & Singleton
 
 sealed trait Shape extends Product with Serializable {
-   import Shape._
+   import Shape.*
 
    /** Prepend the head to this */
    def #:[H <: Dimension, This >: this.type <: Shape](head: H): H #: This =
       io.kjaer.compiletime.#:(head, this)
 
    /** Concat with another shape * */
-   def ++(that: Shape): this.type Concat that.type = Shape.concat(this, that)
+   def ++(that: Shape): this.type `Concat` that.type = Shape.concat(this, that)
 
    /** Reverse the dimension list */
    def reverse: Reverse[this.type] = Shape.reverse(this)
@@ -93,15 +93,15 @@ object Shape {
 
    type IsEmpty[X <: Shape] <: Boolean = X match {
       case SNil   => true
-      case _ #: _ => false
+      case ? #: ? => false
    }
 
    type Head[X <: Shape] <: Dimension = X match {
-      case head #: _ => head
+      case head #: ? => head
    }
 
    type Tail[X <: Shape] <: Shape = X match {
-      case _ #: tail => tail
+      case ? #: tail => tail
    }
 
    /** Represents reduction along axes, as defined in TensorFlow:

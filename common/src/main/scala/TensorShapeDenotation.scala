@@ -11,7 +11,7 @@ import io.kjaer.compiletime.INil
 type DimensionDenotation = String & Singleton
 
 sealed trait TensorShapeDenotation extends Product with Serializable {
-   import TensorShapeDenotation._
+   import TensorShapeDenotation.*
 
    /** Prepend the head to this */
    def ##:[H <: DimensionDenotation, This >: this.type <: TensorShapeDenotation](
@@ -20,7 +20,7 @@ sealed trait TensorShapeDenotation extends Product with Serializable {
       org.emergentorder.compiletime.##:(head, this)
 
    /** Concat with another shape * */
-   def ++(that: TensorShapeDenotation): this.type Concat that.type =
+   def ++(that: TensorShapeDenotation): this.type `Concat` that.type =
       TensorShapeDenotation.concat(this, that)
 
    /** Reverse the dimension list */
@@ -79,15 +79,15 @@ object TensorShapeDenotation {
 
    type IsEmpty[X <: TensorShapeDenotation] <: Boolean = X match {
       case TSNil   => true
-      case _ ##: _ => false
+      case ? ##: ? => false
    }
 
    type Head[X <: TensorShapeDenotation] <: DimensionDenotation = X match {
-      case head ##: _ => head
+      case head ##: ? => head
    }
 
    type Tail[X <: TensorShapeDenotation] <: TensorShapeDenotation = X match {
-      case _ ##: tail => tail
+      case ? ##: tail => tail
    }
 
    /** Represents reduction along axes, as defined in TensorFlow:

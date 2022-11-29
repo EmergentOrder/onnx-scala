@@ -1,10 +1,10 @@
 package org.emergentorder.onnx
 
 import spire.math.Numeric
-import org.emergentorder.onnx._
-import org.emergentorder.onnx.Tensors._
-import org.emergentorder.compiletime._
-import io.kjaer.compiletime._
+import org.emergentorder.onnx.*
+import org.emergentorder.onnx.Tensors.*
+import org.emergentorder.compiletime.*
+import io.kjaer.compiletime.*
 
 class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends DataSource {
 

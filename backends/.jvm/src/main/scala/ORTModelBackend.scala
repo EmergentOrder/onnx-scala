@@ -1,23 +1,24 @@
 package org.emergentorder.onnx.backends
 
 import scala.language.implicitConversions
-import scala.concurrent._
-import scala.concurrent.duration._
+import scala.concurrent.*
+import scala.concurrent.duration.*
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
-import ai.onnxruntime._
-import scala.jdk.CollectionConverters._
+import scala.concurrent.duration.*
+import compiletime.asMatchable
+import ai.onnxruntime.*
+import scala.jdk.CollectionConverters.*
 
 import cats.effect.IO
-import cats.implicits._
+import cats.implicits.*
 import cats.effect.unsafe.implicits.global
-import org.emergentorder.onnx._
-import org.emergentorder.onnx.Tensors._
-import org.emergentorder.onnx.Tensors.Tensor._
-import org.emergentorder.compiletime._
-import io.kjaer.compiletime._
+import org.emergentorder.onnx.*
+import org.emergentorder.onnx.Tensors.*
+import org.emergentorder.onnx.Tensors.Tensor.*
+import org.emergentorder.compiletime.*
+import io.kjaer.compiletime.*
 
-import ORTTensorUtils._
+import ORTTensorUtils.*
 
 //TODO: Clean up, remove asInstaceOf, etc.
 class ORTModelBackend(onnxBytes: Array[Byte])
@@ -59,8 +60,8 @@ class ORTModelBackend(onnxBytes: Array[Byte])
          .map { i =>
             val tup = inputs.drop(i).take(1)
             tup match { // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
-               case t: Tuple1[_] =>
-                  t(0) match {
+               case t: Tuple1[?] =>
+                  t(0).asMatchable match {
                      case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
                         tens.data.map(x => tens.shape.map(y => getOnnxTensor(x, y, env))).flatten
                   }

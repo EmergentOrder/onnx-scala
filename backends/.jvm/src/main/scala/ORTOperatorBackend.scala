@@ -1,23 +1,23 @@
 package org.emergentorder.onnx.backends
 
-import java.nio._
-import scala.jdk.CollectionConverters._
+import java.nio.*
+import scala.jdk.CollectionConverters.*
 import scala.language.implicitConversions
 import scala.util.Using
-import ai.onnxruntime._
+import ai.onnxruntime.*
 import ai.onnxruntime.TensorInfo.OnnxTensorType
 //import ai.onnxruntime.extensions.OrtxPackage
-import org.emergentorder.onnx._
-import org.emergentorder.onnx.Tensors._
-import org.emergentorder.onnx.Tensors.Tensor._
-import org.emergentorder.compiletime._
-import io.kjaer.compiletime._
-import onnx.onnx._
+import org.emergentorder.onnx.*
+import org.emergentorder.onnx.Tensors.*
+import org.emergentorder.onnx.Tensors.Tensor.*
+import org.emergentorder.compiletime.*
+import io.kjaer.compiletime.*
+import onnx.onnx.*
 
-import cats.implicits._
+import cats.implicits.*
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import ORTTensorUtils._
+import ORTTensorUtils.*
 
 trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 

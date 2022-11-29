@@ -2,6 +2,7 @@ package org.emergentorder.onnx
 
 //import scala.language.implicitConversions
 import scala.collection.immutable.ArraySeq
+import compiletime.asMatchable
 
 import onnx.onnx.ModelProto
 import onnx.onnx.NodeProto
@@ -10,14 +11,14 @@ import onnx.onnx.TensorProto
 import onnx.onnx.AttributeProto
 import onnx.onnx.ValueInfoProto
 import onnx.onnx.OperatorSetIdProto
-import onnx.onnx.TensorProto.DataType._
+import onnx.onnx.TensorProto.DataType.*
 
 import cats.effect.IO
-import cats.implicits._
+import cats.implicits.*
 import io.kjaer.compiletime.Shape
-import org.emergentorder.compiletime._
-import org.emergentorder.onnx.Tensors._
-import org.emergentorder.onnx.Tensors.Tensor._
+import org.emergentorder.compiletime.*
+import org.emergentorder.onnx.Tensors.*
+import org.emergentorder.onnx.Tensors.Tensor.*
 
 trait OpToONNXBytesConverter {
 
@@ -253,8 +254,8 @@ trait OpToONNXBytesConverter {
             .flatMap { i =>
                val t = inputs.drop(i).take(1)
                t match {
-                  case tup: Tuple1[_] => // TODO: union type
-                     tup(0) match {
+                  case tup: Tuple1[?] => // TODO: union type
+                     tup(0).asMatchable match {
                         case opt: Option[Tensor[T, Axes]] =>
                            opt match {
                               case Some(in) => {

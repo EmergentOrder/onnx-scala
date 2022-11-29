@@ -24,6 +24,9 @@ lazy val commonSettings = Seq(
 //    "-release:19",
     "-source:3.2"
   ),
+  versionPolicyIntention := Compatibility.BinaryCompatible, //As long as we are pre 1.0.0, BinaryCompatible for a patch version bump and None for a minor version bump
+  versionScheme := Some("early-semver"),
+//  mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-common" % "0.17.0"),
   autoCompilerPlugins := true
 ) ++ sonatypeSettings
 
@@ -45,6 +48,7 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
      name := "onnx-scala-proto",
+//     mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-proto" % "0.17.0"),
      crossScalaVersions := Seq(
        dottyVersion
      ),
@@ -64,6 +68,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
      name := "onnx-scala-backends",
+//     mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
      libraryDependencies ++= Seq(
        "com.microsoft.onnxruntime" % "onnxruntime" % "1.13.1",
 //       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.5.0"
@@ -103,6 +108,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
      name := "onnx-scala",
+//     mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala" % "0.17.0"),
      crossScalaVersions := Seq(
        dottyVersion
      ),

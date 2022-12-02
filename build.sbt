@@ -14,6 +14,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions := updateOptions.value.withLatestSnapshots(false),
+  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.21.9",
   scalacOptions ++= Seq(
     "-explain",
     "-explain-types",
@@ -22,7 +23,7 @@ lazy val commonSettings = Seq(
     "-unchecked",
     "-deprecation",
 //    "-release:19",
-    "-source:3.2"
+    "-rewrite"
   ),
   versionPolicyIntention := Compatibility.BinaryCompatible, //As long as we are pre 1.0.0, BinaryCompatible for a patch version bump and None for a minor version bump
   versionScheme := Some("early-semver"),
@@ -35,6 +36,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
      name := "onnx-scala-common",
+     scalacOptions ++= Seq("-source:3.2"),
      crossScalaVersions := Seq(
        dottyVersion
      )
@@ -48,6 +50,7 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
      name := "onnx-scala-proto",
+     scalacOptions ++= Seq("-source:3.2"),
 //     mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-proto" % "0.17.0"),
      crossScalaVersions := Seq(
        dottyVersion
@@ -68,6 +71,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
      name := "onnx-scala-backends",
+     scalacOptions ++= Seq("-source:3.2"),
 //     mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
      libraryDependencies ++= Seq(
        "com.microsoft.onnxruntime" % "onnxruntime" % "1.13.1",
@@ -108,6 +112,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
      name := "onnx-scala",
+     scalacOptions ++= Seq("-source:3.2"),
 //     mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala" % "0.17.0"),
      crossScalaVersions := Seq(
        dottyVersion
@@ -117,7 +122,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
         case _ =>
            Seq(
              ("org.typelevel" %%% "spire"       % spireVersion),
-             ("org.typelevel" %%% "cats-effect" % "3.4.1")
+             ("org.typelevel" %%% "cats-effect" % "3.4.2")
            )
      })
    )

@@ -29,6 +29,7 @@ import org.emergentorder.onnx.Tensors.Tensor._
 import org.emergentorder.compiletime._
 import io.kjaer.compiletime._
 
+//TODO: fix redundant computation due to cats-effect on the JS side
 trait ORTWebOperatorBackend extends OpToONNXBytesConverter {
 
    def getSession(bytes: Array[Byte]) = {
@@ -143,7 +144,7 @@ trait ORTWebOperatorBackend extends OpToONNXBytesConverter {
       val result: IO[Tensor[T, Tuple3[Tt, Td, S]]] =
          for {
             mp <- modelProto.flatMap(IO.println("OpName => " + opName).as(_))
-            res: Tuple2[Array[T], Tuple3[Tt, Td, S]] <- {
+            } yield {
 //            println(mp)
                callByteArrayOp(
                  mp.toByteArray,
@@ -153,7 +154,7 @@ trait ORTWebOperatorBackend extends OpToONNXBytesConverter {
                  }
                )
             }
-         } yield IO.eval(cats.Eval.later { res })
+
       result.flatten
    }
 

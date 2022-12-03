@@ -75,11 +75,12 @@ Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942
 Based on a simple benchmark of 100000 iterations of SqueezeNet inference, the run time is on par (within 3% of) ONNX Runtime (via Python).
 The discrepancy can be accounted for by the overhead of shipping data between the JVM and native memory.
 
-When using this API, we load the provided ONNX model file and pass it as-is to the underlying ONNX backend.
+When using this API, we load the provided ONNX model file and pass it as-is to the underlying ONNX backend, which is able to optimize the full graph.
 This is the most performant execution mode, and is recommended for off-the-shelf models / performance-critical scenarios.
 
-This full-model API is untyped in the inputs, so it can fail at runtime. This inevitable because we load models from disk at runtime.
-Feel free to wrap your calls into it in a facade with typed inputs.
+This full-model API is untyped in the inputs, so it can fail at runtime. This is inevitable because we load models from disk at runtime.
+An upside of this is that you are free to use dynamic shapes, for example in the case of differing batch sizes per model call (assuming your model supports this via symbolic dimensions, see [ONNX Shape Inference](https://github.com/onnx/onnx/blob/main/docs/ShapeInference.md) ).
+If your input shapes are static, feel free to wrap your calls into it in a facade with typed inputs.
 
 ## Project Details
 
@@ -119,6 +120,7 @@ Supported ONNX input and output tensor data types:
 * Float
 * Double
 * Boolean
+* String
 
 Supported ONNX ops:
 * ONNX-Scala, Fine-grained API: 87/178 total

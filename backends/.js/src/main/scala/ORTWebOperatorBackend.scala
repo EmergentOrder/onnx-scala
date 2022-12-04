@@ -5,8 +5,8 @@ import scala.concurrent.duration._
 //import typings.onnxruntimeWeb.tensorMod.Tensor.FloatType
 //import typings.onnxruntimeWeb.tensorMod.Tensor.DataType
 //import typings.onnxjs.libTensorMod.Tensor.DataTypeMap.DataTypeMapOps
-import org.emergentorder.onnx.onnxruntimeNode.mod.{InferenceSession => OrtSession}
-import org.emergentorder.onnx.onnxruntimeNode.mod.Tensor.{^ => OnnxTensor}
+import org.emergentorder.onnx.onnxruntimeWeb.mod.{InferenceSession => OrtSession}
+import org.emergentorder.onnx.onnxruntimeWeb.mod.Tensor.{^ => OnnxTensor}
 //import typings.onnxruntimeWeb.ort.InferenceSession.{^ => InferenceSess}
 //import typings.onnxjs.onnxMod.Onnx
 import scala.scalajs.js.typedarray
@@ -27,6 +27,7 @@ import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.Tensors.Tensor._
 import org.emergentorder.compiletime._
+import onnxruntimeCommon.inferenceSessionMod.InferenceSession
 import io.kjaer.compiletime._
 
 //TODO: fix redundant computation due to cats-effect on the JS side
@@ -36,8 +37,13 @@ trait ORTWebOperatorBackend extends OpToONNXBytesConverter {
 
       val bytesArrayBuffer = bytes.toTypedArray.buffer
       val session: IO[
-        org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
-      ] = IO.fromFuture(IO { OrtSession.create(bytesArrayBuffer).toFuture })
+        InferenceSession
+      ] = IO.fromFuture(IO { OrtSession.create(bytesArrayBuffer, {
+        val opts = InferenceSession.SessionOptions()
+        opts.executionProviders = scala.scalajs.js.Array("webgl")
+        opts
+      }
+      ).toFuture })
       session
    }
 

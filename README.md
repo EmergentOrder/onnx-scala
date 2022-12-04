@@ -96,7 +96,7 @@ For more details on the low-level fine-grained API see [here](FineGrainedAPI.md)
 
 The preferred high-level fine-grained API, most suitable for the end user, is [NDScala](https://github.com/SciScala/NDScala)
 
-\* Up to roughly the intersection of supported ops in ONNX Runtime and (the now defunct) ONNX.js
+\* Up to roughly the set of ops supported by ONNX Runtime Web (WebGL backend)
 
 #### Training
 Automatic differentiation to enable training is under consideration (ONNX currently provides facilities for training as a tech preview only).
@@ -110,7 +110,7 @@ and inspired by [Nexus](https://github.com/ctongfei/nexus), [Neurocat](https://g
 ### Backend
 There is one backend per Scala platform.
 For the JVM the backend is based on [ONNX Runtime](https://github.com/microsoft/onnxruntime), via their official Java API.
-For Scala.js / JavaScript the backend is based on the [ONNX Runtime Node.js Binding](https://github.com/microsoft/onnxruntime/tree/main/js/node).
+For Scala.js / JavaScript the backend is based on the [ONNX Runtime Web](https://github.com/microsoft/onnxruntime/tree/main/js/web).
 
 Supported ONNX input and output tensor data types:
 * Byte
@@ -123,10 +123,11 @@ Supported ONNX input and output tensor data types:
 * String
 
 Supported ONNX ops:
-* ONNX-Scala, Fine-grained API: 87/178 total
-* ONNX-Scala, Full model API: Same as below
+* ONNX-Scala, Fine-grained API: 87/178 total (69/178 when using Scala.js / ORT Web backend)
+* ONNX-Scala, Full model API: Same as below, depending on backend
 
-* ONNX Runtime / ONNX Runtime NodeJS: 165/178 total.
+* ONNX Runtime Web (using WebGL backend): 69/178 total.
+* ONNX Runtime: 165/178 total
 
 See the [ONNX backend scoreboard](http://onnx.ai/backend-scoreboard/index.html) 
 
@@ -158,7 +159,7 @@ sbt publishLocal
 
 * [ONNX Runtime via ORT Java API](https://github.com/microsoft/onnxruntime/tree/main/java) - ONNX Runtime: cross-platform, high performance ML inferencing and training accelerator
 
-* [ONNX Runtime Node.js Binding](https://github.com/microsoft/onnxruntime/tree/main/js/node)
+* [ONNX Runtime Web](https://github.com/microsoft/onnxruntime/tree/main/js/web)
 
 ### Inspiration
 

@@ -123,10 +123,10 @@ Supported ONNX input and output tensor data types:
 * String
 
 Supported ONNX ops:
-* ONNX-Scala, Fine-grained API: 87/178 total (69/178 when using Scala.js / ORT Web backend)
-* ONNX-Scala, Full model API: Same as below, depending on backend
+* ONNX-Scala, Fine-grained API: 87/178 total
+* ONNX-Scala, Full model API: Same as below
 
-* ONNX Runtime Web (using WebGL backend): 69/178 total.
+* ONNX Runtime Web (using Wasm backend): 165/178 total.
 * ONNX Runtime: 165/178 total
 
 See the [ONNX backend scoreboard](http://onnx.ai/backend-scoreboard/index.html) 

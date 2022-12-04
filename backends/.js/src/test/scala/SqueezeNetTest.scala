@@ -16,6 +16,7 @@ import org.scalatest.flatspec.AsyncFlatSpec
 import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.should._
 import cats.effect.testing.scalatest.AsyncIOSpec
+import org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
 
 class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
 
@@ -24,7 +25,13 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
    // TODO: push this inside ORTWebModelBackend, and use other create() which takes arraybufferlike
    val session: IO[
      org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
-   ] = IO.fromFuture(IO { OrtSession.create("squeezenet1.0-12.onnx").toFuture })
+   ] = IO.fromFuture(IO { OrtSession.create("squeezenet1.0-12.onnx",
+      {
+        val opts = InferenceSession.SessionOptions()
+        opts.executionProviders = scala.scalajs.js.Array("wasm")
+        opts
+      }
+      ).toFuture })
 
    "SqueezeNet ONNX-Scala model should predict dummy image class" in {
       val squeezenet = new ORTWebModelBackend(session)

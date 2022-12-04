@@ -40,7 +40,7 @@ trait ORTWebOperatorBackend extends OpToONNXBytesConverter {
         InferenceSession
       ] = IO.fromFuture(IO { OrtSession.create(bytesArrayBuffer, {
         val opts = InferenceSession.SessionOptions()
-        opts.executionProviders = scala.scalajs.js.Array("webgl")
+        opts.executionProviders = scala.scalajs.js.Array("wasm")
         opts
       }
       ).toFuture })

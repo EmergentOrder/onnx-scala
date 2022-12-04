@@ -144,16 +144,16 @@ trait ORTWebOperatorBackend extends OpToONNXBytesConverter {
       val result: IO[Tensor[T, Tuple3[Tt, Td, S]]] =
          for {
             mp <- modelProto.flatMap(IO.println("OpName => " + opName).as(_))
-            } yield {
+         } yield {
 //            println(mp)
-               callByteArrayOp(
-                 mp.toByteArray,
-                 inputs,
-                 IO.pure {
-                    mp.graph.map(_.input.map(_.name.getOrElse(""))).getOrElse(List[String]()).toList
-                 }
-               )
-            }
+            callByteArrayOp(
+              mp.toByteArray,
+              inputs,
+              IO.pure {
+                 mp.graph.map(_.input.map(_.name.getOrElse(""))).getOrElse(List[String]()).toList
+              }
+            )
+         }
 
       result.flatten
    }

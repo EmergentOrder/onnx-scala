@@ -59,24 +59,27 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       val tensorTypeDenotationFromType  = tt.value
       val tensorShapeDenotationFromType = td.value
 
-      val tensArr: IO[Array[T]] = cats.effect.Resource.make(IO.blocking{sess.run(inputs)})(outTens => IO{outTens.close}).use(outTens =>
-      {
-      val firstOut                      = outTens.get(0).asInstanceOf[OnnxTensor]
-      val shape                         = firstOut.getInfo.getShape.map(_.toInt)
+      val tensArr: IO[Array[T]] = cats.effect.Resource
+         .make(IO.blocking { sess.run(inputs) })(outTens => IO { outTens.close })
+         .use(outTens => {
+            val firstOut = outTens.get(0).asInstanceOf[OnnxTensor]
+            val shape    = firstOut.getInfo.getShape.map(_.toInt)
 
-      require(shape sameElements shapeFromType.toSeq)
-      IO.blocking{getArrayFromOnnxTensor(firstOut)}
-      }
-      )
+            require(shape sameElements shapeFromType.toSeq)
+            IO.blocking { getArrayFromOnnxTensor(firstOut) }
+         })
 
       // TODO: Denotations
-      val result: Tensor[T, Tuple3[Tt, Td, S]] = tensArr.map(x => Tensor(
-        x,
-        tensorTypeDenotationFromType,
-        tensorShapeDenotationFromType,
-        shapeFromType
-      )
-      ).unsafeRunSync()
+      val result: Tensor[T, Tuple3[Tt, Td, S]] = tensArr
+         .map(x =>
+            Tensor(
+              x,
+              tensorTypeDenotationFromType,
+              tensorShapeDenotationFromType,
+              shapeFromType
+            )
+         )
+         .unsafeRunSync()
       // result.flatMap(IO.println("Invoking run").as(_))
       result
    }
@@ -145,21 +148,24 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       def res: Tensor[T, Tuple3[Tt, Td, S]] = {
 //        val resource = cats.effect.Resource.make(IO{getSession(opModel)})(sess => IO{sess.close})
          // resource.use( sess =>
-         cats.effect.Resource.make(inputTensors)(inTens => IO{inTens.map(_.close)}).use(inTens =>
-            input_node_names.flatMap { y =>
-               cats.effect.Resource
-                  .make(IO.blocking(getSession(opModel)))(sess => IO { sess.close })
-                  .use(sess =>
-                     IO{runModel(
-                       sess,
-                       inTens,
-                       y,
-                       output_node_names
+         cats.effect.Resource
+            .make(inputTensors)(inTens => IO { inTens.map(_.close) })
+            .use(inTens =>
+               input_node_names.flatMap { y =>
+                  cats.effect.Resource
+                     .make(IO.blocking(getSession(opModel)))(sess => IO { sess.close })
+                     .use(sess =>
+                        IO {
+                           runModel(
+                             sess,
+                             inTens,
+                             y,
+                             output_node_names
+                           )
+                        }
                      )
-                     }
-                  )
-            }
-         )
+               }
+            )
       }.unsafeRunSync()
       // res.flatMap(IO.println("Post run").as(_))
       res
@@ -184,16 +190,17 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 
       val result: IO[Tensor[T, Tuple3[Tt, Td, S]]] =
          for {
-            mp <- modelProto //modelProto.flatMap(IO.println("OpName => " + opName).as(_))
+            mp <- modelProto // modelProto.flatMap(IO.println("OpName => " + opName).as(_))
          } yield callByteArrayOp(
-              mp.toByteArray,
-              inputs,
-              IO.pure {
-                 mp.graph.map(_.input.map(_.name.getOrElse(""))).getOrElse(List[String]()).toList
-              }
-            )
-      val r = result.unsafeRunSync() // If don't use unsafe here, we get redundant callOp invocations. If we memoize w/ unsafe, we leak memory. 
-      r //This approach makes callOp sync/eager again.
+           mp.toByteArray,
+           inputs,
+           IO.pure {
+              mp.graph.map(_.input.map(_.name.getOrElse(""))).getOrElse(List[String]()).toList
+           }
+         )
+      val r =
+         result.unsafeRunSync() // If don't use unsafe here, we get redundant callOp invocations. If we memoize w/ unsafe, we leak memory.
+      r // This approach makes callOp sync/eager again.
    }
 
    def modelToPersist(mod: ModelProto, outName: String) = {
@@ -204,6 +211,5 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       mod.clearGraph.withGraph(graphToPersist)
    }
 
-   override def close(): Unit = { 
-   }
+   override def close(): Unit = {}
 }

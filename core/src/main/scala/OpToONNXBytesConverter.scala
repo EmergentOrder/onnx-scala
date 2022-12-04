@@ -269,10 +269,10 @@ trait OpToONNXBytesConverter {
                                     t
                                  }
                                  Some(
-                                      createInputValueInfoProto(in, name).map { inf =>
-                                         (inf, name)
-                                      }
-                                   )
+                                   createInputValueInfoProto(in, name).map { inf =>
+                                      (inf, name)
+                                   }
+                                 )
 
                               }
                               case None => None
@@ -286,10 +286,10 @@ trait OpToONNXBytesConverter {
                               t
                            }
                            Some(
-                                createInputValueInfoProto(tens, name).map { inf =>
-                                   (inf, name)
-                                }
-                             )
+                             createInputValueInfoProto(tens, name).map { inf =>
+                                (inf, name)
+                             }
+                           )
                         }
                      }
                }

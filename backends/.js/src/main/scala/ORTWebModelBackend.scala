@@ -20,7 +20,7 @@ import io.kjaer.compiletime._
 import ORTTensorUtils._
 
 //TODO: Clean up, remove asInstaceOf, etc.
-class ORTWebModelBackend(session: IO[InferenceSession]) extends Model() with ORTWebOperatorBackend {
+class ORTWebModelBackend(session: IO[InferenceSession]) extends Model() with ORTOperatorBackend {
 
    def getInputAndOutputNodeNamesAndDims(sess: InferenceSession) = {
       val input_node_names = sess.inputNames

@@ -1,12 +1,12 @@
 package org.emergentorder.onnx.backends
-import org.emergentorder.onnx._
-import org.emergentorder.onnxruntime._
-import org.emergentorder.onnxruntimecontrib._
+import org.emergentorder.onnx.*
+import org.emergentorder.onnxruntime.*
+import org.emergentorder.onnxruntimecontrib.*
 
 //Going forward we only support ops (and their versions) which are supported in ONNX Runtime, opset 6+
 //Current ONNX opset 16
 class ORTOperatorBackendAll
-    extends ORTWebOperatorBackend
+    extends ORTOperatorBackend
     with AbsV13
     with AcosV7
     with AcoshV9

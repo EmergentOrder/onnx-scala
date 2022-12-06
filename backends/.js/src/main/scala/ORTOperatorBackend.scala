@@ -31,7 +31,7 @@ import onnxruntimeCommon.inferenceSessionMod.InferenceSession
 import io.kjaer.compiletime._
 
 //TODO: fix redundant computation due to cats-effect on the JS side
-trait ORTWebOperatorBackend extends OpToONNXBytesConverter {
+trait ORTOperatorBackend extends OpToONNXBytesConverter {
 
    def getSession(bytes: Array[Byte]) = {
 

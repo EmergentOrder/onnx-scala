@@ -13,8 +13,8 @@ lazy val commonSettings = Seq(
   scalaVersion := dottyVersion,
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
-  updateOptions := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.21.9",
+  updateOptions                               := updateOptions.value.withLatestSnapshots(false),
+  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.21.10",
   scalacOptions ++= Seq(
     "-explain",
     "-explain-types",
@@ -25,7 +25,7 @@ lazy val commonSettings = Seq(
 //    "-release:19",
     "-rewrite"
   ),
-  versionPolicyIntention := Compatibility.BinaryCompatible, //As long as we are pre 1.0.0, BinaryCompatible for a patch version bump and None for a minor version bump
+  versionPolicyIntention := Compatibility.BinaryCompatible, // As long as we are pre 1.0.0, BinaryCompatible for a patch version bump and None for a minor version bump
   versionScheme := Some("early-semver"),
 //  mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-common" % "0.17.0"),
   autoCompilerPlugins := true
@@ -74,7 +74,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      scalacOptions ++= Seq("-source:3.2"),
 //     mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
      libraryDependencies ++= Seq(
-       "com.microsoft.onnxruntime" % "onnxruntime" % "1.13.1",
+       "com.microsoft.onnxruntime" % "onnxruntime" % "1.13.1"
 //       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.5.0"
      ),
      libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
@@ -88,12 +88,12 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      webpackCliVersion                                 := "4.10.0",
      startWebpackDevServer / version                   := "4.11.1",
      scalaJSUseMainModuleInitializer                   := true, // , //Testing
-     Compile / npmDependencies += "onnxruntime-web"   -> "1.13.1",
+     Compile / npmDependencies += "onnxruntime-web"    -> "1.13.1",
      Compile / npmDependencies += "onnxruntime-common" -> "1.13.1",
      Compile / npmDependencies += "typescript"         -> "4.8.4",
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",
-     stShortModuleNames := true,
+     stShortModuleNames                      := true,
      scalaJSStage                            := FullOptStage,
      scalaJSLinkerConfig ~= (_.withESFeatures(
        _.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021)

@@ -120,7 +120,19 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
          t    <- tens
       } yield opToModelProto(
           opName,
-          (t.map(_.asInstanceOf[tensorMod.Tensor].`type`.valueOf.asInstanceOf[Float].round)  
+          (t.map(x => x.asInstanceOf[tensorMod.Tensor].`type`.valueOf.toString match {
+            //Can't access the enum int values here
+            //But it's fine, doesn't match the ONNX spec anyway
+            case "int8"  => 3
+            case "int16" => 5
+            case "float64" => 11
+            case "float32" => 1
+            case "int32" => 6
+            case "int64" => 7
+            case "bool" => 9
+            case y => y.toInt
+          }
+            )  
             zip t.map(_.dims.map(_.toInt).toArray)),
           attrs
         ).toByteArray

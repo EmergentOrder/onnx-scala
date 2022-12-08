@@ -155,7 +155,20 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       } yield res(
         opToModelProto(
           opName,
-          (t.map(_.getInfo.onnxType.value) zip { t.map(_.getInfo.getShape.map(_.toInt) match {
+          (t.map(_.getInfo.onnxType.value match {
+            //ORT has two different enums for this for the Java and C APIs 
+            //Neither matches the ONNX spec
+            case 2 => 3
+            case 4 => 5
+            case 10 => 1
+            case 8 => 7
+            case 13 => 9
+            case n => n
+          }
+            ) 
+
+            zip 
+            { t.map(_.getInfo.getShape.map(_.toInt) match {
               //ORT shape inference diverges from the ONNX spec in requiring a scalar here instead of a tensor with shape,
               //causing a crash without this fix
               case Array(1) => if(opName.equals("Dropout")) Array[Int]() else Array(1)

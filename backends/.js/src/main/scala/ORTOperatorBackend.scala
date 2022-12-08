@@ -2,7 +2,7 @@ package org.emergentorder.onnx.backends
 
 import scala.concurrent.duration._
 //import typings.onnxruntimeWeb.tensorMod
-import org.emergentorder.onnx.onnxruntimeWeb.tensorMod
+import org.emergentorder.onnx.onnxruntimeCommon.tensorMod
 //import typings.onnxruntimeWeb.tensorMod.Tensor.DataType
 //import typings.onnxjs.libTensorMod.Tensor.DataTypeMap.DataTypeMapOps
 import org.emergentorder.onnx.onnxruntimeWeb.mod.{InferenceSession => OrtSession}
@@ -31,6 +31,7 @@ import onnxruntimeCommon.inferenceSessionMod.InferenceSession
 import io.kjaer.compiletime._
 
 //TODO: fix redundant computation due to cats-effect on the JS side
+//Still happening, though partially fixed by changes in core
 trait ORTOperatorBackend extends OpToONNXBytesConverter {
 
    def getSession(bytes: Array[Byte]) = {

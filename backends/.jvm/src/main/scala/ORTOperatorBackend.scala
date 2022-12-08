@@ -116,8 +116,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
                            Some(x.map { y =>
                               getOnnxTensor(y._1, y._2._3.toSeq.toArray, env)
                            })
+                        case None => None
                      }
-                  case None => None
                   case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
                      Some(tens.map { x =>
                         getOnnxTensor(x._1, x._2._3.toSeq.toArray, env)
@@ -155,7 +155,15 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       } yield res(
         opToModelProto(
           opName,
-          (t.map(_.getInfo.onnxType.value) zip t.map(_.getInfo.getShape.map(_.toInt))),
+          (t.map(_.getInfo.onnxType.value) zip { t.map(_.getInfo.getShape.map(_.toInt) match {
+              //ORT shape inference diverges from the ONNX spec in requiring a scalar here instead of a tensor with shape,
+              //causing a crash without this fix
+              case Array(1) => if(opName.equals("Dropout")) Array[Int]() else Array(1)
+              case y: Array[Int] => y
+            }
+            )
+          }
+          ),
           attrs
         ).toByteArray,
         tens
@@ -185,6 +193,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
            opName,
            attrs
          )
+   //TODO: now that this is otherwise working, try memoizing here
       result.flatMap(IO.println("Real call opName => " + opName).as(_))
    }
 

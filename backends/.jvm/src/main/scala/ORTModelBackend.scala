@@ -74,17 +74,14 @@ class ORTModelBackend(onnxBytes: Array[Byte])
       val output = cats.effect.Resource
          .make(inputTensors)(inTens => IO { inTens.map(_.close) })
          .use(inTens =>
-            IO {
-               runModel[T, Tt, Td, S](
-                 session,
-                 inTens,
-                 allNodeNamesAndDims._1,
-                 allNodeNamesAndDims._3
-               )
-            }
+            runModel[T, Tt, Td, S](
+              session,
+              inTens,
+              allNodeNamesAndDims._1,
+              allNodeNamesAndDims._3
+            )
          )
-
-      output.unsafeRunSync()
+      output
    }
 
    override def close(): Unit = {}

@@ -30,7 +30,7 @@ trait OpToONNXBytesConverter {
        outName: String,
        attrs: Map[String, Any],
        domain: String
-   ): IO[NodeProto] = {
+   ): NodeProto = {
       val node = NodeProto(
         name = Some(name),
         opType = Some(opName),
@@ -38,11 +38,12 @@ trait OpToONNXBytesConverter {
         domain = Some(domain)
       )
 
+      /*
       def createFloatTensorAttr[
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
-      ](tens: Tensor[Float, Tuple3[Tt, Td, S]], key: String): IO[AttributeProto] = {
+      ](tens: Tensor[Float, Tuple3[Tt, Td, S]], key: String): AttributeProto = {
          val data  = tens.data
          val shape = tens.shape
 
@@ -61,81 +62,68 @@ trait OpToONNXBytesConverter {
             }
          }
       }
-
-      def createFloatAttr(x: Float, key: String): IO[AttributeProto] = {
-         IO.pure {
-            AttributeProto(
-              name = Some(key),
-              `type` = Some(AttributeProto.AttributeType.FLOAT),
-              f = Some(x)
-            )
-         }
+       */
+      def createFloatAttr(x: Float, key: String): AttributeProto = {
+         AttributeProto(
+           name = Some(key),
+           `type` = Some(AttributeProto.AttributeType.FLOAT),
+           f = Some(x)
+         )
       }
 
-      def createFloatArrayAttr(x: Array[Float], key: String): IO[AttributeProto] = {
-         IO.pure {
-            AttributeProto(
-              name = Some(key),
-              `type` = Some(AttributeProto.AttributeType.FLOATS),
-              floats = ArraySeq.unsafeWrapArray(x)
-            )
-         }
+      def createFloatArrayAttr(x: Array[Float], key: String): AttributeProto = {
+         AttributeProto(
+           name = Some(key),
+           `type` = Some(AttributeProto.AttributeType.FLOATS),
+           floats = ArraySeq.unsafeWrapArray(x)
+         )
       }
 
-      def createIntAttr(x: Int, key: String): IO[AttributeProto] = {
-         IO.pure {
-            AttributeProto(
-              name = Some(key),
-              `type` = Some(AttributeProto.AttributeType.INT),
-              i = Some(x.toLong)
-            )
-         }
+      def createIntAttr(x: Int, key: String): AttributeProto = {
+         AttributeProto(
+           name = Some(key),
+           `type` = Some(AttributeProto.AttributeType.INT),
+           i = Some(x.toLong)
+         )
       }
 
-      def createIntArrayAttr(x: Array[Int], key: String): IO[AttributeProto] = {
-         IO.pure {
-            AttributeProto(
-              name = Some(key),
-              `type` = Some(AttributeProto.AttributeType.INTS),
-              ints = ArraySeq.unsafeWrapArray(x.map(_.toLong))
-            )
-         }
+      def createIntArrayAttr(x: Array[Int], key: String): AttributeProto = {
+         AttributeProto(
+           name = Some(key),
+           `type` = Some(AttributeProto.AttributeType.INTS),
+           ints = ArraySeq.unsafeWrapArray(x.map(_.toLong))
+         )
       }
 
-      def createStrAttr(x: String, key: String): IO[AttributeProto] = {
-         IO.pure {
-            AttributeProto(
-              name = Some(key),
-              `type` = Some(AttributeProto.AttributeType.STRING),
-              s = Some(com.google.protobuf.ByteString.copyFromUtf8(x))
-            )
-         }
+      def createStrAttr(x: String, key: String): AttributeProto = {
+         AttributeProto(
+           name = Some(key),
+           `type` = Some(AttributeProto.AttributeType.STRING),
+           s = Some(com.google.protobuf.ByteString.copyFromUtf8(x))
+         )
       }
 
-      def createStrArrayAttr(x: Array[String], key: String): IO[AttributeProto] = {
-         IO.pure {
-            AttributeProto(
-              name = Some(key),
-              `type` = Some(AttributeProto.AttributeType.STRINGS),
-              strings =
-                 ArraySeq.unsafeWrapArray(x.map(com.google.protobuf.ByteString.copyFromUtf8(_)))
-            )
-         }
+      def createStrArrayAttr(x: Array[String], key: String): AttributeProto = {
+         AttributeProto(
+           name = Some(key),
+           `type` = Some(AttributeProto.AttributeType.STRINGS),
+           strings = ArraySeq.unsafeWrapArray(x.map(com.google.protobuf.ByteString.copyFromUtf8(_)))
+         )
       }
 
       // TODO: more attr types
       @annotation.nowarn
       def attrProtos[Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape]
-          : IO[Array[AttributeProto]] =
+          : Array[AttributeProto] =
          attrs
-            .flatMap { case (key: String, value) =>
+            .map { case (key: String, value) =>
                value match {
-                  case x: Tensor[Float, Tuple3[Tt, Td, S]] => {
-                     Some(createFloatTensorAttr(x, key))
-                  }
-                  case Some(x: Tensor[Float, Tuple3[Tt, Td, S]]) => {
-                     Some(createFloatTensorAttr(x, key))
-                  }
+//                  case x: Tensor[Float, Tuple3[Tt, Td, S]] => {
+//                     Some(createFloatTensorAttr(x, key))
+//                  }
+//                  case Some(x: Tensor[Float, Tuple3[Tt, Td, S]]) => {
+//                     Some(createFloatTensorAttr(x, key))
+                  //                 }
                   case x: Int => {
                      Some(createIntAttr(x, key))
                   }
@@ -172,16 +160,13 @@ trait OpToONNXBytesConverter {
                   case Some(x: Array[String]) => {
                      Some(createStrArrayAttr(x, key))
                   }
-
                   case None => None
                }
             }
             .toArray
-            .toList
-            .sequence
-            .map(_.toArray)
+            .flatten
 
-      val newNode = attrProtos.map(x => node.withAttribute(ArraySeq.unsafeWrapArray(x)))
+      val newNode = node.withAttribute(ArraySeq.unsafeWrapArray(attrProtos))
 
       return newNode
    }
@@ -191,40 +176,41 @@ trait OpToONNXBytesConverter {
        Tt <: TensorTypeDenotation,
        Td <: TensorShapeDenotation,
        S <: Shape
-   ](tens: Tensor[T, (Tt, Td, S)], inputName: String): IO[ValueInfoProto] = {
+   ](elemTypeIn: Int, shape: Array[Int], inputName: String): ValueInfoProto = {
 
-      tens.data.flatMap { x =>
-         val elemType = x match {
-            case b: Array[Byte]    => INT8.index
-            case s: Array[Short]   => INT16.index
-            case d: Array[Double]  => DOUBLE.index
-            case f: Array[Float]   => FLOAT.index
-            case i: Array[Int]     => INT32.index
-            case l: Array[Long]    => INT64.index
-            case b: Array[Boolean] => BOOL.index
-            case _                 => INT64.index // In case of Scala.js BigInt
+      {
+
+         val elemType = elemTypeIn match {
+            case 2  => INT8.index
+            case 4  => INT16.index
+            case 11 => DOUBLE.index
+            case 10 => FLOAT.index
+            case 6  => INT32.index
+            case 8  => INT64.index
+            case 13 => BOOL.index
+            case _  => INT64.index // In case of Scala.js BigInt
          }
-         tens.shape.map { y =>
-            ValueInfoProto(
-              name = { Some(inputName) },
-              `type` = Some(
-                onnx.onnx
-                   .TypeProto()
-                   .withTensorType(
-                     onnx.onnx.TypeProto.Tensor(
-                       shape = Some(
-                         onnx.onnx.TensorShapeProto(dim =
-                            ArraySeq.unsafeWrapArray(
-                              y.map(onnx.onnx.TensorShapeProto.Dimension().withDimValue(_))
-                            )
-                         )
-                       ),
-                       elemType = Some(elemType)
-                     )
-                   )
-              )
-            ).copy()
-         }
+//         tens.shape.map { y =>
+         ValueInfoProto(
+           name = { Some(inputName) },
+           `type` = Some(
+             onnx.onnx
+                .TypeProto()
+                .withTensorType(
+                  onnx.onnx.TypeProto.Tensor(
+                    shape = Some(
+                      onnx.onnx.TensorShapeProto(
+                        dim = ArraySeq.unsafeWrapArray(
+                          shape.map(onnx.onnx.TensorShapeProto.Dimension().withDimValue(_))
+                        )
+                      )
+                    ),
+                    elemType = Some(elemType)
+                  )
+                )
+           )
+         ).copy()
+//         }
       }
    }
 
@@ -232,9 +218,9 @@ trait OpToONNXBytesConverter {
        T <: Supported
    ](
        opName: String,
-       inputs: Tuple,
+       inputs: Array[Tuple2[Int, Array[Int]]],
        attrs: Map[String, Any]
-   ): IO[ModelProto] = {
+   ): ModelProto = {
 
       val thisDomain = if opName.equals("Inverse") then "com.microsoft" else "ai.onnx"
 
@@ -249,78 +235,43 @@ trait OpToONNXBytesConverter {
 
       // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
       @annotation.nowarn
-      val inputValueInfosAndExistingInputs: IO[List[Tuple2[ValueInfoProto, String]]] =
-         (0 until inputs.size)
-            .flatMap { i =>
-               val t = inputs.drop(i).take(1)
-               t match {
-                  case tup: Tuple1[?] => // TODO: union type
-                     tup(0).asMatchable match {
-                        case opt: Option[Tensor[T, Axes]] =>
-                           opt match {
-                              case Some(in) => {
-
-                                 val name = {
-                                    val incr: String =
-                                       if inputs.toArray.distinct.size == inputs.size then ""
-                                       else i.toString
-                                    val t = ((in.hashCode + incr)).toString
-
-                                    t
-                                 }
-                                 Some(
-                                   createInputValueInfoProto(in, name).map { inf =>
-                                      (inf, name)
-                                   }
-                                 )
-
-                              }
-                              case None => None
-                           }
-                        case tens: Tensor[T, Axes] => {
-                           val name = {
-                              val incr: String =
-                                 if inputs.toArray.distinct.size == inputs.size then ""
-                                 else i.toString
-                              val t = ((tens.hashCode + incr)).toString
-                              t
-                           }
-                           Some(
-                             createInputValueInfoProto(tens, name).map { inf =>
-                                (inf, name)
-                             }
-                           )
-                        }
-                     }
-               }
+      val inputValueInfosAndExistingInputs: List[Tuple2[ValueInfoProto, String]] =
+         inputs.zipWithIndex.map { x =>
+//                        case tens: Int => {
+            val name = {
+               val incr: String = x._2.toString
+               val t            = ((incr)).toString
+               t
             }
-            .toList
-            .sequence
+         // Some(
+         (createInputValueInfoProto(x._1._1, x._1._2, name), name)
+         }.toList
+      //       .sequence
 
-      val outName = inputs.toArray.map(_.toString).toList.toString.hashCode.toString
+      val outName = inputs.size.toString
 
-      val newGraph = inputValueInfosAndExistingInputs.flatMap { x =>
+      val newGraph = {
 
-         val node =
-            opToNode(inputs.toString.hashCode.toString, opName, outName, attrs, thisDomain).map(z =>
-               nodeWithAddedInputs(x.map(_._2), z)
-            )
+         val node = nodeWithAddedInputs(
+           inputValueInfosAndExistingInputs.map(_._2),
+           opToNode(inputs.toString.hashCode.toString, opName, outName, attrs, thisDomain)
+         )
 
-         node.map { y =>
-            GraphProto(
-              name = Some(inputs.toString),
-              output = Seq(ValueInfoProto(name = Some(outName))),
-              input = x.map(_._1),
-              node = Seq(y)
-            )
-         }
+         //        node.map { y =>
+         GraphProto(
+           name = Some(inputs.toString),
+           output = Seq(ValueInfoProto(name = Some(outName))),
+           input = inputValueInfosAndExistingInputs.map(_._1),
+           node = Seq(node)
+         )
+         //      }
       }
 
       val thisOpset = if opName.equals("Inverse") then 1 else 17
-      val model = newGraph.map { x =>
+      val model = {
          val mod = ModelProto(
            producerName = Some("ONNX-Scala"),
-           graph = Some(x),
+           graph = Some(newGraph),
            domain = Some(thisDomain),
            irVersion = Some(8),
            opsetImport = Seq(OperatorSetIdProto(version = Some(thisOpset)))

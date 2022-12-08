@@ -1,8 +1,8 @@
 package org.emergentorder.onnx.backends
 
 import scala.concurrent.duration._
-//import typings.onnxruntimeWeb.tensorMod._
-//import typings.onnxruntimeWeb.tensorMod.Tensor.FloatType
+//import typings.onnxruntimeWeb.tensorMod
+import org.emergentorder.onnx.onnxruntimeWeb.tensorMod
 //import typings.onnxruntimeWeb.tensorMod.Tensor.DataType
 //import typings.onnxjs.libTensorMod.Tensor.DataTypeMap.DataTypeMapOps
 import org.emergentorder.onnx.onnxruntimeWeb.mod.{InferenceSession => OrtSession}
@@ -38,12 +38,17 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
       val bytesArrayBuffer = bytes.toTypedArray.buffer
       val session: IO[
         InferenceSession
-      ] = IO.fromFuture(IO { OrtSession.create(bytesArrayBuffer, {
-        val opts = InferenceSession.SessionOptions()
-        opts.executionProviders = scala.scalajs.js.Array("wasm")
-        opts
-      }
-      ).toFuture })
+      ] = IO.fromFuture(IO {
+         OrtSession
+            .create(
+              bytesArrayBuffer, {
+                 val opts = InferenceSession.SessionOptions()
+                 opts.executionProviders = scala.scalajs.js.Array("cpu")
+                 opts
+              }
+            )
+            .toFuture
+      })
       session
    }
 
@@ -54,9 +59,10 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
        Td <: TensorShapeDenotation,
        S <: Shape
    ](
-       opModel: Array[Byte],
        inputs: Tuple,
-       input_node_names: IO[List[String]]
+       input_node_names: IO[List[String]],
+       opName: String, 
+       attrs: Map[String, Any]
    )(using
        s: ShapeOf[S],
        tt: ValueOf[Tt],
@@ -108,13 +114,20 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
             .map(_.toArray)
       }
 
+      val opModel = for {
+         tens <- inputTensors.memoize
+         t    <- tens
+      } yield opToModelProto(
+          opName,
+          (t.map(_.asInstanceOf[tensorMod.Tensor].`type`.valueOf.asInstanceOf[Float].round)  
+            zip t.map(_.dims.map(_.toInt).toArray)),
+          attrs
+        ).toByteArray
+ 
       val res: Tensor[T, Tuple3[Tt, Td, S]] = {
-//        val resource = cats.effect.Resource.make(IO{getSession(opModel)})(sess => IO{sess.close})
-         // resource.use( sess =>
-         inputTensors.flatMap { x =>
-            // input_node_names.flatMap{y =>
+         inputTensors.flatMap { x => 
             cats.effect.Resource
-               .make(IO(getSession(opModel)))(sess => IO {})
+               .make(opModel.map(getSession(_)))(sess => IO {})
                .use(sess =>
                   runModel(
                     sess,
@@ -127,8 +140,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
          }
 
       }
-      // res.flatMap(IO.println("Post run").as(_))
-      res
+      res.flatMap(IO.println("opNAme = " + opName).as(_))
+      //res
    }
 
    def callOp[T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
@@ -142,26 +155,15 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
        td: TensorShapeDenotationOf[Td],
        s: ShapeOf[S]
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
-      // TODO: prevent passing input to opToONNXBytes
-
-//      println("ATTR " + attrs)
-      val modelProto = opToModelProto(opName, inputs, attrs)
-
-      val result: IO[Tensor[T, Tuple3[Tt, Td, S]]] =
-         for {
-            mp <- modelProto.flatMap(IO.println("OpName => " + opName).as(_))
-         } yield {
-//            println(mp)
-            callByteArrayOp(
-              mp.toByteArray,
+      val inputNodeNames = (0 until inputs.size).toList.map(_.toString)
+      val result: Tensor[T, Tuple3[Tt, Td, S]] =
+            callByteArrayOp( 
               inputs,
-              IO.pure {
-                 mp.graph.map(_.input.map(_.name.getOrElse(""))).getOrElse(List[String]()).toList
-              }
+              IO{inputNodeNames},
+              opName,
+              attrs
             )
-         }
-
-      result.flatten
+      result
    }
 
    def runModel[

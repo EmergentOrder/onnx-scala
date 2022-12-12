@@ -6,8 +6,16 @@ import scala.concurrent.duration.*
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.*
 import compiletime.asMatchable
-import ai.onnxruntime.*
+//import ai.onnxruntime.*
 import scala.jdk.CollectionConverters.*
+
+import com.jyuzawa.onnxruntime.Environment;
+import com.jyuzawa.onnxruntime.NamedCollection;
+import com.jyuzawa.onnxruntime.OnnxRuntime;
+import com.jyuzawa.onnxruntime.OnnxValue;
+import com.jyuzawa.onnxruntime.Session;
+import com.jyuzawa.onnxruntime.Transaction;
+import com.jyuzawa.onnxruntime.OnnxTensor
 
 import cats.effect.IO
 import cats.implicits.*
@@ -26,15 +34,15 @@ class ORTModelBackend(onnxBytes: Array[Byte])
     with ORTOperatorBackend
     with AutoCloseable {
 
-   def getInputAndOutputNodeNamesAndDims(sess: OrtSession) = {
-      val input_node_names = session.getInputNames
+   def getInputAndOutputNodeNamesAndDims(sess: Session) = {
+      val input_node_names = session.getInputs.getList.asScala.map(_.getName)
 
       val inputNodeDims =
-         session.getInputInfo.values.asScala.map(_.getInfo.asInstanceOf[TensorInfo].getShape)
+         session.getInputs.getList.asScala.map(_.getTypeInfo.getTensorInfo.getShape)
 
-      val output_node_names = session.getOutputNames
+      val output_node_names = session.getOutputs.getList.asScala.map(_.getName)
 
-      (input_node_names.asScala.toList, inputNodeDims.toArray, output_node_names.asScala.toList)
+      (input_node_names.toList, inputNodeDims.toArray, output_node_names.toList)
    }
 
    val session = getSession(onnxBytes)
@@ -55,32 +63,15 @@ class ORTModelBackend(onnxBytes: Array[Byte])
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
 
       val size = inputs.size
-      @annotation.nowarn
-      def inputTensors = (0 until size)
-         .map { i =>
-            val tup = inputs.drop(i).take(1)
-            tup match { // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
-               case t: Tuple1[?] =>
-                  t(0).asMatchable match {
-                     case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
-                        tens.data.map(x => tens.shape.map(y => getOnnxTensor(x, y, env))).flatten
-                  }
-            }
-         }
-         .toList
-         .sequence
-         .map(_.toArray)
-
-      val output = cats.effect.Resource
-         .make(inputTensors)(inTens => IO { inTens.map(_.close) })
-         .use(inTens =>
+      
+      val output = 
             runModel[T, Tt, Td, S](
               session,
-              inTens,
+              inputs,
               allNodeNamesAndDims._1,
               allNodeNamesAndDims._3
             )
-         )
+         
       output
    }
 

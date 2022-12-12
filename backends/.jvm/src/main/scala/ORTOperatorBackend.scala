@@ -4,8 +4,6 @@ import java.nio.*
 import scala.jdk.CollectionConverters.*
 import scala.language.implicitConversions
 import scala.util.Using
-import ai.onnxruntime.*
-import ai.onnxruntime.TensorInfo.OnnxTensorType
 //import ai.onnxruntime.extensions.OrtxPackage
 import org.emergentorder.onnx.*
 import org.emergentorder.onnx.Tensors.*
@@ -13,7 +11,15 @@ import org.emergentorder.onnx.Tensors.Tensor.*
 import org.emergentorder.compiletime.*
 import io.kjaer.compiletime.*
 import onnx.onnx.*
+import compiletime.asMatchable
 
+import com.jyuzawa.onnxruntime.Environment;
+import com.jyuzawa.onnxruntime.NamedCollection;
+import com.jyuzawa.onnxruntime.OnnxRuntime;
+import com.jyuzawa.onnxruntime.OnnxValue;
+import com.jyuzawa.onnxruntime.Session;
+import com.jyuzawa.onnxruntime.Transaction;
+import com.jyuzawa.onnxruntime.OnnxTensor
 import cats.implicits.*
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
@@ -21,20 +27,22 @@ import ORTTensorUtils.*
 
 trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 
-   val env = OrtEnvironment.getEnvironment()
-
+   val env = OnnxRuntime.get().getApi().newEnvironment().build()
    val coreCount = java.lang.Runtime.getRuntime().availableProcessors()
    def getSession(bytes: Array[Byte]) = {
       // Can now set symbolic dimension values, but only at session creation time
-      val session_options = new OrtSession.SessionOptions()
+//      val session_options = new OrtSession.SessionOptions()
 //      session_options.addCPU(false)
 //      session_options.setMemoryPatternOptimization(true)
 //      session_options.registerCustomOpLibrary(OrtxPackage.getLibraryPath())
-      session_options.setIntraOpNumThreads(coreCount)
+//      session_options.setIntraOpNumThreads(coreCount)
 //    session_options.addCUDA()
 //    session_options.addDnnl(true)
 //      session_options.addXnnpack(java.util.Collections.emptyMap())
-      env.createSession(bytes, session_options)
+//      env.createSession(bytes, session_options)
+
+     //Missing options here
+      env.newSession().setByteArray(bytes).build()
    }
 
    def runModel[
@@ -43,8 +51,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
        Td <: TensorShapeDenotation,
        S <: Shape
    ](
-       sess: OrtSession,
-       input_tensor_values: Array[OnnxTensor],
+       sess: Session,
+       inputs: Tuple, 
        inputNames: List[String],
        outputNames: List[String]
    )(using
@@ -52,7 +60,6 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
        td: TensorShapeDenotationOf[Td],
        s: ShapeOf[S]
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
-      val inputs = (inputNames zip input_tensor_values).toMap.asJava
       // TODO: More outputs / handle via ONNXSequence / ONNXMap
 
       val shapeFromType: S              = s.value
@@ -60,10 +67,31 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       val tensorShapeDenotationFromType = td.value
 
       val tensArr: IO[Array[T]] = cats.effect.Resource
-         .make(IO.blocking { sess.run(inputs) })(outTens => IO { outTens.close })
-         .use(outTens => {
-            val firstOut = outTens.get(0).asInstanceOf[OnnxTensor]
-            val shape    = firstOut.getInfo.getShape.map(_.toInt)
+         .make(IO.blocking { sess.newTransaction().build()})(txn => IO { txn.close })
+         .use((txn: Transaction) => {
+
+         (inputs.toArray zip inputNames)
+            .flatMap { elem =>
+               val inTens = txn.addInput(elem._2).asTensor
+               elem._1.asInstanceOf[Option[Tensor[T, Tuple3[Tt, Td, S]]] | Tensor[T, Tuple3[Tt, Td, S]]] match {
+                  case opt: Option[Tensor[T, Tuple3[Tt, Td, S]]] =>
+                     opt match {
+                        case Some(x) =>
+                           Some(x.map { y =>
+                              putArrayIntoOnnxTensor(y._1, y._2._3.toSeq.toArray, inTens)
+                           })
+                        case None => None
+                     }
+                  case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
+                     Some(tens.map { x =>
+                        putArrayIntoOnnxTensor(x._1, x._2._3.toSeq.toArray, inTens)
+                     })
+               }
+            }
+            txn.addOutput(0)
+            val result = txn.run()
+            val firstOut = result.get(0).asTensor().asInstanceOf[OnnxTensor]
+            val shape    = firstOut.getInfo.getShape.asScala.map(_.toInt)
 
             require(shape sameElements shapeFromType.toSeq)
             IO.blocking { getArrayFromOnnxTensor(firstOut) }
@@ -102,10 +130,11 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       // TODO: more outputs
       val output_node_names = List(inputs.size.toString)
 
+      //Redundant
       // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
       // TODO: don't mix up Options and Tensors here
       @annotation.nowarn
-      val inputTensors: IO[Array[OnnxTensor]] = {
+      val inputTypeAndShape: IO[Array[Tuple2[Int, Array[Int]]]] = {
 
          inputs.toArray
             .flatMap { elem =>
@@ -114,13 +143,33 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
                      opt match {
                         case Some(x) =>
                            Some(x.map { y =>
-                              getOnnxTensor(y._1, y._2._3.toSeq.toArray, env)
+                              val dataType = y._1(0).asMatchable match {
+                                case i: Int => 6
+                                case f: Float => 10
+                                case l: Long => 8
+                                case d: Double => 11
+                                case s: Short => 4
+                                case b: Boolean => 13
+                                case bb: Byte => 2
+                                case _ => 0
+                              }
+                              (dataType, y._2._3.toSeq.toArray)
                            })
                         case None => None
                      }
                   case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
                      Some(tens.map { x =>
-                        getOnnxTensor(x._1, x._2._3.toSeq.toArray, env)
+                              val dataType = x._1(0).asMatchable match {
+                                case i: Int => 6
+                                case f: Float => 10
+                                case l: Long => 8
+                                case d: Double => 11
+                                case s: Short => 4
+                                case b: Boolean => 13
+                                case bb: Byte => 2
+                                case _ => 0
+                              }
+                              (dataType, x._2._3.toSeq.toArray)
                      })
                }
             }
@@ -130,32 +179,30 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       }
 
       def res(
-          opModelBytes: Array[Byte],
-          inputTensorss: IO[Array[OnnxTensor]]
+          opModelBytes: Array[Byte], 
       ): Tensor[T, Tuple3[Tt, Td, S]] = {
-         cats.effect.Resource
-            .make(inputTensorss)(inTens => IO { inTens.map(_.close) })
-            .use(inTens =>
+//         cats.effect.Resource
+//            .make(inputTensorss)(inTens => IO { })
+//            .use(inTens =>
                cats.effect.Resource
                   .make(IO.blocking(getSession(opModelBytes)))(sess => IO { sess.close })
                   .use(sess =>
                      runModel(
                        sess,
-                       inTens,
+                       inputs,
                        input_node_names,
                        output_node_names
                      )
-                  )
+//                  )
             )
       }
-
       val resFinal = for {
-         tens <- inputTensors.memoize
+         tens <- inputTypeAndShape.memoize
          t    <- tens
       } yield res(
         opToModelProto(
           opName,
-          (t.map(_.getInfo.onnxType.value match {
+          (t.map( x => x._1 match {
             //ORT has two different enums for this for the Java and C APIs 
             //Neither matches the ONNX spec
             case 2 => 3
@@ -165,21 +212,20 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
             case 13 => 9
             case n => n
           }
+          )
             ) 
 
             zip 
-            { t.map(_.getInfo.getShape.map(_.toInt) match {
+            { t.map(x => x._2 match {
               //ORT shape inference diverges from the ONNX spec in requiring a scalar here instead of a tensor with shape,
               //causing a crash without this fix
               case Array(1) => if(opName.equals("Dropout")) Array[Int]() else Array(1)
               case y: Array[Int] => y
             }
             )
-          }
-          ),
+          },
           attrs
-        ).toByteArray,
-        tens
+        ).toByteArray
       )
 
       // res.flatMap(IO.println("Post run").as(_))

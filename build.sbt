@@ -22,7 +22,7 @@ lazy val commonSettings = Seq(
     "-Xfatal-warnings",
     "-unchecked",
     "-deprecation",
-//    "-release:19",
+    "-release:19",
     "-rewrite"
   ),
   versionPolicyIntention := Compatibility.BinaryCompatible, // As long as we are pre 1.0.0, BinaryCompatible for a patch version bump and None for a minor version bump
@@ -67,15 +67,20 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
 
 lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .crossType(CrossType.Pure) in file("backends"))
-   .dependsOn(core)
+   .dependsOn(core, common)
    .settings(
      commonSettings,
      name := "onnx-scala-backends",
      scalacOptions ++= Seq("-source:3.2"),
+     publishArtifact in (Compile, packageDoc) := false,
 //     mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
      libraryDependencies ++= Seq(
-       "com.microsoft.onnxruntime" % "onnxruntime" % "1.13.1"
-//       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.5.0"
+       "com.microsoft.onnxruntime" % "onnxruntime" % "1.12.0",
+       "com.jyuzawa" % "onnxruntime-cpu" % "1.0.0-SNAPSHOT",
+       "com.jyuzawa" % "onnxruntime" % "1.0.0-SNAPSHOT", 
+//       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.5.0",
+//       ("com.sksamuel.scrimage" % "scrimage-core" % "4.0.32").cross(CrossVersion.for3Use2_13),
+       ("com.sksamuel.scrimage" %% "scrimage-scala" % "4.0.32").cross(CrossVersion.for3Use2_13)
      ),
      libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
      crossScalaVersions                       := Seq(dottyVersion)
@@ -88,7 +93,9 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      webpackCliVersion                                 := "4.10.0",
      startWebpackDevServer / version                   := "4.11.1",
      scalaJSUseMainModuleInitializer                   := true, // , //Testing
-     Compile / npmDependencies += "onnxruntime-web"    -> "1.13.1",
+     Compile / npmDependencies += "onnxruntime-node"    -> "1.13.1",
+     //Interchangeable with web, given minor package name changes, and offers a significant speed-up (at the cost of working on the web)
+//     Compile / npmDependencies += "onnxruntime-node"    -> "1.13.1",
      Compile / npmDependencies += "onnxruntime-common" -> "1.13.1",
      Compile / npmDependencies += "typescript"         -> "4.8.4",
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,

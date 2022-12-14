@@ -178,6 +178,9 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
               opName,
               attrs
             )
+      // unsafeRunSync is not avaible in the JS context
+      // so behavior on the JS side remains lazy
+      // and thus inefficient in case user code refers to Tensors more than once
       result //.flatMap(x => IO.println("opName = " + opName).as(x))
    }
 

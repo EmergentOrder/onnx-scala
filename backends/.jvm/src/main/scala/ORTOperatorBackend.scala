@@ -206,8 +206,10 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
            opName,
            attrs
          )
-   //TODO: now that this is otherwise working, try memoizing here
-      result.flatMap(IO.println("Real call opName => " + opName).as(_))
+   //Using unsafeRunSync here to restore eager evaluation 
+   //and avoid redundant op invocations in case user code refers to Tensors more than once
+      result.memoize.unsafeRunSync()
+        //.flatMap(IO.println("Real call opName => " + opName).as(_))
    }
 
    def modelToPersist(mod: ModelProto, outName: String) = {

@@ -81,7 +81,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
               allNodeNamesAndDims._3
             )
          )
-      output
+      output.memoize.unsafeRunSync()
    }
 
    override def close(): Unit = {}

@@ -144,29 +144,32 @@ object Tensors {
    type GatheredShape[
        S <: Shape,
        AxisIndex <: None.type | Indices,
-       AxisIndices <: Indices
+       AxisIndices <: Indices,
+       IndicesSize <: Index
    ] <: Shape = AxisIndex match {
       case None.type => SNil
-      case Indices   => GatheredShapeLoop[S, AxisIndex, 0, AxisIndices]
+      case Indices   => GatheredShapeLoop[S, AxisIndex, 0, AxisIndices, IndicesSize]
    }
 
    protected type GatheredShapeLoop[
        ToGather <: Shape,
        AxisIndex <: Indices,
        I <: Index,
-       AxisIndices <: Indices
+       AxisIndices <: Indices,
+       IndicesSize <: Index
    ] <: Shape = ToGather match {
       case head #: tail =>
          Indices.Contains[AxisIndex, I] match {
-            case true =>
-               IndicesSize[AxisIndices] #:
+           case true =>
+               IndicesSize #: 
                   GatheredShapeLoop[
                     tail,
                     Indices.RemoveValue[AxisIndex, I],
                     S[I],
-                    AxisIndices
+                    AxisIndices,
+                    IndicesSize
                   ]
-            case false => head #: GatheredShapeLoop[tail, AxisIndex, S[I], AxisIndices]
+            case false => head #: GatheredShapeLoop[tail, AxisIndex, S[I], AxisIndices, IndicesSize]
          }
       case SNil =>
          AxisIndex match {
@@ -176,12 +179,12 @@ object Tensors {
          }
    }
 
-   type IndicesSize[AxisIndices <: Indices] = IndicesSizeLoop[AxisIndices, 0]
+   type IndicesSizeOf[AxisIndices <: Indices] = IndicesSizeLoop[AxisIndices, 0]
 
-   type IndicesSizeLoop[AxisIndices <: Indices, Acc <: Dimension] = AxisIndices match {
-      case head ::: tail => IndicesSizeLoop[tail, S[Acc]]
-      case INil          => Acc
-   }
+   protected type IndicesSizeLoop[AxisIndices <: Indices, Acc <: Dimension] <: Index = AxisIndices match {
+       case head ::: tail => IndicesSizeLoop[tail, S[Acc]]
+       case INil          => Acc
+    }
 
    type FlattenedShape[S <: Shape, AxisIndex <: None.type | Indices] <: Shape = AxisIndex match {
       case None.type => SNil

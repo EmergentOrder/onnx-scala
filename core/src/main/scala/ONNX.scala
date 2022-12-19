@@ -756,30 +756,28 @@ package object onnx {
              Float | Double | String | Boolean |
              Complex[
                Float
-             ] | Complex[Double],
-          @sp Tind <: Int: Numeric, // Spec also supports long
+             ] | Complex[Double], 
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
-          Tt1 <: TensorTypeDenotation,
-          Td1 <: TensorShapeDenotation,
-          S1 <: Shape,
           Tt2 <: TensorTypeDenotation,
           Td2 <: TensorShapeDenotation,
           AxisIndex <: Index ::: INil,
-          AxisIndices <: Indices
+          AxisIndices <: Indices,
+          IndicesSize <: Index
       ](
           name: String,
           axis: AxisIndex = 0 ::: INil,
           data: Tensor[T, Tuple3[Tt, Td, S]],
-          indices: AxisIndices
+          indices: AxisIndices,
+//          indicesSize: IndicesSize[AxisIndices]
       )(using
           tt: ValueOf[Tt2],
           td: TensorShapeDenotationOf[Td2],
-          s: ShapeOf[GatheredShape[S, AxisIndex, AxisIndices]],
+          s: ShapeOf[GatheredShape[S, AxisIndex, AxisIndices, IndicesSize]],
           i: IndicesOf[AxisIndex],
-          i2: IndicesOf[AxisIndices]
-      ): Tensor[T, Tuple3[Tt2, Td2, GatheredShape[S, AxisIndex, AxisIndices]]] = {
+          i2: IndicesOf[AxisIndices],
+          ): Tensor[T, Tuple3[Tt2, Td2, GatheredShape[S, AxisIndex, AxisIndices, IndicesSize]]] = {
          val map: Map[String, Any] = Map("axis" -> indicesOf[AxisIndex].indices.toArray.head)
          val allInputs = Tuple2(
            data,

@@ -9,7 +9,7 @@ import org.emergentorder.onnx.Tensors.*
 import org.emergentorder.onnx.Tensors.Tensor.*
 import org.emergentorder.onnx.backends.*
 import org.emergentorder.compiletime.*
-import io.kjaer.compiletime.*
+import org.emergentorder.io.kjaer.compiletime.*
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.freespec.AsyncFreeSpec
@@ -23,7 +23,7 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
    ) #> new File("squeezenet1.0-12.onnx") !!
 
    "SqueezeNet ONNX-Scala model should predict dummy image class" in {
-      val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.0-12.onnx"))
+      val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.0-12.onnx")) //.quant.onnx"))
       val squeezenet      = new ORTModelBackend(squeezenetBytes)
       val data            = Array.fill(1 * 3 * 224 * 224) { 42f }
       // In NCHW tensor image format

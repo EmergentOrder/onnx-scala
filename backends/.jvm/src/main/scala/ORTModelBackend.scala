@@ -16,7 +16,7 @@ import org.emergentorder.onnx.*
 import org.emergentorder.onnx.Tensors.*
 import org.emergentorder.onnx.Tensors.Tensor.*
 import org.emergentorder.compiletime.*
-import io.kjaer.compiletime.*
+import org.emergentorder.io.kjaer.compiletime.*
 
 import ORTTensorUtils.*
 

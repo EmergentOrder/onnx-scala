@@ -4,9 +4,9 @@ package org.emergentorder.compiletime
 
 import scala.compiletime.ops.int.{S, +, <, <=, *}
 import scala.compiletime.ops.boolean.&&
-import io.kjaer.compiletime.Index
-import io.kjaer.compiletime.Indices
-import io.kjaer.compiletime.INil
+import org.emergentorder.io.kjaer.compiletime.Index
+import org.emergentorder.io.kjaer.compiletime.Indices
+import org.emergentorder.io.kjaer.compiletime.INil
 
 type DimensionDenotation = String & Singleton
 

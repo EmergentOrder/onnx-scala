@@ -10,7 +10,7 @@ import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.Tensors.Tensor._
 import org.emergentorder.compiletime._
-import io.kjaer.compiletime._
+import org.emergentorder.io.kjaer.compiletime._
 
 trait ORTNativeOperatorBackend {
 

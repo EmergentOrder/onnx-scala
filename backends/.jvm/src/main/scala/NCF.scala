@@ -13,7 +13,7 @@ import spire.math.Numeric
 import scala.language.higherKinds
 import scala.io.Source
 import org.emergentorder.compiletime.*
-import io.kjaer.compiletime.*
+import org.emergentorder.io.kjaer.compiletime.*
 import cats.effect.IO
 
 //TODO: Add changes to generator; Generate both full model and layerwise programs each time

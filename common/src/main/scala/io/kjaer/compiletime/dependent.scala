@@ -1,5 +1,5 @@
 //Author: Maxime Kjaer, taken from tf-dotty
-package io.kjaer.compiletime
+package org.emergentorder.io.kjaer.compiletime
 
 import scala.compiletime.ops.int.*
 

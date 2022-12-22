@@ -28,7 +28,7 @@ import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.Tensors.Tensor._
 import org.emergentorder.compiletime._
 import onnxruntimeCommon.inferenceSessionMod.InferenceSession
-import io.kjaer.compiletime._
+import org.emergentorder.io.kjaer.compiletime._
 
 //TODO: fix redundant computation due to cats-effect on the JS side
 //Still happening, though partially fixed by changes in core

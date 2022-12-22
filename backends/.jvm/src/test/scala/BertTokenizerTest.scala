@@ -9,7 +9,7 @@ import org.emergentorder.onnx.Tensors.*
 import org.emergentorder.onnx.Tensors.Tensor.*
 import org.emergentorder.onnx.backends.*
 import org.emergentorder.compiletime.*
-import io.kjaer.compiletime.*
+import org.emergentorder.io.kjaer.compiletime.*
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.freespec.AsyncFreeSpec

@@ -1500,6 +1500,9 @@ package object onnx {
       }
    }
 
+   //TODO: move "axes" from attributes to inputs on the rest of the Reduce ops,
+   //as done below with ReduceSum (when updating to opset 18)
+   //
    // TODO: new attr : noop_with_empty_axes
    trait ReduceSumV13 extends Operator {
       def ReduceSumV13[

@@ -1,5 +1,5 @@
 //Author: Maxime Kjaer, taken from tf-dotty
-package io.kjaer.compiletime
+package org.emergentorder.io.kjaer.compiletime
 
 /** Type-class used to materialize the singleton type of an [[Indices]].
   *

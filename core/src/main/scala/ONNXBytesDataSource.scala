@@ -4,7 +4,7 @@ import spire.math.Numeric
 import org.emergentorder.onnx.*
 import org.emergentorder.onnx.Tensors.*
 import org.emergentorder.compiletime.*
-import io.kjaer.compiletime.*
+import org.emergentorder.io.kjaer.compiletime.*
 
 class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends DataSource {
 

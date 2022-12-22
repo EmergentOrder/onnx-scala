@@ -1,5 +1,5 @@
 //Author: Maxime Kjaer, taken from tf-dotty
-package io.kjaer.compiletime
+package org.emergentorder.io.kjaer.compiletime
 
 import scala.compiletime.ops.int.{S, +, <, <=, *}
 import scala.compiletime.ops.boolean.&&
@@ -11,7 +11,7 @@ sealed trait Shape extends Product with Serializable {
 
    /** Prepend the head to this */
    def #:[H <: Dimension, This >: this.type <: Shape](head: H): H #: This =
-      io.kjaer.compiletime.#:(head, this)
+      org.emergentorder.io.kjaer.compiletime.#:(head, this)
 
    /** Concat with another shape * */
    def ++(that: Shape): this.type `Concat` that.type = Shape.concat(this, that)

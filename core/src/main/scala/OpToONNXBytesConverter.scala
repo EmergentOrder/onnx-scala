@@ -15,7 +15,7 @@ import onnx.onnx.TensorProto.DataType.*
 
 import cats.effect.IO
 import cats.implicits.*
-import io.kjaer.compiletime.Shape
+import org.emergentorder.io.kjaer.compiletime.Shape
 import org.emergentorder.compiletime.*
 import org.emergentorder.onnx.Tensors.*
 import org.emergentorder.onnx.Tensors.Tensor.*

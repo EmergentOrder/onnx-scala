@@ -24,9 +24,10 @@ First we create an "image" tensor composed entirely of pixel value [42](https://
 ```scala
 import java.nio.file.{Files, Paths}
 import org.emergentorder.onnx.Tensors._
+import org.emergentorder.onnx.Tensors.Tensor._
 import org.emergentorder.onnx.backends._
 import org.emergentorder.compiletime._
-import io.kjaer.compiletime._
+import org.emergentorder.io.kjaer.compiletime._
 
 val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.0-12.onnx"))
 val squeezenet = new ORTModelBackend(squeezenetBytes)
@@ -57,16 +58,18 @@ val out = squeezenet.fullModel[Float,
 // val out:
 //  Tensor[Float,("ImageNetClassification", 
 //                "Batch" ##: "Class" ##: TSNil,
-//                1 #: 1000 #: SNil)] = (Array(0.8230729,
+//                1 #: 1000 #: 1 #: 1 SNil)] = IO(...)
 // ...
 
 //The output shape
-out.shape
-// val res0: Array[Int] = Array(1, 1000)
+out.shape.unsafeRunSync()
+// val res0: Array[Int] = Array(1, 1000, 1, 1)
 
+val data = out.data.unsafeRunSync()
+// val data: Array[Float] = Array(1.786191E-4, ...)
 
 //The highest scoring and thus highest probability (predicted) class
-out.data.indices.maxBy(out.data)
+data.indices.maxBy(data)
 // val res1: Int = 549
 ```
 

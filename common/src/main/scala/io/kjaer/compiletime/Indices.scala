@@ -1,5 +1,5 @@
 //Author: Maxime Kjaer, taken from tf-dotty
-package io.kjaer.compiletime
+package org.emergentorder.io.kjaer.compiletime
 
 import scala.compiletime.ops.string.+
 import scala.compiletime.ops.int
@@ -8,7 +8,7 @@ type Index = Int & Singleton
 
 sealed trait Indices {
    def :::[H <: Index, This >: this.type <: Indices](head: H): H ::: This =
-      io.kjaer.compiletime.:::(head, this)
+      org.emergentorder.io.kjaer.compiletime.:::(head, this)
 
    def indices: Seq[Int] = this match {
       case INil          => Nil

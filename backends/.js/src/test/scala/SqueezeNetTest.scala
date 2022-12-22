@@ -6,7 +6,7 @@ import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.Tensors.Tensor._
 import org.emergentorder.onnx.backends._
 import org.emergentorder.compiletime._
-import io.kjaer.compiletime._
+import org.emergentorder.io.kjaer.compiletime._
 import org.emergentorder.onnx.onnxruntimeWeb.mod.{InferenceSession => OrtSession}
 import cats.effect.IO
 

@@ -84,20 +84,20 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test
    )
    .jsSettings(
-     webpack / version                                 := "5.74.0",
-     webpackCliVersion                                 := "4.10.0",
-     startWebpackDevServer / version                   := "4.11.1",
-     scalaJSUseMainModuleInitializer                   := true, // , //Testing
-     Compile / npmDependencies += "onnxruntime-web"    -> "1.13.1",
-      //ORT web and node are interchangeable, given minor package name changes, and node offers a significant speed-up (at the cost of working on the web)
- //     Compile / npmDependencies += "onnxruntime-node"    -> "1.13.1",
+     webpack / version                              := "5.74.0",
+     webpackCliVersion                              := "4.10.0",
+     startWebpackDevServer / version                := "4.11.1",
+     scalaJSUseMainModuleInitializer                := true, // , //Testing
+     Compile / npmDependencies += "onnxruntime-web" -> "1.13.1",
+     // ORT web and node are interchangeable, given minor package name changes, and node offers a significant speed-up (at the cost of working on the web)
+     //     Compile / npmDependencies += "onnxruntime-node"    -> "1.13.1",
      Compile / npmDependencies += "onnxruntime-common" -> "1.13.1",
      Compile / npmDependencies += "typescript"         -> "4.8.4",
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",
      stShortModuleNames                      := true,
-     Compile /packageDoc / publishArtifact := false, //This is inordinately slow, only publish doc on release
-     scalaJSStage                            := FullOptStage,
+     Compile / packageDoc / publishArtifact := false, // This is inordinately slow, only publish doc on release
+     scalaJSStage := FullOptStage,
      scalaJSLinkerConfig ~= (_.withESFeatures(
        _.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021)
      ))
@@ -125,7 +125,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
         case _ =>
            Seq(
              ("org.typelevel" %%% "spire"       % spireVersion),
-             ("org.typelevel" %%% "cats-effect" % "3.4.2")
+             ("org.typelevel" %%% "cats-effect" % "3.4.3")
            )
      })
    )

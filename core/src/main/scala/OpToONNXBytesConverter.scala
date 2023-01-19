@@ -184,10 +184,10 @@ trait OpToONNXBytesConverter {
             case 3  => INT8.index
             case 5  => INT16.index
             case 11 => DOUBLE.index
-            case 1 => FLOAT.index
+            case 1  => FLOAT.index
             case 6  => INT32.index
             case 7  => INT64.index
-            case 9 => BOOL.index
+            case 9  => BOOL.index
             case _  => INT64.index // In case of Scala.js BigInt
          }
 //         tens.shape.map { y =>

@@ -16,9 +16,8 @@ import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.should.*
 import cats.effect.testing.scalatest.AsyncIOSpec
 
-
 class ONNXScalaBertTokenizerSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
-/*
+   /*
    new URL(
      "https://github.com/microsoft/onnxruntime-extensions/raw/main/test/data/test_bert_tokenizer.onnx"
    ) #> new File("test_bert_tokenizer.onnx") !!
@@ -47,7 +46,7 @@ class ONNXScalaBertTokenizerSpec extends AsyncFreeSpec with AsyncIOSpec with Mat
       // The output shape
       // and token values
       val singleIO = cats.effect.IO.both(out.shape, out.data)
-      singleIO.asserting(x => ((x._1(0), 
+      singleIO.asserting(x => ((x._1(0),
                                 x._2(0),
                                 x._2(1),
                                 x._2(2),
@@ -63,8 +62,7 @@ class ONNXScalaBertTokenizerSpec extends AsyncFreeSpec with AsyncIOSpec with Mat
                                 2774l,
                                 102l)))
 
-      //Expected bert tokenizer output ("input_ids") : 101, 1188, 1110, 170, 2774, 102 , longs 
+      //Expected bert tokenizer output ("input_ids") : 101, 1188, 1110, 170, 2774, 102 , longs
    }
-*/
+    */
 }
-

@@ -25,13 +25,17 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
    // TODO: push this inside ORTWebModelBackend, and use other create() which takes arraybufferlike
    val session: IO[
      org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
-   ] = IO.fromFuture(IO { OrtSession.create("squeezenet1.0-12.onnx",
-      {
-        val opts = InferenceSession.SessionOptions()
-        opts.executionProviders = scala.scalajs.js.Array("cpu")
-        opts
-      }
-      ).toFuture })
+   ] = IO.fromFuture(IO {
+      OrtSession
+         .create(
+           "squeezenet1.0-12.onnx", {
+              val opts = InferenceSession.SessionOptions()
+              opts.executionProviders = scala.scalajs.js.Array("cpu")
+              opts
+           }
+         )
+         .toFuture
+   })
 
    "SqueezeNet ONNX-Scala model should predict dummy image class" in {
       val squeezenet = new ORTWebModelBackend(session)
@@ -53,16 +57,16 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
         1 #: 1000 #: 1 #: 1 #: SNil
       ](Tuple(imageTens))
 
-            // The output shape
+      // The output shape
       // and the highest probability (predicted) class
       val singleIO = cats.effect.IO.both(out.shape, out.data)
-      singleIO.asserting(x => ((x._1(0),
-                                x._1(1),
-                                x._2.indices.maxBy(x._2))
-                              shouldBe
-                               (1,
-                                1000,
-                                549)))
+      singleIO.asserting(x =>
+         ((x._1(0), x._1(1), x._2.indices.maxBy(x._2))
+            shouldBe
+               (1,
+               1000,
+               549))
+      )
 
    }
 }

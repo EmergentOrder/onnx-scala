@@ -756,7 +756,7 @@ package object onnx {
              Float | Double | String | Boolean |
              Complex[
                Float
-             ] | Complex[Double], 
+             ] | Complex[Double],
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -769,15 +769,15 @@ package object onnx {
           name: String,
           axis: AxisIndex = 0 ::: INil,
           data: Tensor[T, Tuple3[Tt, Td, S]],
-          indices: AxisIndices,
+          indices: AxisIndices
 //          indicesSize: IndicesSize[AxisIndices]
       )(using
           tt: ValueOf[Tt2],
           td: TensorShapeDenotationOf[Td2],
           s: ShapeOf[GatheredShape[S, AxisIndex, AxisIndices, IndicesSize]],
           i: IndicesOf[AxisIndex],
-          i2: IndicesOf[AxisIndices],
-          ): Tensor[T, Tuple3[Tt2, Td2, GatheredShape[S, AxisIndex, AxisIndices, IndicesSize]]] = {
+          i2: IndicesOf[AxisIndices]
+      ): Tensor[T, Tuple3[Tt2, Td2, GatheredShape[S, AxisIndex, AxisIndices, IndicesSize]]] = {
          val map: Map[String, Any] = Map("axis" -> indicesOf[AxisIndex].indices.toArray.head)
          val allInputs = Tuple2(
            data,
@@ -1500,8 +1500,8 @@ package object onnx {
       }
    }
 
-   //TODO: move "axes" from attributes to inputs on the rest of the Reduce ops,
-   //as done below with ReduceSum (when updating to opset 18)
+   // TODO: move "axes" from attributes to inputs on the rest of the Reduce ops,
+   // as done below with ReduceSum (when updating to opset 18)
    //
    // TODO: new attr : noop_with_empty_axes
    trait ReduceSumV13 extends Operator {

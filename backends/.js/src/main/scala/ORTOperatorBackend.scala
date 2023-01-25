@@ -62,7 +62,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
    ](
        inputs: Tuple,
        input_node_names: List[String],
-       opName: String, 
+       opName: String,
        attrs: Map[String, Any]
    )(using
        s: ShapeOf[S],
@@ -82,7 +82,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
        */
 
       // TODO: more outputs
-      val output_node_names = List( input_node_names.toString)
+      val output_node_names = List(input_node_names.toString)
 
       // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
       // TODO: don't mix up Options and Tensors here
@@ -96,16 +96,14 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
                      opt match {
                         case Some(x) =>
                            Some(x.map { y =>
-                                 getOnnxTensor(y._1, y._2._3.toSeq.toArray)
-                              }
-                           )
+                              getOnnxTensor(y._1, y._2._3.toSeq.toArray)
+                           })
                         case None => None
                      }
                   case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
-                     Some(tens.map { x => 
-                           getOnnxTensor(x._1, x._2._3.toSeq.toArray)
-                        }
-                     )
+                     Some(tens.map { x =>
+                        getOnnxTensor(x._1, x._2._3.toSeq.toArray)
+                     })
                }
             }
             .toList
@@ -113,50 +111,56 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
             .map(_.toArray)
       }
 
-      def res(opModelBytes: Array[Byte], inputTensorss: IO[Array[OnnxTensor[T]]]) : Tensor[T, Tuple3[Tt, Td, S]] = {
-      cats.effect.Resource.make(inputTensorss)(inTens => IO {}).
-      use(x =>
-            cats.effect.Resource
-               .make(IO.blocking(getSession(opModelBytes)))(sess => IO {})
-               .use(sess =>
-                  runModel(
-                    sess,
-                    x,
-                    input_node_names,
-                    output_node_names
+      def res(
+          opModelBytes: Array[Byte],
+          inputTensorss: IO[Array[OnnxTensor[T]]]
+      ): Tensor[T, Tuple3[Tt, Td, S]] = {
+         cats.effect.Resource
+            .make(inputTensorss)(inTens => IO {})
+            .use(x =>
+               cats.effect.Resource
+                  .make(IO.blocking(getSession(opModelBytes)))(sess => IO {})
+                  .use(sess =>
+                     runModel(
+                       sess,
+                       x,
+                       input_node_names,
+                       output_node_names
+                     )
                   )
-               )
-            // }
+               // }
             )
 
-      } 
+      }
 
       val finalRes = for {
          tens <- inputTensors.memoize
          t    <- tens
-      } yield res(opToModelProto(
+      } yield res(
+        opToModelProto(
           opName,
-          (t.map(x => x.asInstanceOf[tensorMod.Tensor].`type`.valueOf.toString match {
-            //Can't access the enum int values here
-            //But it's fine, doesn't match the ONNX spec anyway
-            case "int8"  => 3
-            case "int16" => 5
-            case "float64" => 11
-            case "float32" => 1
-            case "int32" => 6
-            case "int64" => 7
-            case "bool" => 9
-            case y => y.toInt
-          }
-            )  
-            zip t.map(_.dims.map(_.toInt).toArray)),
+          (t.map(x =>
+             x.asInstanceOf[tensorMod.Tensor].`type`.valueOf.toString match {
+                // Can't access the enum int values here
+                // But it's fine, doesn't match the ONNX spec anyway
+                case "int8"    => 3
+                case "int16"   => 5
+                case "float64" => 11
+                case "float32" => 1
+                case "int32"   => 6
+                case "int64"   => 7
+                case "bool"    => 9
+                case y         => y.toInt
+             }
+          )
+             zip t.map(_.dims.map(_.toInt).toArray)),
           attrs
         ).toByteArray,
-      tens
+        tens
       )
 
       finalRes.flatten
-      //res
+      // res
    }
 
    def callOp[T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
@@ -172,16 +176,16 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
       val inputNodeNames = (0 until inputs.size).toList.map(_.toString)
       val result: Tensor[T, Tuple3[Tt, Td, S]] =
-            callByteArrayOp( 
-              inputs,
-              inputNodeNames,
-              opName,
-              attrs
-            )
+         callByteArrayOp(
+           inputs,
+           inputNodeNames,
+           opName,
+           attrs
+         )
       // unsafeRunSync is not avaible in the JS context
       // so behavior on the JS side remains lazy
       // and thus inefficient in case user code refers to Tensors more than once
-      result //.flatMap(x => IO.println("opName = " + opName).as(x))
+      result // .flatMap(x => IO.println("opName = " + opName).as(x))
    }
 
    def runModel[
@@ -212,29 +216,29 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
             sess
                .flatMap { realSess =>
 //                  feeds.flatMap { realFeeds =>
-                     val res = IO.eval(cats.Eval.later {
-                        realSess
-                           .run(
-                             feeds.asInstanceOf[
-                               org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession.FeedsType
-                             ]
-                           )
-                           .toFuture
-                     })
+                  val res = IO.eval(cats.Eval.later {
+                     realSess
+                        .run(
+                          feeds.asInstanceOf[
+                            org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession.FeedsType
+                          ]
+                        )
+                        .toFuture
+                  })
 //                     outputNames.flatMap { names =>
-                        res.map { result =>
-                           result.map { rr =>
+                  res.map { result =>
+                     result.map { rr =>
 //                    println(realSess.outputNames.toList)
-                              rr
+                        rr
 //                      .asInstanceOf[
 //                        org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession.OnnxValueMapType
 //                      ]
-                                 .get(realSess.outputNames.toList(0))
-                                 .get
-                           }
-                        }
-                    // }
-  //                }
+                           .get(realSess.outputNames.toList(0))
+                           .get
+                     }
+                  }
+               // }
+               //                }
                }
          }
 
@@ -364,7 +368,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
       ](
         session,
         inputs,
-        List("data_0") ,
+        List("data_0"),
         List("squeezenet0_flatten0_reshape0")
       )
 

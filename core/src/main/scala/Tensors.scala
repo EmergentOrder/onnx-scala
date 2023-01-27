@@ -160,8 +160,8 @@ object Tensors {
    ] <: Shape = ToGather match {
       case head #: tail =>
          Indices.Contains[AxisIndex, I] match {
-           case true =>
-               IndicesSize #: 
+            case true =>
+               IndicesSize #:
                   GatheredShapeLoop[
                     tail,
                     Indices.RemoveValue[AxisIndex, I],
@@ -181,10 +181,11 @@ object Tensors {
 
    type IndicesSizeOf[AxisIndices <: Indices] = IndicesSizeLoop[AxisIndices, 0]
 
-   protected type IndicesSizeLoop[AxisIndices <: Indices, Acc <: Dimension] <: Index = AxisIndices match {
-       case head ::: tail => IndicesSizeLoop[tail, S[Acc]]
-       case INil          => Acc
-    }
+   protected type IndicesSizeLoop[AxisIndices <: Indices, Acc <: Dimension] <: Index =
+      AxisIndices match {
+         case head ::: tail => IndicesSizeLoop[tail, S[Acc]]
+         case INil          => Acc
+      }
 
    type FlattenedShape[S <: Shape, AxisIndex <: None.type | Indices] <: Shape = AxisIndex match {
       case None.type => SNil

@@ -68,18 +68,18 @@ class ORTWebModelBackend(session: IO[InferenceSession]) extends Model() with ORT
          .map(_.toArray)
 
       val output = inputTensors.flatMap { tns =>
-        inputNames.flatMap{inNames =>
-          outputNames.flatMap{outNames =>
-            runModel[T, Tt, Td, S](
-              session,
-              tns,
-              inNames,
-              outNames
-            )
-          }
+         inputNames.flatMap { inNames =>
+            outputNames.flatMap { outNames =>
+               runModel[T, Tt, Td, S](
+                 session,
+                 tns,
+                 inNames,
+                 outNames
+               )
+            }
          }
       }
-      output//.flatten
+      output // .flatten
    }
 
 }

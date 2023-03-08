@@ -28,7 +28,7 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
    ] = IO.fromFuture(IO {
       OrtSession
          .create(
-           "squeezenet1.0-12.onnx", {
+           "https://media.githubusercontent.com/media/onnx/models/main/vision/classification/squeezenet/model/squeezenet1.0-12.onnx", {
               val opts = InferenceSession.SessionOptions()
               opts.executionProviders = scala.scalajs.js.Array("cpu")
               opts

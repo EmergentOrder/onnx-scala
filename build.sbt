@@ -88,10 +88,10 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      webpackCliVersion                              := "4.10.0",
      startWebpackDevServer / version                := "4.11.1",
      scalaJSUseMainModuleInitializer                := true, // , //Testing
-     Compile / npmDependencies += "onnxruntime-web" -> "1.13.1",
+     Compile / npmDependencies += "onnxruntime-web" -> "1.14.0",
      // ORT web and node are interchangeable, given minor package name changes, and node offers a significant speed-up (at the cost of working on the web)
-     //     Compile / npmDependencies += "onnxruntime-node"    -> "1.13.1",
-     Compile / npmDependencies += "onnxruntime-common" -> "1.13.1",
+     //     Compile / npmDependencies += "onnxruntime-node"    -> "1.14.0",
+     Compile / npmDependencies += "onnxruntime-common" -> "1.14.0",
      Compile / npmDependencies += "typescript"         -> "4.8.4",
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",

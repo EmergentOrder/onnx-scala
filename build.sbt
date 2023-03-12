@@ -14,7 +14,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.22.1",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.22.2",
   scalacOptions ++= Seq(
     "-explain",
     "-explain-types",
@@ -26,9 +26,9 @@ lazy val commonSettings = Seq(
     "-rewrite"
   ),
   versionPolicyIntention := Compatibility.BinaryCompatible, // As long as we are pre 1.0.0, BinaryCompatible for a patch version bump and None for a minor version bump
-  versionScheme := Some("early-semver"),
+  versionScheme         := Some("early-semver"),
   mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-common" % "0.17.0"),
-  autoCompilerPlugins := true
+  autoCompilerPlugins   := true
 ) ++ sonatypeSettings
 
 lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)

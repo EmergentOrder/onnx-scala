@@ -1,7 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.2.2"
+val dottyVersion     = "3.3.0"
 val spireVersion     = "0.18.0"
 val scalaTestVersion = "3.2.16"
 
@@ -36,7 +36,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
      name := "onnx-scala-common",
-     scalacOptions ++= Seq("-source:3.2"),
+     scalacOptions ++= Seq("-source:3.3"),
      crossScalaVersions := Seq(
        dottyVersion
      )
@@ -50,7 +50,7 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
      name := "onnx-scala-proto",
-     scalacOptions ++= Seq("-source:3.2"),
+     scalacOptions ++= Seq("-source:3.3"),
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-proto" % "0.17.0"),
      crossScalaVersions := Seq(
        dottyVersion
@@ -71,7 +71,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
      name := "onnx-scala-backends",
-     scalacOptions ++= Seq("-source:3.2"),
+     scalacOptions ++= Seq("-source:3.3"),
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
      libraryDependencies ++= Seq(
        "com.microsoft.onnxruntime" % "onnxruntime" % "1.15.0"
@@ -88,10 +88,10 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      webpackCliVersion                              := "4.10.0",
      startWebpackDevServer / version                := "4.11.1",
      scalaJSUseMainModuleInitializer                := true, // , //Testing
-     Compile / npmDependencies += "onnxruntime-web" -> "1.14.0",
+     Compile / npmDependencies += "onnxruntime-web" -> "1.15.0",
      // ORT web and node are interchangeable, given minor package name changes, and node offers a significant speed-up (at the cost of working on the web)
-     //     Compile / npmDependencies += "onnxruntime-node"    -> "1.14.0",
-     Compile / npmDependencies += "onnxruntime-common" -> "1.14.0",
+     //     Compile / npmDependencies += "onnxruntime-node"    -> "1.15.0",
+     Compile / npmDependencies += "onnxruntime-common" -> "1.15.0",
      Compile / npmDependencies += "typescript"         -> "4.8.4",
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",
@@ -115,7 +115,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
      name := "onnx-scala",
-     scalacOptions ++= Seq("-source:3.2"),
+     scalacOptions ++= Seq("-source:3.3"),
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala" % "0.17.0"),
      crossScalaVersions := Seq(
        dottyVersion

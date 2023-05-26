@@ -17,4 +17,4 @@ jobs:
           ## Optional: Define the working directory of your build.
           ## It should contain the build.sbt file.
           working-directory: './'
-          configs-ignore: scala-doc-tool
+          configs-ignore: scala-tool scala-doc-tool

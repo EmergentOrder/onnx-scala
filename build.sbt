@@ -125,7 +125,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
         case _ =>
            Seq(
              ("org.typelevel" %%% "spire"       % spireVersion),
-             ("org.typelevel" %%% "cats-effect" % "3.4.11")
+             ("org.typelevel" %%% "cats-effect" % "3.5.0")
            )
      })
    )

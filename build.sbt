@@ -15,6 +15,7 @@ lazy val commonSettings = Seq(
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
   libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.23.2",
+  libraryDependencies += "org.scala-lang" % "scala3-compiler_3" % scalaVersion.value exclude("org.scala-sbt", "compiler-interface"),
   scalacOptions ++= Seq(
     "-explain",
     "-explain-types",
@@ -90,7 +91,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      scalaJSUseMainModuleInitializer                := true, // , //Testing
      Compile / npmDependencies += "onnxruntime-web" -> "1.15.0",
      // ORT web and node are interchangeable, given minor package name changes, and node offers a significant speed-up (at the cost of working on the web)
-     //     Compile / npmDependencies += "onnxruntime-node"    -> "1.15.0",
+//     Compile / npmDependencies += "onnxruntime-node"    -> "1.15.0",
      Compile / npmDependencies += "onnxruntime-common" -> "1.15.0",
      Compile / npmDependencies += "typescript"         -> "5.0.4",
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,

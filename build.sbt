@@ -15,7 +15,7 @@ lazy val commonSettings = Seq(
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
   libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.23.2",
-  libraryDependencies += "org.scala-lang" % "scala3-compiler_3" % scalaVersion.value exclude("org.scala-sbt", "compiler-interface"),
+  libraryDependencies += "org.scala-lang" % "scala3-compiler_3" % scalaVersion.value exclude ("org.scala-sbt", "compiler-interface"),
   scalacOptions ++= Seq(
     "-explain",
     "-explain-types",

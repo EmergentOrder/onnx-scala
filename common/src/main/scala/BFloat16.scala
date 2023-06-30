@@ -106,8 +106,7 @@ class BFloat16(val raw: Short) extends AnyVal { lhs =>
      *
      * This just involves toggling the sign bit with XOR.
      *
-     * -BFloat16.NaN has no meaningful effect.
-     * -BFloat16.Zero returns BFloat16.NegativeZero.
+     * -BFloat16.NaN has no meaningful effect. -BFloat16.Zero returns BFloat16.NegativeZero.
      */
    def unary_- : BFloat16 =
       new BFloat16((raw ^ 0x8000).toShort)

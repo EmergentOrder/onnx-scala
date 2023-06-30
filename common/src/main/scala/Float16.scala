@@ -110,8 +110,7 @@ class Float16(val raw: Short) extends AnyVal { lhs =>
      *
      * This just involves toggling the sign bit with XOR.
      *
-     * -Float16.NaN has no meaningful effect.
-     * -Float16.Zero returns Float16.NegativeZero.
+     * -Float16.NaN has no meaningful effect. -Float16.Zero returns Float16.NegativeZero.
      */
    def unary_- : Float16 =
       new Float16((raw ^ 0x8000).toShort)

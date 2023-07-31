@@ -1,5 +1,5 @@
 addDependencyTreePlugin
-addSbtPlugin("ch.epfl.scala"      % "sbt-version-policy"            % "2.1.1")
+addSbtPlugin("ch.epfl.scala"      % "sbt-version-policy"            % "2.1.2")
 addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject"      % "1.3.2")
 addSbtPlugin("org.portable-scala" % "sbt-scala-native-crossproject" % "1.3.2")
 addSbtPlugin("org.scala-js"       % "sbt-scalajs"                   % "1.13.2")

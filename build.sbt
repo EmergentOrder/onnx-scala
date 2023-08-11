@@ -14,7 +14,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.23.4",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.24.0",
   libraryDependencies += "org.scala-lang" % "scala3-compiler_3" % scalaVersion.value exclude ("org.scala-sbt", "compiler-interface"),
   scalacOptions ++= Seq(
     "-explain",

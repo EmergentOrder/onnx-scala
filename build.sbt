@@ -3,7 +3,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 //val dottyVersion = dottyLatestNightlyBuild.get
 val dottyVersion     = "3.3.0"
 val spireVersion     = "0.18.0"
-val scalaTestVersion = "3.2.16"
+val scalaTestVersion = "3.2.17"
 
 scalaVersion := dottyVersion
 
@@ -14,7 +14,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.23.4",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.24.4",
   libraryDependencies += "org.scala-lang" % "scala3-compiler_3" % scalaVersion.value exclude ("org.scala-sbt", "compiler-interface"),
   scalacOptions ++= Seq(
     "-explain",
@@ -126,7 +126,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
         case _ =>
            Seq(
              ("org.typelevel" %%% "spire"       % spireVersion),
-             ("org.typelevel" %%% "cats-effect" % "3.5.1")
+             ("org.typelevel" %%% "cats-effect" % "3.5.2")
            )
      })
    )

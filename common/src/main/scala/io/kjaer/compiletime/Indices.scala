@@ -27,7 +27,7 @@ case object INil  extends INil
 object Indices {
    type ToString[X <: Indices] <: String = X match {
       case INil          => "INil"
-      case head ::: tail => int.ToString[head] + " ::: " + ToString[tail]
+      case head ::: tail => compiletime.ops.any.ToString[head] + " ::: " + ToString[tail]
    }
 
    type Contains[Haystack <: Indices, Needle <: Index] <: Boolean = Haystack match {

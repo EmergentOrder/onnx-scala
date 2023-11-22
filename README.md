@@ -89,7 +89,7 @@ If your input shapes are static, feel free to wrap your calls into it in a facad
 
 ONNX-Scala is cross-built against Scala JVM, Scala.js/JavaScript and Scala Native (for Scala 3 / Dotty )
 
-Currently at ONNX 1.12.0 (Backward compatible to at least 1.2.0 for the full model API, 1.7.0 for the fine-grained API), ONNX Runtime 1.13.1.
+Currently at ONNX 1.14.1 (Backward compatible to at least 1.2.0 for the full model API, 1.7.0 for the fine-grained API), ONNX Runtime 1.16.3.
  
 ### Fine-grained API
 A complete\*, versioned, numerically generic, type-safe / typeful API to ONNX(Open Neural Network eXchange, an open format to represent deep learning and classical machine learning models), derived from the Protobuf definitions and the operator schemas (defined in C++). 

@@ -7,7 +7,7 @@ import org.emergentorder.onnx.Tensors.Tensor._
 import org.emergentorder.onnx.backends._
 import org.emergentorder.compiletime._
 import org.emergentorder.io.kjaer.compiletime._
-import org.emergentorder.onnx.onnxruntimeWeb.mod.{InferenceSession => OrtSession}
+import org.emergentorder.onnx.onnxruntimeNode.mod.{InferenceSession => OrtSession}
 import cats.effect.IO
 
 import org.scalatest._
@@ -28,7 +28,7 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
    ] = IO.fromFuture(IO {
       OrtSession
          .create(
-           "https://media.githubusercontent.com/media/onnx/models/main/vision/classification/squeezenet/model/squeezenet1.0-12.onnx", {
+           "./squeezenet1.0-12.onnx", {
               val opts = InferenceSession.SessionOptions()
               opts.executionProviders = scala.scalajs.js.Array("cpu")
               opts

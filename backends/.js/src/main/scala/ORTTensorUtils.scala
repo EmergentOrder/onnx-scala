@@ -2,7 +2,7 @@ package org.emergentorder.onnx.backends
 
 //import scala.scalajs.js.Array
 import org.emergentorder.onnx.Tensors._
-import org.emergentorder.onnx.onnxruntimeWeb.mod.Tensor.{^ => OnnxTensor}
+import org.emergentorder.onnx.onnxruntimeCommon.mod.Tensor.{^ => OnnxTensor}
 import scalajs.js.JSConverters._
 import scala.scalajs.js.typedarray
 

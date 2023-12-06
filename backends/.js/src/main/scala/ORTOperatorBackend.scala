@@ -5,8 +5,8 @@ import scala.concurrent.duration._
 import org.emergentorder.onnx.onnxruntimeCommon.tensorMod
 //import typings.onnxruntimeWeb.tensorMod.Tensor.DataType
 //import typings.onnxjs.libTensorMod.Tensor.DataTypeMap.DataTypeMapOps
-import org.emergentorder.onnx.onnxruntimeCommon.mod.{InferenceSession => OrtSession}
-import org.emergentorder.onnx.onnxruntimeCommon.mod.Tensor.{^ => OnnxTensor}
+import org.emergentorder.onnx.onnxruntimeWeb.mod.{InferenceSession => OrtSession}
+import org.emergentorder.onnx.onnxruntimeWeb.mod.Tensor.{^ => OnnxTensor}
 //import typings.onnxruntimeWeb.ort.InferenceSession.{^ => InferenceSess}
 //import typings.onnxjs.onnxMod.Onnx
 import scala.scalajs.js.typedarray

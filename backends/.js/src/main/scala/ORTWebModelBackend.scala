@@ -10,7 +10,7 @@ import cats.effect.IO
 import cats.implicits._
 //import typings.onnxruntimeNode.mod.{InferenceSession => OrtSession}
 import org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
-import org.emergentorder.onnx.onnxruntimeCommon.mod.Tensor.{^ => OnnxTensor}
+import org.emergentorder.onnx.onnxruntimeWeb.mod.Tensor.{^ => OnnxTensor}
 import org.emergentorder.onnx._
 import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.Tensors.Tensor._

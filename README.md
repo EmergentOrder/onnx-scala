@@ -14,7 +14,7 @@ libraryDependencies += "org.emergent-order" %% "onnx-scala-backends" % "0.17.0"
 A short, recent talk I gave about the project: [ONNX-Scala: Typeful, Functional Deep Learning / Dotty Meets an Open AI Standard](https://youtu.be/8HuZTeHi7lg?t=1156)
 
 ### Full ONNX model inference - quick start
-First, download the [model file](https://media.githubusercontent.com/media/onnx/models/main/vision/classification/squeezenet/model/squeezenet1.0-12.onnx) for [SqueezeNet](https://en.wikipedia.org/wiki/SqueezeNet).
+First, download the [model file](https://media.githubusercontent.com/media/onnx/models/main/Computer_Vision/squeezenet1_1_Opset18_torch_hub/squeezenet1_1_Opset18.onnx) for [SqueezeNet](https://en.wikipedia.org/wiki/SqueezeNet).
 You can use `get_models.sh`
 
 Note that all code snippets are written in Scala 3 (Dotty).
@@ -29,7 +29,7 @@ import org.emergentorder.onnx.backends._
 import org.emergentorder.compiletime._
 import org.emergentorder.io.kjaer.compiletime._
 
-val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.0-12.onnx"))
+val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1_1_Opset18.onnx"))
 val squeezenet = new ORTModelBackend(squeezenetBytes)
 
 val data = Array.fill(1*3*224*224){42f}
@@ -54,7 +54,7 @@ Next we run SqueezeNet image classification inference on it:
 val out = squeezenet.fullModel[Float, 
                                "ImageNetClassification",
                                "Batch" ##: "Class" ##: TSNil,
-                               1 #: 1000 #: 1 #: 1 #: SNil](Tuple(imageTens))
+                               1 #: 1000 #: SNil](Tuple(imageTens))
 // val out:
 //  Tensor[Float,("ImageNetClassification", 
 //                "Batch" ##: "Class" ##: TSNil,
@@ -70,10 +70,10 @@ val data = out.data.unsafeRunSync()
 
 //The highest scoring and thus highest probability (predicted) class
 data.indices.maxBy(data)
-// val res1: Int = 549
+// val res1: Int = 753
 ```
 
-Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "envelope".
+Referring to the [ImageNet 1000 class labels](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a), we see that the predicted class is "radiator".
 
 Based on a simple benchmark of 100000 iterations of SqueezeNet inference, the run time is on par (within 3% of) ONNX Runtime (via Python).
 The discrepancy can be accounted for by the overhead of shipping data between the JVM and native memory.

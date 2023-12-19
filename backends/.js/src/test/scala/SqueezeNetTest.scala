@@ -28,7 +28,7 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
    ] = IO.fromFuture(IO {
       OrtSession
          .create(
-           "./squeezenet1.0-12.onnx", {
+           "./squeezenet1_1_Opset18.onnx", {
               val opts = InferenceSession.SessionOptions()
               opts.executionProviders = scala.scalajs.js.Array("cpu")
               opts
@@ -54,7 +54,7 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
         Float,
         "ImageNetClassification",
         "Batch" ##: "Class" ##: TSNil,
-        1 #: 1000 #: 1 #: 1 #: SNil
+        1 #: 1000 #: SNil
       ](Tuple(imageTens))
 
       // The output shape
@@ -65,7 +65,7 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
             shouldBe
                (1,
                1000,
-               549))
+               753))
       )
 
    }

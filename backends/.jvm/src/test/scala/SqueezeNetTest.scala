@@ -19,11 +19,11 @@ import cats.effect.testing.scalatest.AsyncIOSpec
 class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
 
    new URI(
-     "https://media.githubusercontent.com/media/onnx/models/main/archive/vision/classification/squeezenet/model/squeezenet1.0-12.onnx"
-   ).toURL #> new File("squeezenet1.0-12.onnx") !!
+     "https://media.githubusercontent.com/media/onnx/models/main/Computer_Vision/squeezenet1_1_Opset18_torch_hub/squeezenet1_1_Opset18.onnx"
+   ).toURL #> new File("squeezenet1_1_Opset18.onnx") !!
 
    "SqueezeNet ONNX-Scala model should predict dummy image class" in {
-      val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1.0-12.onnx")) // .quant.onnx"))
+      val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1_1_Opset18.onnx")) // .quant.onnx"))
       val squeezenet      = new ORTModelBackend(squeezenetBytes)
       val data            = Array.fill(1 * 3 * 224 * 224) { 42f }
       // In NCHW tensor image format
@@ -40,7 +40,7 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
         Float,
         "ImageNetClassification",
         "Batch" ##: "Class" ##: TSNil,
-        1 #: 1000 #: 1 #: 1 #: SNil
+        1 #: 1000 #: SNil
       ](Tuple(imageTens))
 
       // The output shape
@@ -51,7 +51,7 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
             shouldBe
                (1,
                1000,
-               549))
+               753))
       )
 
    }

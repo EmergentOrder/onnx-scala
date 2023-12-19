@@ -19,7 +19,7 @@ import cats.effect.testing.scalatest.AsyncIOSpec
 class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
 
    new URI(
-     "https://media.githubusercontent.com/media/onnx/models/main/vision/classification/squeezenet/model/squeezenet1.0-12.onnx"
+     "https://media.githubusercontent.com/media/onnx/models/main/archive/vision/classification/squeezenet/model/squeezenet1.0-12.onnx"
    ).toURL #> new File("squeezenet1.0-12.onnx") !!
 
    "SqueezeNet ONNX-Scala model should predict dummy image class" in {

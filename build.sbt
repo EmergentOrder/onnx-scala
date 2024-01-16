@@ -85,14 +85,14 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test
    )
    .jsSettings(
-     webpack / version                              := "5.89.0",
-     webpackCliVersion                              := "5.1.4",
-     startWebpackDevServer / version                := "4.15.1",
-     scalaJSUseMainModuleInitializer                := true, // , //Testing
+     webpack / version               := "5.89.0",
+     webpackCliVersion               := "5.1.4",
+     startWebpackDevServer / version := "4.15.1",
+     scalaJSUseMainModuleInitializer := true, // , //Testing
 // stuck on web/node 1.15.1 due to this issue: https://github.com/microsoft/onnxruntime/issues/17979
 //     Compile / npmDependencies += "onnxruntime-web" -> "1.15.1",
      // ORT web and node are interchangeable, given minor package name changes, and node offers a significant speed-up (at the cost of working on the web)
-     Compile / npmDependencies += "onnxruntime-node"    -> "1.15.1",
+     Compile / npmDependencies += "onnxruntime-node"   -> "1.15.1",
      Compile / npmDependencies += "onnxruntime-common" -> "1.15.1",
      Compile / npmDependencies += "typescript"         -> "5.0.4",
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,
@@ -127,7 +127,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
         case _ =>
            Seq(
              ("org.typelevel" %%% "spire"       % spireVersion),
-             ("org.typelevel" %%% "cats-effect" % "3.5.2")
+             ("org.typelevel" %%% "cats-effect" % "3.5.3")
            )
      })
    )

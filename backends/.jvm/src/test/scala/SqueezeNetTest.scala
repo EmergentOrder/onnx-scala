@@ -23,9 +23,10 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
    ).toURL #> new File("squeezenet1_1_Opset18.onnx") !!
 
    "SqueezeNet ONNX-Scala model should predict dummy image class" in {
-      val squeezenetBytes = Files.readAllBytes(Paths.get("squeezenet1_1_Opset18.onnx")) // .quant.onnx"))
-      val squeezenet      = new ORTModelBackend(squeezenetBytes)
-      val data            = Array.fill(1 * 3 * 224 * 224) { 42f }
+      val squeezenetBytes =
+         Files.readAllBytes(Paths.get("squeezenet1_1_Opset18.onnx")) // .quant.onnx"))
+      val squeezenet = new ORTModelBackend(squeezenetBytes)
+      val data       = Array.fill(1 * 3 * 224 * 224) { 42f }
       // In NCHW tensor image format
       val shape                 = 1 #: 3 #: 224 #: 224 #: SNil
       val tensorShapeDenotation = "Batch" ##: "Channel" ##: "Height" ##: "Width" ##: TSNil

@@ -14,7 +14,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.25.3",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "4.26.1",
   libraryDependencies += "org.scala-lang" % "scala3-compiler_3" % scalaVersion.value exclude ("org.scala-sbt", "compiler-interface"),
   scalacOptions ++= Seq(
     "-explain",
@@ -75,7 +75,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      scalacOptions ++= Seq("-source:3.3"),
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
      libraryDependencies ++= Seq(
-       "com.microsoft.onnxruntime" % "onnxruntime" % "1.17.0"
+       "com.microsoft.onnxruntime" % "onnxruntime" % "1.17.3"
 //       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.9.0"
      ),
      libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
@@ -127,7 +127,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
         case _ =>
            Seq(
              ("org.typelevel" %%% "spire"       % spireVersion),
-             ("org.typelevel" %%% "cats-effect" % "3.5.3")
+             ("org.typelevel" %%% "cats-effect" % "3.5.4")
            )
      })
    )

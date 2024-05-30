@@ -1,7 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.3.1"
+val dottyVersion     = "3.5.0-RC1"
 val spireVersion     = "0.18.0"
 val scalaTestVersion = "3.2.18"
 
@@ -20,11 +20,12 @@ lazy val commonSettings = Seq(
     "-explain",
     "-explain-types",
     "-feature",
-    "-Xfatal-warnings",
+//    "-Xfatal-warnings",
     "-unchecked",
     "-deprecation",
 //    "-release:21",
-    "-rewrite"
+    "-rewrite",
+    "-source:3.4-migration"
   ),
   versionPolicyIntention := Compatibility.BinaryCompatible, // As long as we are pre 1.0.0, BinaryCompatible for a patch version bump and None for a minor version bump
   versionScheme         := Some("early-semver"),
@@ -37,21 +38,19 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
      name := "onnx-scala-common",
-     scalacOptions ++= Seq("-source:3.3"),
      crossScalaVersions := Seq(
        dottyVersion
      )
    )
    .jsSettings(
      scalaJSStage := FullOptStage
-   )
+   ) 
 
 lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .crossType(CrossType.Pure) in file("proto"))
    .settings(
      commonSettings,
      name := "onnx-scala-proto",
-     scalacOptions ++= Seq("-source:3.3"),
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-proto" % "0.17.0"),
      crossScalaVersions := Seq(
        dottyVersion
@@ -64,7 +63,7 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    )
    .jsSettings(
      scalaJSStage := FullOptStage
-   )
+   ) 
 
 lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .crossType(CrossType.Pure) in file("backends"))
@@ -72,11 +71,10 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
      name := "onnx-scala-backends",
-     scalacOptions ++= Seq("-source:3.3"),
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
      libraryDependencies ++= Seq(
        "com.microsoft.onnxruntime" % "onnxruntime" % "1.18.0"
-//       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.9.0"
+//       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.10.1"
      ),
      libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
      crossScalaVersions                       := Seq(dottyVersion)
@@ -90,11 +88,13 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      startWebpackDevServer / version := "4.15.1",
      scalaJSUseMainModuleInitializer := true, // , //Testing
 // stuck on web/node 1.15.1 due to this issue: https://github.com/microsoft/onnxruntime/issues/17979
+
+
 //     Compile / npmDependencies += "onnxruntime-web" -> "1.15.1",
      // ORT web and node are interchangeable, given minor package name changes, and node offers a significant speed-up (at the cost of working on the web)
      Compile / npmDependencies += "onnxruntime-node"   -> "1.15.1",
      Compile / npmDependencies += "onnxruntime-common" -> "1.15.1",
-     Compile / npmDependencies += "typescript"         -> "5.0.4",
+     Compile / npmDependencies += "typescript"         -> "5.4.5",
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",
      stShortModuleNames                      := true,
@@ -104,7 +104,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
        _.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021)
      ))
 //     scalaJSLinkerConfig ~= { _.withESFeatures(_.withESVersion(scala.scalajs.LinkingInfo.ESVersion.ES2021)) }
-   )
+   ) 
    // For distribution as a library, using ScalablyTypedConverterGenSourcePlugin (vs ScalablyTypedConverterPlugin) is required
    // which slows down the build (particularly the doc build, for publishing) considerably
    // TODO: minimize to reduce build time and size of js output
@@ -117,7 +117,6 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
      name := "onnx-scala",
-     scalacOptions ++= Seq("-source:3.3"),
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala" % "0.17.0"),
      crossScalaVersions := Seq(
        dottyVersion
@@ -134,7 +133,6 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .jsSettings(
      scalaJSStage in Global := FullOptStage
    )
-
 /*
 lazy val docs = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("core-docs"))       // new documentation project

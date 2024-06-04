@@ -22,7 +22,7 @@ import cats.effect.testing.scalatest.AsyncIOSpec
 class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
 
   import org.emergentorder.onnx.onnxruntimeNode.mod.listSupportedBackends
-  println(listSupportedBackends())
+  listSupportedBackends()
 
    implicit override def executionContext =
       scala.scalajs.concurrent.JSExecutionContext.Implicits.queue

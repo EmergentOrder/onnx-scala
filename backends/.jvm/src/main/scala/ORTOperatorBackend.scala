@@ -6,7 +6,7 @@ import scala.language.implicitConversions
 import scala.util.Using
 import ai.onnxruntime.*
 import ai.onnxruntime.TensorInfo.OnnxTensorType
-//import ai.onnxruntime.extensions.OrtxPackage
+import ai.onnxruntime.extensions.OrtxPackage
 import org.emergentorder.onnx.*
 import org.emergentorder.onnx.Tensors.*
 import org.emergentorder.onnx.Tensors.Tensor.*

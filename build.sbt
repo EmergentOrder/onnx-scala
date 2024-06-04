@@ -33,7 +33,7 @@ lazy val commonSettings = Seq(
   autoCompilerPlugins   := true
 ) ++ sonatypeSettings
 
-lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
+lazy val common = (crossProject(JSPlatform, JVMPlatform)
    .crossType(CrossType.Pure) in file("common"))
    .settings(
      commonSettings,
@@ -46,7 +46,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      scalaJSStage := FullOptStage
    ) 
 
-lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
+lazy val proto = (crossProject(JSPlatform, JVMPlatform)
    .crossType(CrossType.Pure) in file("proto"))
    .settings(
      commonSettings,
@@ -65,7 +65,7 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      scalaJSStage := FullOptStage
    ) 
 
-lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
+lazy val backends = (crossProject(JSPlatform, JVMPlatform)
    .crossType(CrossType.Pure) in file("backends"))
    .dependsOn(core)
    .settings(
@@ -73,8 +73,8 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      name := "onnx-scala-backends",
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
      libraryDependencies ++= Seq(
-       "com.microsoft.onnxruntime" % "onnxruntime" % "1.18.0"
-//       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.10.1"
+       "com.microsoft.onnxruntime" % "onnxruntime" % "1.18.0",
+       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.11.0"
      ),
      libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
      crossScalaVersions                       := Seq(dottyVersion)
@@ -92,8 +92,8 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
 
 //     Compile / npmDependencies += "onnxruntime-web" -> "1.15.1",
      // ORT web and node are interchangeable, given minor package name changes, and node offers a significant speed-up (at the cost of working on the web)
-     Compile / npmDependencies += "onnxruntime-node"   -> "1.15.1",
-     Compile / npmDependencies += "onnxruntime-common" -> "1.15.1",
+     Compile / npmDependencies += "onnxruntime-node"   -> "1.18.0",
+     Compile / npmDependencies += "onnxruntime-common" -> "1.18.0",
      Compile / npmDependencies += "typescript"         -> "5.4.5",
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",
@@ -110,7 +110,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    // TODO: minimize to reduce build time and size of js output
    .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterGenSourcePlugin) }
 
-lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
+lazy val core = (crossProject(JSPlatform, JVMPlatform)
    .crossType(CrossType.Pure) in file("core"))
    .dependsOn(common)
    .dependsOn(proto)
@@ -126,7 +126,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
         case _ =>
            Seq(
              ("org.typelevel" %%% "spire"       % spireVersion),
-             ("org.typelevel" %%% "cats-effect" % "3.5.4")
+             ("org.typelevel" %%% "cats-effect" % "3.6-623178c")
            )
      })
    )

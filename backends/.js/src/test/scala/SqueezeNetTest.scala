@@ -18,27 +18,30 @@ import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.should._
 import cats.effect.testing.scalatest.AsyncIOSpec
 
-
 class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
 
-  import org.emergentorder.onnx.onnxruntimeNode.mod.listSupportedBackends
-  listSupportedBackends()
+   import org.emergentorder.onnx.onnxruntimeNode.mod.listSupportedBackends
+   listSupportedBackends()
 
    implicit override def executionContext =
       scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
    // TODO: push this inside ORTWebModelBackend, and use other create() which takes arraybufferlike
    val session: IO[
-     org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession 
+     org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
    ] = IO.fromFuture(IO {
 //      val infSess = new org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession()
 
-         org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession.create(
+      org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
+         .create(
            "./squeezenet1_1_Opset18.onnx", {
-              val opts = org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession.SessionOptions()
+              val opts =
+                 org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
+                    .SessionOptions()
               opts.executionProviders = scala.scalajs.js.Array("cpu")
               opts
            }
-         ).toFuture
+         )
+         .toFuture
    })
 
    "SqueezeNet ONNX-Scala model should predict dummy image class" in {
@@ -67,9 +70,7 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
       singleIO.asserting(x =>
          ((x._1(0), x._1(1), x._2.indices.maxBy(x._2))
             shouldBe
-               (1,
-               1000,
-               753))
+               (1, 1000, 753))
       )
 
    }

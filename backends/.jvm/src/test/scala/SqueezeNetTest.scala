@@ -50,9 +50,7 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
       singleIO.asserting(x =>
          ((x._1(0), x._1(1), x._2.indices.maxBy(x._2))
             shouldBe
-               (1,
-               1000,
-               753))
+               (1, 1000, 753))
       )
 
    }

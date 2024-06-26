@@ -14,7 +14,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "4.27.0",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "4.27.2",
   libraryDependencies += "org.scala-lang" % "scala3-compiler_3" % scalaVersion.value exclude ("org.scala-sbt", "compiler-interface"),
   scalacOptions ++= Seq(
     "-explain",
@@ -44,13 +44,13 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform)
    )
    .jsSettings(
      scalaJSStage := FullOptStage
-   ) 
+   )
 
 lazy val proto = (crossProject(JSPlatform, JVMPlatform)
    .crossType(CrossType.Pure) in file("proto"))
    .settings(
      commonSettings,
-     name := "onnx-scala-proto",
+     name                  := "onnx-scala-proto",
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-proto" % "0.17.0"),
      crossScalaVersions := Seq(
        dottyVersion
@@ -63,17 +63,17 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform)
    )
    .jsSettings(
      scalaJSStage := FullOptStage
-   ) 
+   )
 
 lazy val backends = (crossProject(JSPlatform, JVMPlatform)
    .crossType(CrossType.Pure) in file("backends"))
    .dependsOn(core)
    .settings(
      commonSettings,
-     name := "onnx-scala-backends",
+     name                  := "onnx-scala-backends",
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
      libraryDependencies ++= Seq(
-       "com.microsoft.onnxruntime" % "onnxruntime" % "1.18.0",
+       "com.microsoft.onnxruntime" % "onnxruntime"            % "1.18.0",
        "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.11.0"
      ),
      libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
@@ -89,7 +89,6 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      scalaJSUseMainModuleInitializer := true, // , //Testing
 // stuck on web/node 1.15.1 due to this issue: https://github.com/microsoft/onnxruntime/issues/17979
 
-
 //     Compile / npmDependencies += "onnxruntime-web" -> "1.15.1",
      // ORT web and node are interchangeable, given minor package name changes, and node offers a significant speed-up (at the cost of working on the web)
      Compile / npmDependencies += "onnxruntime-node"   -> "1.18.0",
@@ -104,7 +103,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
        _.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021)
      ))
 //     scalaJSLinkerConfig ~= { _.withESFeatures(_.withESVersion(scala.scalajs.LinkingInfo.ESVersion.ES2021)) }
-   ) 
+   )
    // For distribution as a library, using ScalablyTypedConverterGenSourcePlugin (vs ScalablyTypedConverterPlugin) is required
    // which slows down the build (particularly the doc build, for publishing) considerably
    // TODO: minimize to reduce build time and size of js output
@@ -116,7 +115,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
    .dependsOn(proto)
    .settings(
      commonSettings,
-     name := "onnx-scala",
+     name                  := "onnx-scala",
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala" % "0.17.0"),
      crossScalaVersions := Seq(
        dottyVersion

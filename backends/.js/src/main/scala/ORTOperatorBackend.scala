@@ -41,14 +41,20 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
         InferenceSession
       ] = IO.fromFuture(IO {
          val infSess = new OrtSession()
-            infSess.loadModel(
-              bytesArrayBuffer, 0, bytesArrayBuffer.byteLength, {
-                 val opts = InferenceSession.SessionOptions()
-                 opts.executionProviders = scala.scalajs.js.Array("cpu")
-                 opts
-              }
-            )
-          Future(infSess.asInstanceOf[org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession])
+         infSess.loadModel(
+           bytesArrayBuffer,
+           0,
+           bytesArrayBuffer.byteLength, {
+              val opts = InferenceSession.SessionOptions()
+              opts.executionProviders = scala.scalajs.js.Array("cpu")
+              opts
+           }
+         )
+         Future(
+           infSess.asInstanceOf[
+             org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
+           ]
+         )
       })
       session
    }
@@ -340,10 +346,17 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
 
       val session: IO[
         org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
-      ] = IO.fromFuture { IO {
-      val infSess = new OrtSession()
-      infSess.loadModel("squeezenet1.0-12.onnx", InferenceSession.SessionOptions())
-      Future(infSess.asInstanceOf[org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession])} }
+      ] = IO.fromFuture {
+         IO {
+            val infSess = new OrtSession()
+            infSess.loadModel("squeezenet1.0-12.onnx", InferenceSession.SessionOptions())
+            Future(
+              infSess.asInstanceOf[
+                org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
+              ]
+            )
+         }
+      }
 //      val dataTypes = new FloatType {}
 
       val dataType = "float32"

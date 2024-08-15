@@ -1,7 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.5.0-RC1"
+val dottyVersion     = "3.5.0-RC7"
 val spireVersion     = "0.18.0"
 val scalaTestVersion = "3.2.19"
 
@@ -14,7 +14,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "4.27.2",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "4.27.3",
   libraryDependencies += "org.scala-lang"      % "scala3-compiler_3" % scalaVersion.value exclude (
     "org.scala-sbt",
     "compiler-interface"
@@ -36,7 +36,7 @@ lazy val commonSettings = Seq(
   autoCompilerPlugins   := true
 ) ++ sonatypeSettings
 
-lazy val common = (crossProject(JSPlatform, JVMPlatform)
+lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .crossType(CrossType.Pure) in file("common"))
    .settings(
      commonSettings,
@@ -49,7 +49,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform)
      scalaJSStage := FullOptStage
    )
 
-lazy val proto = (crossProject(JSPlatform, JVMPlatform)
+lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .crossType(CrossType.Pure) in file("proto"))
    .settings(
      commonSettings,
@@ -71,7 +71,7 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform)
 lazy val backends = (crossProject(JSPlatform, JVMPlatform)
    .crossType(CrossType.Pure) in file("backends"))
    .dependsOn(core)
-   .settings(
+   .settings( 
      commonSettings,
      name                  := "onnx-scala-backends",
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
@@ -92,11 +92,27 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      scalaJSUseMainModuleInitializer := true, // , //Testing
 // stuck on web/node 1.15.1 due to this issue: https://github.com/microsoft/onnxruntime/issues/17979
 
-//     Compile / npmDependencies += "onnxruntime-web" -> "1.15.1",
+//     Compile / npmDependencies += "onnxruntime-web" -> "1.18.0",
      // ORT web and node are interchangeable, given minor package name changes, and node offers a significant speed-up (at the cost of working on the web)
      Compile / npmDependencies += "onnxruntime-node"   -> "1.18.0",
      Compile / npmDependencies += "onnxruntime-common" -> "1.18.0",
      Compile / npmDependencies += "typescript"         -> "5.4.5",
+     copyIndexTs := {
+  import Path._
+
+  val src = new File(".")
+
+  // get the files we want to copy
+  val htmlFiles: Seq[File] = Seq(new File("index.d.ts"))
+
+  // use Path.rebase to pair source files with target destination in crossTarget
+  val pairs = htmlFiles pair rebase(src, (Compile / target).value / "scala-3.5.0-RC7/scalajs-bundler/main/node_modules/onnxruntime-node/dist/types.d.ts")
+
+  // Copy files to source files to target
+  IO.copy(pairs, CopyOptions.apply(overwrite = true, preserveLastModified = true, preserveExecutable = false))
+
+},
+     Compile / compile := (Compile / compile dependsOn copyIndexTs).value,
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",
      stShortModuleNames                      := true,

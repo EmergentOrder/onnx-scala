@@ -126,7 +126,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
   val htmlFiles: Seq[File] = Seq(new File("package.json"))
 
   // use Path.rebase to pair source files with target destination in crossTarget
-  val pairs = htmlFiles pair rebase(src, (Compile / target).value / "/home/lorp/code/onnx-scala/backends/.js/target/scala-3.5.0-RC7/scalajs-bundler/test/node_modules/onnxruntime-common")
+  val pairs = htmlFiles pair rebase(src, (Compile / target).value / "scala-3.5.0-RC7/scalajs-bundler/test/node_modules/onnxruntime-common")
 
   // Copy files to source files to target
   IO.copy(pairs, CopyOptions.apply(overwrite = true, preserveLastModified = true, preserveExecutable = false))

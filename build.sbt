@@ -70,6 +70,8 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
 
 val copyIndexTs = taskKey[Unit]("Copy ts types file to target directory")
 
+val copyPackageNoExports = taskKey[Unit]("Copy package file without exports to target directory")
+
 lazy val backends = (crossProject(JSPlatform, JVMPlatform)
    .crossType(CrossType.Pure) in file("backends"))
    .dependsOn(core)
@@ -114,7 +116,22 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
   IO.copy(pairs, CopyOptions.apply(overwrite = true, preserveLastModified = true, preserveExecutable = false))
 
 },
-     Compile / compile := (Compile / compile dependsOn copyIndexTs).value,
+
+     copyPackageNoExports := {
+  import Path._
+
+  val src = new File(".")
+
+  // get the files we want to copy
+  val htmlFiles: Seq[File] = Seq(new File("package.json"))
+
+  // use Path.rebase to pair source files with target destination in crossTarget
+  val pairs = htmlFiles pair rebase(src, (Compile / target).value / "/home/lorp/code/onnx-scala/backends/.js/target/scala-3.5.0-RC7/scalajs-bundler/test/node_modules/onnxruntime-common")
+
+  // Copy files to source files to target
+  IO.copy(pairs, CopyOptions.apply(overwrite = true, preserveLastModified = true, preserveExecutable = false))
+},
+     Compile / compile := (Compile / compile dependsOn (copyIndexTs, copyPackageNoExports)).value,
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",
      stShortModuleNames                      := true,

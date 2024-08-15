@@ -5,7 +5,7 @@ import scala.concurrent.duration._
 import org.emergentorder.onnx.onnxruntimeCommon.tensorMod
 //import typings.onnxruntimeWeb.tensorMod.Tensor.DataType
 //import typings.onnxjs.libTensorMod.Tensor.DataTypeMap.DataTypeMapOps
-import org.emergentorder.onnx.onnxruntimeNode.mod.binding.{InferenceSession => OrtSession}
+import org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionImplMod.{InferenceSession => OrtSession}
 import org.emergentorder.onnx.onnxruntimeCommon.mod.Tensor.{^ => OnnxTensor}
 //import typings.onnxruntimeWeb.ort.InferenceSession.{^ => InferenceSess}
 //import typings.onnxjs.onnxMod.Onnx
@@ -40,8 +40,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
       val session: IO[
         InferenceSession
       ] = IO.fromFuture(IO {
-         val infSess = new OrtSession()
-         infSess.loadModel(
+         val infSess = OrtSession.create(
            bytesArrayBuffer,
            0,
            bytesArrayBuffer.byteLength, {
@@ -348,8 +347,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
         org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
       ] = IO.fromFuture {
          IO {
-            val infSess = new OrtSession()
-            infSess.loadModel("squeezenet1.0-12.onnx", InferenceSession.SessionOptions())
+            val infSess = OrtSession.create("squeezenet1.0-12.onnx", InferenceSession.SessionOptions())
             Future(
               infSess.asInstanceOf[
                 org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession

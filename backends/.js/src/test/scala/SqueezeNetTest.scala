@@ -7,7 +7,8 @@ import org.emergentorder.onnx.Tensors.Tensor._
 import org.emergentorder.onnx.backends._
 import org.emergentorder.compiletime._
 import org.emergentorder.io.kjaer.compiletime._
-import org.emergentorder.onnx.onnxruntimeNode.mod.binding.InferenceSession
+//import org.emergentorder.onnx.onnxruntimeNode.mod.binding.InferenceSession
+//import org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionImplMod.InferenceSession
 import cats.effect.IO
 
 import org.scalatest._

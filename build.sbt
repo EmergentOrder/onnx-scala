@@ -68,6 +68,8 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      scalaJSStage := FullOptStage
    )
 
+val copyIndexTs = taskKey[Unit]("Copy ts types file to target directory")
+
 lazy val backends = (crossProject(JSPlatform, JVMPlatform)
    .crossType(CrossType.Pure) in file("backends"))
    .dependsOn(core)

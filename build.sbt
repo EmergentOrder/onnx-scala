@@ -14,7 +14,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "4.27.3",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java"     % "4.27.3",
   libraryDependencies += "org.scala-lang"      % "scala3-compiler_3" % scalaVersion.value exclude (
     "org.scala-sbt",
     "compiler-interface"
@@ -75,7 +75,7 @@ val copyPackageNoExports = taskKey[Unit]("Copy package file without exports to t
 lazy val backends = (crossProject(JSPlatform, JVMPlatform)
    .crossType(CrossType.Pure) in file("backends"))
    .dependsOn(core)
-   .settings( 
+   .settings(
      commonSettings,
      name                  := "onnx-scala-backends",
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
@@ -102,35 +102,48 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      Compile / npmDependencies += "onnxruntime-common" -> "1.18.0",
      Compile / npmDependencies += "typescript"         -> "5.4.5",
      copyIndexTs := {
-  import Path._
+        import Path._
 
-  val src = new File(".")
+        val src = new File(".")
 
-  // get the files we want to copy
-  val htmlFiles: Seq[File] = Seq(new File("index.d.ts"))
+        // get the files we want to copy
+        val htmlFiles: Seq[File] = Seq(new File("index.d.ts"))
 
-  // use Path.rebase to pair source files with target destination in crossTarget
-  val pairs = htmlFiles pair rebase(src, (Compile / target).value / "scala-3.5.0-RC7/scalajs-bundler/main/node_modules/onnxruntime-node/dist/types.d.ts")
+        // use Path.rebase to pair source files with target destination in crossTarget
+        val pairs = htmlFiles pair rebase(
+          src,
+          (Compile / target).value / "scala-3.5.0-RC7/scalajs-bundler/main/node_modules/onnxruntime-node/dist/types.d.ts"
+        )
 
-  // Copy files to source files to target
-  IO.copy(pairs, CopyOptions.apply(overwrite = true, preserveLastModified = true, preserveExecutable = false))
+        // Copy files to source files to target
+        IO.copy(
+          pairs,
+          CopyOptions
+             .apply(overwrite = true, preserveLastModified = true, preserveExecutable = false)
+        )
 
-},
-
+     },
      copyPackageNoExports := {
-  import Path._
+        import Path._
 
-  val src = new File(".")
+        val src = new File(".")
 
-  // get the files we want to copy
-  val htmlFiles: Seq[File] = Seq(new File("package.json"))
+        // get the files we want to copy
+        val htmlFiles: Seq[File] = Seq(new File("package.json"))
 
-  // use Path.rebase to pair source files with target destination in crossTarget
-  val pairs = htmlFiles pair rebase(src, (Compile / target).value / "scala-3.5.0-RC7/scalajs-bundler/test/node_modules/onnxruntime-common")
+        // use Path.rebase to pair source files with target destination in crossTarget
+        val pairs = htmlFiles pair rebase(
+          src,
+          (Compile / target).value / "scala-3.5.0-RC7/scalajs-bundler/test/node_modules/onnxruntime-common"
+        )
 
-  // Copy files to source files to target
-  IO.copy(pairs, CopyOptions.apply(overwrite = true, preserveLastModified = true, preserveExecutable = false))
-},
+        // Copy files to source files to target
+        IO.copy(
+          pairs,
+          CopyOptions
+             .apply(overwrite = true, preserveLastModified = true, preserveExecutable = false)
+        )
+     },
      Compile / compile := (Compile / compile dependsOn (copyIndexTs, copyPackageNoExports)).value,
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",

@@ -1,7 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.5.0-RC7"
+val dottyVersion     = "3.5.1-RC2"
 val spireVersion     = "0.18.0"
 val scalaTestVersion = "3.2.19"
 
@@ -112,7 +112,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
         // use Path.rebase to pair source files with target destination in crossTarget
         val pairs = htmlFiles pair rebase(
           src,
-          (Compile / target).value / "scala-3.5.0-RC7/scalajs-bundler/main/node_modules/onnxruntime-node/dist/types.d.ts"
+          (Compile / target).value / "scala-3.5.1-RC2/scalajs-bundler/main/node_modules/onnxruntime-node/dist/types.d.ts"
         )
 
         // Copy files to source files to target
@@ -134,7 +134,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
         // use Path.rebase to pair source files with target destination in crossTarget
         val pairs = htmlFiles pair rebase(
           src,
-          (Compile / target).value / "scala-3.5.0-RC7/scalajs-bundler/test/node_modules/onnxruntime-common"
+          (Compile / target).value / "scala-3.5.1-RC2/scalajs-bundler/test/node_modules/onnxruntime-common/"
         )
 
         // Copy files to source files to target
@@ -145,6 +145,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
         )
      },
      Compile / compile := (Compile / compile dependsOn (copyIndexTs, copyPackageNoExports)).value,
+//     Test / test := (Test / test dependsOn (copyPackageNoExports)).value,
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",
      stShortModuleNames                      := true,

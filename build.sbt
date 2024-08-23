@@ -81,7 +81,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
      libraryDependencies ++= Seq(
        "com.microsoft.onnxruntime" % "onnxruntime"            % "1.18.0",
-       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.11.0"
+       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.12.4"
      ),
      libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
      crossScalaVersions                       := Seq(dottyVersion)

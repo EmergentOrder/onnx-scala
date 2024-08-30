@@ -17,7 +17,7 @@ import org.scalatest.matchers.should.*
 import cats.effect.testing.scalatest.AsyncIOSpec
 
 class ONNXScalaBertTokenizerSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
-   /*
+
    new URL(
      "https://github.com/microsoft/onnxruntime-extensions/raw/main/test/data/test_bert_tokenizer.onnx"
    ) #> new File("test_bert_tokenizer.onnx") !!
@@ -64,5 +64,5 @@ class ONNXScalaBertTokenizerSpec extends AsyncFreeSpec with AsyncIOSpec with Mat
 
       //Expected bert tokenizer output ("input_ids") : 101, 1188, 1110, 170, 2774, 102 , longs
    }
-    */
+
 }

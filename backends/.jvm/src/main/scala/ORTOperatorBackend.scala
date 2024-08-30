@@ -29,7 +29,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       val session_options = new OrtSession.SessionOptions()
 //      session_options.addCPU(false)
 //      session_options.setMemoryPatternOptimization(true)
-//      session_options.registerCustomOpLibrary(OrtxPackage.getLibraryPath())
+      session_options.registerCustomOpLibrary(OrtxPackage.getLibraryPath())
       session_options.setIntraOpNumThreads(coreCount)
 //    session_options.addCUDA()
 //    session_options.addDnnl(true)

@@ -115,7 +115,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
         // use Path.rebase to pair source files with target destination in crossTarget
         val pairs = htmlFiles pair rebase(
           src,
-          (Compile / target).value / "../backends/.js/node_modules/onnxruntime-node/dist/types.d.ts"
+          (baseDirectory).value / "node_modules/onnxruntime-node/dist/"
         )
 
         // Copy files to source files to target
@@ -137,7 +137,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
         // use Path.rebase to pair source files with target destination in crossTarget
         val pairs = htmlFiles pair rebase(
           src,
-          (Compile / target).value / "../backends/.js/node_modules/onnxruntime-node/dist/types.d.ts"
+          (Compile / target).value / "node_modules/onnxruntime-common"
         )
 
         // Copy files to source files to target
@@ -147,7 +147,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
              .apply(overwrite = true, preserveLastModified = true, preserveExecutable = false)
         )
      },
-//     Compile / compile := (Compile / compile dependsOn (copyIndexTs)).value,
+     Compile / compile := (Compile / compile dependsOn (copyIndexTs, copyPackageNoExports)).value,
 //     Test / test := (Test / test dependsOn (copyPackageNoExports)).value,
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",

@@ -6,7 +6,7 @@ addSbtPlugin("org.scala-js"       % "sbt-scalajs"                   % "1.16.0")
 addSbtPlugin("org.scala-native"   % "sbt-scala-native"              % "0.5.5")
 addSbtPlugin("ch.epfl.scala"      % "sbt-scalafix"                  % "0.12.1")
 addSbtPlugin("org.scalameta"      % "sbt-scalafmt"                  % "2.5.2")
-addSbtPlugin("org.xerial.sbt"     % "sbt-sonatype"                  % "3.11.2")
+addSbtPlugin("org.xerial.sbt"     % "sbt-sonatype"                  % "3.11.3")
 addSbtPlugin("com.github.sbt"     % "sbt-pgp"                       % "2.2.1")
 addSbtPlugin("org.scalameta"      % "sbt-mdoc"                      % "2.5.4")
 // for Scala.js 1.x.x

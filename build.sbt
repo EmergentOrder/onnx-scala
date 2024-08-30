@@ -115,7 +115,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
         // use Path.rebase to pair source files with target destination in crossTarget
         val pairs = htmlFiles pair rebase(
           src,
-          (Compile / target).value / "scala-3.5.1-RC2/scalajs-bundler/main/node_modules/onnxruntime-node/dist/types.d.ts"
+          (Compile / target).value / "../backends/.js/node_modules/onnxruntime-node/dist/types.d.ts"
         )
 
         // Copy files to source files to target
@@ -158,6 +158,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
        _.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021)
      )),
     externalNpm := {
+      Process("npm install", baseDirectory.value).!
       Process("npm run", baseDirectory.value).!
       baseDirectory.value
     }

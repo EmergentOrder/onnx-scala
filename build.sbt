@@ -137,7 +137,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
         // use Path.rebase to pair source files with target destination in crossTarget
         val pairs = htmlFiles pair rebase(
           src,
-          (Compile / target).value / "node_modules/onnxruntime-common"
+          (baseDirectory).value / "node_modules/onnxruntime-common/"
         )
 
         // Copy files to source files to target

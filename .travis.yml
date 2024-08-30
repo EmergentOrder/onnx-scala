@@ -1,9 +1,6 @@
 language: scala
 install:
-  - |
-    cd backends/.js
-    npm install
-    cd ../..
+  - | 
     # update this only when sbt-the-bash-script needs to be updated
     export SBT_LAUNCHER=1.5.0
     export SBT_OPTS="-Dfile.encoding=UTF-8"
@@ -12,6 +9,9 @@ install:
     sudo rm /usr/local/bin/sbt
     sudo ln -s $HOME/sbt/bin/sbt /usr/local/bin/sbt
 script: 
+  - cd backends/.js
+  - npm install
+  - cd ../..
 #  - bash get_models.sh
   - travis_wait 5 sbt test -J-Xmx5G
 #  - sbt docsJVM/mdoc

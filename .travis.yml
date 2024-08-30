@@ -1,6 +1,9 @@
 language: scala
 install:
   - |
+    cd backends/.js
+    npm install
+    cd ../..
     # update this only when sbt-the-bash-script needs to be updated
     export SBT_LAUNCHER=1.5.0
     export SBT_OPTS="-Dfile.encoding=UTF-8"

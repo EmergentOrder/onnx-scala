@@ -49,5 +49,5 @@ export declare const binding: {
     listSupportedBackends: () => Binding.SupportedBackend[];
 };
 export {};
-export declare const version = '1.18.0';
+export declare const version = '1.19.2';
 }

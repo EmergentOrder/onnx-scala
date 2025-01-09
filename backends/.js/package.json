@@ -1,10 +1,10 @@
 {
   "devDependencies": {
-    "typescript": "^5.5.4"
+    "typescript": "5.7.3"
   },
   "dependencies": {
-    "onnxruntime-common": "^1.19.2",
-    "onnxruntime-node": "^1.19.2"
+    "onnxruntime-common": "1.20.1",
+    "onnxruntime-node": "1.20.1"
   },
     "type": "module"
 }

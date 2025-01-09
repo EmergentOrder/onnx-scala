@@ -3,7 +3,7 @@ import scala.sys.process.Process
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.6.1"
+val dottyVersion     = "3.6.2"
 val spireVersion     = "0.18.0"
 val scalaTestVersion = "3.2.19"
 
@@ -16,7 +16,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java"     % "4.28.2",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java"     % "4.29.3",
   libraryDependencies += "org.scala-lang"      % "scala3-compiler_3" % scalaVersion.value exclude (
     "org.scala-sbt",
     "compiler-interface"
@@ -82,14 +82,14 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      name                  := "onnx-scala-backends",
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
      libraryDependencies ++= Seq(
-       "com.microsoft.onnxruntime" % "onnxruntime"            % "1.19.2",
-       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.12.4"
+       "com.microsoft.onnxruntime" % "onnxruntime"            % "1.20.0",
+       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.13.0"
      ),
      libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
      crossScalaVersions                       := Seq(dottyVersion)
    )
    .jvmSettings(
-     libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test
+     libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.6.0" % Test
    )
    .jsSettings( 
      scalaJSUseMainModuleInitializer := true, // , //Testing
@@ -149,7 +149,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      },
      Compile / compile := (Compile / compile dependsOn (copyIndexTs, copyPackageNoExports)).value,
 //     Test / test := (Test / test dependsOn (copyPackageNoExports)).value,
-     libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,
+     libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.6.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",
      stShortModuleNames                      := true,
      Compile / packageDoc / publishArtifact := false, // This is inordinately slow, only publish doc on release
@@ -185,7 +185,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
         case _ =>
            Seq(
              ("org.typelevel" %%% "spire"       % spireVersion),
-             ("org.typelevel" %%% "cats-effect" % "3.6-623178c")
+             ("org.typelevel" %%% "cats-effect" % "3.6.0-RC1")
            )
      })
    )

@@ -3,7 +3,7 @@ import scala.sys.process.Process
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.6.2"
+val dottyVersion     = "3.6.3"
 val spireVersion     = "0.18.0"
 val scalaTestVersion = "3.2.19"
 
@@ -30,7 +30,7 @@ lazy val commonSettings = Seq(
     "-deprecation",
 //    "-release:21",
     "-rewrite",
-    "-source:3.4-migration"
+    "-source:3.6-migration"
   ),
   versionPolicyIntention := Compatibility.BinaryCompatible, // As long as we are pre 1.0.0, BinaryCompatible for a patch version bump and None for a minor version bump
   versionScheme         := Some("early-semver"),

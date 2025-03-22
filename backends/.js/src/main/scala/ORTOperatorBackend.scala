@@ -31,17 +31,44 @@ import org.emergentorder.onnx.Tensors.Tensor._
 import org.emergentorder.compiletime._
 import onnxruntimeCommon.inferenceSessionMod.InferenceSession
 import org.emergentorder.io.kjaer.compiletime._
+import org.emergentorder.onnx.onnxruntimeWeb.onnxruntimeWebRequire
+
+
+import scala.scalajs.js
+import scala.scalajs.js.annotation.JSImport
+
+@JSImport("onnxruntime-web", JSImport.Namespace)
+@js.native
+object ort extends js.Object {
+  @js.native
+  object env extends js.Object {
+    @js.native
+    object wasm extends js.Object {
+    var wasmPaths:String = js.native
+    }
+    var logLevel: String = js.native
+  }
+}
+
+
 
 //TODO: fix redundant computation due to cats-effect on the JS side
 //Still happening, though partially fixed by changes in core
 trait ORTOperatorBackend extends OpToONNXBytesConverter {
-
+//   Required to use onnxruntime-node
+//   import org.emergentorder.onnx.onnxruntimeNode.mod.listSupportedBackends
+//   listSupportedBackends()
+//  ort.env.wasm.wasmPaths = "https://cdn.jsdelivr.net/npm/onnxruntime-web@dev/dist/"
+  
+   //Required to use onnxruntime-web, causes import to actually happen
+   ort.env.logLevel = "warning"
    def getSession(bytes: Array[Byte]) = {
 
       val bytesArrayBuffer = bytes.toTypedArray.buffer
       val session: IO[
         InferenceSession
-      ] = IO.fromFuture(IO {
+      ] = IO.fromFuture(
+      IO{
          val infSess = OrtSession.create(
            bytesArrayBuffer,
            0,
@@ -51,11 +78,12 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
               opts
            }
          )
-         Future(
+       Future(
            infSess.asInstanceOf[
              org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
            ]
          )
+ 
       })
       session
    }
@@ -213,39 +241,40 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
        s: ShapeOf[S]
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
 
-      val feeds: js.Dictionary[OnnxTensor[T]] = {
+      val inTens: js.Dictionary[OnnxTensor[T]] = {
          val zipped = inputNames.toArray zip input_tensor_values
          js.Dictionary(zipped.map(z => z._1 -> z._2)*)
       }
 
-      val output_tensors: IO[org.emergentorder.onnx.onnxruntimeCommon.tensorMod.Tensor] =
-         IO.fromFuture {
+      val typedFeeds = inTens.asInstanceOf[
+                            org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession.FeedsType
+                          ]
+
+      val output_tensors: IO[org.emergentorder.onnx.onnxruntimeCommon.tensorMod.Tensor] = 
+        IO.fromFuture {
             sess
                .flatMap { realSess =>
 //                  feeds.flatMap { realFeeds =>
-                  val res = IO.eval(cats.Eval.later {
-                     realSess
-                        .run(
-                          feeds.asInstanceOf[
-                            org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession.FeedsType
-                          ]
-                        )
-                        .toFuture
-                  })
+               val output = cats.effect.Resource
+                 .make(IO.blocking { realSess.run(typedFeeds) })(outTens => IO { })
+                 .use(outTens =>
+                      
 //                     outputNames.flatMap { names =>
-                  res.map { result =>
-                     result.map { rr =>
+                  IO.blocking(outTens.toFuture.map { result =>
+                     result
 //                    println(realSess.outputNames.toList)
-                        rr
+                        //rr
 //                      .asInstanceOf[
 //                        org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession.OnnxValueMapType
 //                      ]
                            .get(realSess.outputNames.toList(0))
                            .get
-                     }
-                  }
+                     //}
+                  })
                // }
                //                }
+                               )
+                 output
                }
          }
 
@@ -350,7 +379,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
       ] = IO.fromFuture {
          IO {
             val infSess =
-               OrtSession.create("squeezenet1.0-12.onnx", InferenceSession.SessionOptions())
+               OrtSession.create("squeezenet1_1_Opset18.onnx", InferenceSession.SessionOptions())
             Future(
               infSess.asInstanceOf[
                 org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
@@ -389,9 +418,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
         List("squeezenet0_flatten0_reshape0")
       )
 
-      // res.foreach(tens => tens.data.foreach(println))
-      // println(res)
-      // res.andThen(x => println(x))
+     //  res.foreach(tens => tens.data.foreach(println)) 
+//      res.andThen(x => println(x))
 //      res.foreach(tens => println(tens.shape))
 
       /*

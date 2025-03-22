@@ -1,10 +1,22 @@
 {
-  "devDependencies": {
-    "typescript": "5.7.3"
+  "name": "onnx-scala",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --debug",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "onnxruntime-common": "1.20.1",
-    "onnxruntime-node": "1.20.1"
+    "onnxruntime-common": "1.21.0",
+    "onnxruntime-node": "1.21.0",
+    "onnxruntime-web": "1.21.0",
+    "typescript": "5.8.2"
   },
-    "type": "module"
+  "devDependencies": {
+    "@scala-js/vite-plugin-scalajs": "^1.0.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  }
 }

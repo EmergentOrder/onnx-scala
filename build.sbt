@@ -3,8 +3,8 @@ import scala.sys.process.Process
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.6.3"
-val spireVersion     = "0.18.0"
+val dottyVersion     = "3.6.4" //"3.6.4-RC2"
+val spireVersion     = "0.18.0" //-151-4a70e3a-20250309T210220Z-SNAPSHOT"
 val scalaTestVersion = "3.2.19"
 
 scalaVersion := dottyVersion
@@ -16,7 +16,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java"     % "4.29.3",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java"     % "4.30.0",
   libraryDependencies += "org.scala-lang"      % "scala3-compiler_3" % scalaVersion.value exclude (
     "org.scala-sbt",
     "compiler-interface"
@@ -28,7 +28,7 @@ lazy val commonSettings = Seq(
 //    "-Xfatal-warnings",
     "-unchecked",
     "-deprecation",
-//    "-release:21",
+    "-release:21",
     "-rewrite",
     "-source:3.6-migration"
   ),
@@ -48,7 +48,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      )
    )
    .jsSettings(
-     scalaJSStage := FullOptStage
+     scalaJSStage in Global:= FullOptStage
    )
 
 lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
@@ -67,7 +67,7 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      Compile / PB.protoSources := Seq(file("proto/src/main/protobuf"))
    )
    .jsSettings(
-     scalaJSStage := FullOptStage
+     scalaJSStage in Global := FullOptStage 
    )
 
 val copyIndexTs = taskKey[Unit]("Copy ts types file to target directory")
@@ -82,7 +82,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      name                  := "onnx-scala-backends",
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
      libraryDependencies ++= Seq(
-       "com.microsoft.onnxruntime" % "onnxruntime"            % "1.20.0",
+       "com.microsoft.onnxruntime" % "onnxruntime"            % "1.21.0",
        "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.13.0"
      ),
      libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
@@ -92,17 +92,36 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.6.0" % Test
    )
    .jsSettings( 
-     scalaJSUseMainModuleInitializer := true, // , //Testing
+     scalaJSUseMainModuleInitializer := true,
+     mainClass := Some("org.emergentorder.onnx.backends.Main"), // "livechart.LiveChart"), // , //Testing
 // stuck on web/node 1.15.1 due to this issue: https://github.com/microsoft/onnxruntime/issues/17979
     scalaJSLinkerConfig ~= {
       _.withModuleKind(ModuleKind.ESModule)
         .withModuleSplitStyle(
-          ModuleSplitStyle.SmallModulesFor(List("onnx-scala")))
+          ModuleSplitStyle.SmallModulesFor(List("backendsJS"))).withESFeatures(
+       _.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021))
     },
-//     Compile / npmDependencies += "onnxruntime-web" -> "1.15.1",
+    libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.8.0",
+ //    Compile / npmDependencies += "onnxruntime-web" -> "1.22.0-dev.20250310-fe7634eb6f",
      // ORT web and node are interchangeable, given minor package name changes, and node offers a significant speed-up (at the cost of working on the web)
-//     Compile / npmDependencies += "onnxruntime-node"   -> "1.19.0",
-//     Compile / npmDependencies += "onnxruntime-common" -> "1.19.0",
+//     Compile / npmDependencies += "onnxruntime-node"   -> "1.21.0",
+//     Compile / npmDependencies += "onnxruntime-common" -> "1.22.0-dev.20250306-aafa8d170a",
+//     Compile / npmDependencies += "typescript" -> "5.8.2",
+//     Compile / npmDevDependencies += "copy-webpack-plugin" -> "13.0.0",
+//     requireJsDomEnv in Test := true,
+//     webpack / version := "5.98.0",
+//     webpackConfigFile := Some(baseDirectory.value / "webpack.config.js"),
+     // this fixes above error I was getting, per github issue in webpack repo
+//     webpackCliVersion := "5.1.4",
+//     startWebpackDevServer / version := "4.15.2",
+//     version in webpack := "5.98.0",
+//     version in startWebpackDevServer := "5.2.0",
+//     Compile / npmDependencies += "webpack" -> "5.98.0", 
+//     Compile / npmDevDependencies += "webpack" -> "5.98.0",
+//     Compile / npmDependencies += "webpack-cli" -> "6.0.1",
+//     Compile / npmDependencies += "webpack-dev-server" -> "5.2.0",
+     sources in (Compile, doc) := Nil,
+//     Compile / stMinimize := Selection.AllExcept("onnxruntime-common", "onnxruntime-web", "onnxruntime-node"),
 //    Compile / npmDependencies += "typescript"         -> "5.5.4",
      copyIndexTs := {
         import Path._
@@ -153,23 +172,21 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      stOutputPackage                         := "org.emergentorder.onnx",
      stShortModuleNames                      := true,
      Compile / packageDoc / publishArtifact := false, // This is inordinately slow, only publish doc on release
-     scalaJSStage := FullOptStage,
-     scalaJSLinkerConfig ~= (_.withESFeatures(
-       _.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021)
-     )),
+     scalaJSStage := FullOptStage, 
     externalNpm := {
-      Process("npm install", baseDirectory.value).!
-      Process("npm run", baseDirectory.value).!
-      baseDirectory.value
+//      Process("npm install", baseDirectory.value).!
+//      Process("npm run dev", baseDirectory.value).!
+       baseDirectory.value
     }
 //     scalaJSLinkerConfig ~= { _.withESFeatures(_.withESVersion(scala.scalajs.LinkingInfo.ESVersion.ES2021)) }
    )
    // For distribution as a library, using ScalablyTypedConverterGenSourcePlugin (vs ScalablyTypedConverterPlugin) is required
    // which slows down the build (particularly the doc build, for publishing) considerably
    // TODO: minimize to reduce build time and size of js output
-   .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterExternalNpmPlugin) }
+   .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterExternalNpmPlugin)}
+//ScalablyTypedConverterExternalNpmPlugin) }
 
-lazy val core = (crossProject(JSPlatform, JVMPlatform)
+lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .crossType(CrossType.Pure) in file("core"))
    .dependsOn(common)
    .dependsOn(proto)
@@ -185,7 +202,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform)
         case _ =>
            Seq(
              ("org.typelevel" %%% "spire"       % spireVersion),
-             ("org.typelevel" %%% "cats-effect" % "3.6.0-RC1")
+             ("org.typelevel" %%% "cats-effect" % "3.6.0-RC2")
            )
      })
    )

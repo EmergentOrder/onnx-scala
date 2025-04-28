@@ -107,9 +107,10 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      jsEnv := {
      val config = org.scalajs.jsenv.nodejs.NodeJSEnv.Config()
        .withArgs(List(
-         "--experimental-wasm-exnref", // required
-         "--experimental-wasm-imported-strings", // optional (good for performance)
-         "--turboshaft-wasm", // optional, but significantly increases stability
+//         "--experimental-wasm-exnref", // required
+//         "--experimental-wasm-imported-strings", // optional (good for performance)
+//         "--turboshaft-wasm", // optional, but significantly increases stability
+         "--experimental-specifier-resolution=node"
       ))
       new org.scalajs.jsenv.nodejs.NodeJSEnv(config)
     },

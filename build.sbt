@@ -3,8 +3,8 @@ import scala.sys.process.Process
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.6.4" //"3.6.4-RC2"
-val spireVersion     = "0.18.0" //-151-4a70e3a-20250309T210220Z-SNAPSHOT"
+val dottyVersion     = "3.7.0-RC3"
+val spireVersion     = "0.18.0"
 val scalaTestVersion = "3.2.19"
 
 scalaVersion := dottyVersion
@@ -82,7 +82,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      name                  := "onnx-scala-backends",
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
      libraryDependencies ++= Seq(
-       "com.microsoft.onnxruntime" % "onnxruntime"            % "1.21.0",
+       "com.microsoft.onnxruntime" % "onnxruntime"            % "1.21.1",
        "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.13.0"
      ),
      libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
@@ -97,9 +97,21 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
 // stuck on web/node 1.15.1 due to this issue: https://github.com/microsoft/onnxruntime/issues/17979
     scalaJSLinkerConfig ~= {
       _.withModuleKind(ModuleKind.ESModule)
-        .withModuleSplitStyle(
-          ModuleSplitStyle.SmallModulesFor(List("backendsJS"))).withESFeatures(
+//      .withExperimentalUseWebAssembly(true) //wasm works in node, breaks in browser (even when enabled there)
+ //       .withModuleSplitStyle(ModuleSplitStyle.FewestModules)
+//          .withModuleSplitStyle(ModuleSplitStyle.SmallModulesFor(List("backendsJS")))
+       .withESFeatures(
        _.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021))
+    },
+     // Configure Node.js (at least v23) to support the required Wasm features
+     jsEnv := {
+     val config = org.scalajs.jsenv.nodejs.NodeJSEnv.Config()
+       .withArgs(List(
+         "--experimental-wasm-exnref", // required
+         "--experimental-wasm-imported-strings", // optional (good for performance)
+         "--turboshaft-wasm", // optional, but significantly increases stability
+      ))
+      new org.scalajs.jsenv.nodejs.NodeJSEnv(config)
     },
     libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.8.0",
  //    Compile / npmDependencies += "onnxruntime-web" -> "1.22.0-dev.20250310-fe7634eb6f",
@@ -174,7 +186,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      Compile / packageDoc / publishArtifact := false, // This is inordinately slow, only publish doc on release
      scalaJSStage := FullOptStage, 
     externalNpm := {
-//      Process("npm install", baseDirectory.value).!
+      Process("npm install", baseDirectory.value).!
 //      Process("npm run dev", baseDirectory.value).!
        baseDirectory.value
     }
@@ -202,7 +214,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
         case _ =>
            Seq(
              ("org.typelevel" %%% "spire"       % spireVersion),
-             ("org.typelevel" %%% "cats-effect" % "3.6.0-RC2")
+             ("org.typelevel" %%% "cats-effect" % "3.6.1")
            )
      })
    )

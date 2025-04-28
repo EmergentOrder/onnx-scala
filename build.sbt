@@ -28,9 +28,9 @@ lazy val commonSettings = Seq(
 //    "-Xfatal-warnings",
     "-unchecked",
     "-deprecation",
-    "-release:21",
+//    "-release:21",
     "-rewrite",
-    "-source:3.6-migration"
+    "-source:3.7-migration"
   ),
   versionPolicyIntention := Compatibility.BinaryCompatible, // As long as we are pre 1.0.0, BinaryCompatible for a patch version bump and None for a minor version bump
   versionScheme         := Some("early-semver"),

@@ -14,12 +14,13 @@ jobs:
       matrix:
         java: [ '17', '21' ]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Java
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         distribution: 'adopt'
         java-version: ${{ matrix.java }}
+    - uses: sbt/setup-sbt@v1
     - name: Run JVM tests
       run: sbt "project backendsJVM" test -J-Xmx5G
     - name: Run JS tests

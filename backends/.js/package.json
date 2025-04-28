@@ -20,5 +20,10 @@
     "vite": "^6.2.0",
     "vite-plugin-static-copy": "2.3.0",
     "@rollup/plugin-commonjs": "28.0.3"
+  },
+   "overrides": {
+    "@scala-js/vite-plugin-scalajs": {
+      "esbuild": "0.25.3"
+    }
   } 
 }

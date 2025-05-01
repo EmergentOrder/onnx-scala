@@ -17,7 +17,7 @@
   "devDependencies": {
     "@scala-js/vite-plugin-scalajs": "^1.0.0",
     "typescript": "~5.8.2",
-    "vite": "^6.3.3",
+    "vite": "^6.3.4",
     "vite-plugin-static-copy": "2.3.0",
     "@rollup/plugin-commonjs": "28.0.3"
   },

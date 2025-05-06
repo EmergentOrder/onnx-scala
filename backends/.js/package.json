@@ -12,18 +12,19 @@
     "onnxruntime-common": "1.21.1",
     "onnxruntime-node": "1.21.1",
     "onnxruntime-web": "1.21.1",
-    "typescript": "5.8.2"
+    "typescript": "5.8.3"
   },
   "devDependencies": {
     "@scala-js/vite-plugin-scalajs": "^1.0.0",
-    "typescript": "~5.8.2",
+    "typescript": "5.8.3",
     "vite": "^6.3.4",
-    "vite-plugin-static-copy": "2.3.0",
-    "@rollup/plugin-commonjs": "28.0.3"
+    "vite-plugin-static-copy": "2.3.1",
+    "@rollup/plugin-commonjs": "28.0.3",
+    "tsc-alias": "1.8.15" 
   },
    "overrides": {
     "@scala-js/vite-plugin-scalajs": {
-      "esbuild": "0.25.3",
+      "esbuild": "~0.25.3",
       "vite": "^6.3.4"
     }
   } 

@@ -3,7 +3,7 @@ import scala.sys.process.Process
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.7.0-RC4"
+val dottyVersion     = "3.7.1-RC1"
 val spireVersion     = "0.18.0"
 val scalaTestVersion = "3.2.19"
 
@@ -187,7 +187,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.6.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",
      stShortModuleNames                      := true,
-     Compile / packageDoc / publishArtifact := false, // This is inordinately slow, only publish doc on release
+     Compile / packageDoc / publishArtifact := true,
      scalaJSStage := FullOptStage, 
     externalNpm := {
       Process("npm install", baseDirectory.value).!

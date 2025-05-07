@@ -97,7 +97,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
 // stuck on web/node 1.15.1 due to this issue: https://github.com/microsoft/onnxruntime/issues/17979
     scalaJSLinkerConfig ~= {
       _.withModuleKind(ModuleKind.ESModule)
-//      .withExperimentalUseWebAssembly(true) //wasm works in node, breaks in browser (even when enabled there)
+      .withExperimentalUseWebAssembly(true) //wasm works in node, breaks in browser (even when enabled there)
  //       .withModuleSplitStyle(ModuleSplitStyle.FewestModules)
 //          .withModuleSplitStyle(ModuleSplitStyle.SmallModulesFor(List("backendsJS")))
        .withESFeatures(
@@ -109,7 +109,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
        .withArgs(List(
          "--experimental-wasm-exnref", // required
          "--experimental-wasm-imported-strings", // optional (good for performance)
-         "--turboshaft-wasm", // optional, but significantly increases stability
+//         "--turboshaft-wasm", // optional, but significantly increases stability
 //         "--version",
          "--import=extensionless/register" 
 //         "--experimental-specifier-resolution=node" //TODO: Replace to fix build in recent Node versions

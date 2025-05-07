@@ -16,7 +16,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java"     % "4.30.0",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java"     % "4.31.0-RC2",
   libraryDependencies += "org.scala-lang"      % "scala3-compiler_3" % scalaVersion.value exclude (
     "org.scala-sbt",
     "compiler-interface"
@@ -107,18 +107,21 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      jsEnv := {
      val config = org.scalajs.jsenv.nodejs.NodeJSEnv.Config()
        .withArgs(List(
-//         "--experimental-wasm-exnref", // required
-//         "--experimental-wasm-imported-strings", // optional (good for performance)
-//         "--turboshaft-wasm", // optional, but significantly increases stability
-         "--experimental-specifier-resolution=node"
+         "--experimental-wasm-exnref", // required
+         "--experimental-wasm-imported-strings", // optional (good for performance)
+         "--turboshaft-wasm", // optional, but significantly increases stability
+//         "--version",
+         "--import=extensionless/register" 
+//         "--experimental-specifier-resolution=node" //TODO: Replace to fix build in recent Node versions
       ))
       new org.scalajs.jsenv.nodejs.NodeJSEnv(config)
     },
     libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.8.0",
- //    Compile / npmDependencies += "onnxruntime-web" -> "1.22.0-dev.20250310-fe7634eb6f",
+//     Compile / npmDependencies += "onnxruntime-web" -> "1.21.1",
      // ORT web and node are interchangeable, given minor package name changes, and node offers a significant speed-up (at the cost of working on the web)
-//     Compile / npmDependencies += "onnxruntime-node"   -> "1.21.0",
-//     Compile / npmDependencies += "onnxruntime-common" -> "1.22.0-dev.20250306-aafa8d170a",
+//     Compile / npmDependencies += "onnxruntime-node"   -> "1.21.1",
+//     Compile / npmDependencies += "onnxruntime-common" -> "1.21.1",
+//     Compile / npmDependencies += "tsc-alias" -> "1.8.15",
 //     Compile / npmDependencies += "typescript" -> "5.8.2",
 //     Compile / npmDevDependencies += "copy-webpack-plugin" -> "13.0.0",
 //     requireJsDomEnv in Test := true,
@@ -188,6 +191,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      scalaJSStage := FullOptStage, 
     externalNpm := {
       Process("npm install", baseDirectory.value).!
+      Process("npm install", baseDirectory.value / "../..").!
 //      Process("npm run dev", baseDirectory.value).!
        baseDirectory.value
     }

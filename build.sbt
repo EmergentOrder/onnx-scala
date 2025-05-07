@@ -48,7 +48,7 @@ lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      )
    )
    .jsSettings(
-     scalaJSStage in Global:= FullOptStage
+     scalaJSStage in Global := FullOptStage
    )
 
 lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
@@ -67,7 +67,7 @@ lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
      Compile / PB.protoSources := Seq(file("proto/src/main/protobuf"))
    )
    .jsSettings(
-     scalaJSStage in Global := FullOptStage 
+     scalaJSStage in Global := FullOptStage
    )
 
 val copyIndexTs = taskKey[Unit]("Copy ts types file to target directory")
@@ -91,32 +91,38 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
    .jvmSettings(
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.6.0" % Test
    )
-   .jsSettings( 
+   .jsSettings(
      scalaJSUseMainModuleInitializer := true,
-     mainClass := Some("org.emergentorder.onnx.backends.Main"), // "livechart.LiveChart"), // , //Testing
+     mainClass := Some(
+       "org.emergentorder.onnx.backends.Main"
+     ), // "livechart.LiveChart"), // , //Testing
 // stuck on web/node 1.15.1 due to this issue: https://github.com/microsoft/onnxruntime/issues/17979
-    scalaJSLinkerConfig ~= {
-      _.withModuleKind(ModuleKind.ESModule)
-      .withExperimentalUseWebAssembly(true) //wasm works in node, breaks in browser (even when enabled there)
- //       .withModuleSplitStyle(ModuleSplitStyle.FewestModules)
+     scalaJSLinkerConfig ~= {
+        _.withModuleKind(ModuleKind.ESModule)
+           .withExperimentalUseWebAssembly(
+             true
+           ) // wasm works in node, breaks in browser (even when enabled there)
+           //       .withModuleSplitStyle(ModuleSplitStyle.FewestModules)
 //          .withModuleSplitStyle(ModuleSplitStyle.SmallModulesFor(List("backendsJS")))
-       .withESFeatures(
-       _.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021))
-    },
+           .withESFeatures(_.withESVersion(org.scalajs.linker.interface.ESVersion.ES2021))
+     },
      // Configure Node.js (at least v23) to support the required Wasm features
      jsEnv := {
-     val config = org.scalajs.jsenv.nodejs.NodeJSEnv.Config()
-       .withArgs(List(
-         "--experimental-wasm-exnref", // required
-         "--experimental-wasm-imported-strings", // optional (good for performance)
+        val config = org.scalajs.jsenv.nodejs.NodeJSEnv
+           .Config()
+           .withArgs(
+             List(
+               "--experimental-wasm-exnref",           // required
+               "--experimental-wasm-imported-strings", // optional (good for performance)
 //         "--turboshaft-wasm", // optional, but significantly increases stability
 //         "--version",
-         "--import=extensionless/register" 
+               "--import=extensionless/register"
 //         "--experimental-specifier-resolution=node" //TODO: Replace to fix build in recent Node versions
-      ))
-      new org.scalajs.jsenv.nodejs.NodeJSEnv(config)
-    },
-    libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.8.0",
+             )
+           )
+        new org.scalajs.jsenv.nodejs.NodeJSEnv(config)
+     },
+     libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.8.0",
 //     Compile / npmDependencies += "onnxruntime-web" -> "1.21.1",
      // ORT web and node are interchangeable, given minor package name changes, and node offers a significant speed-up (at the cost of working on the web)
 //     Compile / npmDependencies += "onnxruntime-node"   -> "1.21.1",
@@ -132,7 +138,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
 //     startWebpackDevServer / version := "4.15.2",
 //     version in webpack := "5.98.0",
 //     version in startWebpackDevServer := "5.2.0",
-//     Compile / npmDependencies += "webpack" -> "5.98.0", 
+//     Compile / npmDependencies += "webpack" -> "5.98.0",
 //     Compile / npmDevDependencies += "webpack" -> "5.98.0",
 //     Compile / npmDependencies += "webpack-cli" -> "6.0.1",
 //     Compile / npmDependencies += "webpack-dev-server" -> "5.2.0",
@@ -187,20 +193,20 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.6.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",
      stShortModuleNames                      := true,
-     Compile / packageDoc / publishArtifact := true,
-     scalaJSStage := FullOptStage, 
-    externalNpm := {
-      Process("npm install", baseDirectory.value).!
-      Process("npm install", baseDirectory.value / "../..").!
+     Compile / packageDoc / publishArtifact  := true,
+     scalaJSStage                            := FullOptStage,
+     externalNpm := {
+        Process("npm install", baseDirectory.value).!
+        Process("npm install", baseDirectory.value / "../..").!
 //      Process("npm run dev", baseDirectory.value).!
-       baseDirectory.value
-    }
+        baseDirectory.value
+     }
 //     scalaJSLinkerConfig ~= { _.withESFeatures(_.withESVersion(scala.scalajs.LinkingInfo.ESVersion.ES2021)) }
    )
    // For distribution as a library, using ScalablyTypedConverterGenSourcePlugin (vs ScalablyTypedConverterPlugin) is required
    // which slows down the build (particularly the doc build, for publishing) considerably
    // TODO: minimize to reduce build time and size of js output
-   .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterExternalNpmPlugin)}
+   .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterExternalNpmPlugin) }
 //ScalablyTypedConverterExternalNpmPlugin) }
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)

@@ -23,9 +23,9 @@ class ONNXScalaBertTokenizerSpec extends AsyncFreeSpec with AsyncIOSpec with Mat
    ) #> new File("test_bert_tokenizer.onnx") !!
 
    "BERT Tokenizer ONNX-Scala model should tokenize text" in {
-      val bytes = Files.readAllBytes(Paths.get("test_bert_tokenizer.onnx"))
-      val bertTokenizer      = new ORTModelBackend(bytes)
-      val data            = Array.fill(1) { "This is a test" }
+      val bytes         = Files.readAllBytes(Paths.get("test_bert_tokenizer.onnx"))
+      val bertTokenizer = new ORTModelBackend(bytes)
+      val data          = Array.fill(1) { "This is a test" }
       // In NCHW tensor image format
       val shape                 = 1 #: SNil
       val tensorShapeDenotation = "Batch" ##: TSNil
@@ -46,23 +46,13 @@ class ONNXScalaBertTokenizerSpec extends AsyncFreeSpec with AsyncIOSpec with Mat
       // The output shape
       // and token values
       val singleIO = cats.effect.IO.both(out.shape, out.data)
-      singleIO.asserting(x => ((x._1(0),
-                                x._2(0),
-                                x._2(1),
-                                x._2(2),
-                                x._2(3),
-                                x._2(4),
-                                x._2(5))
-                              shouldBe
-                               (6,
-                                101l,
-                                1188l,
-                                1110l,
-                                170l,
-                                2774l,
-                                102l)))
+      singleIO.asserting(x =>
+         ((x._1(0), x._2(0), x._2(1), x._2(2), x._2(3), x._2(4), x._2(5))
+            shouldBe
+               (6, 101L, 1188L, 1110L, 170L, 2774L, 102L))
+      )
 
-      //Expected bert tokenizer output ("input_ids") : 101, 1188, 1110, 170, 2774, 102 , longs
+      // Expected bert tokenizer output ("input_ids") : 101, 1188, 1110, 170, 2774, 102 , longs
    }
 
 }

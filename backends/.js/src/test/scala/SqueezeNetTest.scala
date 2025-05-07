@@ -27,7 +27,7 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
 //import org.emergentorder.onnx.onnxruntimeWeb.wasmMod.onnxruntimeBackend.createInferenceSessionHandler
    implicit override def executionContext =
       scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
- 
+
    // TODO: push this inside ORTWebModelBackend, and use other create() which takes arraybufferlike
    val session: IO[
      org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
@@ -35,18 +35,18 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
 //      val infSess = new org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession()
 
       org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
-         .create( 
+         .create(
            "./squeezenet1_1_Opset18.onnx", {
               val opts =
                  org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
                     .SessionOptions()
-                opts.executionProviders = scala.scalajs.js.Array("cpu")
+              opts.executionProviders = scala.scalajs.js.Array("cpu")
 //              opts.intraOpNumThreads = 1
 //              opts.interOpNumThreads = 1
               opts
            }
-           
-       ).toFuture
+         )
+         .toFuture
    })
 
    "SqueezeNet ONNX-Scala model should predict dummy image class" in {
@@ -69,11 +69,11 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
         1 #: 1000 #: SNil
       ](Tuple(imageTens))
 
-      //js.Dynamic.global.foo = "42"
-      //js.Dynamic.global.ort.env.wasm.wasmPaths.asInstanceOf[js.UndefOr[String]]
+      // js.Dynamic.global.foo = "42"
+      // js.Dynamic.global.ort.env.wasm.wasmPaths.asInstanceOf[js.UndefOr[String]]
       // The output shape
       // and the highest probability (predicted) class
-      val both = cats.effect.IO.both(out.shape, out.data) 
+      val both = cats.effect.IO.both(out.shape, out.data)
       both.asserting(x =>
          ((x._1(0), x._1(1), x._2.indices.maxBy(x._2))
             shouldBe

@@ -1,24 +1,20 @@
 package org.emergentorder.onnx.backends
 
-import scala.language.implicitConversions
-import scala.concurrent.*
-import scala.concurrent.duration.*
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.*
-import compiletime.asMatchable
-import ai.onnxruntime.*
-import scala.jdk.CollectionConverters.*
-
+import ai.onnxruntime._
 import cats.effect.IO
-import cats.implicits.*
 import cats.effect.unsafe.implicits.global
-import org.emergentorder.onnx.*
-import org.emergentorder.onnx.Tensors.*
-import org.emergentorder.onnx.Tensors.Tensor.*
-import org.emergentorder.compiletime.*
-import org.emergentorder.io.kjaer.compiletime.*
+import cats.implicits._
+import org.emergentorder.compiletime._
+import org.emergentorder.io.kjaer.compiletime._
+import org.emergentorder.onnx.Tensors.Tensor._
+import org.emergentorder.onnx.Tensors._
+import org.emergentorder.onnx._
 
-import ORTTensorUtils.*
+import scala.jdk.CollectionConverters._
+import scala.language.implicitConversions
+
+import compiletime.asMatchable
+import ORTTensorUtils._
 
 //TODO: Clean up, remove asInstaceOf, etc.
 class ORTModelBackend(onnxBytes: Array[Byte])
@@ -26,7 +22,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
     with ORTOperatorBackend
     with AutoCloseable {
 
-   def getInputAndOutputNodeNamesAndDims(sess: OrtSession) = {
+   def getInputAndOutputNodeNamesAndDims(sess: OrtSession): (List[String], Array[Array[Long]], List[String]) = {
       val input_node_names = session.getInputNames
 
       val inputNodeDims =
@@ -37,9 +33,9 @@ class ORTModelBackend(onnxBytes: Array[Byte])
       (input_node_names.asScala.toList, inputNodeDims.toArray, output_node_names.asScala.toList)
    }
 
-   val session = getSession(onnxBytes)
+   val session: OrtSession = getSession(onnxBytes)
 
-   val allNodeNamesAndDims = getInputAndOutputNodeNamesAndDims(session)
+   val allNodeNamesAndDims: (List[String], Array[Array[Long]], List[String]) = getInputAndOutputNodeNamesAndDims(session)
 
    override def fullModel[
        T <: Supported,

@@ -1,24 +1,18 @@
 package org.emergentorder.onnx
 
 //import scala.language.implicitConversions
-import scala.collection.immutable.ArraySeq
-import compiletime.asMatchable
-
+import onnx.onnx.AttributeProto
+import onnx.onnx.GraphProto
 import onnx.onnx.ModelProto
 import onnx.onnx.NodeProto
-import onnx.onnx.GraphProto
-import onnx.onnx.TensorProto
-import onnx.onnx.AttributeProto
-import onnx.onnx.ValueInfoProto
 import onnx.onnx.OperatorSetIdProto
-import onnx.onnx.TensorProto.DataType.*
-
-import cats.effect.IO
-import cats.implicits.*
+import onnx.onnx.TensorProto.DataType._
+import onnx.onnx.ValueInfoProto
+import org.emergentorder.compiletime._
 import org.emergentorder.io.kjaer.compiletime.Shape
-import org.emergentorder.compiletime.*
-import org.emergentorder.onnx.Tensors.*
-import org.emergentorder.onnx.Tensors.Tensor.*
+import org.emergentorder.onnx.Tensors._
+
+import scala.collection.immutable.ArraySeq
 
 trait OpToONNXBytesConverter {
 

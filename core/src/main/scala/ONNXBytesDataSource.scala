@@ -1,10 +1,9 @@
 package org.emergentorder.onnx
 
-import spire.math.Numeric
-import org.emergentorder.onnx.*
-import org.emergentorder.onnx.Tensors.*
-import org.emergentorder.compiletime.*
-import org.emergentorder.io.kjaer.compiletime.*
+import org.emergentorder.compiletime._
+import org.emergentorder.io.kjaer.compiletime._
+import org.emergentorder.onnx.Tensors._
+import org.emergentorder.onnx._
 
 class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends DataSource {
 
@@ -23,8 +22,8 @@ class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends DataSource {
        s: ShapeOf[S]
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
 
-      val tensorTypeDenotation: TensorTypeDenotation = "TEMP"
-      val tensorDenotation: TensorShapeDenotation    = "TEMP" ##: TSNil
+      
+      "TEMP" ##: TSNil
 
       val shapeFromType: S              = s.value
       val tensorTypeDenotationFromType  = tt.value

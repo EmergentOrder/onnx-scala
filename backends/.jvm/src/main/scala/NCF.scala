@@ -1,20 +1,13 @@
 package org.emergentorder.onnx
 
-import org.emergentorder.onnx.*
-import org.emergentorder.onnx.Tensors.*
-import org.emergentorder.onnx.Tensors.Tensor.*
-import org.emergentorder.onnx.backends.*
-import spire.implicits.*
-import spire.math.UByte
-import spire.math.UShort
-import spire.math.Complex
-import spire.algebra.Field
-import spire.math.Numeric
-import scala.language.higherKinds
-import scala.io.Source
-import org.emergentorder.compiletime.*
-import org.emergentorder.io.kjaer.compiletime.*
 import cats.effect.IO
+import org.emergentorder.compiletime._
+import org.emergentorder.io.kjaer.compiletime._
+import org.emergentorder.onnx.Tensors.Tensor._
+import org.emergentorder.onnx.Tensors._
+import org.emergentorder.onnx.backends._
+
+import scala.language.higherKinds
 
 //TODO: Add changes to generator; Generate both full model and layerwise programs each time
 class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[Long, Long])
@@ -35,8 +28,8 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
         IO(dataToUserIds(inputDataactual_input_1.data), inputDataactual_input_1.shape)
       )
 
-      val tensorType: String & Singleton = "TensorType"
-      val nodelearned_0 = Tuple1(
+      
+      Tuple1(
         IO(dataToItemIds(inputDatalearned_0.data), inputDatalearned_0.shape)
       )
 

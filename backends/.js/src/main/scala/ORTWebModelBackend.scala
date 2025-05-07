@@ -1,28 +1,23 @@
 package org.emergentorder.onnx.backends
 
-import scala.language.implicitConversions
-import scala.concurrent.Future
-import scala.jdk.CollectionConverters._
-import scala.scalajs.js.Array
-import scalajs.js.JSConverters._
-
 import cats.effect.IO
 import cats.implicits._
-//import typings.onnxruntimeNode.mod.{InferenceSession => OrtSession}
-import org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
-import org.emergentorder.onnx.onnxruntimeCommon.mod.Tensor.{^ => OnnxTensor}
-import org.emergentorder.onnx._
-import org.emergentorder.onnx.Tensors._
-import org.emergentorder.onnx.Tensors.Tensor._
 import org.emergentorder.compiletime._
 import org.emergentorder.io.kjaer.compiletime._
+import org.emergentorder.onnx.Tensors.Tensor._
+import org.emergentorder.onnx.Tensors._
+import org.emergentorder.onnx._
+import org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
+import org.emergentorder.onnx.onnxruntimeCommon.mod.Tensor.{^ => OnnxTensor}
+
+import scala.language.implicitConversions
 
 import ORTTensorUtils._
 
 //TODO: Clean up, remove asInstaceOf, etc.
 class ORTWebModelBackend(session: IO[InferenceSession]) extends Model() with ORTOperatorBackend {
 
-   def getInputAndOutputNodeNamesAndDims(sess: InferenceSession) = {
+   def getInputAndOutputNodeNamesAndDims(sess: InferenceSession): (List[String], List[String]) = {
       val input_node_names = sess.inputNames
 
       val output_node_names = sess.outputNames
@@ -30,8 +25,8 @@ class ORTWebModelBackend(session: IO[InferenceSession]) extends Model() with ORT
       (input_node_names.toList, output_node_names.toList)
    }
 
-   val inputNames  = session.map(getInputAndOutputNodeNamesAndDims(_)._1)
-   val outputNames = session.map(getInputAndOutputNodeNamesAndDims(_)._2)
+   val inputNames: IO[List[String]]  = session.map(getInputAndOutputNodeNamesAndDims(_)._1)
+   val outputNames: IO[List[String]] = session.map(getInputAndOutputNodeNamesAndDims(_)._2)
 
    override def fullModel[
        T <: Supported,

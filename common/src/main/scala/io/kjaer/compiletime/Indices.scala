@@ -2,7 +2,6 @@
 package org.emergentorder.io.kjaer.compiletime
 
 import scala.compiletime.ops.string.+
-import scala.compiletime.ops.int
 
 type Index = Int & Singleton
 
@@ -18,7 +17,7 @@ sealed trait Indices {
 }
 
 final case class :::[+H <: Index, +T <: Indices](head: H, tail: T) extends Indices {
-   override def toString = s"$head ::: $tail"
+   override def toString: String = s"$head ::: $tail"
 }
 
 sealed trait INil extends Indices

@@ -1,23 +1,16 @@
 package org.emergentorder.onnx.backends
 
-import sys.process._
-import scala.language.postfixOps
-import org.emergentorder.onnx.Tensors._
-import org.emergentorder.onnx.Tensors.Tensor._
-import org.emergentorder.onnx.backends._
+import cats.effect.IO
+import cats.effect.testing.scalatest.AsyncIOSpec
 import org.emergentorder.compiletime._
 import org.emergentorder.io.kjaer.compiletime._
-//import org.emergentorder.onnx.onnxruntimeNode.mod.binding.InferenceSession
-//import org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionImplMod.InferenceSession
-import cats.effect.IO
-
-import org.scalatest._
-
-import scala.concurrent.Future
-import org.scalatest.flatspec.AsyncFlatSpec
+import org.emergentorder.onnx.Tensors.Tensor._
+import org.emergentorder.onnx.Tensors._
+import org.emergentorder.onnx.backends._
 import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.should._
-import cats.effect.testing.scalatest.AsyncIOSpec
+
+import scala.language.postfixOps
 
 class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
 //   Required to use onnxruntime-node
@@ -61,7 +54,7 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
       val imageTens = Tensor(data, tensorDenotation, tensorShapeDenotation, shape)
 
       // or as a shorthand if you aren't concerned with enforcing denotations
-      val imageTensDefaultDenotations = Tensor(data, shape)
+      Tensor(data, shape)
       val out = squeezenet.fullModel[
         Float,
         "ImageNetClassification",

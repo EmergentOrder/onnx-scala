@@ -1,8 +1,12 @@
 //Author: Maxime Kjaer, taken from tf-dotty
 package org.emergentorder.io.kjaer.compiletime
 
-import scala.compiletime.ops.int.{S, +, <, <=, *}
 import scala.compiletime.ops.boolean.&&
+import scala.compiletime.ops.int.+
+import scala.compiletime.ops.int.<
+import scala.compiletime.ops.int.<=
+import scala.compiletime.ops.int.S
+import scala.compiletime.ops.int._
 
 type Dimension = Int & Singleton
 
@@ -32,7 +36,7 @@ sealed trait Shape extends Product with Serializable {
 }
 
 final case class #:[+H <: Dimension, +T <: Shape](head: H, tail: T) extends Shape {
-   override def toString = head match {
+   override def toString: String = head match {
       case _ => s"$head #: $tail"
    }
 }

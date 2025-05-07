@@ -1,10 +1,11 @@
 package org.emergentorder.onnx.backends
 
 //import scala.scalajs.js.Array
-import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.onnxruntimeCommon.mod.Tensor.{^ => OnnxTensor}
-import scalajs.js.JSConverters._
+
 import scala.scalajs.js.typedarray
+
+import scalajs.js.JSConverters._
 
 object ORTTensorUtils {
 
@@ -13,21 +14,21 @@ object ORTTensorUtils {
    //
    def getOnnxTensor[T](arr: scala.Array[T], shape: scala.Array[Int]): OnnxTensor[T] = {
       arr match {
-         case b: Array[Byte] =>
+         case _: Array[Byte] =>
             getTensorByte(arr.asInstanceOf[Array[Byte]], shape).asInstanceOf[OnnxTensor[T]]
-         case s: Array[Short] =>
+         case _: Array[Short] =>
             getTensorShort(arr.asInstanceOf[Array[Short]], shape).asInstanceOf[OnnxTensor[T]]
-         case d: Array[Double] =>
+         case _: Array[Double] =>
             getTensorDouble(arr.asInstanceOf[Array[Double]], shape).asInstanceOf[OnnxTensor[T]]
-         case f: Array[Float] =>
+         case _: Array[Float] =>
             getTensorFloat(arr.asInstanceOf[Array[Float]], shape).asInstanceOf[OnnxTensor[T]]
-         case i: Array[Int] =>
+         case _: Array[Int] =>
             getTensorInt(arr.asInstanceOf[Array[Int]], shape).asInstanceOf[OnnxTensor[T]]
-         case l: Array[Long] =>
+         case _: Array[Long] =>
             getTensorLong(arr.asInstanceOf[Array[Long]], shape).asInstanceOf[OnnxTensor[T]]
-         case b: Array[Boolean] =>
+         case _: Array[Boolean] =>
             getTensorBoolean(arr.asInstanceOf[Array[Boolean]], shape).asInstanceOf[OnnxTensor[T]]
-         case st: Array[String] =>
+         case _: Array[String] =>
             getTensorString(arr.asInstanceOf[Array[String]], shape).asInstanceOf[OnnxTensor[T]]
          case _ =>
             getTensorLong(arr.map(x => x.toString.toLong).toArray, shape)

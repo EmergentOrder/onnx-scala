@@ -16,8 +16,8 @@
 
 package org.emergentorder.onnx
 
-import java.lang.{Float as JFloat}
 import java.lang.Math.pow
+import java.lang.{Float => JFloat}
 import scala.language.implicitConversions
 
 /** BFloat16 represents 16-bit floating-point values.
@@ -224,7 +224,7 @@ object BFloat16 {
 
    implicit val orderingForBFloat16: Ordering[BFloat16] =
       new Ordering[BFloat16] {
-         def compare(l: BFloat16, r: BFloat16) = l.compare(r)
+         def compare(l: BFloat16, r: BFloat16): Int = l.compare(r)
       }
 
    // if either argument is NaN, return NaN. this matches java.lang.Float.min

@@ -18,18 +18,14 @@
 
 package org.emergentorder.onnx
 
-import java.nio.file.*
-import java.nio.ByteBuffer
 //import scala.jdk.CollectionConverters
+import onnx.onnx.TensorProto.DataType._
+import onnx.onnx._
+
 import scala.language.implicitConversions
 
-import java.io.File
-//import org.bytedeco.javacpp._
-import onnx.onnx.*
-import onnx.onnx.TensorProto.DataType.*
-
 class ONNXHelper(val byteArray: Array[Byte]) {
-   lazy val model = ModelProto.parseFrom(byteArray)
+   lazy val model: ModelProto = ModelProto.parseFrom(byteArray)
    //  check_model(model.toProtoString)
    private val graph = model.graph
 
@@ -37,17 +33,16 @@ class ONNXHelper(val byteArray: Array[Byte]) {
       try {
          model.opsetImport(0).version.getOrElse(0L)
       } catch {
-         case e: Exception => { 1 }
+         case _: Exception => { 1 }
       }
 
-   def onnxTensorProtoToArray(tensorProto: TensorProto) = {
+   def onnxTensorProtoToArray(tensorProto: TensorProto): Option[Array[Byte]] | Array[Int] | (Array[Long] | Array[Float] | Array[Double]) = {
 
       // TODEFER: Get dim and type denotations, encode into types here
 
       val onnxDataType = tensorProto.dataType
       val dimsCount    = tensorProto.dims.size
-      val dims =
-         (0 until dimsCount.toInt).map(x => tensorProto.dims(x)).toArray
+      (0 until dimsCount.toInt).map(x => tensorProto.dims(x)).toArray
 
       val rawData = tensorProto.rawData
 
@@ -86,7 +81,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
    private val nodeCount = graph.map(x => x.node.size.toInt).getOrElse(0)
    private val node      = (0 until nodeCount).map(x => graph.map(y => y.node(x)))
 
-   val attributes =
+   val attributes: Array[Array[AttributeProto]] =
       node
          .map { nodeOpt =>
             nodeOpt.map { x =>
@@ -98,7 +93,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
          .toArray
          .flatten
 
-   val ops = node.map(x => x.map(y => y.opType).flatten).toArray
+   val ops: Array[Option[String]] = node.map(x => x.map(y => y.opType).flatten).toArray
 
    private val tensorElemTypeMap = Map(
      UNDEFINED.index  -> "Undefined",
@@ -120,7 +115,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
      BFLOAT16.index   -> "???"
    )
 
-   val nodeInputs =
+   val nodeInputs: IndexedSeq[Array[String]] =
       node
          .map { nodeOpt =>
             nodeOpt.map { x =>
@@ -141,7 +136,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
                )
          }
 
-   val nodeOutputs =
+   val nodeOutputs: IndexedSeq[Array[String]] =
       node
          .map { nodeOpt =>
             nodeOpt.map { x =>
@@ -161,19 +156,19 @@ class ONNXHelper(val byteArray: Array[Byte]) {
          }
 
 //  val globalOutputCount: Int = graph.map(x => x.output.size.toInt).getOrElse(0)
-   val globalOutput =
+   val globalOutput: IndexedSeq[Option[ValueInfoProto]] =
       (0 until graph.map(x => x.output.size.toInt).getOrElse(0)).map(x =>
          graph.map(y => y.output(x))
       )
 
-   val inputCount = graph.map(x => x.input.size.toInt).getOrElse(0)
-   val input      = (0 until inputCount).map(x => graph.map(y => y.input(x)))
+   val inputCount: Int = graph.map(x => x.input.size.toInt).getOrElse(0)
+   val input: IndexedSeq[Option[ValueInfoProto]]      = (0 until inputCount).map(x => graph.map(y => y.input(x)))
 
    private val initializerCount = graph.map(x => x.initializer.size).getOrElse(0)
    private val initializer =
       (0 until initializerCount).map(y => graph.map(z => z.initializer(y))).toIndexedSeq.flatten
 
-   lazy val params =
+   lazy val params: IndexedSeq[(String, String, Option[Array[Byte]] | Array[Int] | (Array[Long] | Array[Float] | Array[Double]), Array[Int])] =
       initializer.map { x =>
          val dimsCount = x.dims.size
          val dimsList  = (0 until dimsCount.toInt).map(y => x.dims(y))
@@ -183,7 +178,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
          (name, tensorElemType, arrX, dimsList.map(y => y.toInt).toArray)
       }
 
-   lazy val nodes = {
+   lazy val nodes: IndexedSeq[Iterable[String]] = {
       val someNodes = input.map { inputOpt =>
          inputOpt.map { x =>
             val name = x.name.getOrElse("MissingName")
@@ -194,7 +189,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
       someNodes
    }
 
-   lazy val outputs = {
+   lazy val outputs: Array[Option[String]] = {
       val outputArray = globalOutput.toArray
       outputArray.map { valueinfoOpt =>
          valueinfoOpt
@@ -205,7 +200,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
       }
    }
 
-   lazy val graphInputs = {
+   lazy val graphInputs: Array[(String, String)] = {
       val inputCount = graph.map(x => x.input.size.toInt).getOrElse(0)
       val input      = (0 until inputCount).map(y => graph.map(z => z.input(y)))
       input.toArray
@@ -226,7 +221,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
          .flatten
    }
 
-   lazy val graphOutputs = {
+   lazy val graphOutputs: Array[(String, String)] = {
       val outputCount = graph.map(x => x.output.size.toInt).getOrElse(0)
       val output      = (0 until outputCount).map(y => graph.map(z => z.output(y)))
       output.toArray

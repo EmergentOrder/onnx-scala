@@ -9,6 +9,15 @@ val scalaTestVersion = "3.2.19"
 
 scalaVersion := dottyVersion
 
+inThisBuild(
+  List(
+   scalaVersion := "3.7.1-RC1",
+   semanticdbEnabled := true,
+   semanticdbVersion := scalafixSemanticdb.revision
+   )
+)
+
+
 lazy val commonSettings = Seq(
   organization := "org.emergentorder.onnx",
   version      := "0.18.0",
@@ -30,7 +39,8 @@ lazy val commonSettings = Seq(
     "-deprecation",
 //    "-release:21",
     "-rewrite",
-    "-source:3.7-migration"
+    "-source:3.7-migration",
+    "-Wunused:all"
   ),
   versionPolicyIntention := Compatibility.BinaryCompatible, // As long as we are pre 1.0.0, BinaryCompatible for a patch version bump and None for a minor version bump
   versionScheme         := Some("early-semver"),

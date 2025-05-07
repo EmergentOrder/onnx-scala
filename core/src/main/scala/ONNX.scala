@@ -1,26 +1,21 @@
 package org.emergentorder
 
-import scala.language.higherKinds
-import scala.{specialized as sp}
-//import java.util.Map
-import spire.math.UByte
-import spire.math.UShort
-import spire.math.UInt
-import spire.math.ULong
+import org.emergentorder.compiletime.TensorShapeDenotation.Reverse
+import org.emergentorder.compiletime._
+import org.emergentorder.onnx.Tensors._
 import spire.math.Complex
 import spire.math.Numeric
-import spire.implicits.*
-import spire.algebra.Field
+import spire.math.UByte
+import spire.math.UInt
+import spire.math.ULong
+import spire.math.UShort
 
-import org.emergentorder.onnx.Tensors.*
-//import scala.compiletime.ops.int //For RC2
-import scala.compiletime.ops.int.*
-import io.kjaer.compiletime.*
-import io.kjaer.compiletime.Shape.NumElements
-import org.emergentorder.compiletime.*
-import org.emergentorder.compiletime.TensorShapeDenotation.Reverse
-import org.emergentorder.compiletime.TensorShapeDenotation.Concat
 import scala.collection.immutable.ArraySeq
+import scala.language.higherKinds
+import scala.{specialized => sp}
+
+import io.kjaer.compiletime._
+import io.kjaer.compiletime.Shape.NumElements
 
 //TODO: Add new Trilu operator from V14, other "function" operators, as need be
 

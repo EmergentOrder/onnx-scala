@@ -1,30 +1,27 @@
 package org.emergentorder.onnx.backends
 
-import java.nio.*
-import scala.jdk.CollectionConverters.*
-import scala.language.implicitConversions
-import scala.util.Using
-import ai.onnxruntime.*
-import ai.onnxruntime.TensorInfo.OnnxTensorType
+import ai.onnxruntime._
 import ai.onnxruntime.extensions.OrtxPackage
-import org.emergentorder.onnx.*
-import org.emergentorder.onnx.Tensors.*
-import org.emergentorder.onnx.Tensors.Tensor.*
-import org.emergentorder.compiletime.*
-import org.emergentorder.io.kjaer.compiletime.*
-import onnx.onnx.*
-
-import cats.implicits.*
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import ORTTensorUtils.*
+import cats.implicits._
+import onnx.onnx._
+import org.emergentorder.compiletime._
+import org.emergentorder.io.kjaer.compiletime._
+import org.emergentorder.onnx.Tensors._
+import org.emergentorder.onnx._
+
+import scala.jdk.CollectionConverters._
+import scala.language.implicitConversions
+
+import ORTTensorUtils._
 
 trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 
-   val env = OrtEnvironment.getEnvironment()
+   val env: OrtEnvironment = OrtEnvironment.getEnvironment()
 
-   val coreCount = java.lang.Runtime.getRuntime().availableProcessors()
-   def getSession(bytes: Array[Byte]) = {
+   val coreCount: Int = java.lang.Runtime.getRuntime().availableProcessors()
+   def getSession(bytes: Array[Byte]): OrtSession = {
       // Can now set symbolic dimension values, but only at session creation time
       val session_options = new OrtSession.SessionOptions()
 //      session_options.addCPU(false)
@@ -212,7 +209,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       // .flatMap(IO.println("Real call opName => " + opName).as(_))
    }
 
-   def modelToPersist(mod: ModelProto, outName: String) = {
+   def modelToPersist(mod: ModelProto, outName: String): ModelProto = {
       val outNode      = mod.getGraph.node(0).clearOutput.withOutput(Seq(outName))
       val outInfoProto = mod.getGraph.output(0).clearName.withName(outName)
       val graphToPersist =

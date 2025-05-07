@@ -1,25 +1,26 @@
 package org.emergentorder.onnx.backends
 
-import java.nio.*
-import compiletime.asMatchable
-import org.emergentorder.onnx.Tensors.*
 import ai.onnxruntime.OnnxTensor
 import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtUtil
-import ai.onnxruntime.TensorInfo.OnnxTensorType.*
+import ai.onnxruntime.TensorInfo.OnnxTensorType._
+
+import java.nio._
+
+import compiletime.asMatchable
 
 object ORTTensorUtils {
 
    def getOnnxTensor[T](arr: Array[T], shape: Array[Int], env: OrtEnvironment): OnnxTensor = {
       arr(0).asMatchable match {
-         case b: Byte    => getTensorByte(arr.asInstanceOf[Array[Byte]], shape, env)
-         case s: Short   => getTensorShort(arr.asInstanceOf[Array[Short]], shape, env)
-         case d: Double  => getTensorDouble(arr.asInstanceOf[Array[Double]], shape, env)
-         case f: Float   => getTensorFloat(arr.asInstanceOf[Array[Float]], shape, env)
-         case i: Int     => getTensorInt(arr.asInstanceOf[Array[Int]], shape, env)
-         case l: Long    => getTensorLong(arr.asInstanceOf[Array[Long]], shape, env)
-         case b: Boolean => getTensorBoolean(arr.asInstanceOf[Array[Boolean]], shape, env)
-         case st: String => getTensorString(arr.asInstanceOf[Array[String]], shape, env)
+         case _: Byte    => getTensorByte(arr.asInstanceOf[Array[Byte]], shape, env)
+         case _: Short   => getTensorShort(arr.asInstanceOf[Array[Short]], shape, env)
+         case _: Double  => getTensorDouble(arr.asInstanceOf[Array[Double]], shape, env)
+         case _: Float   => getTensorFloat(arr.asInstanceOf[Array[Float]], shape, env)
+         case _: Int     => getTensorInt(arr.asInstanceOf[Array[Int]], shape, env)
+         case _: Long    => getTensorLong(arr.asInstanceOf[Array[Long]], shape, env)
+         case _: Boolean => getTensorBoolean(arr.asInstanceOf[Array[Boolean]], shape, env)
+         case _: String => getTensorString(arr.asInstanceOf[Array[String]], shape, env)
       }
    }
 

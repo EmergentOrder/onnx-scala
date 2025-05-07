@@ -2,11 +2,11 @@
 
 package org.emergentorder.compiletime
 
-import scala.compiletime.ops.int.{S, +, <, <=, *}
-import scala.compiletime.ops.boolean.&&
+import org.emergentorder.io.kjaer.compiletime.INil
 import org.emergentorder.io.kjaer.compiletime.Index
 import org.emergentorder.io.kjaer.compiletime.Indices
-import org.emergentorder.io.kjaer.compiletime.INil
+
+import scala.compiletime.ops.int.S
 
 type DimensionDenotation = String & Singleton
 
@@ -34,7 +34,7 @@ sealed trait TensorShapeDenotation extends Product with Serializable {
 
 final case class ##:[+H <: DimensionDenotation, +T <: TensorShapeDenotation](head: H, tail: T)
     extends TensorShapeDenotation {
-   override def toString = head match {
+   override def toString: String = head match {
       case _ => s"$head ##: $tail"
    }
 }

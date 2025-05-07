@@ -1,21 +1,18 @@
 package org.emergentorder.onnx
 
+import cats.effect.IO
+import org.emergentorder.compiletime.##:
+import org.emergentorder.compiletime.TSNil
+import org.emergentorder.compiletime.TensorShapeDenotation
+import org.emergentorder.io.kjaer.compiletime.Shape._
+import org.emergentorder.io.kjaer.compiletime._
+import spire.math.Complex
 import spire.math.UByte
-import spire.math.UShort
 import spire.math.UInt
 import spire.math.ULong
-import spire.math.Complex
-import spire.math.Numeric
-import org.emergentorder.io.kjaer.compiletime.*
-import org.emergentorder.io.kjaer.compiletime.Shape.*
-import scala.compiletime.ops.int.*
+import spire.math.UShort
 
-import cats.effect.IO
-import org.emergentorder.compiletime.DimensionDenotation
-import org.emergentorder.compiletime.TensorShapeDenotation
-import org.emergentorder.compiletime.tensorShapeDenotationOf
-import org.emergentorder.compiletime.TSNil
-import org.emergentorder.compiletime.##:
+import scala.compiletime.ops.int._
 
 object Tensors {
 

@@ -1,40 +1,28 @@
 package org.emergentorder.onnx.backends
 
-import scala.concurrent.duration._
 //import typings.onnxruntimeWeb.tensorMod
-import org.emergentorder.onnx.onnxruntimeCommon.tensorMod
-//import typings.onnxruntimeWeb.tensorMod.Tensor.DataType
-//import typings.onnxjs.libTensorMod.Tensor.DataTypeMap.DataTypeMapOps
+import cats.effect.IO
+import cats.implicits._
+import org.emergentorder.compiletime._
+import org.emergentorder.io.kjaer.compiletime._
+import org.emergentorder.onnx.Tensors._
+import org.emergentorder.onnx._
 import org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionImplMod.{
    InferenceSession => OrtSession
 }
 import org.emergentorder.onnx.onnxruntimeCommon.mod.Tensor.{^ => OnnxTensor}
-//import typings.onnxruntimeWeb.ort.InferenceSession.{^ => InferenceSess}
-//import typings.onnxjs.onnxMod.Onnx
-import scala.scalajs.js.typedarray
-//import typings.onnxruntimeWeb.onnxImplMod._
+import org.emergentorder.onnx.onnxruntimeCommon.tensorMod
 
-//import scala.scalajs.js.Thenable.Implicits._
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.language.postfixOps
 import scala.scalajs.js
-import scalajs.js.JSConverters._
+import scala.scalajs.js.annotation.JSImport
+import scala.scalajs.js.typedarray
 import scala.scalajs.js.typedarray._
 
-import cats.implicits._
-import cats.effect.{IO}
 import ORTTensorUtils._
-import org.emergentorder.onnx._
-import org.emergentorder.onnx.Tensors._
-import org.emergentorder.onnx.Tensors.Tensor._
-import org.emergentorder.compiletime._
 import onnxruntimeCommon.inferenceSessionMod.InferenceSession
-import org.emergentorder.io.kjaer.compiletime._
-import org.emergentorder.onnx.onnxruntimeWeb.onnxruntimeWebRequire
-
-import scala.scalajs.js
-import scala.scalajs.js.annotation.JSImport
 
 @JSImport("onnxruntime-web", JSImport.Namespace)
 @js.native
@@ -59,7 +47,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
 
    // Required to use onnxruntime-web, causes import to actually happen
    ort.env.logLevel = "warning"
-   def getSession(bytes: Array[Byte]) = {
+   def getSession(bytes: Array[Byte]): IO[InferenceSession] = {
 
       val bytesArrayBuffer = bytes.toTypedArray.buffer
       val session: IO[
@@ -367,7 +355,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
    //  extends OpToONNXBytesConverter
    // with AutoCloseable {
 
-   def test() = {
+   def test(): Tensor[Float, ("ImageNetClassification", "Batch" ##: "Class" ##: TSNil, 1 #: 1000 #: 1 #: 1 #: SNil)] = {
 
       val session: IO[
         org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
@@ -384,7 +372,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
       }
 //      val dataTypes = new FloatType {}
 
-      val dataType = "float32"
+      
       val dims     = scala.scalajs.js.Array(1.0, 3.0, 224.0, 224.0)
 
       val rawData = typedarray.floatArray2Float32Array((0 until 150528).map(_ => 42.0f).toArray)
@@ -401,7 +389,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
 
       val inputs = Array(tensor)
 
-      val res = runModel[
+      runModel[
         Float,
         "ImageNetClassification",
         "Batch" ##: "Class" ##: TSNil,

@@ -7,14 +7,10 @@ import org.emergentorder.compiletime._
 import org.emergentorder.io.kjaer.compiletime._
 import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx._
-import org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionImplMod.{
-   InferenceSession => OrtSession
-}
 import org.emergentorder.onnx.onnxruntimeCommon.mod.Tensor.{^ => OnnxTensor}
 import org.emergentorder.onnx.onnxruntimeCommon.tensorMod
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 import scala.language.postfixOps
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
@@ -50,26 +46,30 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
    def getSession(bytes: Array[Byte]): IO[InferenceSession] = {
 
       val bytesArrayBuffer = bytes.toTypedArray.buffer
+  
       val session: IO[
-        InferenceSession
-      ] = IO.fromFuture(IO {
-         val infSess = OrtSession.create(
-           bytesArrayBuffer,
+     org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
+   ] = IO.fromFuture(IO {
+//      val infSess = new org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession()
+
+      org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
+         .create(
+                      bytesArrayBuffer,
            0,
            bytesArrayBuffer.byteLength, {
-              val opts = InferenceSession.SessionOptions()
+              val opts =
+                 org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
+                    .SessionOptions()
               opts.executionProviders = scala.scalajs.js.Array("cpu")
+//              opts.intraOpNumThreads = 1
+//              opts.interOpNumThreads = 1
               opts
            }
          )
-         Future(
-           infSess.asInstanceOf[
-             org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
-           ]
-         )
+         .toFuture
+   })
 
-      })
-      session
+   session
    }
 
    // Idea: prepopulate models for ops with no params
@@ -134,7 +134,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
           opModelBytes: Array[Byte],
           inputTensorss: IO[Array[OnnxTensor[T]]]
       ): Tensor[T, Tuple3[Tt, Td, S]] = {
-         cats.effect.Resource
+        cats.effect.Resource
             .make(inputTensorss)(inTens => IO {})
             .use(x =>
                cats.effect.Resource
@@ -149,6 +149,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
                   )
                // }
             )
+       
 
       }
 
@@ -240,7 +241,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
                .flatMap { realSess =>
 //                  feeds.flatMap { realFeeds =>
                   val output = cats.effect.Resource
-                     .make(IO.blocking { realSess.run(typedFeeds) })(outTens => IO {})
+                     .make(IO.blocking { realSess.run(typedFeeds)
+                     })(outTens => IO {})
                      .use(outTens =>
 //                     outputNames.flatMap { names =>
                         IO.blocking(outTens.toFuture.map { result =>
@@ -355,21 +357,28 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
    //  extends OpToONNXBytesConverter
    // with AutoCloseable {
 
-   def test(): Tensor[Float, ("ImageNetClassification", "Batch" ##: "Class" ##: TSNil, 1 #: 1000 #: 1 #: 1 #: SNil)] = {
+   def test(): Tensor[Float, ("ImageNetClassification", "Batch" ##: "Class" ##: TSNil, 1 #: 1000 #: SNil)] = {
 
-      val session: IO[
-        org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
-      ] = IO.fromFuture {
-         IO {
-            val infSess =
-               OrtSession.create("squeezenet1_1_Opset18.onnx", InferenceSession.SessionOptions())
-            Future(
-              infSess.asInstanceOf[
-                org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
-              ]
-            )
-         }
-      }
+        val session: IO[
+     org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
+   ] = IO.fromFuture(IO {
+//      val infSess = new org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession()
+
+      org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
+         .create(
+           "./squeezenet1_1_Opset18.onnx", {
+              val opts =
+                 org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
+                    .SessionOptions()
+              opts.executionProviders = scala.scalajs.js.Array("cpu")
+//              opts.intraOpNumThreads = 1
+//              opts.interOpNumThreads = 1
+              opts
+           }
+         )
+         .toFuture
+   })
+ 
 //      val dataTypes = new FloatType {}
 
       
@@ -380,7 +389,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
       val tensor: OnnxTensor[Float] =
          (new OnnxTensor(rawData, dims)).asInstanceOf[OnnxTensor[Float]]
 
-      // println(tensor.data)
+  //     println(tensor.data)
 
       // r.Tensor(dims, dataType.asInstanceOf[typings.onnxruntimeWeb.tensorMod.Tensor.DataType])
       // data.set(scala.scalajs.js.Array[Double](0.0),rawData)
@@ -389,19 +398,21 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
 
       val inputs = Array(tensor)
 
-      runModel[
+      val res = runModel[
         Float,
         "ImageNetClassification",
         "Batch" ##: "Class" ##: TSNil,
-        1 #: 1000 #: 1 #: 1 #: SNil
+        1 #: 1000 #: SNil
       ](
         session,
         inputs,
-        List("data_0"),
+        List("x"),
         List("squeezenet0_flatten0_reshape0")
       )
 
-      //  res.foreach(tens => tens.data.foreach(println))
+      import org.emergentorder.onnx.Tensors.Tensor.data
+      res.data.flatMap(x => {cats.effect.std.Console[IO].println(x)})
+      res
 //      res.andThen(x => println(x))
 //      res.foreach(tens => println(tens.shape))
 

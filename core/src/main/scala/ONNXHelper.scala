@@ -36,7 +36,9 @@ class ONNXHelper(val byteArray: Array[Byte]) {
          case _: Exception => { 1 }
       }
 
-   def onnxTensorProtoToArray(tensorProto: TensorProto): Option[Array[Byte]] | Array[Int] | (Array[Long] | Array[Float] | Array[Double]) = {
+   def onnxTensorProtoToArray(
+       tensorProto: TensorProto
+   ): Option[Array[Byte]] | Array[Int] | (Array[Long] | Array[Float] | Array[Double]) = {
 
       // TODEFER: Get dim and type denotations, encode into types here
 
@@ -162,13 +164,21 @@ class ONNXHelper(val byteArray: Array[Byte]) {
       )
 
    val inputCount: Int = graph.map(x => x.input.size.toInt).getOrElse(0)
-   val input: IndexedSeq[Option[ValueInfoProto]]      = (0 until inputCount).map(x => graph.map(y => y.input(x)))
+   val input: IndexedSeq[Option[ValueInfoProto]] =
+      (0 until inputCount).map(x => graph.map(y => y.input(x)))
 
    private val initializerCount = graph.map(x => x.initializer.size).getOrElse(0)
    private val initializer =
       (0 until initializerCount).map(y => graph.map(z => z.initializer(y))).toIndexedSeq.flatten
 
-   lazy val params: IndexedSeq[(String, String, Option[Array[Byte]] | Array[Int] | (Array[Long] | Array[Float] | Array[Double]), Array[Int])] =
+   lazy val params: IndexedSeq[
+     (
+         String,
+         String,
+         Option[Array[Byte]] | Array[Int] | (Array[Long] | Array[Float] | Array[Double]),
+         Array[Int]
+     )
+   ] =
       initializer.map { x =>
          val dimsCount = x.dims.size
          val dimsList  = (0 until dimsCount.toInt).map(y => x.dims(y))

@@ -20,7 +20,7 @@ object ORTTensorUtils {
          case _: Int     => getTensorInt(arr.asInstanceOf[Array[Int]], shape, env)
          case _: Long    => getTensorLong(arr.asInstanceOf[Array[Long]], shape, env)
          case _: Boolean => getTensorBoolean(arr.asInstanceOf[Array[Boolean]], shape, env)
-         case _: String => getTensorString(arr.asInstanceOf[Array[String]], shape, env)
+         case _: String  => getTensorString(arr.asInstanceOf[Array[String]], shape, env)
       }
    }
 

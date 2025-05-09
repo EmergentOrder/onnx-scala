@@ -28,7 +28,6 @@ class NCF(byteArray: Array[Byte], userIdsMap: Map[Long, Long], itemIdsMap: Map[L
         IO(dataToUserIds(inputDataactual_input_1.data), inputDataactual_input_1.shape)
       )
 
-      
       Tuple1(
         IO(dataToItemIds(inputDatalearned_0.data), inputDatalearned_0.shape)
       )

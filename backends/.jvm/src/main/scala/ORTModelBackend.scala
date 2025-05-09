@@ -22,7 +22,9 @@ class ORTModelBackend(onnxBytes: Array[Byte])
     with ORTOperatorBackend
     with AutoCloseable {
 
-   def getInputAndOutputNodeNamesAndDims(sess: OrtSession): (List[String], Array[Array[Long]], List[String]) = {
+   def getInputAndOutputNodeNamesAndDims(
+       sess: OrtSession
+   ): (List[String], Array[Array[Long]], List[String]) = {
       val input_node_names = session.getInputNames
 
       val inputNodeDims =
@@ -35,7 +37,8 @@ class ORTModelBackend(onnxBytes: Array[Byte])
 
    val session: OrtSession = getSession(onnxBytes)
 
-   val allNodeNamesAndDims: (List[String], Array[Array[Long]], List[String]) = getInputAndOutputNodeNamesAndDims(session)
+   val allNodeNamesAndDims: (List[String], Array[Array[Long]], List[String]) =
+      getInputAndOutputNodeNamesAndDims(session)
 
    override def fullModel[
        T <: Supported,

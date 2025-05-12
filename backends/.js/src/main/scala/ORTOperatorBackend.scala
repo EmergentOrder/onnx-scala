@@ -135,10 +135,10 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
           inputTensorss: IO[Array[OnnxTensor[T]]]
       ): Tensor[T, Tuple3[Tt, Td, S]] = {
          cats.effect.Resource
-            .make(inputTensorss)(inTens => IO {})
+            .make(inputTensorss)(_ => IO {})
             .use(x =>
                cats.effect.Resource
-                  .make(IO.blocking(getSession(opModelBytes)))(sess => IO {})
+                  .make(IO.blocking(getSession(opModelBytes)))(_ => IO {})
                   .use(sess =>
                      runModel(
                        sess,
@@ -240,7 +240,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
                .flatMap { realSess =>
 //                  feeds.flatMap { realFeeds =>
                   val output = cats.effect.Resource
-                     .make(IO.blocking { realSess.run(typedFeeds) })(outTens => IO {})
+                     .make(IO.blocking { realSess.run(typedFeeds) })(_ => IO {})
                      .use(outTens =>
 //                     outputNames.flatMap { names =>
                         IO.blocking(outTens.toFuture.map { result =>
@@ -371,7 +371,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
                  val opts =
                     org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
                        .SessionOptions()
-                 opts.executionProviders = scala.scalajs.js.Array("cpu")
+                 opts.executionProviders = scala.scalajs.js.Array("webgpu")
 //              opts.intraOpNumThreads = 1
 //              opts.interOpNumThreads = 1
                  opts

@@ -9,9 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "onnxruntime-common": "1.21.1",
-    "onnxruntime-node": "1.21.1",
-    "onnxruntime-web": "1.21.1",
+    "onnxruntime-common": "1.22.0",
+    "onnxruntime-node": "1.22.0",
+    "onnxruntime-web": "1.22.0",
     "typescript": "5.8.3"
   },
   "devDependencies": {

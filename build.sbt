@@ -205,8 +205,8 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      Compile / packageDoc / publishArtifact  := true,
      scalaJSStage                            := FullOptStage,
      externalNpm := {
-        Process("npm install", baseDirectory.value).!
-        Process("npm install", baseDirectory.value / "../..").!
+        Process("npm install --ignore-scripts", baseDirectory.value).!
+        Process("npm install --ignore-scripts", baseDirectory.value / "../..").!
 //      Process("npm run dev", baseDirectory.value).!
         baseDirectory.value
      }

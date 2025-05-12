@@ -11,12 +11,11 @@ scalaVersion := dottyVersion
 
 inThisBuild(
   List(
-   scalaVersion := "3.7.1-RC1",
-   semanticdbEnabled := true,
-   semanticdbVersion := scalafixSemanticdb.revision
-   )
+    scalaVersion      := "3.7.1-RC1",
+    semanticdbEnabled := true,
+    semanticdbVersion := scalafixSemanticdb.revision
+  )
 )
-
 
 lazy val commonSettings = Seq(
   organization := "org.emergentorder.onnx",
@@ -37,7 +36,7 @@ lazy val commonSettings = Seq(
 //    "-Xfatal-warnings",
     "-unchecked",
     "-deprecation",
-//    "-release:21",
+//    "-release:24",
     "-rewrite",
     "-source:3.7-migration",
     "-Wunused:all"
@@ -92,8 +91,8 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      name                  := "onnx-scala-backends",
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
      libraryDependencies ++= Seq(
-       "com.microsoft.onnxruntime" % "onnxruntime"            % "1.21.1",
-       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.13.0"
+       "com.microsoft.onnxruntime" % "onnxruntime" % "1.22.0"
+//       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.13.0"
      ),
      libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
      crossScalaVersions                       := Seq(dottyVersion)
@@ -217,6 +216,9 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
    // which slows down the build (particularly the doc build, for publishing) considerably
    // TODO: minimize to reduce build time and size of js output
    .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterExternalNpmPlugin) }
+   .jvmConfigure { project =>
+      project.enablePlugins(JavaAppPackaging, GraalVMNativeImagePlugin)
+   } //GraalVMNativeImagePlugin) }
 //ScalablyTypedConverterExternalNpmPlugin) }
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)

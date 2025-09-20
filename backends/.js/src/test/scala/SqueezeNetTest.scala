@@ -33,7 +33,7 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
               val opts =
                  org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
                     .SessionOptions()
-              opts.executionProviders = scala.scalajs.js.Array("webgpu")
+              opts.executionProviders = scala.scalajs.js.Array("cpu")
 //              opts.intraOpNumThreads = 1
 //              opts.interOpNumThreads = 1
               opts

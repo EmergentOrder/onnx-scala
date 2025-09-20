@@ -222,7 +222,7 @@ object BFloat16 {
    def fromDouble(x: Double): BFloat16 =
       fromFloat(x.toFloat)
 
-   implicit val orderingForBFloat16: Ordering[BFloat16] =
+   given orderingForBFloat16: Ordering[BFloat16] =
       new Ordering[BFloat16] {
          def compare(l: BFloat16, r: BFloat16): Int = l.compare(r)
       }

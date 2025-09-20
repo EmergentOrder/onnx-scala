@@ -9,7 +9,6 @@ import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.backends._
 import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.should._
-
 import scala.language.postfixOps
 
 class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
@@ -18,8 +17,9 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
 //   listSupportedBackends()
 
 //import org.emergentorder.onnx.onnxruntimeWeb.wasmMod.onnxruntimeBackend.createInferenceSessionHandler
-   implicit override def executionContext =
-      scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
+   override given executionContext: scala.concurrent.ExecutionContext =
+     org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits.global  
+     //scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
    // TODO: push this inside ORTWebModelBackend, and use other create() which takes arraybufferlike
    val session: IO[
@@ -33,7 +33,7 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
               val opts =
                  org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
                     .SessionOptions()
-              opts.executionProviders = scala.scalajs.js.Array("cpu")
+              opts.executionProviders = scala.scalajs.js.Array("webgpu")
 //              opts.intraOpNumThreads = 1
 //              opts.interOpNumThreads = 1
               opts

@@ -3,7 +3,7 @@ import scala.sys.process.Process
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.7.1-RC1"
+val dottyVersion     = "3.7.2"
 val spireVersion     = "0.18.0"
 val scalaTestVersion = "3.2.19"
 
@@ -11,7 +11,7 @@ scalaVersion := dottyVersion
 
 inThisBuild(
   List(
-    scalaVersion      := "3.7.1-RC1",
+    scalaVersion      := dottyVersion,
     semanticdbEnabled := true,
     semanticdbVersion := scalafixSemanticdb.revision
   )
@@ -24,7 +24,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java"     % "4.31.0-RC2",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java"     % "4.32.0",
   libraryDependencies += "org.scala-lang"      % "scala3-compiler_3" % scalaVersion.value exclude (
     "org.scala-sbt",
     "compiler-interface"
@@ -39,7 +39,11 @@ lazy val commonSettings = Seq(
 //    "-release:24",
     "-rewrite",
     "-source:3.7-migration",
-    "-Wunused:all"
+    "-Yimplicit-to-given",
+ //   "-language:future",
+//    "-source:future",
+    "-Wunused:all",
+    "-WunstableInlineAccessors"
   ),
   versionPolicyIntention := Compatibility.BinaryCompatible, // As long as we are pre 1.0.0, BinaryCompatible for a patch version bump and None for a minor version bump
   versionScheme         := Some("early-semver"),
@@ -98,7 +102,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      crossScalaVersions                       := Seq(dottyVersion)
    )
    .jvmSettings(
-     libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.6.0" % Test
+     libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.7.0" % Test
    )
    .jsSettings(
      scalaJSUseMainModuleInitializer := true,
@@ -131,7 +135,8 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
            )
         new org.scalajs.jsenv.nodejs.NodeJSEnv(config)
      },
-     libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.8.0",
+     libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.8.1",
+     libraryDependencies += "org.scala-js" %%% "scala-js-macrotask-executor" % "1.1.1",
 //     Compile / npmDependencies += "onnxruntime-web" -> "1.21.1",
      // ORT web and node are interchangeable, given minor package name changes, and node offers a significant speed-up (at the cost of working on the web)
 //     Compile / npmDependencies += "onnxruntime-node"   -> "1.21.1",
@@ -221,7 +226,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
    } //GraalVMNativeImagePlugin) }
 //ScalablyTypedConverterExternalNpmPlugin) }
 
-lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
+lazy val core = (crossProject(JSPlatform, JVMPlatform) //, NativePlatform)
    .crossType(CrossType.Pure) in file("core"))
    .dependsOn(common)
    .dependsOn(proto)
@@ -237,7 +242,7 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
         case _ =>
            Seq(
              ("org.typelevel" %%% "spire"       % spireVersion),
-             ("org.typelevel" %%% "cats-effect" % "3.6.1")
+             ("org.typelevel" %%% "cats-effect" % "3.7.0-RC1")
            )
      })
    )

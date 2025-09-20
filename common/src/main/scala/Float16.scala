@@ -397,7 +397,7 @@ object Float16 {
    def fromDouble(x: Double): Float16 =
       fromFloat(x.toFloat)
 
-   implicit val orderingForFloat16: Ordering[Float16] =
+   given orderingForFloat16: Ordering[Float16] =
       new Ordering[Float16] {
          def compare(l: Float16, r: Float16): Int = l.compare(r)
       }

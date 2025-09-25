@@ -24,7 +24,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java"     % "4.32.0",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java"     % "4.32.1",
   libraryDependencies += "org.scala-lang"      % "scala3-compiler_3" % scalaVersion.value exclude (
     "org.scala-sbt",
     "compiler-interface"
@@ -95,7 +95,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      name                  := "onnx-scala-backends",
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
      libraryDependencies ++= Seq(
-       "com.microsoft.onnxruntime" % "onnxruntime" % "1.22.0",
+       "com.microsoft.onnxruntime" % "onnxruntime" % "1.22.0", //"1.23.0-RC2",
        "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.13.0"
      ),
      libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
@@ -204,7 +204,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      },
      Compile / compile := (Compile / compile dependsOn (copyIndexTs, copyPackageNoExports)).value,
 //     Test / test := (Test / test dependsOn (copyPackageNoExports)).value,
-     libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.6.0" % Test,
+     libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.7.0" % Test,
      stOutputPackage                         := "org.emergentorder.onnx",
      stShortModuleNames                      := true,
      Compile / packageDoc / publishArtifact  := true,

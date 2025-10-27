@@ -12,4 +12,4 @@ addSbtPlugin("org.xerial.sbt"     % "sbt-sonatype"                  % "3.12.2")
 addSbtPlugin("org.scalameta"      % "sbt-mdoc"                      % "2.7.1")
 //addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "0.21.1")
 // for Scala.js 1.x.x
-addSbtPlugin("org.scalablytyped.converter" % "sbt-converter" % "1.0.0-beta45") //45 coming soon
+addSbtPlugin("org.scalablytyped.converter" % "sbt-converter" % "1.0.0-beta44") //45 coming soon

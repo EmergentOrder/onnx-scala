@@ -3,7 +3,7 @@ import scala.sys.process.Process
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.7.2"
+val dottyVersion     = "3.7.4-RC1" // "3.7.3"
 val spireVersion     = "0.18.0"
 val scalaTestVersion = "3.2.19"
 
@@ -24,7 +24,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java"     % "4.32.1",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java"     % "4.33.0-RC2",
   libraryDependencies += "org.scala-lang"      % "scala3-compiler_3" % scalaVersion.value exclude (
     "org.scala-sbt",
     "compiler-interface"
@@ -36,7 +36,7 @@ lazy val commonSettings = Seq(
 //    "-Xfatal-warnings",
     "-unchecked",
     "-deprecation",
-//    "-release:24",
+//    "-release:25",
     "-rewrite",
     "-source:3.7-migration",
     "-Yimplicit-to-given",
@@ -95,7 +95,7 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      name                  := "onnx-scala-backends",
      mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
      libraryDependencies ++= Seq(
-       "com.microsoft.onnxruntime" % "onnxruntime" % "1.23.0", //"1.23.0-RC2",
+       "com.microsoft.onnxruntime" % "onnxruntime" % "1.23.2", //"1.23.0-RC2",
        "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.13.0"
      ),
      libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
@@ -221,9 +221,9 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
    // which slows down the build (particularly the doc build, for publishing) considerably
    // TODO: minimize to reduce build time and size of js output
    .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterExternalNpmPlugin) }
-   .jvmConfigure { project =>
-      project.enablePlugins(JavaAppPackaging, GraalVMNativeImagePlugin)
-   } //GraalVMNativeImagePlugin) }
+//   .jvmConfigure { project =>
+//      project.enablePlugins(JavaAppPackaging) //, GraalVMNativeImagePlugin)
+//   } //GraalVMNativeImagePlugin) }
 //ScalablyTypedConverterExternalNpmPlugin) }
 
 lazy val core = (crossProject(JSPlatform, JVMPlatform) //, NativePlatform)

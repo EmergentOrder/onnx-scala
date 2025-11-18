@@ -9,22 +9,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "onnxruntime-common": "1.23.0",
-    "onnxruntime-node": "1.23.0",
-    "onnxruntime-web": "1.23.0",
+    "onnxruntime-common": "1.23.2",
+    "onnxruntime-node": "1.23.2",
+    "onnxruntime-web": "1.23.2",
     "typescript": "5.9.3"
   },
   "devDependencies": {
-    "@scala-js/vite-plugin-scalajs": "^1.0.0",
+    "@scala-js/vite-plugin-scalajs": "^1.1.0",
     "typescript": "5.9.3",
     "vite": "^6.4.1",
     "vite-plugin-static-copy": "2.3.2",
-    "@rollup/plugin-commonjs": "28.0.6",
+    "@rollup/plugin-commonjs": "29.0.0",
     "tsc-alias": "1.8.16"
   },
    "overrides": {
     "@scala-js/vite-plugin-scalajs": {
-      "esbuild": "~0.25.10",
+      "esbuild": "~0.27.0",
       "vite": "^6.4.1"
     }
   } 

@@ -230,15 +230,9 @@ trait OpToONNXBytesConverter {
       // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
       @annotation.nowarn
       val inputValueInfosAndExistingInputs: List[Tuple2[ValueInfoProto, String]] =
-         inputs.zipWithIndex.map { x =>
-//                        case tens: Int => {
-            val name = {
-               val incr: String = x._2.toString
-               val t            = ((incr)).toString
-               t
-            }
-         // Some(
-         (createInputValueInfoProto(x._1._1, x._1._2, name), name)
+         inputs.zipWithIndex.map {
+            x => 
+            (createInputValueInfoProto(x._1._1, x._1._2, x._2.toString), x._2.toString)
          }.toList
       //       .sequence
 

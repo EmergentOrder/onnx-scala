@@ -3,8 +3,8 @@ import scala.sys.process.Process
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.7.2" // "3.7.4-RC1"
-val spireVersion     = "0.18.0"
+val dottyVersion     = "3.7.2" //3.7.4 requires newer sbt-converter 45
+val spireVersion     = "0.18.0"//-156-0fe5a6a-20251027T014354Z-SNAPSHOT"
 val scalaTestVersion = "3.2.19"
 
 scalaVersion := dottyVersion
@@ -24,7 +24,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java"     % "4.33.0-RC2",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java"     % "4.33.1",
   libraryDependencies += "org.scala-lang"      % "scala3-compiler_3" % scalaVersion.value exclude (
     "org.scala-sbt",
     "compiler-interface"
@@ -226,7 +226,8 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
 //   } //GraalVMNativeImagePlugin) }
 //ScalablyTypedConverterExternalNpmPlugin) }
 
-lazy val core = (crossProject(JSPlatform, JVMPlatform) //, NativePlatform)
+//Enabling NativePlatform here requires custom-built spire
+lazy val core = (crossProject(JSPlatform, JVMPlatform)//, NativePlatform)
    .crossType(CrossType.Pure) in file("core"))
    .dependsOn(common)
    .dependsOn(proto)

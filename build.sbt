@@ -36,7 +36,7 @@ lazy val commonSettings = Seq(
 //    "-Xfatal-warnings",
     "-unchecked",
     "-deprecation",
-    "-release:25",
+//    "-release:25",
     "-rewrite",
     "-source:3.8-migration",
     "-Yimplicit-to-given",

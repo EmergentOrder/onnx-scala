@@ -1,9 +1,13 @@
 import org.scalajs.linker.interface.ModuleSplitStyle
 import scala.sys.process.Process
-import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
+//import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
+
+//TODO: figure out why tests got a lot slower after moving to sbt-projectmatrix
+//TODO: copy dummy package.json for JS tests
+
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.7.2" //3.8.0-RC6 //3.7.4 requires newer sbt-converter 45
+val dottyVersion     = "3.7.2" //"3.8.0-RC6" //3.7.4 requires newer sbt-converter 45
 val spireVersion     = "0.18.0"//-156-0fe5a6a-20251027T014354Z-SNAPSHOT"
 val scalaTestVersion = "3.3.0-alpha.2"
 
@@ -29,6 +33,7 @@ lazy val commonSettings = Seq(
     "org.scala-sbt",
     "compiler-interface"
   ),
+//  (Test / parallelExecution) := false,
   scalacOptions ++= Seq(
     "-explain",
     "-explain-types",
@@ -40,7 +45,7 @@ lazy val commonSettings = Seq(
     "-rewrite",
     "-source:3.8-migration",
     "-Yimplicit-to-given",
- //   "-language:future",
+//    "-language:future",
 //    "-source:future",
     "-Wunused:all",
     "-WunstableInlineAccessors"
@@ -51,65 +56,72 @@ lazy val commonSettings = Seq(
   autoCompilerPlugins   := true
 ) ++ sonatypeSettings
 
-lazy val common = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
-   .crossType(CrossType.Pure) in file("common"))
+lazy val common = (projectMatrix in file("common"))
+   .jvmPlatform(scalaVersions = Seq(dottyVersion))
+   .jsPlatform(scalaVersions = Seq(dottyVersion),
+               scalaJSStage in Global := FullOptStage)
+   .nativePlatform(scalaVersions = Seq(dottyVersion))
+//(crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
      name := "onnx-scala-common",
-     crossScalaVersions := Seq(
-       dottyVersion
-     )
-   )
-   .jsSettings(
-     scalaJSStage in Global := FullOptStage
    )
 
-lazy val proto = (crossProject(JSPlatform, JVMPlatform, NativePlatform)
-   .crossType(CrossType.Pure) in file("proto"))
+
+lazy val proto = (projectMatrix in file("proto"))
+   .jvmPlatform(scalaVersions = Seq(dottyVersion))
+   .jsPlatform(scalaVersions = Seq(dottyVersion),
+               scalaJSStage in Global := FullOptStage)
+   .nativePlatform(scalaVersions = Seq(dottyVersion))
    .settings(
      commonSettings,
-     name                  := "onnx-scala-proto",
-     mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-proto" % "0.17.0"),
-     crossScalaVersions := Seq(
-       dottyVersion
-     ),
+     name                  := "onnx-scala-proto", 
      Compile / PB.targets := Seq(
        scalapb.gen() -> (Compile / sourceManaged).value / "scalapb"
      ),
      // The trick is in this line:
      Compile / PB.protoSources := Seq(file("proto/src/main/protobuf"))
-   )
-   .jsSettings(
-     scalaJSStage in Global := FullOptStage
-   )
+   ) 
 
 val copyIndexTs = taskKey[Unit]("Copy ts types file to target directory")
 
 val copyPackageNoExports = taskKey[Unit]("Copy package file without exports to target directory")
 
-lazy val backends = (crossProject(JSPlatform, JVMPlatform)
-   .crossType(CrossType.Pure) in file("backends"))
-   .dependsOn(core)
+val copyPackageFull = taskKey[Unit]("Copy full package file")
+
+//Enabling NativePlatform here requires custom-built spire
+lazy val core = (projectMatrix in file("core"))
+   .jvmPlatform(scalaVersions = Seq(dottyVersion))
+   .jsPlatform(scalaVersions = Seq(dottyVersion),
+               scalaJSStage in Global := FullOptStage)
+//   .nativePlatform(scalaVersions = Seq(dottyVersion))
+   .dependsOn(common)
+   .dependsOn(proto)
    .settings(
      commonSettings,
-     name                  := "onnx-scala-backends",
-     mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-backends" % "0.17.0"),
-     libraryDependencies ++= Seq(
-       "com.microsoft.onnxruntime" % "onnxruntime" % "1.23.2", //"1.23.0-RC2",
-       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.13.0"
-     ),
-     libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
-     crossScalaVersions                       := Seq(dottyVersion)
-   )
-   .jvmSettings(
-     libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.7.0" % Test
-   )
-   .jsSettings(
-     scalaJSUseMainModuleInitializer := true,
-     mainClass := Some(
-       "org.emergentorder.onnx.backends.Main"
-     ), // "livechart.LiveChart"), // , //Testing
-// stuck on web/node 1.15.1 due to this issue: https://github.com/microsoft/onnxruntime/issues/17979
+     name                  := "onnx-scala",
+     libraryDependencies ++= (CrossVersion
+        .partialVersion(scalaVersion.value) match {
+        case _ =>
+           Seq(
+             ("org.typelevel" %%% "spire"       % spireVersion),
+             ("org.typelevel" %%% "cats-effect" % "3.7.0-RC1")
+           )
+     })
+   ) 
+
+lazy val backends = (projectMatrix in file("backends"))
+//TODO: restore  //.enablePlugins(ScalablyTypedConverterExternalNpmPlugin)
+  .jvmPlatform(scalaVersions = Seq(dottyVersion))
+              // axisValues = Seq(config12, VirtualAxis.jvm),Seq())
+  .jsPlatform(scalaVersions = Seq(dottyVersion),
+              Seq(
+              scalaJSUseMainModuleInitializer := true,
+              scalaJSStage in Global := FullOptStage,
+//              moduleName := name.value + "_js",
+              mainClass := Some(
+                "org.emergentorder.onnx.backends.Main"
+              ), // "livechart.LiveChart"), // , //Testing
      scalaJSLinkerConfig ~= {
         _.withModuleKind(ModuleKind.ESModule)
            .withExperimentalUseWebAssembly(
@@ -156,7 +168,8 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
 //     Compile / npmDevDependencies += "webpack" -> "5.98.0",
 //     Compile / npmDependencies += "webpack-cli" -> "6.0.1",
 //     Compile / npmDependencies += "webpack-dev-server" -> "5.2.0",
-     sources in (Compile, doc) := Nil,
+     //Compile / sources := Nil,
+     doc / sources := Nil,
 //     Compile / stMinimize := Selection.AllExcept("onnxruntime-common", "onnxruntime-web", "onnxruntime-node"),
 //    Compile / npmDependencies += "typescript"         -> "5.5.4",
      copyIndexTs := {
@@ -165,14 +178,11 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
         val src = new File(".")
 
         // get the files we want to copy
-        val htmlFiles: Seq[File] = Seq(new File("index.d.ts"))
+        val htmlFiles: Seq[File] = Seq(new File("./index.d.ts"))
 
         // use Path.rebase to pair source files with target destination in crossTarget
-        val pairs = htmlFiles pair rebase(
-          src,
-          (baseDirectory).value / "node_modules/onnxruntime-node/dist/"
-        )
-
+        val pairs = Seq((htmlFiles(0),new File(".sbt/matrix/backendsJS3/node_modules/onnxruntime-node/dist/index.d.ts"))) //pair rebase(
+        
         // Copy files to source files to target
         IO.copy(
           pairs,
@@ -187,13 +197,28 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
         val src = new File(".")
 
         // get the files we want to copy
-        val htmlFiles: Seq[File] = Seq(new File("package.json"))
+        val htmlFiles: Seq[File] = Seq(new File("./packageFull.json"))
 
         // use Path.rebase to pair source files with target destination in crossTarget
-        val pairs = htmlFiles pair rebase(
-          src,
-          (baseDirectory).value / "node_modules/onnxruntime-common/"
+        val pairs: Seq[(File, File)] = Seq((htmlFiles(0), new File(".sbt/matrix/backendsJS3/package.json"))) 
+        
+        // Copy files to source files to target
+        IO.copy(
+          pairs,
+          CopyOptions
+             .apply(overwrite = true, preserveLastModified = true, preserveExecutable = false)
         )
+     },
+     copyPackageFull := {
+        import Path._
+
+        val src = new File(".")
+
+        // get the files we want to copy
+        val htmlFiles: Seq[File] = Seq(new File("./package.json"))
+
+        // use Path.rebase to pair source files with target destination in crossTarget
+        val pairs: Seq[(File, File)] = Seq((htmlFiles(0), new File(".sbt/matrix/backendsJS3/node_modules/onnxruntime-common/package.json")))
 
         // Copy files to source files to target
         IO.copy(
@@ -202,13 +227,12 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
              .apply(overwrite = true, preserveLastModified = true, preserveExecutable = false)
         )
      },
-     Compile / compile := (Compile / compile dependsOn (copyIndexTs, copyPackageNoExports)).value,
-//     Test / test := (Test / test dependsOn (copyPackageNoExports)).value,
-     libraryDependencies += "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.7.0" % Test,
+     Compile / compile := (Compile / compile dependsOn (copyIndexTs, copyPackageNoExports, copyPackageFull)).value,
+     Test / test := (Test / test dependsOn (copyIndexTs, copyPackageNoExports, copyPackageFull)).value,
+//     Clean / clean := (Clean / clean dependsOn (copyIndexTs, copyPackageNoExports)).value,
      stOutputPackage                         := "org.emergentorder.onnx",
      stShortModuleNames                      := true,
      Compile / packageDoc / publishArtifact  := true,
-     scalaJSStage                            := FullOptStage,
      externalNpm := {
         Process("npm install --ignore-scripts", baseDirectory.value).!
         Process("npm install --ignore-scripts", baseDirectory.value / "../..").!
@@ -217,39 +241,32 @@ lazy val backends = (crossProject(JSPlatform, JVMPlatform)
      }
 //     scalaJSLinkerConfig ~= { _.withESFeatures(_.withESVersion(scala.scalajs.LinkingInfo.ESVersion.ES2021)) }
    )
+)
+   .dependsOn(core)
+   .settings(
+     commonSettings,
+     name                  := "onnx-scala-backends",
+     libraryDependencies ++= Seq(
+       "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.7.0" % Test,
+       "com.microsoft.onnxruntime" % "onnxruntime" % "1.23.2", //"1.23.0-RC2",
+       "com.microsoft.onnxruntime" % "onnxruntime-extensions" % "0.13.0"
+     ),
+     libraryDependencies += ("org.scalatest" %%% "scalatest" % scalaTestVersion) % Test,
+//     libraryDependencies += ("org.scalactic" %% "scalactic" % scalaTestVersion),
+     )
+    
+lazy val backendsFound = backends.js(dottyVersion)
+  .enablePlugins(ScalablyTypedConverterExternalNpmPlugin)
+ 
    // For distribution as a library, using ScalablyTypedConverterGenSourcePlugin (vs ScalablyTypedConverterPlugin) is required
    // which slows down the build (particularly the doc build, for publishing) considerably
    // TODO: minimize to reduce build time and size of js output
-   .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterExternalNpmPlugin) }
+//   .jsConfigure { project => project.enablePlugins(ScalablyTypedConverterExternalNpmPlugin) }
 //   .jvmConfigure { project =>
 //      project.enablePlugins(JavaAppPackaging) //, GraalVMNativeImagePlugin)
 //   } //GraalVMNativeImagePlugin) }
 //ScalablyTypedConverterExternalNpmPlugin) }
 
-//Enabling NativePlatform here requires custom-built spire
-lazy val core = (crossProject(JSPlatform, JVMPlatform)//, NativePlatform)
-   .crossType(CrossType.Pure) in file("core"))
-   .dependsOn(common)
-   .dependsOn(proto)
-   .settings(
-     commonSettings,
-     name                  := "onnx-scala",
-     mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala" % "0.17.0"),
-     crossScalaVersions := Seq(
-       dottyVersion
-     ),
-     libraryDependencies ++= (CrossVersion
-        .partialVersion(scalaVersion.value) match {
-        case _ =>
-           Seq(
-             ("org.typelevel" %%% "spire"       % spireVersion),
-             ("org.typelevel" %%% "cats-effect" % "3.7.0-RC1")
-           )
-     })
-   )
-   .jsSettings(
-     scalaJSStage in Global := FullOptStage
-   )
 /*
 lazy val docs = (crossProject(JVMPlatform)
   .crossType(CrossType.Pure) in file("core-docs"))       // new documentation project

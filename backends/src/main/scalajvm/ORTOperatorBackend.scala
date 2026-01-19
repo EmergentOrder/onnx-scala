@@ -210,8 +210,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
    }
 
    def modelToPersist(mod: ModelProto, outName: String): ModelProto = {
-      val outNode      = mod.getGraph.node(0).clearOutput.withOutput(Seq(outName))
-      val outInfoProto = mod.getGraph.output(0).clearName.withName(outName)
+      val outNode        = mod.getGraph.node(0).clearOutput.withOutput(Seq(outName))
+      val outInfoProto   = mod.getGraph.output(0).clearName.withName(outName)
       val graphToPersist =
          mod.getGraph.clearNode.withNode(Seq(outNode)).clearOutput.withOutput(Seq(outInfoProto))
       mod.clearGraph.withGraph(graphToPersist)

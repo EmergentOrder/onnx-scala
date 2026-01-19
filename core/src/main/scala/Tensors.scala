@@ -213,7 +213,7 @@ object Tensors {
        AxisIndicesEnds <: None.type | Indices
    ] <: Shape = AxisIndicesStarts match {
       case None.type => SNil
-      case Indices =>
+      case Indices   =>
          AxisIndicesEnds match {
             case None.type => SNil
             case Indices   => SlicedShapeLoop[AxisIndicesStarts, AxisIndicesEnds]
@@ -238,10 +238,10 @@ object Tensors {
        AxisAfter <: None.type | Shape
    ] <: Shape = AxisBefore match {
       case None.type => PadFrom
-      case Shape =>
+      case Shape     =>
          AxisAfter match {
             case None.type => PadFrom
-            case Shape =>
+            case Shape     =>
                Reverse[PaddedShapeLoop[Reverse[PadFrom], Reverse[AxisBefore], Reverse[AxisAfter]]]
          }
    }

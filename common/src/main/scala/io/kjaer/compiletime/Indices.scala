@@ -39,7 +39,7 @@ object Indices {
    }
 
    type RemoveValue[RemoveFrom <: Indices, Value <: Index] <: Indices = RemoveFrom match {
-      case INil => INil
+      case INil          => INil
       case head ::: tail =>
          head match {
             case Value => RemoveValue[tail, Value]

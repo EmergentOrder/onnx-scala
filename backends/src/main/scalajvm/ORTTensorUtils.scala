@@ -106,7 +106,7 @@ object ORTTensorUtils {
 
    def getArrayFromOnnxTensor[T](value: OnnxTensor): Array[T] = {
       val dtype = value.getInfo.onnxType
-      val arr = dtype match {
+      val arr   = dtype match {
          case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT => {
             value.getFloatBuffer.array()
          }

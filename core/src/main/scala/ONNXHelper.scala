@@ -163,12 +163,12 @@ class ONNXHelper(val byteArray: Array[Byte]) {
          graph.map(y => y.output(x))
       )
 
-   val inputCount: Int = graph.map(x => x.input.size.toInt).getOrElse(0)
+   val inputCount: Int                           = graph.map(x => x.input.size.toInt).getOrElse(0)
    val input: IndexedSeq[Option[ValueInfoProto]] =
       (0 until inputCount).map(x => graph.map(y => y.input(x)))
 
    private val initializerCount = graph.map(x => x.initializer.size).getOrElse(0)
-   private val initializer =
+   private val initializer      =
       (0 until initializerCount).map(y => graph.map(z => z.initializer(y))).toIndexedSeq.flatten
 
    lazy val params: IndexedSeq[

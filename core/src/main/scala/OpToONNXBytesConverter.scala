@@ -230,8 +230,7 @@ trait OpToONNXBytesConverter {
       // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
       @annotation.nowarn
       val inputValueInfosAndExistingInputs: List[Tuple2[ValueInfoProto, String]] =
-         inputs.zipWithIndex.map {
-            x => 
+         inputs.zipWithIndex.map { x =>
             (createInputValueInfoProto(x._1._1, x._1._2, x._2.toString), x._2.toString)
          }.toList
       //       .sequence
@@ -256,7 +255,7 @@ trait OpToONNXBytesConverter {
       }
 
       val thisOpset = if opName.equals("Inverse") then 1 else 17
-      val model = {
+      val model     = {
          val mod = ModelProto(
            producerName = Some("ONNX-Scala"),
            graph = Some(newGraph),

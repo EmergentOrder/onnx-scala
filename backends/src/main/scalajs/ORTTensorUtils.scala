@@ -119,7 +119,7 @@ object ORTTensorUtils {
        value: org.emergentorder.onnx.onnxruntimeCommon.tensorMod.Tensor
    ): Array[T] = {
       val data = value.data
-      val arr = data match {
+      val arr  = data match {
 
          case a: scala.scalajs.js.typedarray.Float32Array => {
             scala.scalajs.js.typedarray.float32Array2FloatArray(a)

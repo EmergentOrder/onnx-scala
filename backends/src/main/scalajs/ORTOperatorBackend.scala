@@ -193,7 +193,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
        td: TensorShapeDenotationOf[Td],
        s: ShapeOf[S]
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
-      val inputNodeNames = (0 until inputs.size).toList.map(_.toString)
+      val inputNodeNames                       = (0 until inputs.size).toList.map(_.toString)
       val result: Tensor[T, Tuple3[Tt, Td, S]] =
          callByteArrayOp(
            inputs,
@@ -306,7 +306,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
        value: org.emergentorder.onnx.onnxruntimeCommon.tensorMod.Tensor
    ): Array[T] = {
       val data = value.data
-      val arr = data match {
+      val arr  = data match {
 
          case a: scala.scalajs.js.typedarray.Float32Array => {
             scala.scalajs.js.typedarray.float32Array2FloatArray(a)

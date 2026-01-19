@@ -9,6 +9,7 @@ import org.emergentorder.onnx.Tensors._
 import org.emergentorder.onnx.backends._
 import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.should._
+
 import scala.language.postfixOps
 
 class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {

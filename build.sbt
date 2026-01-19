@@ -6,7 +6,7 @@ import scala.sys.process.Process
 
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.7.2" //"3.8.0-RC6" //3.7.4 requires newer sbt-converter 45
+val dottyVersion     = "3.7.2" //3.7.4 requires newer sbt-converter 45
 val spireVersion     = "0.18.0"//-156-0fe5a6a-20251027T014354Z-SNAPSHOT"
 val scalaTestVersion = "3.3.0-alpha.2"
 
@@ -53,13 +53,14 @@ lazy val commonSettings = Seq(
   versionScheme         := Some("early-semver"),
   mimaPreviousArtifacts := Set("org.emergent-order" %%% "onnx-scala-common" % "0.17.0"),
   autoCompilerPlugins   := true
-) ++ sonatypeSettings
+) 
+//++ sonatypeSettings
 
 lazy val common = (projectMatrix in file("common"))
    .jvmPlatform(scalaVersions = Seq(dottyVersion))
    .jsPlatform(scalaVersions = Seq(dottyVersion),
                scalaJSStage in Global := FullOptStage)
-   .nativePlatform(scalaVersions = Seq(dottyVersion))
+//   .nativePlatform(scalaVersions = Seq(dottyVersion))
 //(crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
@@ -71,7 +72,7 @@ lazy val proto = (projectMatrix in file("proto"))
    .jvmPlatform(scalaVersions = Seq(dottyVersion))
    .jsPlatform(scalaVersions = Seq(dottyVersion),
                scalaJSStage in Global := FullOptStage)
-   .nativePlatform(scalaVersions = Seq(dottyVersion))
+//   .nativePlatform(scalaVersions = Seq(dottyVersion))
    .settings(
      commonSettings,
      name                  := "onnx-scala-proto", 
@@ -304,6 +305,7 @@ lazy val docs = (crossProject(JVMPlatform)
 
 publish / skip := true
 
+/*
 lazy val sonatypeSettings = Seq(
   sonatypeProfileName                := "org.emergent-order",
   sonatypeCredentialHost             := "s01.oss.sonatype.org",
@@ -335,3 +337,4 @@ lazy val sonatypeSettings = Seq(
      else Some("releases" at nexus + "service/local/staging/deploy/maven2")
   }
 )
+*/

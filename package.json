@@ -13,21 +13,21 @@
     "onnxruntime-node": "1.23.2",
     "onnxruntime-web": "1.23.2",
     "typescript": "5.9.3",
-    "protobufjs": "^7.5.4"
+    "protobufjs": "^8.0.0"
   },
   "devDependencies": {
     "@scala-js/vite-plugin-scalajs": "^1.1.0",
     "typescript": "5.9.3",
-    "vite": "^6.4.1",
-    "vite-plugin-static-copy": "2.3.2",
+    "vite": "^7.3.1",
+    "vite-plugin-static-copy": "3.1.5",
     "@rollup/plugin-commonjs": "29.0.0",
     "tsc-alias": "1.8.16",
-    "extensionless": "1.9.9"
+    "extensionless": "2.0.6"
   },
    "overrides": {
     "@scala-js/vite-plugin-scalajs": {
       "esbuild": "~0.27.2",
-      "vite": "^6.4.1"
+      "vite": "^7.3.1"
     }
   } 
 }

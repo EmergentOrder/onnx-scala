@@ -6,7 +6,7 @@ import scala.sys.process.Process
 
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val dottyVersion     = "3.7.2" //3.7.4 requires newer sbt-converter 45
+val dottyVersion     = "3.7.2" //"3.8.1-RC1" //3.7.4 requires newer sbt-converter 45
 val spireVersion     = "0.18.0"//-156-0fe5a6a-20251027T014354Z-SNAPSHOT"
 val scalaTestVersion = "3.3.0-alpha.2"
 
@@ -40,7 +40,7 @@ lazy val commonSettings = Seq(
 //    "-Xfatal-warnings",
     "-unchecked",
     "-deprecation",
-//    "-release:25",
+//   "-release:25",
     "-rewrite",
     "-source:3.8-migration",
     "-Yimplicit-to-given",
@@ -107,7 +107,9 @@ lazy val core = (projectMatrix in file("core"))
         case _ =>
            Seq(
              ("org.typelevel" %%% "spire"       % spireVersion),
-             ("org.typelevel" %%% "cats-effect" % "3.7.0-RC1")
+             ("org.typelevel" %%% "cats-effect" % "3.7.0-RC1"),
+             ("org.typelevel" %%% "cats-mtl" % "1.6.0"),
+             ("org.typelevel" %%% "algebra" % "2.13.0")
            )
      })
    ) 

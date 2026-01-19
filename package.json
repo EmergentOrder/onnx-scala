@@ -1,31 +1,33 @@
 {
-  "license": "MIT",
+  "name": "onnx-scala",
+  "private": true,
+  "version": "0.0.0",
   "type": "module",
-  "name": "onnxruntime-common",
-  "version": "1.23.2",
-  "repository": {
-    "url": "https://github.com/Microsoft/onnxruntime.git",
-    "type": "git"
-  },
-  "author": "fs-eire",
   "scripts": {
-    "build:cjs": "tsc --module commonjs --moduleResolution node10 --outDir ./dist/cjs",
-    "build:esm": "tsc",
-    "build:bundles": "webpack",
-    "build": "node ./build.js",
-    "prepare": "npm run build",
-    "pretest": "tsc --build ./test",
-    "test": "mocha ./test/**/*.js --timeout 30000"
+    "dev": "vite --debug",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "onnxruntime-common": "1.23.2",
+    "onnxruntime-node": "1.23.2",
+    "onnxruntime-web": "1.23.2",
+    "typescript": "5.9.3",
+    "protobufjs": "^7.5.4"
   },
   "devDependencies": {
-    "typedoc": "^0.28.16",
+    "@scala-js/vite-plugin-scalajs": "^1.1.0",
+    "typescript": "5.9.3",
+    "vite": "^6.4.1",
+    "vite-plugin-static-copy": "2.3.2",
+    "@rollup/plugin-commonjs": "29.0.0",
+    "tsc-alias": "1.8.16",
     "extensionless": "1.9.9"
   },
-  "main": "dist/cjs/index.js",
-  "keywords": [
-    "ONNX",
-    "ONNXRuntime",
-    "ONNX Runtime"
-  ],
-  "description": "ONNXRuntime JavaScript API library"
+   "overrides": {
+    "@scala-js/vite-plugin-scalajs": {
+      "esbuild": "~0.27.2",
+      "vite": "^6.4.1"
+    }
+  } 
 }

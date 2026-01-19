@@ -3,7 +3,6 @@ import scala.sys.process.Process
 //import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 //TODO: figure out why tests got a lot slower after moving to sbt-projectmatrix
-//TODO: copy dummy package.json for JS tests
 
 
 //val dottyVersion = dottyLatestNightlyBuild.get
@@ -87,6 +86,8 @@ val copyIndexTs = taskKey[Unit]("Copy ts types file to target directory")
 
 val copyPackageNoExports = taskKey[Unit]("Copy package file without exports to target directory")
 
+val copyPackageNoExportsAgain = taskKey[Unit]("Copy package file without exports to target directory")
+
 val copyPackageFull = taskKey[Unit]("Copy full package file")
 
 //Enabling NativePlatform here requires custom-built spire
@@ -168,7 +169,7 @@ lazy val backends = (projectMatrix in file("backends"))
 //     Compile / npmDevDependencies += "webpack" -> "5.98.0",
 //     Compile / npmDependencies += "webpack-cli" -> "6.0.1",
 //     Compile / npmDependencies += "webpack-dev-server" -> "5.2.0",
-     //Compile / sources := Nil,
+//     Compile / sources := Nil,
      doc / sources := Nil,
 //     Compile / stMinimize := Selection.AllExcept("onnxruntime-common", "onnxruntime-web", "onnxruntime-node"),
 //    Compile / npmDependencies += "typescript"         -> "5.5.4",
@@ -191,13 +192,13 @@ lazy val backends = (projectMatrix in file("backends"))
         )
 
      },
-     copyPackageNoExports := {
+     copyPackageFull := {
         import Path._
 
         val src = new File(".")
 
         // get the files we want to copy
-        val htmlFiles: Seq[File] = Seq(new File("./packageFull.json"))
+        val htmlFiles: Seq[File] = Seq(new File("./package.json"))
 
         // use Path.rebase to pair source files with target destination in crossTarget
         val pairs: Seq[(File, File)] = Seq((htmlFiles(0), new File(".sbt/matrix/backendsJS3/package.json"))) 
@@ -209,13 +210,13 @@ lazy val backends = (projectMatrix in file("backends"))
              .apply(overwrite = true, preserveLastModified = true, preserveExecutable = false)
         )
      },
-     copyPackageFull := {
+     copyPackageNoExports := {
         import Path._
 
         val src = new File(".")
 
         // get the files we want to copy
-        val htmlFiles: Seq[File] = Seq(new File("./package.json"))
+        val htmlFiles: Seq[File] = Seq(new File("packageNoExports.json"))
 
         // use Path.rebase to pair source files with target destination in crossTarget
         val pairs: Seq[(File, File)] = Seq((htmlFiles(0), new File(".sbt/matrix/backendsJS3/node_modules/onnxruntime-common/package.json")))
@@ -227,15 +228,33 @@ lazy val backends = (projectMatrix in file("backends"))
              .apply(overwrite = true, preserveLastModified = true, preserveExecutable = false)
         )
      },
-     Compile / compile := (Compile / compile dependsOn (copyIndexTs, copyPackageNoExports, copyPackageFull)).value,
-     Test / test := (Test / test dependsOn (copyIndexTs, copyPackageNoExports, copyPackageFull)).value,
+     copyPackageNoExportsAgain := {
+        import Path._
+
+        val src = new File(".")
+
+        // get the files we want to copy
+        val htmlFiles: Seq[File] = Seq(new File("packageNoExports.json"))
+
+        // use Path.rebase to pair source files with target destination in crossTarget
+        val pairs: Seq[(File, File)] = Seq((htmlFiles(0), new File("node_modules/onnxruntime-common/package.json")))
+
+        // Copy files to source files to target
+        IO.copy(
+          pairs,
+          CopyOptions
+             .apply(overwrite = true, preserveLastModified = true, preserveExecutable = false)
+        )
+     },
+     Compile / compile := (Compile / compile dependsOn (copyPackageFull)).value,
+     Test / test := (Test / test dependsOn (copyIndexTs, copyPackageNoExports, copyPackageNoExportsAgain)).value,
 //     Clean / clean := (Clean / clean dependsOn (copyIndexTs, copyPackageNoExports)).value,
      stOutputPackage                         := "org.emergentorder.onnx",
      stShortModuleNames                      := true,
      Compile / packageDoc / publishArtifact  := true,
      externalNpm := {
         Process("npm install --ignore-scripts", baseDirectory.value).!
-        Process("npm install --ignore-scripts", baseDirectory.value / "../..").!
+        Process("npm install --ignore-scripts", baseDirectory.value / "../../..").!
 //      Process("npm run dev", baseDirectory.value).!
         baseDirectory.value
      }

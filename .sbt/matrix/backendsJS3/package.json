@@ -12,7 +12,8 @@
     "onnxruntime-common": "1.23.2",
     "onnxruntime-node": "1.23.2",
     "onnxruntime-web": "1.23.2",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "protobufjs": "^7.5.4"
   },
   "devDependencies": {
     "@scala-js/vite-plugin-scalajs": "^1.1.0",
@@ -20,7 +21,8 @@
     "vite": "^6.4.1",
     "vite-plugin-static-copy": "2.3.2",
     "@rollup/plugin-commonjs": "29.0.0",
-    "tsc-alias": "1.8.16"
+    "tsc-alias": "1.8.16",
+    "extensionless": "1.9.9"
   },
    "overrides": {
     "@scala-js/vite-plugin-scalajs": {

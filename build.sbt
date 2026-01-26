@@ -56,7 +56,7 @@ lazy val commonSettings = Seq(
 lazy val common = (projectMatrix in file("common"))
    .jvmPlatform(scalaVersions = Seq(dottyVersion))
    .jsPlatform(scalaVersions = Seq(dottyVersion), scalaJSStage in Global := FullOptStage)
-//   .nativePlatform(scalaVersions = Seq(dottyVersion))
+   .nativePlatform(scalaVersions = Seq(dottyVersion))
 //(crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
@@ -67,7 +67,7 @@ lazy val common = (projectMatrix in file("common"))
 lazy val proto = (projectMatrix in file("proto"))
    .jvmPlatform(scalaVersions = Seq(dottyVersion))
    .jsPlatform(scalaVersions = Seq(dottyVersion), scalaJSStage in Global := FullOptStage)
-//   .nativePlatform(scalaVersions = Seq(dottyVersion))
+   .nativePlatform(scalaVersions = Seq(dottyVersion))
    .settings(
      commonSettings,
      name := "onnx-scala-proto",

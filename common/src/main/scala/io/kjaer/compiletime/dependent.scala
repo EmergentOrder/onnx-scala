@@ -1,7 +1,7 @@
 //Author: Maxime Kjaer, taken from tf-dotty
 package org.emergentorder.io.kjaer.compiletime
 
-import scala.compiletime.ops.int._
+import scala.compiletime.ops.int.*
 
 // Extensions on ints that allow scala.compiletime.ops to be dependently typed
 extension [X <: Int, Y <: Int](x: Int) {

@@ -1,20 +1,20 @@
 package org.emergentorder.onnx.backends
 
-import ai.onnxruntime._
+import ai.onnxruntime.*
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import cats.implicits._
-import org.emergentorder.compiletime._
-import org.emergentorder.io.kjaer.compiletime._
-import org.emergentorder.onnx.Tensors.Tensor._
-import org.emergentorder.onnx.Tensors._
-import org.emergentorder.onnx._
+import cats.implicits.*
+import org.emergentorder.compiletime.*
+import org.emergentorder.io.kjaer.compiletime.*
+import org.emergentorder.onnx.Tensors.Tensor.*
+import org.emergentorder.onnx.Tensors.*
+import org.emergentorder.onnx.*
 
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 import scala.language.implicitConversions
 
 import compiletime.asMatchable
-import ORTTensorUtils._
+import ORTTensorUtils.*
 
 //TODO: Clean up, remove asInstaceOf, etc.
 class ORTModelBackend(onnxBytes: Array[Byte])
@@ -23,7 +23,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
     with AutoCloseable {
 
    def getInputAndOutputNodeNamesAndDims(
-       sess: OrtSession
+//       sess: OrtSession
    ): (List[String], Array[Array[Long]], List[String]) = {
       val input_node_names = session.getInputNames
 
@@ -38,7 +38,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
    val session: OrtSession = getSession(onnxBytes)
 
    val allNodeNamesAndDims: (List[String], Array[Array[Long]], List[String]) =
-      getInputAndOutputNodeNamesAndDims(session)
+      getInputAndOutputNodeNamesAndDims()
 
    override def fullModel[
        T <: Supported,
@@ -76,8 +76,8 @@ class ORTModelBackend(onnxBytes: Array[Byte])
             runModel[T, Tt, Td, S](
               session,
               inTens,
-              allNodeNamesAndDims._1,
-              allNodeNamesAndDims._3
+              allNodeNamesAndDims._1
+//              allNodeNamesAndDims._3
             )
          )
       output.memoize.unsafeRunSync()

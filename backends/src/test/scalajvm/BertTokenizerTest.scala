@@ -1,27 +1,27 @@
 package org.emergentorder.onnx.backends
 
 import cats.effect.testing.scalatest.AsyncIOSpec
-import org.emergentorder.compiletime._
-import org.emergentorder.io.kjaer.compiletime._
-import org.emergentorder.onnx.Tensors.Tensor._
-import org.emergentorder.onnx.Tensors._
-import org.emergentorder.onnx.backends._
+import org.emergentorder.compiletime.*
+import org.emergentorder.io.kjaer.compiletime.*
+import org.emergentorder.onnx.Tensors.Tensor.*
+import org.emergentorder.onnx.Tensors.*
+import org.emergentorder.onnx.backends.*
 import org.scalatest.freespec.AsyncFreeSpec
-import org.scalatest.matchers.should._
+import org.scalatest.matchers.should.*
 
 import java.io.File
-import java.net.URL
+import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Paths
 import scala.language.postfixOps
 
-import sys.process._
+import sys.process.*
 
 class ONNXScalaBertTokenizerSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
 
-   new URL(
+   new URI(
      "https://github.com/microsoft/onnxruntime-extensions/raw/main/test/data/test_bert_tokenizer.onnx"
-   ) #> new File("test_bert_tokenizer.onnx") !!
+   ).toURL #> new File("test_bert_tokenizer.onnx") !!
 
    "BERT Tokenizer ONNX-Scala model should tokenize text" in {
       val bytes         = Files.readAllBytes(Paths.get("test_bert_tokenizer.onnx"))

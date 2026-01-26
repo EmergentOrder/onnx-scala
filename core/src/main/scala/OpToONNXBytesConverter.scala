@@ -6,13 +6,14 @@ import onnx.onnx.GraphProto
 import onnx.onnx.ModelProto
 import onnx.onnx.NodeProto
 import onnx.onnx.OperatorSetIdProto
-import onnx.onnx.TensorProto.DataType._
+import onnx.onnx.TensorProto.DataType.*
 import onnx.onnx.ValueInfoProto
-import org.emergentorder.compiletime._
+import org.emergentorder.compiletime.*
 import org.emergentorder.io.kjaer.compiletime.Shape
-import org.emergentorder.onnx.Tensors._
+import org.emergentorder.onnx.Tensors.*
 
 import scala.collection.immutable.ArraySeq
+import scala.compiletime.asMatchable
 
 trait OpToONNXBytesConverter {
 
@@ -105,13 +106,12 @@ trait OpToONNXBytesConverter {
          )
       }
 
-      // TODO: more attr types
-      @annotation.nowarn
+      // TODO: more attr typs
       def attrProtos[Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape]
           : Array[AttributeProto] =
          attrs
             .map { case (key: String, value) =>
-               value match {
+               value.asMatchable match {
 //                  case x: Tensor[Float, Tuple3[Tt, Td, S]] => {
 //                     Some(createFloatTensorAttr(x, key))
 //                  }
@@ -121,37 +121,37 @@ trait OpToONNXBytesConverter {
                   case x: Int => {
                      Some(createIntAttr(x, key))
                   }
-                  case Some(x: Int) => {
+                  case Some(x: Int): Some[Int] => {
                      Some(createIntAttr(x, key))
                   }
                   case x: Array[Int] => {
                      Some(createIntArrayAttr(x, key))
                   }
-                  case Some(x: Array[Int]) => {
+                  case Some(x: Array[Int]): Some[Array[Int]] => {
                      Some(createIntArrayAttr(x, key))
                   }
                   case x: Float => {
                      Some(createFloatAttr(x, key))
                   }
-                  case Some(x: Float) => {
+                  case Some(x: Float): Some[Float] => {
                      Some(createFloatAttr(x, key))
                   }
                   case x: Array[Float] => {
                      Some(createFloatArrayAttr(x, key))
                   }
-                  case Some(x: Array[Float]) => {
+                  case Some(x: Array[Float]): Some[Array[Float]] => {
                      Some(createFloatArrayAttr(x, key))
                   }
                   case x: String => {
                      Some(createStrAttr(x, key))
                   }
-                  case Some(x: String) => {
+                  case Some(x: String): Some[String] => {
                      Some(createStrAttr(x, key))
                   }
                   case x: Array[String] => {
                      Some(createStrArrayAttr(x, key))
                   }
-                  case Some(x: Array[String]) => {
+                  case Some(x: Array[String]): Some[Array[String]] => {
                      Some(createStrArrayAttr(x, key))
                   }
                   case None => None
@@ -228,7 +228,7 @@ trait OpToONNXBytesConverter {
       }
 
       // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
-      @annotation.nowarn
+//      @annotation.nowarn
       val inputValueInfosAndExistingInputs: List[Tuple2[ValueInfoProto, String]] =
          inputs.zipWithIndex.map { x =>
             (createInputValueInfoProto(x._1._1, x._1._2, x._2.toString), x._2.toString)

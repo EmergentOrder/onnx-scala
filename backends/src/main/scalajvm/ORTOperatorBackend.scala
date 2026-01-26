@@ -1,20 +1,20 @@
 package org.emergentorder.onnx.backends
 
-import ai.onnxruntime._
+import ai.onnxruntime.*
 import ai.onnxruntime.extensions.OrtxPackage
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import cats.implicits._
-import onnx.onnx._
-import org.emergentorder.compiletime._
-import org.emergentorder.io.kjaer.compiletime._
-import org.emergentorder.onnx.Tensors._
-import org.emergentorder.onnx._
+import cats.implicits.*
+import onnx.onnx.*
+import org.emergentorder.compiletime.*
+import org.emergentorder.io.kjaer.compiletime.*
+import org.emergentorder.onnx.Tensors.*
+import org.emergentorder.onnx.*
 
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 import scala.language.implicitConversions
 
-import ORTTensorUtils._
+import ORTTensorUtils.*
 
 trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 
@@ -45,8 +45,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
    ](
        sess: OrtSession,
        input_tensor_values: Array[OnnxTensor],
-       inputNames: List[String],
-       outputNames: List[String]
+       inputNames: List[String]
+//       outputNames: List[String] //TODO
    )(using
        tt: ValueOf[Tt],
        td: TensorShapeDenotationOf[Td],
@@ -100,7 +100,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
        td: TensorShapeDenotationOf[Td]
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
       // TODO: more outputs
-      val output_node_names = List(inputs.size.toString)
+//      val output_node_names = List(inputs.size.toString)
 
       // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
       // TODO: don't mix up Options and Tensors here
@@ -142,17 +142,17 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
                      runModel(
                        sess,
                        inTens,
-                       input_node_names,
-                       output_node_names
+                       input_node_names
+                       // output_node_names
                      )
                   )
             )
       }
 
-      val resFinal = for {
+      val resFinal = for
          tens <- inputTensors.memoize
          t    <- tens
-      } yield res(
+      yield res(
         opToModelProto(
           opName,
           (t.map(_.getInfo.onnxType.value match {
@@ -170,7 +170,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
                 t.map(_.getInfo.getShape.map(_.toInt) match {
                    // ORT shape inference diverges from the ONNX spec in requiring a scalar here instead of a tensor with shape,
                    // causing a crash without this fix
-                   case Array(1)      => if (opName.equals("Dropout")) Array[Int]() else Array(1)
+                   case Array(1)      => if opName.equals("Dropout") then Array[Int]() else Array(1)
                    case y: Array[Int] => y
                 })
              }),
@@ -184,7 +184,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
    }
 
    def callOp[T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-       name: String,
+//       name: String,
        opName: String,
        inputs: Tuple,
        //    outName: String,

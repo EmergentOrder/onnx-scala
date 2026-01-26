@@ -4,15 +4,15 @@ import cats.effect.IO
 import org.emergentorder.compiletime.##:
 import org.emergentorder.compiletime.TSNil
 import org.emergentorder.compiletime.TensorShapeDenotation
-import org.emergentorder.io.kjaer.compiletime.Shape._
-import org.emergentorder.io.kjaer.compiletime._
+import org.emergentorder.io.kjaer.compiletime.Shape.*
+import org.emergentorder.io.kjaer.compiletime.*
 import spire.math.Complex
 import spire.math.UByte
 import spire.math.UInt
 import spire.math.ULong
 import spire.math.UShort
 
-import scala.compiletime.ops.int._
+import scala.compiletime.ops.int.*
 
 object Tensors {
 

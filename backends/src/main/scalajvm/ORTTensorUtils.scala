@@ -3,9 +3,9 @@ package org.emergentorder.onnx.backends
 import ai.onnxruntime.OnnxTensor
 import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtUtil
-import ai.onnxruntime.TensorInfo.OnnxTensorType._
+import ai.onnxruntime.TensorInfo.OnnxTensorType.*
 
-import java.nio._
+import java.nio.*
 
 import compiletime.asMatchable
 

@@ -18,7 +18,7 @@ package org.emergentorder.onnx
 
 import java.lang.Integer.numberOfLeadingZeros
 import java.lang.Math.pow
-import java.lang.{Float => JFloat}
+import java.lang.{Float as JFloat}
 import scala.language.implicitConversions
 
 /** Float16 represents 16-bit floating-point values.
@@ -101,9 +101,9 @@ class Float16(val raw: Short) extends AnyVal { lhs =>
      * PositiveInfinity and NegativeInfinity return their expected signs.
      */
    def signum: Float =
-      if (raw == -0x8000) -0f
-      else if (raw == 0x0000) 0f
-      else if (isNaN) Float.NaN
+      if raw == -0x8000 then -0f
+      else if raw == 0x0000 then 0f
+      else if isNaN then Float.NaN
       else 1f - ((raw >>> 14) & 2)
 
    /** Reverse the sign of this Float16 value.
@@ -127,39 +127,39 @@ class Float16(val raw: Short) extends AnyVal { lhs =>
       Float16.fromFloat(pow(lhs.toFloat, rhs).toFloat)
 
    def compare(rhs: Float16): Int =
-      if (lhs.raw == rhs.raw) 0
+      if lhs.raw == rhs.raw then 0
       else {
          val le = lhs.raw & 0x7c00
          val re = rhs.raw & 0x7c00
 
-         if (le == 0x7c00) {
+         if le == 0x7c00 then {
             // lhs is inf or nan
-            if (re == 0x7c00) {
+            if re == 0x7c00 then {
                // rhs is inf or nan
                val lm = lhs.raw & 0x03ff
                val rm = rhs.raw & 0x03ff
-               if (lm != 0) {
+               if lm != 0 then {
                   // lhs is nan
-                  if (rm != 0) 0 else 1
+                  if rm != 0 then 0 else 1
                } else {
                   // lhs is +/- inf
-                  if (rm != 0) -1
+                  if rm != 0 then -1
                   else (rhs.raw & 0x8000) - (lhs.raw & 0x8000)
                }
             } else {
-               if (lhs == Float16.NegativeInfinity) -1 else 1
+               if lhs == Float16.NegativeInfinity then -1 else 1
             }
-         } else if (re == 0x7c00) {
+         } else if re == 0x7c00 then {
             // rhs is inf or nan, lhs is finite
-            if (rhs == Float16.NegativeInfinity) 1 else -1
+            if rhs == Float16.NegativeInfinity then 1 else -1
          } else {
             val ls = lhs.raw & 0x8000
             val rs = rhs.raw & 0x8000
-            if (ls != rs) {
+            if ls != rs then {
                (rs - ls) // if rs > ls, then rhs is negative and lhs is positive, so return +
             } else {
                val n = (1 - (ls >>> 14)) // 0x8000 -> -1, 0x0000 -> +1
-               if (le != re) {
+               if le != re then {
                   (le - re) * n
                } else {
                   val lm = lhs.raw & 0x03ff
@@ -171,35 +171,35 @@ class Float16(val raw: Short) extends AnyVal { lhs =>
       }
 
    def <(rhs: Float16): Boolean = {
-      if (lhs.raw == rhs.raw || lhs.isNaN || rhs.isNaN) return false
-      if (lhs.isZero && rhs.isZero) return false
+      if lhs.raw == rhs.raw || lhs.isNaN || rhs.isNaN then return false
+      if lhs.isZero && rhs.isZero then return false
       val ls = lhs.raw & 0x8000
       val rs = rhs.raw & 0x8000
-      if (ls < rs) return false
-      if (ls > rs) return true
+      if ls < rs then return false
+      if ls > rs then return true
       val le = lhs.raw & 0x7c00
       val re = rhs.raw & 0x7c00
-      if (le < re) return ls == 0
-      if (le > re) return ls != 0
+      if le < re then return ls == 0
+      if le > re then return ls != 0
       val lm = lhs.raw & 0x03ff
       val rm = rhs.raw & 0x03ff
-      if (ls == 0) lm < rm else rm < lm
+      if ls == 0 then lm < rm else rm < lm
    }
 
    def <=(rhs: Float16): Boolean = {
-      if (lhs.isNaN || rhs.isNaN) return false
-      if (lhs.raw == rhs.raw || lhs.isZero && rhs.isZero) return true
+      if lhs.isNaN || rhs.isNaN then return false
+      if lhs.raw == rhs.raw || lhs.isZero && rhs.isZero then return true
       val ls = lhs.raw & 0x8000
       val rs = rhs.raw & 0x8000
-      if (ls < rs) return false
-      if (ls > rs) return true
+      if ls < rs then return false
+      if ls > rs then return true
       val le = lhs.raw & 0x7c00
       val re = rhs.raw & 0x7c00
-      if (le < re) return ls == 0
-      if (le > re) return ls != 0
+      if le < re then return ls == 0
+      if le > re then return ls != 0
       val lm = lhs.raw & 0x03ff
       val rm = rhs.raw & 0x03ff
-      if (ls == 0) lm < rm else rm < lm
+      if ls == 0 then lm < rm else rm < lm
    }
 
    def >(rhs: Float16): Boolean =
@@ -209,8 +209,8 @@ class Float16(val raw: Short) extends AnyVal { lhs =>
       !(lhs.isNaN || rhs.isNaN || lhs < rhs)
 
    def ==(rhs: Float16): Boolean =
-      if (lhs.isNaN || rhs.isNaN) false
-      else if (lhs.isZero && rhs.isZero) true
+      if lhs.isNaN || rhs.isNaN then false
+      else if lhs.isZero && rhs.isZero then true
       else lhs.raw == rhs.raw
 
    def !=(rhs: Float16): Boolean =
@@ -235,10 +235,10 @@ class Float16(val raw: Short) extends AnyVal { lhs =>
       val s = raw & 0x8000
       val e = (raw >>> 10) & 0x1f // exponent
       val m = (raw & 0x03ff)      // mantissa
-      if (e == 0) {
+      if e == 0 then {
          // either zero or a subnormal number
-         if (m == 0) {
-            if (s == 0) 0f else -0f
+         if m == 0 then {
+            if s == 0 then 0f else -0f
          } else {
             // a 10-bit mantissa always has 22 leading zeros
             val shifts = numberOfLeadingZeros(m) - 21 // between 1-10 shifts
@@ -255,16 +255,16 @@ class Float16(val raw: Short) extends AnyVal { lhs =>
             val bits32 = (s << 16) | (e32 << 23) | m32
             JFloat.intBitsToFloat(bits32)
          }
-      } else if (e != 31) {
+      } else if e != 31 then {
          // normal number
          // a normal float is
          // 1 bit of sign, 8 bits of exponent biased by -126, 23 bits of mantissa
          // 127 - 15 = 112, which is the bias adjustment
          val bits32 = (s << 16) | ((e + 112) << 23) | (m << 13)
          JFloat.intBitsToFloat(bits32)
-      } else if (m != 0) {
+      } else if m != 0 then {
          Float.NaN
-      } else if (s == 0) {
+      } else if s == 0 then {
          Float.PositiveInfinity
       } else {
          Float.NegativeInfinity
@@ -315,16 +315,16 @@ object Float16 {
       val masked = m & mask
       val cmp    = masked - mid
       // we are losing more than 1/2
-      if (cmp > 0) mshift + 1
+      if cmp > 0 then mshift + 1
       // we are losing < 1/2
-      else if (cmp < 0) mshift
+      else if cmp < 0 then mshift
       else {
          // we are losing exactly 1/2
          // we round to the nearest even
          // 2.5 => 2, 3.5 => 4, 4.5 => 4
          // -2.5 => -2, -3.5 => -4, -4.5 => -4
          val isOdd = (mshift & 1) != 0
-         if (isOdd) mshift + 1
+         if isOdd then mshift + 1
          else mshift
       }
    }
@@ -347,20 +347,20 @@ object Float16 {
       val e = (nbits >>> 23) & 0xff
       val m = (nbits & 0x7fffff)
 
-      if (e == 0) {
+      if e == 0 then {
          // subnormal, all 0 for float16
          new Float16(s.toShort)
-      } else if (e != 0xff) { // e < 255
+      } else if e != 0xff then { // e < 255
          val ereal = e - 127 // [127, -126]
          // for 16 bits, we have 5 bits of exponent
          // which are [15, -14], and we bias by adding 15
          //
          // we ebias16 = ereal + 15, if that is 0
          //
-         if (ereal > 15) {
+         if ereal > 15 then {
             // we can't fit in the new exponent, so either +/- inf
             new Float16((s | 0x7c00).toShort)
-         } else if (ereal < -25) {
+         } else if ereal < -25 then {
             // 2^(-25) * mant = 2*(-14) * ((1 + mant)/2^11)
             // but (1 + mant) >> 11 == 0
             // but we may need to round up or down to the smallest
@@ -368,7 +368,7 @@ object Float16 {
             new Float16(s.toShort)
          }
          // past here ereal [-24, 15] = [-24, -15] | [-14, 15]
-         else if (ereal >= -14) {
+         else if ereal >= -14 then {
             // this is a regular normal 16 bit number
             val newm = round(m, 13)
             new Float16((s | (((ereal + 15) << 10) + newm)).toShort)
@@ -386,7 +386,7 @@ object Float16 {
             val newm = round(0x800000 | m, n)
             new Float16((s | newm).toShort)
          }
-      } else if (m != 0) {
+      } else if m != 0 then {
          Float16.NaN
       } else {
          // +/- infinity
@@ -404,13 +404,13 @@ object Float16 {
 
    // if either argument is NaN, return NaN. this matches java.lang.Float.min
    def min(x: Float16, y: Float16): Float16 =
-      if (x.isNaN || y.isNaN) Float16.NaN
-      else if (x <= y) x
+      if x.isNaN || y.isNaN then Float16.NaN
+      else if x <= y then x
       else y
 
    // if either argument is NaN, return NaN. this matches java.lang.Float.max
    def max(x: Float16, y: Float16): Float16 =
-      if (x.isNaN || y.isNaN) Float16.NaN
-      else if (x >= y) x
+      if x.isNaN || y.isNaN then Float16.NaN
+      else if x >= y then x
       else y
 }

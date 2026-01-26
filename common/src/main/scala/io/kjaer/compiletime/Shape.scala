@@ -6,7 +6,7 @@ import scala.compiletime.ops.int.+
 import scala.compiletime.ops.int.<
 import scala.compiletime.ops.int.<=
 import scala.compiletime.ops.int.S
-import scala.compiletime.ops.int._
+import scala.compiletime.ops.int.*
 
 type Dimension = Int & Singleton
 
@@ -62,7 +62,7 @@ object Shape {
 
    def concat[X <: Shape, Y <: Shape](x: X, y: Y): Concat[X, Y] = x match {
       case _: SNil        => y
-      case cons: #:[x, y] => cons.head #: concat(cons.tail, y)
+      case cons: #:[?, ?] => cons.head #: concat(cons.tail, y)
    }
 
    type Reverse[X <: Shape] <: Shape = X match {
@@ -71,8 +71,8 @@ object Shape {
    }
 
    def reverse[X <: Shape](x: X): Reverse[X] = x match {
-      case _: SNil              => SNil
-      case cons: #:[head, tail] => concat(reverse(cons.tail), cons.head #: SNil)
+      case _: SNil        => SNil
+      case cons: #:[?, ?] => concat(reverse(cons.tail), cons.head #: SNil)
    }
 
    type NumElements[X <: Shape] <: Int = X match {
@@ -81,8 +81,8 @@ object Shape {
    }
 
    def numElements[X <: Shape](x: X): NumElements[X] = x match {
-      case _: SNil              => 1
-      case cons: #:[head, tail] => cons.head mul numElements(cons.tail)
+      case _: SNil        => 1
+      case cons: #:[?, ?] => cons.head mul numElements(cons.tail)
    }
 
    type Rank[X <: Shape] <: Int = X match {
@@ -91,8 +91,8 @@ object Shape {
    }
 
    def rank[X <: Shape](x: X): Rank[X] = x match {
-      case _: SNil              => 0
-      case cons: #:[head, tail] => rank(cons.tail) add 1
+      case _: SNil        => 0
+      case cons: #:[?, ?] => rank(cons.tail) add 1
    }
 
    type IsEmpty[X <: Shape] <: Boolean = X match {

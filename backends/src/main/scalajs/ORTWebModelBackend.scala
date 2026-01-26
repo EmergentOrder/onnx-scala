@@ -1,18 +1,18 @@
 package org.emergentorder.onnx.backends
 
 import cats.effect.IO
-import cats.implicits._
-import org.emergentorder.compiletime._
-import org.emergentorder.io.kjaer.compiletime._
-import org.emergentorder.onnx.Tensors.Tensor._
-import org.emergentorder.onnx.Tensors._
-import org.emergentorder.onnx._
+import cats.implicits.*
+import org.emergentorder.compiletime.*
+import org.emergentorder.io.kjaer.compiletime.*
+import org.emergentorder.onnx.Tensors.Tensor.*
+import org.emergentorder.onnx.Tensors.*
+import org.emergentorder.onnx.*
 import org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
-import org.emergentorder.onnx.onnxruntimeCommon.mod.Tensor.{^ => OnnxTensor}
+import org.emergentorder.onnx.onnxruntimeCommon.mod.Tensor.{^ as OnnxTensor}
 
 import scala.language.implicitConversions
 
-import ORTTensorUtils._
+import ORTTensorUtils.*
 
 //TODO: Clean up, remove asInstaceOf, etc.
 class ORTWebModelBackend(session: IO[InferenceSession]) extends Model() with ORTOperatorBackend {
@@ -64,14 +64,14 @@ class ORTWebModelBackend(session: IO[InferenceSession]) extends Model() with ORT
 
       val output = inputTensors.flatMap { tns =>
          inputNames.flatMap { inNames =>
-            outputNames.flatMap { outNames =>
-               runModel[T, Tt, Td, S](
-                 session,
-                 tns,
-                 inNames,
-                 outNames
-               )
-            }
+//            outputNames.flatMap { outNames =>
+            runModel[T, Tt, Td, S](
+              session,
+              tns,
+              inNames
+//                 outNames
+            )
+//            }
          }
       }
       output // .flatten

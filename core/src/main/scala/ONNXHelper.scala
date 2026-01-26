@@ -19,8 +19,8 @@
 package org.emergentorder.onnx
 
 //import scala.jdk.CollectionConverters
-import onnx.onnx.TensorProto.DataType._
-import onnx.onnx._
+import onnx.onnx.TensorProto.DataType.*
+import onnx.onnx.*
 
 import scala.language.implicitConversions
 

@@ -2,13 +2,13 @@ package org.emergentorder.onnx.backends
 
 import cats.effect.IO
 import cats.effect.testing.scalatest.AsyncIOSpec
-import org.emergentorder.compiletime._
-import org.emergentorder.io.kjaer.compiletime._
-import org.emergentorder.onnx.Tensors.Tensor._
-import org.emergentorder.onnx.Tensors._
-import org.emergentorder.onnx.backends._
+import org.emergentorder.compiletime.*
+import org.emergentorder.io.kjaer.compiletime.*
+import org.emergentorder.onnx.Tensors.Tensor.*
+import org.emergentorder.onnx.Tensors.*
+import org.emergentorder.onnx.backends.*
 import org.scalatest.freespec.AsyncFreeSpec
-import org.scalatest.matchers.should._
+import org.scalatest.matchers.should.*
 
 import scala.language.postfixOps
 
@@ -19,8 +19,8 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
 
 //import org.emergentorder.onnx.onnxruntimeWeb.wasmMod.onnxruntimeBackend.createInferenceSessionHandler
    override given executionContext: scala.concurrent.ExecutionContext =
-     org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits.global  
-     //scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
+      org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits.global
+      // scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
    // TODO: push this inside ORTWebModelBackend, and use other create() which takes arraybufferlike
    val session: IO[

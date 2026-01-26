@@ -17,7 +17,7 @@
 package org.emergentorder.onnx
 
 import java.lang.Math.pow
-import java.lang.{Float => JFloat}
+import java.lang.{Float as JFloat}
 import scala.language.implicitConversions
 
 /** BFloat16 represents 16-bit floating-point values.
@@ -198,7 +198,7 @@ object BFloat16 {
       val e = (nbits >>> 16) & 0x7f80
       val m = (nbits & 0x7fffff)
 
-      if (e != 0x7f80) {
+      if e != 0x7f80 then {
          // handle normal and subnormal numbers (i.e. not sentinels).
          //
          // m1 will be in [0, 128]; 0 means we rounded down to 0, 128
@@ -215,7 +215,7 @@ object BFloat16 {
          //
          // if m != 0, we need to be sure to return a NaN. otherwise,
          // truncating will preserve the correctly-signed infinity value.
-         if (m != 0) BFloat16.NaN else new BFloat16((nbits >>> 16).toShort)
+         if m != 0 then BFloat16.NaN else new BFloat16((nbits >>> 16).toShort)
       }
    }
 
@@ -229,13 +229,13 @@ object BFloat16 {
 
    // if either argument is NaN, return NaN. this matches java.lang.Float.min
    def min(x: BFloat16, y: BFloat16): BFloat16 =
-      if (x.isNaN || y.isNaN) BFloat16.NaN
-      else if (x <= y) x
+      if x.isNaN || y.isNaN then BFloat16.NaN
+      else if x <= y then x
       else y
 
    // if either argument is NaN, return NaN. this matches java.lang.Float.max
    def max(x: BFloat16, y: BFloat16): BFloat16 =
-      if (x.isNaN || y.isNaN) BFloat16.NaN
-      else if (x >= y) x
+      if x.isNaN || y.isNaN then BFloat16.NaN
+      else if x >= y then x
       else y
 }

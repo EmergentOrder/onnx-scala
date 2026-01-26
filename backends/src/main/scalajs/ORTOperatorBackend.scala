@@ -2,12 +2,12 @@ package org.emergentorder.onnx.backends
 
 //import typings.onnxruntimeWeb.tensorMod
 import cats.effect.IO
-import cats.implicits._
-import org.emergentorder.compiletime._
-import org.emergentorder.io.kjaer.compiletime._
-import org.emergentorder.onnx.Tensors._
-import org.emergentorder.onnx._
-import org.emergentorder.onnx.onnxruntimeCommon.mod.Tensor.{^ => OnnxTensor}
+import cats.implicits.*
+import org.emergentorder.compiletime.*
+import org.emergentorder.io.kjaer.compiletime.*
+import org.emergentorder.onnx.Tensors.*
+import org.emergentorder.onnx.*
+import org.emergentorder.onnx.onnxruntimeCommon.mod.Tensor.{^ as OnnxTensor}
 import org.emergentorder.onnx.onnxruntimeCommon.tensorMod
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -15,9 +15,9 @@ import scala.language.postfixOps
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 import scala.scalajs.js.typedarray
-import scala.scalajs.js.typedarray._
+import scala.scalajs.js.typedarray.*
 
-import ORTTensorUtils._
+import ORTTensorUtils.*
 import onnxruntimeCommon.inferenceSessionMod.InferenceSession
 
 @JSImport("onnxruntime-web", JSImport.Namespace)
@@ -101,7 +101,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
        */
 
       // TODO: more outputs
-      val output_node_names = List(input_node_names.toString)
+//      val output_node_names = List(input_node_names.toString)
 
       // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
       // TODO: don't mix up Options and Tensors here
@@ -143,8 +143,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
                      runModel(
                        sess,
                        x,
-                       input_node_names,
-                       output_node_names
+                       input_node_names
+//                       output_node_names
                      )
                   )
                // }
@@ -152,10 +152,10 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
 
       }
 
-      val finalRes = for {
+      val finalRes = for
          tens <- inputTensors.memoize
          t    <- tens
-      } yield res(
+      yield res(
         opToModelProto(
           opName,
           (t.map(x =>
@@ -183,7 +183,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
    }
 
    def callOp[T <: Supported, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
-       name: String,
+//       name: String,
        opName: String,
        inputs: Tuple,
        //    outName: String,
@@ -217,8 +217,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
          org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
        ],
        input_tensor_values: Array[OnnxTensor[T]],
-       inputNames: List[String],
-       outputNames: List[String]
+       inputNames: List[String]
+//       outputNames: List[String]
    )(using
        tt: ValueOf[Tt],
        td: TensorShapeDenotationOf[Td],
@@ -406,8 +406,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
       ](
         session,
         inputs,
-        List("x"),
-        List("squeezenet0_flatten0_reshape0")
+        List("x")
+//        List("squeezenet0_flatten0_reshape0")
       )
 
       import org.emergentorder.onnx.Tensors.Tensor.data

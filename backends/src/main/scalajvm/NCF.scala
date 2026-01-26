@@ -1,11 +1,11 @@
 package org.emergentorder.onnx
 
 import cats.effect.IO
-import org.emergentorder.compiletime._
-import org.emergentorder.io.kjaer.compiletime._
-import org.emergentorder.onnx.Tensors.Tensor._
-import org.emergentorder.onnx.Tensors._
-import org.emergentorder.onnx.backends._
+import org.emergentorder.compiletime.*
+import org.emergentorder.io.kjaer.compiletime.*
+import org.emergentorder.onnx.Tensors.Tensor.*
+import org.emergentorder.onnx.Tensors.*
+import org.emergentorder.onnx.backends.*
 
 import scala.language.higherKinds
 

@@ -1,9 +1,9 @@
 package org.emergentorder.onnx
 
-import org.emergentorder.compiletime._
-import org.emergentorder.io.kjaer.compiletime._
-import org.emergentorder.onnx.Tensors._
-import org.emergentorder.onnx._
+import org.emergentorder.compiletime.*
+import org.emergentorder.io.kjaer.compiletime.*
+import org.emergentorder.onnx.Tensors.*
+import org.emergentorder.onnx.*
 
 class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends DataSource {
 

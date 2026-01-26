@@ -1,11 +1,11 @@
 package org.emergentorder.onnx.backends
 
 //import scala.scalajs.js.Array
-import org.emergentorder.onnx.onnxruntimeCommon.mod.Tensor.{^ => OnnxTensor}
+import org.emergentorder.onnx.onnxruntimeCommon.mod.Tensor.{^ as OnnxTensor}
 
 import scala.scalajs.js.typedarray
 
-import scalajs.js.JSConverters._
+import scalajs.js.JSConverters.*
 
 object ORTTensorUtils {
 

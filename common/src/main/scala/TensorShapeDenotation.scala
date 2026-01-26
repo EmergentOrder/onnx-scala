@@ -64,7 +64,7 @@ object TensorShapeDenotation {
    def concat[X <: TensorShapeDenotation, Y <: TensorShapeDenotation](x: X, y: Y): Concat[X, Y] =
       x match {
          case _: TSNil        => y
-         case cons: ##:[x, y] => cons.head ##: concat(cons.tail, y)
+         case cons: ##:[?, ?] => cons.head ##: concat(cons.tail, y)
       }
 
    type Reverse[X <: TensorShapeDenotation] <: TensorShapeDenotation = X match {
@@ -73,8 +73,8 @@ object TensorShapeDenotation {
    }
 
    def reverse[X <: TensorShapeDenotation](x: X): Reverse[X] = x match {
-      case _: TSNil              => TSNil
-      case cons: ##:[head, tail] => concat(reverse(cons.tail), cons.head ##: TSNil)
+      case _: TSNil        => TSNil
+      case cons: ##:[?, ?] => concat(reverse(cons.tail), cons.head ##: TSNil)
    }
 
    type IsEmpty[X <: TensorShapeDenotation] <: Boolean = X match {

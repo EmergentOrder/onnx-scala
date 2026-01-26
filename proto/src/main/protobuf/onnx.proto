@@ -4,12 +4,15 @@
 
 
 // SPDX-License-Identifier: Apache-2.0
-
-
 syntax = "proto2";
 
 package onnx;
 
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+  scala3_sources: true
+};
 // Overview
 //
 // ONNX is an open specification that is comprised of the following components:

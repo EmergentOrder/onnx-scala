@@ -121,37 +121,37 @@ trait OpToONNXBytesConverter {
                   case x: Int => {
                      Some(createIntAttr(x, key))
                   }
-                  case Some(x: Int): Some[Int] => {
+                  case Some(x: Int) => {
                      Some(createIntAttr(x, key))
                   }
                   case x: Array[Int] => {
                      Some(createIntArrayAttr(x, key))
                   }
-                  case Some(x: Array[Int]): Some[Array[Int]] => {
+                  case Some(x: Array[Int]) => {
                      Some(createIntArrayAttr(x, key))
                   }
                   case x: Float => {
                      Some(createFloatAttr(x, key))
                   }
-                  case Some(x: Float): Some[Float] => {
+                  case Some(x: Float) => {
                      Some(createFloatAttr(x, key))
                   }
                   case x: Array[Float] => {
                      Some(createFloatArrayAttr(x, key))
                   }
-                  case Some(x: Array[Float]): Some[Array[Float]] => {
+                  case Some(x: Array[Float]) => {
                      Some(createFloatArrayAttr(x, key))
                   }
                   case x: String => {
                      Some(createStrAttr(x, key))
                   }
-                  case Some(x: String): Some[String] => {
+                  case Some(x: String) => {
                      Some(createStrAttr(x, key))
                   }
                   case x: Array[String] => {
                      Some(createStrArrayAttr(x, key))
                   }
-                  case Some(x: Array[String]): Some[Array[String]] => {
+                  case Some(x: Array[String]) => {
                      Some(createStrArrayAttr(x, key))
                   }
                   case None => None

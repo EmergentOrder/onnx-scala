@@ -40,8 +40,8 @@ lazy val commonSettings = Seq(
     "-deprecation",
 //    "-release:25",
     "-rewrite",
-    "-source:future-migration",
-//    "-source:3.8-migration",
+//    "-source:future-migration",
+    "-source:3.8-migration",
     "-Yimplicit-to-given",
     "-Wunused:all",
     "-WunstableInlineAccessors"

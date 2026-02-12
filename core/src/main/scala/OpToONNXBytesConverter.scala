@@ -186,22 +186,20 @@ trait OpToONNXBytesConverter {
 //         tens.shape.map { y =>
          ValueInfoProto(
            name = { inputName },
-           `type` = 
-             Some(onnx.onnx
+           `type` = Some(
+             onnx.onnx
                 .TypeProto()
                 .withTensorType(
                   onnx.onnx.TypeProto.Tensor(
-                    shape =
-                      Some(onnx.onnx.TensorShapeProto(
-                        dim = 
-                          shape.map(onnx.onnx.TensorShapeProto.Dimension().withDimValue(_))
-                      
-                    )
-                  ),
+                    shape = Some(
+                      onnx.onnx.TensorShapeProto(
+                        dim = shape.map(onnx.onnx.TensorShapeProto.Dimension().withDimValue(_))
+                      )
+                    ),
                     elemType = elemTypeORT
                   )
                 )
-              )
+           )
          ).copy()
 //         }
       }

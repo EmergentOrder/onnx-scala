@@ -43,8 +43,8 @@ class ONNXHelper(val byteArray: Array[Byte]) {
       // TODEFER: Get dim and type denotations, encode into types here
 
       val onnxDataType = tensorProto.dataType
-      //val dimsCount    = tensorProto.dims.size
-      //(0 until dimsCount.toInt).map(x => tensorProto.dims(x)).toArray
+      // val dimsCount    = tensorProto.dims.size
+      // (0 until dimsCount.toInt).map(x => tensorProto.dims(x)).toArray
 
       val rawData = tensorProto.rawData
 
@@ -59,8 +59,8 @@ class ONNXHelper(val byteArray: Array[Byte]) {
       // TODO: remove unneeded Option
       val array = onnxDataType match {
          case TensProtoByte => {
-           //Array[Byte]()
-           Some(rawData.toByteArray())
+            // Array[Byte]()
+            Some(rawData.toByteArray())
          }
          case TensProtoShort => {
             tensorProto.int32Data.toArray
@@ -163,7 +163,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
          graph.map(y => y.output(x))
       )
 
-   val inputCount: Int                           = graph.map(x => x.input.size.toInt).getOrElse(0)
+   val inputCount: Int                    = graph.map(x => x.input.size.toInt).getOrElse(0)
    val input: Seq[Option[ValueInfoProto]] =
       (0 until inputCount).map(x => graph.map(y => y.input(x)))
 
@@ -180,9 +180,9 @@ class ONNXHelper(val byteArray: Array[Byte]) {
      )
    ] =
       initializer.map { x =>
-         val dimsCount = x.dims.size
-         val dimsList  = (0 until dimsCount.toInt).map(y => x.dims(y))
-         val name = x.name.replaceAll("-", "_").replaceAll("/", "_")
+         val dimsCount      = x.dims.size
+         val dimsList       = (0 until dimsCount.toInt).map(y => x.dims(y))
+         val name           = x.name.replaceAll("-", "_").replaceAll("/", "_")
          val tensorElemType = tensorElemTypeMap(x.dataType)
          val arrX           = onnxTensorProtoToArray(x)
          (name, tensorElemType, arrX, dimsList.map(y => y.toInt).toArray)
@@ -203,9 +203,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
       val outputArray = globalOutput.toArray
       outputArray.map { valueinfoOpt =>
          valueinfoOpt
-            .map(x =>
-               x.name.replaceAll("-", "_").replaceAll("/", "_")
-            )
+            .map(x => x.name.replaceAll("-", "_").replaceAll("/", "_"))
             .filter(x => nodes.contains("output_" + x))
       }
    }
@@ -217,8 +215,9 @@ class ONNXHelper(val byteArray: Array[Byte]) {
          .map { valueinfoOpt =>
             valueinfoOpt.map { y =>
                (
-                 y.name.replaceAll("-", "_")
-                         .replaceAll("/", "_"),
+                 y.name
+                    .replaceAll("-", "_")
+                    .replaceAll("/", "_"),
                  tensorElemTypeMap(y.`type`.map(q => q.getTensorType.elemType).getOrElse(0))
                )
             }
@@ -234,8 +233,9 @@ class ONNXHelper(val byteArray: Array[Byte]) {
          .map(valueInfoOpt =>
             valueInfoOpt.map(y =>
                (
-                 y.name.replaceAll("-", "_")
-                          .replaceAll("/", "_"), 
+                 y.name
+                    .replaceAll("-", "_")
+                    .replaceAll("/", "_"),
                  tensorElemTypeMap(y.`type`.map(q => q.getTensorType.elemType).getOrElse(0))
                )
             )

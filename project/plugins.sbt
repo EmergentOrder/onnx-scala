@@ -1,5 +1,5 @@
 //addDependencyTreePlugin
-addSbtPlugin("com.eed3si9n"  % "sbt-projectmatrix"  % "0.11.0") //No longer needed in sbt 2.x
+addSbtPlugin("com.eed3si9n" % "sbt-projectmatrix" % "0.11.0") //No longer needed in sbt 2.x
 //addSbtPlugin("ch.epfl.scala" % "sbt-version-policy" % "3.2.1") //Not working with sbt 2.x
 addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "1.1.5-M1")
 //addSbtPlugin("org.scala-js"  % "sbt-scalajs"        % "1.20.2") //Not working with sbt 2.x

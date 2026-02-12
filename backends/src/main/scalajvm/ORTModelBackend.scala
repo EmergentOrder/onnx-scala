@@ -76,12 +76,12 @@ class ORTModelBackend(onnxBytes: Array[Byte])
             runModel[T, Tt, Td, S](
               session,
               inTens,
-              allNodeNamesAndDims._1 
+              allNodeNamesAndDims._1
             )
          )
       output
-      //output.memoize.unsafeRunSync()
+      // output.memoize.unsafeRunSync()
    }
 
-   override def close(): Unit = {env.close}
+   override def close(): Unit = { env.close }
 }

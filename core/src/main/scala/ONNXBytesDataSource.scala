@@ -22,7 +22,7 @@ class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends DataSource {
        s: ShapeOf[S]
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
 
-      //"TEMP" ##: TSNil
+      // "TEMP" ##: TSNil
 
       val shapeFromType: S              = s.value
       val tensorTypeDenotationFromType  = tt.value

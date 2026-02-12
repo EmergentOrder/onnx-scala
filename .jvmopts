@@ -1,4 +1,5 @@
--Xms512M
--Xmx4096M
--Xss2M
+-Xms8192M
+-Xmx8192M
+-Xss8M
 -XX:MaxMetaspaceSize=1024M
+-XX:ReservedCodeCacheSize=2048m

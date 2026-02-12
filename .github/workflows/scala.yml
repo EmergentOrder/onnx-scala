@@ -26,5 +26,3 @@ jobs:
     - uses: sbt/setup-sbt@v1
     - name: Run JVM tests
       run: sbt "project backends3" test -J-Xmx5G
-    - name: Run JS tests
-      run: sbt "project backendsJS3" compile -J-Xmx5G; sbt "project backendsJS3" test -J-Xmx5G

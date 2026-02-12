@@ -76,8 +76,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
             runModel[T, Tt, Td, S](
               session,
               inTens,
-              allNodeNamesAndDims._1,
-              allNodeNamesAndDims._3
+              allNodeNamesAndDims._1 
             )
          )
       output

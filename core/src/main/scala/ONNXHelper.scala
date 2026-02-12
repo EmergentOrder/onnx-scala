@@ -31,7 +31,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
 
    val maxOpsetVersion: Long =
       try {
-         model.opsetImport(0).version.getOrElse(0L)
+         model.opsetImport(0).version
       } catch {
          case _: Exception => { 1 }
       }
@@ -43,8 +43,8 @@ class ONNXHelper(val byteArray: Array[Byte]) {
       // TODEFER: Get dim and type denotations, encode into types here
 
       val onnxDataType = tensorProto.dataType
-      val dimsCount    = tensorProto.dims.size
-      (0 until dimsCount.toInt).map(x => tensorProto.dims(x)).toArray
+      //val dimsCount    = tensorProto.dims.size
+      //(0 until dimsCount.toInt).map(x => tensorProto.dims(x)).toArray
 
       val rawData = tensorProto.rawData
 
@@ -56,9 +56,11 @@ class ONNXHelper(val byteArray: Array[Byte]) {
       val TensProtoDouble = DOUBLE.index
 
       // TODO: asXBuffer then put
-      val array = onnxDataType.getOrElse(1) match {
+      // TODO: remove unneeded Option
+      val array = onnxDataType match {
          case TensProtoByte => {
-            rawData.map(x => x.toByteArray())
+           //Array[Byte]()
+           Some(rawData.toByteArray())
          }
          case TensProtoShort => {
             tensorProto.int32Data.toArray
@@ -95,7 +97,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
          .toArray
          .flatten
 
-   val ops: Array[Option[String]] = node.map(x => x.map(y => y.opType).flatten).toArray
+   val ops: Array[Option[String]] = node.map(x => x.map(y => y.opType)).toArray
 
    private val tensorElemTypeMap = Map(
      UNDEFINED.index  -> "Undefined",
@@ -117,7 +119,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
      BFLOAT16.index   -> "???"
    )
 
-   val nodeInputs: IndexedSeq[Array[String]] =
+   val nodeInputs: Seq[Array[String]] =
       node
          .map { nodeOpt =>
             nodeOpt.map { x =>
@@ -127,7 +129,6 @@ class ONNXHelper(val byteArray: Array[Byte]) {
                input
             }
          }
-         .toIndexedSeq
          .flatten
          .map { x =>
             x.toArray
@@ -138,7 +139,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
                )
          }
 
-   val nodeOutputs: IndexedSeq[Array[String]] =
+   val nodeOutputs: Seq[Array[String]] =
       node
          .map { nodeOpt =>
             nodeOpt.map { x =>
@@ -148,7 +149,6 @@ class ONNXHelper(val byteArray: Array[Byte]) {
                output
             }
          }
-         .toIndexedSeq
          .flatten
          .map { x =>
             x.toArray.map(y =>
@@ -158,20 +158,20 @@ class ONNXHelper(val byteArray: Array[Byte]) {
          }
 
 //  val globalOutputCount: Int = graph.map(x => x.output.size.toInt).getOrElse(0)
-   val globalOutput: IndexedSeq[Option[ValueInfoProto]] =
+   val globalOutput: Seq[Option[ValueInfoProto]] =
       (0 until graph.map(x => x.output.size.toInt).getOrElse(0)).map(x =>
          graph.map(y => y.output(x))
       )
 
    val inputCount: Int                           = graph.map(x => x.input.size.toInt).getOrElse(0)
-   val input: IndexedSeq[Option[ValueInfoProto]] =
+   val input: Seq[Option[ValueInfoProto]] =
       (0 until inputCount).map(x => graph.map(y => y.input(x)))
 
    private val initializerCount = graph.map(x => x.initializer.size).getOrElse(0)
    private val initializer      =
-      (0 until initializerCount).map(y => graph.map(z => z.initializer(y))).toIndexedSeq.flatten
+      (0 until initializerCount).map(y => graph.map(z => z.initializer(y))).flatten
 
-   lazy val params: IndexedSeq[
+   lazy val params: Seq[
      (
          String,
          String,
@@ -182,16 +182,16 @@ class ONNXHelper(val byteArray: Array[Byte]) {
       initializer.map { x =>
          val dimsCount = x.dims.size
          val dimsList  = (0 until dimsCount.toInt).map(y => x.dims(y))
-         val name = x.name.map(y => y.replaceAll("-", "_").replaceAll("/", "_")).getOrElse("none")
-         val tensorElemType = x.dataType.map(y => tensorElemTypeMap(y)).getOrElse("none")
+         val name = x.name.replaceAll("-", "_").replaceAll("/", "_")
+         val tensorElemType = tensorElemTypeMap(x.dataType)
          val arrX           = onnxTensorProtoToArray(x)
          (name, tensorElemType, arrX, dimsList.map(y => y.toInt).toArray)
       }
 
-   lazy val nodes: IndexedSeq[Iterable[String]] = {
+   lazy val nodes: Seq[Iterable[String]] = {
       val someNodes = input.map { inputOpt =>
          inputOpt.map { x =>
-            val name = x.name.getOrElse("MissingName")
+            val name = x.name
             if params exists (_._1.equals(name)) then ("param_" + name)
             else ("input_" + name)
          } ++ nodeOutputs.flatten.map(y => ("output_" + y))
@@ -204,7 +204,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
       outputArray.map { valueinfoOpt =>
          valueinfoOpt
             .map(x =>
-               x.name.map(y => y.replaceAll("-", "_").replaceAll("/", "_")).getOrElse("MissingName")
+               x.name.replaceAll("-", "_").replaceAll("/", "_")
             )
             .filter(x => nodes.contains("output_" + x))
       }
@@ -217,13 +217,9 @@ class ONNXHelper(val byteArray: Array[Byte]) {
          .map { valueinfoOpt =>
             valueinfoOpt.map { y =>
                (
-                 y.name
-                    .map(
-                      _.replaceAll("-", "_")
-                         .replaceAll("/", "_")
-                    )
-                    .getOrElse("MissingName"),
-                 tensorElemTypeMap(y.`type`.map(q => q.getTensorType.getElemType).getOrElse(0))
+                 y.name.replaceAll("-", "_")
+                         .replaceAll("/", "_"),
+                 tensorElemTypeMap(y.`type`.map(q => q.getTensorType.elemType).getOrElse(0))
                )
             }
          }
@@ -238,13 +234,9 @@ class ONNXHelper(val byteArray: Array[Byte]) {
          .map(valueInfoOpt =>
             valueInfoOpt.map(y =>
                (
-                 y.name
-                    .map(z =>
-                       z.replaceAll("-", "_")
-                          .replaceAll("/", "_")
-                    )
-                    .getOrElse("MissingName"),
-                 tensorElemTypeMap(y.`type`.map(q => q.getTensorType.getElemType).getOrElse(0))
+                 y.name.replaceAll("-", "_")
+                          .replaceAll("/", "_"), 
+                 tensorElemTypeMap(y.`type`.map(q => q.getTensorType.elemType).getOrElse(0))
                )
             )
          )

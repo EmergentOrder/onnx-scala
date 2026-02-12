@@ -2,7 +2,7 @@ package org.emergentorder.onnx.backends
 
 import ai.onnxruntime.*
 import cats.effect.IO
-import cats.effect.unsafe.implicits.global
+//import cats.effect.unsafe.implicits.global
 import cats.implicits.*
 import org.emergentorder.compiletime.*
 import org.emergentorder.io.kjaer.compiletime.*
@@ -62,7 +62,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
                case t: Tuple1[?] =>
                   t(0).asMatchable match {
                      case tens: Tensor[T, Tuple3[Tt, Td, S]] =>
-                        tens.data.map(x => tens.shape.map(y => getOnnxTensor(x, y, env))).flatten
+                        tens.data.flatMap(x => tens.shape.map(y => getOnnxTensor(x, y, env)))
                   }
             }
          }
@@ -71,17 +71,18 @@ class ORTModelBackend(onnxBytes: Array[Byte])
          .map(_.toArray)
 
       val output = cats.effect.Resource
-         .make(inputTensors)(inTens => IO { inTens.map(_.close) })
+         .make(inputTensors)(inTens => IO.blocking { inTens.map(_.close) })
          .use(inTens =>
             runModel[T, Tt, Td, S](
               session,
               inTens,
-              allNodeNamesAndDims._1
-//              allNodeNamesAndDims._3
+              allNodeNamesAndDims._1,
+              allNodeNamesAndDims._3
             )
          )
-      output.memoize.unsafeRunSync()
+      output
+      //output.memoize.unsafeRunSync()
    }
 
-   override def close(): Unit = {}
+   override def close(): Unit = {env.close}
 }

@@ -9,19 +9,19 @@ import org.emergentorder.onnx.backends.*
 import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.should.*
 
-import java.io.File
-import java.net.URI
+//import java.io.File
+//import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Paths
 import scala.language.postfixOps
 
-import sys.process.*
+//import sys.process.*
 
 class ONNXScalaBertTokenizerSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
 
-   new URI(
-     "https://github.com/microsoft/onnxruntime-extensions/raw/main/test/data/test_bert_tokenizer.onnx"
-   ).toURL #> new File("test_bert_tokenizer.onnx") !!
+   //new URI(
+   //  "https://github.com/microsoft/onnxruntime-extensions/raw/main/test/data/test_bert_tokenizer.onnx"
+   //).toURL #> new File("test_bert_tokenizer.onnx") !!
 
    "BERT Tokenizer ONNX-Scala model should tokenize text" in {
       val bytes         = Files.readAllBytes(Paths.get("test_bert_tokenizer.onnx"))
@@ -36,7 +36,7 @@ class ONNXScalaBertTokenizerSpec extends AsyncFreeSpec with AsyncIOSpec with Mat
       val textTens = Tensor(data, tensorDenotation, tensorShapeDenotation, shape)
 
       // or as a shorthand if you aren't concerned with enforcing denotations
-      Tensor(data, shape)
+      //Tensor(data, shape)
       val out = bertTokenizer.fullModel[
         Long,
         "ImageNetClassification",

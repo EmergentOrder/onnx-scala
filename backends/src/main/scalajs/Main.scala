@@ -5,9 +5,9 @@ object Main {
 //    val lib = new MyLibrary
 //    println(lib.sq(2))
 
-      val t = new ORTOperatorBackend {}
+      //val t = new ORTOperatorBackend {}
 
-      t.test()
+      //t.test()
       println(s"Using Scala.js version ${System.getProperty("java.vm.version")}")
    }
 }

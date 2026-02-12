@@ -101,7 +101,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
        */
 
       // TODO: more outputs
-//      val output_node_names = List(input_node_names.toString)
+      val output_node_names = List(input_node_names.toString)
 
       // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
       // TODO: don't mix up Options and Tensors here
@@ -143,8 +143,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
                      runModel(
                        sess,
                        x,
-                       input_node_names
-//                       output_node_names
+                       input_node_names,
+                       output_node_names
                      )
                   )
                // }
@@ -217,8 +217,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
          org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession
        ],
        input_tensor_values: Array[OnnxTensor[T]],
-       inputNames: List[String]
-//       outputNames: List[String]
+       inputNames: List[String],
+       outputNames: List[String]
    )(using
        tt: ValueOf[Tt],
        td: TensorShapeDenotationOf[Td],
@@ -234,6 +234,9 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
         org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession.FeedsType
       ]
 
+      //To get past warning
+      System.out.println(outputNames)
+      //TODO: pin output tensors
       val output_tensors: IO[org.emergentorder.onnx.onnxruntimeCommon.tensorMod.Tensor] =
          IO.fromFuture {
             sess
@@ -406,12 +409,12 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
       ](
         session,
         inputs,
-        List("x")
-//        List("squeezenet0_flatten0_reshape0")
+        List("x"),
+        List("squeezenet0_flatten0_reshape0")
       )
 
-      import org.emergentorder.onnx.Tensors.Tensor.data
-      res.data.flatMap(x => { cats.effect.std.Console[IO].println(x) })
+      //import org.emergentorder.onnx.Tensors.Tensor.data
+      //res.data.flatMap(x => { cats.effect.std.Console[IO].println(x) })
       res
 //      res.andThen(x => println(x))
 //      res.foreach(tens => println(tens.shape))

@@ -12,7 +12,6 @@ import org.emergentorder.compiletime.*
 import org.emergentorder.io.kjaer.compiletime.Shape
 import org.emergentorder.onnx.Tensors.*
 
-import scala.collection.immutable.ArraySeq
 import scala.compiletime.asMatchable
 
 trait OpToONNXBytesConverter {
@@ -27,10 +26,10 @@ trait OpToONNXBytesConverter {
        domain: String
    ): NodeProto = {
       val node = NodeProto(
-        name = Some(name),
-        opType = Some(opName),
-        output = (Seq(outName)),
-        domain = Some(domain)
+        name = name,
+        opType = opName,
+        output = Array(outName),
+        domain = domain
       )
 
       /*
@@ -60,49 +59,49 @@ trait OpToONNXBytesConverter {
        */
       def createFloatAttr(x: Float, key: String): AttributeProto = {
          AttributeProto(
-           name = Some(key),
-           `type` = Some(AttributeProto.AttributeType.FLOAT),
-           f = Some(x)
+           name = key,
+           `type` = AttributeProto.AttributeType.FLOAT,
+           f = x
          )
       }
 
       def createFloatArrayAttr(x: Array[Float], key: String): AttributeProto = {
          AttributeProto(
-           name = Some(key),
-           `type` = Some(AttributeProto.AttributeType.FLOATS),
-           floats = ArraySeq.unsafeWrapArray(x)
+           name = key,
+           `type` = AttributeProto.AttributeType.FLOATS,
+           floats = x
          )
       }
 
       def createIntAttr(x: Int, key: String): AttributeProto = {
          AttributeProto(
-           name = Some(key),
-           `type` = Some(AttributeProto.AttributeType.INT),
-           i = Some(x.toLong)
+           name = key,
+           `type` = AttributeProto.AttributeType.INT,
+           i = x.toLong
          )
       }
 
       def createIntArrayAttr(x: Array[Int], key: String): AttributeProto = {
          AttributeProto(
-           name = Some(key),
-           `type` = Some(AttributeProto.AttributeType.INTS),
-           ints = ArraySeq.unsafeWrapArray(x.map(_.toLong))
+           name = key,
+           `type` = AttributeProto.AttributeType.INTS,
+           ints = x.map(_.toLong)
          )
       }
 
       def createStrAttr(x: String, key: String): AttributeProto = {
          AttributeProto(
-           name = Some(key),
-           `type` = Some(AttributeProto.AttributeType.STRING),
-           s = Some(com.google.protobuf.ByteString.copyFromUtf8(x))
+           name = key,
+           `type` = AttributeProto.AttributeType.STRING,
+           s = com.google.protobuf.ByteString.copyFromUtf8(x)
          )
       }
 
       def createStrArrayAttr(x: Array[String], key: String): AttributeProto = {
          AttributeProto(
-           name = Some(key),
-           `type` = Some(AttributeProto.AttributeType.STRINGS),
-           strings = ArraySeq.unsafeWrapArray(x.map(com.google.protobuf.ByteString.copyFromUtf8(_)))
+           name = key,
+           `type` = AttributeProto.AttributeType.STRINGS,
+           strings = x.map(com.google.protobuf.ByteString.copyFromUtf8(_))
          )
       }
 
@@ -154,13 +153,13 @@ trait OpToONNXBytesConverter {
                   case Some(x: Array[String]) => {
                      Some(createStrArrayAttr(x, key))
                   }
-                  case None => None
+                  case _ => None // None => None
                }
             }
             .toArray
             .flatten
 
-      val newNode = node.withAttribute(ArraySeq.unsafeWrapArray(attrProtos))
+      val newNode = node.withAttribute(attrProtos)
 
       return newNode
    }
@@ -174,7 +173,7 @@ trait OpToONNXBytesConverter {
 
       {
 
-         val elemType = elemTypeIn match {
+         val elemTypeORT: Int = elemTypeIn match {
             case 3  => INT8.index
             case 5  => INT16.index
             case 11 => DOUBLE.index
@@ -186,23 +185,23 @@ trait OpToONNXBytesConverter {
          }
 //         tens.shape.map { y =>
          ValueInfoProto(
-           name = { Some(inputName) },
-           `type` = Some(
-             onnx.onnx
+           name = { inputName },
+           `type` = 
+             Some(onnx.onnx
                 .TypeProto()
                 .withTensorType(
                   onnx.onnx.TypeProto.Tensor(
-                    shape = Some(
-                      onnx.onnx.TensorShapeProto(
-                        dim = ArraySeq.unsafeWrapArray(
+                    shape =
+                      Some(onnx.onnx.TensorShapeProto(
+                        dim = 
                           shape.map(onnx.onnx.TensorShapeProto.Dimension().withDimValue(_))
-                        )
-                      )
-                    ),
-                    elemType = Some(elemType)
+                      
+                    )
+                  ),
+                    elemType = elemTypeORT
                   )
                 )
-           )
+              )
          ).copy()
 //         }
       }
@@ -229,10 +228,10 @@ trait OpToONNXBytesConverter {
 
       // Spurious warning here, see: https://github.com/lampepfl/dotty/issues/10318
 //      @annotation.nowarn
-      val inputValueInfosAndExistingInputs: List[Tuple2[ValueInfoProto, String]] =
+      val inputValueInfosAndExistingInputs: Array[Tuple2[ValueInfoProto, String]] =
          inputs.zipWithIndex.map { x =>
             (createInputValueInfoProto(x._1._1, x._1._2, x._2.toString), x._2.toString)
-         }.toList
+         }
       //       .sequence
 
       val outName = inputs.size.toString
@@ -240,16 +239,16 @@ trait OpToONNXBytesConverter {
       val newGraph = {
 
          val node = nodeWithAddedInputs(
-           inputValueInfosAndExistingInputs.map(_._2),
+           inputValueInfosAndExistingInputs.map(_._2).toList,
            opToNode(inputs.toString.hashCode.toString, opName, outName, attrs, thisDomain)
          )
 
          //        node.map { y =>
          GraphProto(
-           name = Some(inputs.toString),
-           output = Seq(ValueInfoProto(name = Some(outName))),
+           name = inputs.toString,
+           output = Array(ValueInfoProto(name = outName)),
            input = inputValueInfosAndExistingInputs.map(_._1),
-           node = Seq(node)
+           node = Array(node)
          )
          //      }
       }
@@ -257,11 +256,11 @@ trait OpToONNXBytesConverter {
       val thisOpset = if opName.equals("Inverse") then 1 else 17
       val model     = {
          val mod = ModelProto(
-           producerName = Some("ONNX-Scala"),
+           producerName = "ONNX-Scala",
            graph = Some(newGraph),
-           domain = Some(thisDomain),
-           irVersion = Some(8),
-           opsetImport = Seq(OperatorSetIdProto(version = Some(thisOpset)))
+           domain = thisDomain,
+           irVersion = 8,
+           opsetImport = Array(OperatorSetIdProto(version = thisOpset))
          )
          mod
       }

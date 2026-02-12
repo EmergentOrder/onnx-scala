@@ -10,7 +10,6 @@ import spire.math.ULong
 import spire.math.UShort
 
 import scala.annotation.nowarn
-import scala.collection.immutable.ArraySeq
 import scala.language.higherKinds
 import scala.{specialized as sp}
 
@@ -1503,7 +1502,7 @@ package object onnx {
          val map: Map[String, Any] = Map("keepdims" -> (if valueOf[KeepDims] then 1 else 0))
          val allInputs             = Tuple2(
            data,
-           Tensor(axes.map(_.toLong), Shape.fromSeq(ArraySeq.unsafeWrapArray(Array(axes.size))))
+           Tensor(axes.map(_.toLong), Shape.fromSeq(Seq(axes.size)))
          )
          (callOp("ReduceSum", allInputs, map))
       }
@@ -1884,7 +1883,7 @@ package object onnx {
          val map: Map[String, Any] = Map()
          val allInputs             = Tuple2(
            data,
-           Tensor(axes.map(_.toLong), Shape.fromSeq(ArraySeq.unsafeWrapArray(Array(axes.size))))
+           Tensor(axes.map(_.toLong), Shape.fromSeq(Seq(axes.size)))
          )
          (callOp("Squeeze", allInputs, map))
       }
@@ -2035,7 +2034,7 @@ package object onnx {
          val map: Map[String, Any] = Map()
          val allInputs             = Tuple2(
            data,
-           Tensor(axes.map(_.toLong), Shape.fromSeq(ArraySeq.unsafeWrapArray(Array(axes.size))))
+           Tensor(axes.map(_.toLong), Shape.fromSeq(Seq(axes.size)))
          )
          (callOp("Unsqueeze", allInputs, map))
       }

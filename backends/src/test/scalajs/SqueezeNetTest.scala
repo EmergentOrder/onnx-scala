@@ -55,7 +55,7 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
       val imageTens = Tensor(data, tensorDenotation, tensorShapeDenotation, shape)
 
       // or as a shorthand if you aren't concerned with enforcing denotations
-      Tensor(data, shape)
+      //Tensor(data, shape)
       val out = squeezenet.fullModel[
         Float,
         "ImageNetClassification",

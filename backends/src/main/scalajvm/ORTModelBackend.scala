@@ -41,7 +41,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
       getInputAndOutputNodeNamesAndDims()
 
    override def fullModel[
-       T <: Supported : scala.reflect.Typeable,
+       T <: Supported: scala.reflect.Typeable,
        Tt <: TensorTypeDenotation,
        Td <: TensorShapeDenotation,
        S <: Shape
@@ -77,7 +77,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
               session,
               inTens,
               allNodeNamesAndDims._1,
-              allNodeNamesAndDims._3,
+              allNodeNamesAndDims._3
             )
          )
       output

@@ -41,8 +41,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 //      session_options.addConfigEntry("kOrtSessionOptionsConfigAllowIntraOpSpinning", "0")
 //      session_options.addXnnpack(java.util.Collections.singletonMap("intra_op_num_threads", coreCount.toString))
 
-      //For model compilation
-/*      
+      // For model compilation
+      /*
       val modelBuffer = ByteBuffer.wrap(bytes)
       val compileOptions = OrtModelCompilationOptions.createFromSessionOptions(env, session_options)
 
@@ -52,12 +52,12 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       compileOptions.compileModel()
 
       env.createSession(f.toString, session_options)
-  */   
+       */
       env.createSession(bytes, session_options)
    }
 
    def runModel[
-       T <: Supported : scala.reflect.Typeable,
+       T <: Supported: scala.reflect.Typeable,
        Tt <: TensorTypeDenotation,
        Td <: TensorShapeDenotation,
        S <: Shape
@@ -78,143 +78,195 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       val tensorTypeDenotationFromType  = tt.value
       val tensorShapeDenotationFromType = td.value
 
-      val outSize = shapeFromType.toSeq.reduce(_ * _) 
-      
+      val outSize = shapeFromType.toSeq.reduce(_ * _)
+
       def f[X: scala.reflect.Typeable](in: Any): Option[X] =
-        in match
-          case x: X => Some(x)
-          case _ => None
+         in match
+            case x: X => Some(x)
+            case _    => None
 
+      def realSomet: Option[T] = Seq(
+        f[T]('1'.toByte),
+        f[T](1.toShort),
+        f[T](1),
+        f[T](1L),
+        f[T](1f),
+        f[T](1d),
+        f[T](true),
+        f[T]("1")
+      ).filter(_.isDefined)(0)
 
-      def realSomet: Option[T] = Seq(f[T]('1'.toByte), f[T](1.toShort), f[T](1), f[T](1l), f[T](1f), f[T](1d), f[T](true), f[T]("1")).filter(_.isDefined)(0) 
-
-      //TODO: more cases here, and refactor
+      // TODO: more cases here, and refactor
       @nowarn
-      val outputs:java.util.Map[String, OnnxTensor] = realSomet match { 
-        case Some(f: Float) => 
-          val outputABuff: java.nio.FloatBuffer = java.nio.ByteBuffer.allocateDirect(outSize * 4).order(java.nio.ByteOrder.nativeOrder()).asFloatBuffer();
-          val outputA = OnnxTensor.createTensor(env, outputABuff, shapeFromType.toSeq.toArray.map(_.toLong))
-          val pinnedOutputs: java.util.Map[String, OnnxTensor] = (new scala.collection.immutable.HashMap[String, OnnxTensor]() + (outputNames(0) -> outputA)).toMap.asJava
-          //pinnedOutputs.put("output-0", outputA);
+      val outputs: java.util.Map[String, OnnxTensor] = realSomet match {
+         case Some(f: Float) =>
+            val outputABuff: java.nio.FloatBuffer = java.nio.ByteBuffer
+               .allocateDirect(outSize * 4)
+               .order(java.nio.ByteOrder.nativeOrder())
+               .asFloatBuffer();
+            val outputA =
+               OnnxTensor.createTensor(env, outputABuff, shapeFromType.toSeq.toArray.map(_.toLong))
+            val pinnedOutputs: java.util.Map[String, OnnxTensor] =
+               (new scala.collection.immutable.HashMap[String, OnnxTensor]() + (outputNames(
+                 0
+               ) -> outputA)).toMap.asJava
+            // pinnedOutputs.put("output-0", outputA);
 
-          //val fb = outputA.getFloatBuffer
-          val outBuf: java.nio.FloatBuffer = outputA.getBufferRef().toScala match {
-                   case Some(x) => x match {
+            // val fb = outputA.getFloatBuffer
+            val outBuf: java.nio.FloatBuffer = outputA.getBufferRef().toScala match {
+               case Some(x) =>
+                  x match {
                      case fb: java.nio.FloatBuffer => fb
-                     case _ => throw new Exception("missing")
-                   }
-                   case None => throw new Exception("missing")
-          }
-      
-          if (!outBuf.isDirect)
-            throw new Exception("Output A buff is not direct!!!")
-   
-          pinnedOutputs
+                     case _                        => throw new Exception("missing")
+                  }
+               case None => throw new Exception("missing")
+            }
 
-        case Some(b: Byte) =>
-          val outputABuff: java.nio.ByteBuffer = java.nio.ByteBuffer.allocateDirect(outSize).order(java.nio.ByteOrder.nativeOrder())
-          val outputA = OnnxTensor.createTensor(env, outputABuff, shapeFromType.toSeq.toArray.map(_.toLong))
-          val pinnedOutputs: java.util.Map[String, OnnxTensor] = (new scala.collection.immutable.HashMap[String, OnnxTensor]() + (outputNames(0) -> outputA)).toMap.asJava
-          //pinnedOutputs.put("output-0", outputA);
+            if (!outBuf.isDirect)
+               throw new Exception("Output A buff is not direct!!!")
 
-          //val fb = outputA.getFloatBuffer
-          val outBuf: java.nio.ByteBuffer = outputA.getBufferRef().toScala match {
-                   case Some(x) => x match {
+            pinnedOutputs
+
+         case Some(b: Byte) =>
+            val outputABuff: java.nio.ByteBuffer =
+               java.nio.ByteBuffer.allocateDirect(outSize).order(java.nio.ByteOrder.nativeOrder())
+            val outputA =
+               OnnxTensor.createTensor(env, outputABuff, shapeFromType.toSeq.toArray.map(_.toLong))
+            val pinnedOutputs: java.util.Map[String, OnnxTensor] =
+               (new scala.collection.immutable.HashMap[String, OnnxTensor]() + (outputNames(
+                 0
+               ) -> outputA)).toMap.asJava
+            // pinnedOutputs.put("output-0", outputA);
+
+            // val fb = outputA.getFloatBuffer
+            val outBuf: java.nio.ByteBuffer = outputA.getBufferRef().toScala match {
+               case Some(x) =>
+                  x match {
                      case fb: java.nio.ByteBuffer => fb
-                     case _ => throw new Exception("missing")
-                   }
-                   case None => throw new Exception("missing")
-          }
+                     case _                       => throw new Exception("missing")
+                  }
+               case None => throw new Exception("missing")
+            }
 
-          if (!outBuf.isDirect)
-            throw new Exception("Output A buff is not direct!!!")
+            if (!outBuf.isDirect)
+               throw new Exception("Output A buff is not direct!!!")
 
-          pinnedOutputs
+            pinnedOutputs
 
+         case Some(b: Short) =>
+            val outputABuff: java.nio.ShortBuffer = java.nio.ByteBuffer
+               .allocateDirect(outSize * 2)
+               .order(java.nio.ByteOrder.nativeOrder())
+               .asShortBuffer
+            val outputA =
+               OnnxTensor.createTensor(env, outputABuff, shapeFromType.toSeq.toArray.map(_.toLong))
+            val pinnedOutputs: java.util.Map[String, OnnxTensor] =
+               (new scala.collection.immutable.HashMap[String, OnnxTensor]() + (outputNames(
+                 0
+               ) -> outputA)).toMap.asJava
+            // pinnedOutputs.put("output-0", outputA);
 
-        case Some(b: Short) =>
-          val outputABuff: java.nio.ShortBuffer = java.nio.ByteBuffer.allocateDirect(outSize * 2).order(java.nio.ByteOrder.nativeOrder()).asShortBuffer
-          val outputA = OnnxTensor.createTensor(env, outputABuff, shapeFromType.toSeq.toArray.map(_.toLong))
-          val pinnedOutputs: java.util.Map[String, OnnxTensor] = (new scala.collection.immutable.HashMap[String, OnnxTensor]() + (outputNames(0) -> outputA)).toMap.asJava
-          //pinnedOutputs.put("output-0", outputA);
-
-          //val fb = outputA.getFloatBuffer
-          val outBuf: java.nio.ShortBuffer = outputA.getBufferRef().toScala match {
-                   case Some(x) => x match {
+            // val fb = outputA.getFloatBuffer
+            val outBuf: java.nio.ShortBuffer = outputA.getBufferRef().toScala match {
+               case Some(x) =>
+                  x match {
                      case fb: java.nio.ShortBuffer => fb
-                     case _ => throw new Exception("missing")
-                   }
-                   case None => throw new Exception("missing")
-          }
+                     case _                        => throw new Exception("missing")
+                  }
+               case None => throw new Exception("missing")
+            }
 
-          if (!outBuf.isDirect)
-            throw new Exception("Output A buff is not direct!!!")
+            if (!outBuf.isDirect)
+               throw new Exception("Output A buff is not direct!!!")
 
-          pinnedOutputs
+            pinnedOutputs
 
-        case Some(f: Long) =>
-          val outputABuff: java.nio.LongBuffer = java.nio.ByteBuffer.allocateDirect(outSize * 8).order(java.nio.ByteOrder.nativeOrder()).asLongBuffer();
-          val outputA = OnnxTensor.createTensor(env, outputABuff, shapeFromType.toSeq.toArray.map(_.toLong))
-          val pinnedOutputs: java.util.Map[String, OnnxTensor] = (new scala.collection.immutable.HashMap[String, OnnxTensor]() + (outputNames(0) -> outputA)).toMap.asJava
-          //pinnedOutputs.put("output-0", outputA);
+         case Some(f: Long) =>
+            val outputABuff: java.nio.LongBuffer = java.nio.ByteBuffer
+               .allocateDirect(outSize * 8)
+               .order(java.nio.ByteOrder.nativeOrder())
+               .asLongBuffer();
+            val outputA =
+               OnnxTensor.createTensor(env, outputABuff, shapeFromType.toSeq.toArray.map(_.toLong))
+            val pinnedOutputs: java.util.Map[String, OnnxTensor] =
+               (new scala.collection.immutable.HashMap[String, OnnxTensor]() + (outputNames(
+                 0
+               ) -> outputA)).toMap.asJava
+            // pinnedOutputs.put("output-0", outputA);
 
-          //val fb = outputA.getFloatBuffer
-          val outBuf: java.nio.LongBuffer = outputA.getBufferRef().toScala match {
-                   case Some(x) => x match {
+            // val fb = outputA.getFloatBuffer
+            val outBuf: java.nio.LongBuffer = outputA.getBufferRef().toScala match {
+               case Some(x) =>
+                  x match {
                      case fb: java.nio.LongBuffer => fb
-                     case _ => throw new Exception("missing")
-                   }
-                   case None => throw new Exception("missing")
-          }
+                     case _                       => throw new Exception("missing")
+                  }
+               case None => throw new Exception("missing")
+            }
 
-          if (!outBuf.isDirect)
-            throw new Exception("Output A buff is not direct!!!")
+            if (!outBuf.isDirect)
+               throw new Exception("Output A buff is not direct!!!")
 
-          pinnedOutputs
+            pinnedOutputs
 
-        case Some(f: Int) =>
-          val outputABuff: java.nio.IntBuffer = java.nio.ByteBuffer.allocateDirect(outSize * 4).order(java.nio.ByteOrder.nativeOrder()).asIntBuffer();
-          val outputA = OnnxTensor.createTensor(env, outputABuff, shapeFromType.toSeq.toArray.map(_.toLong))
-          val pinnedOutputs: java.util.Map[String, OnnxTensor] = (new scala.collection.immutable.HashMap[String, OnnxTensor]() + (outputNames(0) -> outputA)).toMap.asJava
-          //pinnedOutputs.put("output-0", outputA);
+         case Some(f: Int) =>
+            val outputABuff: java.nio.IntBuffer = java.nio.ByteBuffer
+               .allocateDirect(outSize * 4)
+               .order(java.nio.ByteOrder.nativeOrder())
+               .asIntBuffer();
+            val outputA =
+               OnnxTensor.createTensor(env, outputABuff, shapeFromType.toSeq.toArray.map(_.toLong))
+            val pinnedOutputs: java.util.Map[String, OnnxTensor] =
+               (new scala.collection.immutable.HashMap[String, OnnxTensor]() + (outputNames(
+                 0
+               ) -> outputA)).toMap.asJava
+            // pinnedOutputs.put("output-0", outputA);
 
-          //val fb = outputA.getFloatBuffer
-          val outBuf: java.nio.IntBuffer = outputA.getBufferRef().toScala match {
-                   case Some(x) => x match {
+            // val fb = outputA.getFloatBuffer
+            val outBuf: java.nio.IntBuffer = outputA.getBufferRef().toScala match {
+               case Some(x) =>
+                  x match {
                      case fb: java.nio.IntBuffer => fb
-                     case _ => throw new Exception("missing")
-                   }
-                   case None => throw new Exception("missing")
-          }
+                     case _                      => throw new Exception("missing")
+                  }
+               case None => throw new Exception("missing")
+            }
 
-          if (!outBuf.isDirect)
-            throw new Exception("Output A buff is not direct!!!")
+            if (!outBuf.isDirect)
+               throw new Exception("Output A buff is not direct!!!")
 
-          pinnedOutputs
+            pinnedOutputs
 
-        case Some(f: Double) =>
-          val outputABuff: java.nio.DoubleBuffer = java.nio.ByteBuffer.allocateDirect(outSize * 8).order(java.nio.ByteOrder.nativeOrder()).asDoubleBuffer();
-          val outputA = OnnxTensor.createTensor(env, outputABuff, shapeFromType.toSeq.toArray.map(_.toLong))
-          val pinnedOutputs: java.util.Map[String, OnnxTensor] = (new scala.collection.immutable.HashMap[String, OnnxTensor]() + (outputNames(0) -> outputA)).toMap.asJava
-          //pinnedOutputs.put("output-0", outputA);
+         case Some(f: Double) =>
+            val outputABuff: java.nio.DoubleBuffer = java.nio.ByteBuffer
+               .allocateDirect(outSize * 8)
+               .order(java.nio.ByteOrder.nativeOrder())
+               .asDoubleBuffer();
+            val outputA =
+               OnnxTensor.createTensor(env, outputABuff, shapeFromType.toSeq.toArray.map(_.toLong))
+            val pinnedOutputs: java.util.Map[String, OnnxTensor] =
+               (new scala.collection.immutable.HashMap[String, OnnxTensor]() + (outputNames(
+                 0
+               ) -> outputA)).toMap.asJava
+            // pinnedOutputs.put("output-0", outputA);
 
-          //val fb = outputA.getFloatBuffer
-          val outBuf: java.nio.DoubleBuffer = outputA.getBufferRef().toScala match {
-                   case Some(x) => x match {
+            // val fb = outputA.getFloatBuffer
+            val outBuf: java.nio.DoubleBuffer = outputA.getBufferRef().toScala match {
+               case Some(x) =>
+                  x match {
                      case fb: java.nio.DoubleBuffer => fb
-                     case _ => throw new Exception("missing")
-                   }
-                   case None => throw new Exception("missing")
-          }
+                     case _                         => throw new Exception("missing")
+                  }
+               case None => throw new Exception("missing")
+            }
 
-          if (!outBuf.isDirect)
-            throw new Exception("Output A buff is not direct!!!")
+            if (!outBuf.isDirect)
+               throw new Exception("Output A buff is not direct!!!")
 
-          pinnedOutputs
+            pinnedOutputs
 
-
-          //TODO:
-          /*
+         // TODO:
+         /*
         case Some(f: String) =>
           val outputABuff: java.nio.CharBuffer = java.nio.ByteBuffer.allocateDirect(outSize * f.length).order(java.nio.ByteOrder.nativeOrder()).asCharBuffer();
           val outputA = OnnxTensor.createTensor(env, outputABuff, shapeFromType.toSeq.toArray.map(_.toLong))
@@ -234,30 +286,40 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
             throw new Exception("Output A buff is not direct!!!")
 
           pinnedOutputs
-*/
-        case Some(b: Boolean) =>
-          val outputABuff: java.nio.ByteBuffer = java.nio.ByteBuffer.allocateDirect(outSize).order(java.nio.ByteOrder.nativeOrder())
-          val outputA = OnnxTensor.createTensor(env, outputABuff, shapeFromType.toSeq.toArray.map(_.toLong), ai.onnxruntime.OnnxJavaType.BOOL)
-          val pinnedOutputs: java.util.Map[String, OnnxTensor] = (new scala.collection.immutable.HashMap[String, OnnxTensor]() + (outputNames(0) -> outputA)).toMap.asJava
-          //pinnedOutputs.put("output-0", outputA);
+          */
+         case Some(b: Boolean) =>
+            val outputABuff: java.nio.ByteBuffer =
+               java.nio.ByteBuffer.allocateDirect(outSize).order(java.nio.ByteOrder.nativeOrder())
+            val outputA = OnnxTensor.createTensor(
+              env,
+              outputABuff,
+              shapeFromType.toSeq.toArray.map(_.toLong),
+              ai.onnxruntime.OnnxJavaType.BOOL
+            )
+            val pinnedOutputs: java.util.Map[String, OnnxTensor] =
+               (new scala.collection.immutable.HashMap[String, OnnxTensor]() + (outputNames(
+                 0
+               ) -> outputA)).toMap.asJava
+            // pinnedOutputs.put("output-0", outputA);
 
-          //val fb = outputA.getFloatBuffer
-          val outBuf: java.nio.ByteBuffer = outputA.getBufferRef().toScala match {
-                   case Some(x) => x match {
+            // val fb = outputA.getFloatBuffer
+            val outBuf: java.nio.ByteBuffer = outputA.getBufferRef().toScala match {
+               case Some(x) =>
+                  x match {
                      case fb: java.nio.ByteBuffer => fb
-                     case _ => throw new Exception("missing")
-                   }
-                   case None => throw new Exception("missing")
-          }
+                     case _                       => throw new Exception("missing")
+                  }
+               case None => throw new Exception("missing")
+            }
 
-          if (!outBuf.isDirect)
-            throw new Exception("Output A buff is not direct!!!")
+            if (!outBuf.isDirect)
+               throw new Exception("Output A buff is not direct!!!")
 
-          pinnedOutputs
+            pinnedOutputs
 
-        case None => throw RuntimeException("tensor type T not found")
-        case _ => throw RuntimeException("tensor type T not found")
-        //case x:Any => {println(x);  java.util.Collections.emptyMap[String, OnnxTensor]()}
+         case None => throw RuntimeException("tensor type T not found")
+         case _    => throw RuntimeException("tensor type T not found")
+         // case x:Any => {println(x);  java.util.Collections.emptyMap[String, OnnxTensor]()}
       }
 
       val tensArr: IO[Array[T]] = cats.effect.Resource
@@ -384,7 +446,12 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       resFinal.flatten
    }
 
-   def callOp[T <: Supported : scala.reflect.Typeable, Tt <: TensorTypeDenotation, Td <: TensorShapeDenotation, S <: Shape](
+   def callOp[
+       T <: Supported: scala.reflect.Typeable,
+       Tt <: TensorTypeDenotation,
+       Td <: TensorShapeDenotation,
+       S <: Shape
+   ](
 //       name: String,
        opName: String,
        inputs: Tuple,
@@ -406,7 +473,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
          )
       // Using unsafeRunSync here to restore eager evaluation
       // and avoid redundant op invocations in case user code refers to Tensors more than once
-      val resultToReturn = result //result.memoize.unsafeRunSync()
+      val resultToReturn = result // result.memoize.unsafeRunSync()
       resultToReturn
       // .flatMap(IO.println("Real call opName => " + opName).as(_))
    }
@@ -420,6 +487,6 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
    }
 
    override def close(): Unit = {
-   env.close
+      env.close
    }
 }

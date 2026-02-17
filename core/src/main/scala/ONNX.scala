@@ -34,7 +34,7 @@ package object onnx {
    // Note: Broadcasting is not supported, by design
    sealed trait Operator {
       def callOp[
-          T <: Supported : scala.reflect.Typeable,
+          T <: Supported: scala.reflect.Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -52,7 +52,7 @@ package object onnx {
    // TODO: restore onnxbytes here
    abstract class Model() extends Operator {
       def fullModel[
-          T <: Supported : scala.reflect.Typeable,
+          T <: Supported: scala.reflect.Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -82,7 +82,7 @@ package object onnx {
    trait AbsV13 extends Operator {
       def AbsV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
-             Float | Double : Typeable,
+             Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape

@@ -12,6 +12,7 @@ import spire.math.UShort
 import scala.annotation.nowarn
 import scala.language.higherKinds
 import scala.{specialized as sp}
+import scala.reflect.Typeable
 
 import io.kjaer.compiletime.*
 import io.kjaer.compiletime.Shape.NumElements
@@ -33,7 +34,7 @@ package object onnx {
    // Note: Broadcasting is not supported, by design
    sealed trait Operator {
       def callOp[
-          T <: Supported,
+          T <: Supported : scala.reflect.Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -51,7 +52,7 @@ package object onnx {
    // TODO: restore onnxbytes here
    abstract class Model() extends Operator {
       def fullModel[
-          T <: Supported,
+          T <: Supported : scala.reflect.Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -81,7 +82,7 @@ package object onnx {
    trait AbsV13 extends Operator {
       def AbsV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
-             Float | Double,
+             Float | Double : Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -98,7 +99,7 @@ package object onnx {
 
    trait AcosV7 extends Operator {
       def AcosV7[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -117,7 +118,7 @@ package object onnx {
 
    trait AcoshV9 extends Operator {
       def AcoshV9[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -137,7 +138,7 @@ package object onnx {
    trait AddV14 extends Operator {
       def AddV14[
           @sp T <: UByte | Byte | UShort | Short | UInt | ULong | Int | Long | BFloat16 | Float16 |
-             Float | Double,
+             Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -158,7 +159,7 @@ package object onnx {
    trait AndV7 extends Operator {
       def AndV7[
           @sp T <: Boolean,
-          @sp T1 <: Boolean,
+          @sp T1 <: Boolean: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -178,7 +179,7 @@ package object onnx {
 
    trait AsinV7 extends Operator {
       def AsinV7[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -197,7 +198,7 @@ package object onnx {
 
    trait AsinhV9 extends Operator {
       def AsinhV9[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -216,7 +217,7 @@ package object onnx {
 
    trait AtanV7 extends Operator {
       def AtanV7[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -235,7 +236,7 @@ package object onnx {
 
    trait AtanhV9 extends Operator {
       def AtanhV9[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -257,7 +258,7 @@ package object onnx {
    // TODO: handle pads, strides
    trait AveragePoolV11 extends Operator {
       def AveragePoolV11[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil,
@@ -307,7 +308,7 @@ package object onnx {
    // Missing optional outputs, only needed for training mode
    trait BatchNormalizationV15 extends Operator {
       def BatchNormalizationV15[
-          @sp T <: BFloat16 | Float16 | Float | Double,
+          @sp T <: BFloat16 | Float16 | Float | Double: Typeable,
           N <: Dimension,
           C <: Dimension,
           H <: Dimension,
@@ -363,7 +364,7 @@ package object onnx {
 
    trait CeilV13 extends Operator {
       def CeilV13[
-          @sp T <: BFloat16 | Float16 | Float | Double,
+          @sp T <: BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -382,7 +383,7 @@ package object onnx {
 
    trait CeluV12 extends Operator {
       def CeluV12[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -412,7 +413,7 @@ package object onnx {
              Float | Double | String | Boolean |
              Complex[
                Float
-             ] | Complex[Double],
+             ] | Complex[Double]: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           SSuffix <: Shape,
@@ -439,7 +440,7 @@ package object onnx {
    // Limited to 1 feature map, 1 group, stride 1
    trait ConvV11 extends Operator {
       def ConvV11[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           N <: Dimension,
           C <: Dimension,
           H <: Dimension,
@@ -502,7 +503,7 @@ package object onnx {
 
    trait CosV7 extends Operator {
       def CosV7[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -521,7 +522,7 @@ package object onnx {
 
    trait CoshV9 extends Operator {
       def CoshV9[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -543,7 +544,7 @@ package object onnx {
    trait DivV14 extends Operator {
       def DivV14[
           @sp T <: UByte | Byte | UShort | Short | UInt | ULong | Int | Long | BFloat16 | Float16 |
-             Float | Double,
+             Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -564,7 +565,7 @@ package object onnx {
    // Missing optional second output
    trait DropoutV13 extends Operator {
       def DropoutV13[
-          @sp T <: BFloat16 | Float16 | Float | Double,
+          @sp T <: BFloat16 | Float16 | Float | Double: Typeable,
           @sp T1 <: Float16 | Float | Double | Boolean,
           @sp T2 <: Boolean,
           Tt <: TensorTypeDenotation,
@@ -594,7 +595,7 @@ package object onnx {
 
    trait EluV6 extends Operator {
       def EluV6[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -616,7 +617,7 @@ package object onnx {
       def EqualV13[
           @sp T <: Boolean | UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 |
              Float16 | Float | Double,
-          @sp T1 <: Boolean,
+          @sp T1 <: Boolean: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -635,7 +636,7 @@ package object onnx {
 
    trait ExpV13 extends Operator {
       def ExpV13[
-          @sp T <: BFloat16 | Float16 | Float | Double,
+          @sp T <: BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -660,7 +661,7 @@ package object onnx {
              Float | Double | String | Boolean |
              Complex[
                Float
-             ] | Complex[Double],
+             ] | Complex[Double]: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -690,7 +691,7 @@ package object onnx {
              Float | Double | String | Boolean |
              Complex[
                Float
-             ] | Complex[Double],
+             ] | Complex[Double]: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -709,7 +710,7 @@ package object onnx {
 
    trait FloorV13 extends Operator {
       def FloorV13[
-          @sp T <: BFloat16 | Float16 | Float | Double,
+          @sp T <: BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -733,7 +734,7 @@ package object onnx {
              Float | Double | String | Boolean |
              Complex[
                Float
-             ] | Complex[Double],
+             ] | Complex[Double]: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -773,7 +774,7 @@ package object onnx {
    // See: https://github.com/microsoft/onnxruntime/issues/6423
    trait GemmV13 extends Operator {
       def GemmV13[
-          @sp T <: BFloat16 | Float16 | Float | Double | UInt | ULong | Int | Long,
+          @sp T <: BFloat16 | Float16 | Float | Double | UInt | ULong | Int | Long: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           M <: Dimension,
@@ -805,7 +806,7 @@ package object onnx {
 
    trait GlobalAveragePoolV1 extends Operator {
       def GlobalAveragePoolV1[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           N <: Dimension,
           C <: Dimension,
           H <: Dimension,
@@ -831,7 +832,7 @@ package object onnx {
 
    trait GlobalMaxPoolV1 extends Operator {
       def GlobalMaxPoolV1[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           N <: Dimension,
           C <: Dimension,
           H <: Dimension,
@@ -859,7 +860,7 @@ package object onnx {
    // Consider enforcing denotations - NCHW
    trait InstanceNormalizationV6 extends Operator {
       def InstanceNormalizationV6[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil,
@@ -886,7 +887,7 @@ package object onnx {
    trait IsNaNV13 extends Operator {
       def IsNaNV13[
           @sp T1 <: BFloat16 | Float16 | Float | Double,
-          @sp T2 <: Boolean,
+          @sp T2 <: Boolean: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -905,7 +906,7 @@ package object onnx {
    // Consider enforcing denotations - NCHW
    trait LRNV13 extends Operator {
       def LRNV13[
-          @sp T <: BFloat16 | Float16 | Float | Double,
+          @sp T <: BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil,
@@ -930,7 +931,7 @@ package object onnx {
 
    trait LeakyReluV6 extends Operator {
       def LeakyReluV6[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -952,7 +953,7 @@ package object onnx {
       def LessV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
              Float | Double,
-          @sp T1 <: Boolean,
+          @sp T1 <: Boolean: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -973,7 +974,7 @@ package object onnx {
    // New Op: LayerNormalization - since opset 17
    trait LogV13 extends Operator {
       def LogV13[
-          @sp T <: BFloat16 | Float16 | Float | Double,
+          @sp T <: BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -992,7 +993,7 @@ package object onnx {
 
    trait MatMulV13 extends Operator {
       def MatMulV13[
-          @sp T <: BFloat16 | Float16 | Float | Double | UInt | ULong | Int | Long,
+          @sp T <: BFloat16 | Float16 | Float | Double | UInt | ULong | Int | Long: Typeable,
           Dim0 <: Dimension,
           Dim1 <: Dimension,
           Dim2 <: Dimension,
@@ -1027,7 +1028,7 @@ package object onnx {
    // TODO: pads, strides, dilations
    trait MaxPoolV12 extends Operator {
       def MaxPoolV12[
-          @sp T <: Float16 | Float | Double | Byte | UByte,
+          @sp T <: Float16 | Float | Double | Byte | UByte: Typeable,
           @sp I <: Long,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
@@ -1080,7 +1081,7 @@ package object onnx {
    trait MulV14 extends Operator {
       def MulV14[
           @sp T <: UByte | Byte | UShort | Short | UInt | ULong | Int | Long | BFloat16 | Float16 |
-             Float | Double,
+             Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1100,7 +1101,7 @@ package object onnx {
 
    trait NegV13 extends Operator {
       def NegV13[
-          @sp T <: Float | Int | Byte | Short | Long | BFloat16 | Float16 | Double,
+          @sp T <: Float | Int | Byte | Short | Long | BFloat16 | Float16 | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1119,7 +1120,7 @@ package object onnx {
 
    trait NotV1 extends Operator {
       def NotV1[
-          @sp T <: Boolean,
+          @sp T <: Boolean: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1143,7 +1144,7 @@ package object onnx {
    trait OrV7 extends Operator {
       def OrV7[
           @sp T <: Boolean,
-          @sp T1 <: Boolean,
+          @sp T1 <: Boolean: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1163,7 +1164,7 @@ package object onnx {
 
    trait PReluV16 extends Operator {
       def PReluV16[
-          @sp T <: BFloat16 | Float16 | Float | Double | UInt | ULong | Int | Long,
+          @sp T <: BFloat16 | Float16 | Float | Double | UInt | ULong | Int | Long: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1184,7 +1185,7 @@ package object onnx {
    trait PadV13 extends Operator {
       def PadV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
-             Float | Double,
+             Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -1219,7 +1220,7 @@ package object onnx {
 
    trait PowV15 extends Operator {
       def PowV15[
-          @sp T <: Int | Long | Float16 | Float | Double,
+          @sp T <: Int | Long | Float16 | Float | Double: Typeable,
           @sp T1 <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
              Float | Double,
           Tt <: TensorTypeDenotation,
@@ -1238,7 +1239,7 @@ package object onnx {
 
    trait ReciprocalV13 extends Operator {
       def ReciprocalV13[
-          @sp T <: BFloat16 | Float16 | Float | Double,
+          @sp T <: BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1258,7 +1259,7 @@ package object onnx {
    // TODO P2: make axes param optional at the type level
    trait ReduceLogSumV13 extends Operator {
       def ReduceLogSumV13[
-          @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double,
+          @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -1294,7 +1295,7 @@ package object onnx {
    trait ReduceMaxV13 extends Operator {
       def ReduceMaxV13[
           @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double | UByte |
-             Byte,
+             Byte: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -1329,7 +1330,7 @@ package object onnx {
 
    trait ReduceMeanV13 extends Operator {
       def ReduceMeanV13[
-          @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double,
+          @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -1365,7 +1366,7 @@ package object onnx {
    trait ReduceMinV13 extends Operator {
       def ReduceMinV13[
           @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double | UByte |
-             Byte,
+             Byte: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -1400,7 +1401,7 @@ package object onnx {
 
    trait ReduceProdV13 extends Operator {
       def ReduceProdV13[
-          @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double,
+          @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -1435,7 +1436,7 @@ package object onnx {
 
    trait ReduceSumSquareV13 extends Operator {
       def ReduceSumSquareV13[
-          @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double,
+          @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -1474,7 +1475,7 @@ package object onnx {
    // TODO: new attr : noop_with_empty_axes
    trait ReduceSumV13 extends Operator {
       def ReduceSumV13[
-          @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double,
+          @sp T <: UInt | ULong | Int | Long | BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -1510,7 +1511,7 @@ package object onnx {
 
    trait ReluV14 extends Operator {
       def ReluV14[
-          @sp T <: Int | Byte | Short | Long | BFloat16 | Float16 | Float | Double,
+          @sp T <: Int | Byte | Short | Long | BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1533,7 +1534,7 @@ package object onnx {
              Float | Double | String | Boolean |
              Complex[
                Float
-             ] | Complex[Double],
+             ] | Complex[Double]: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -1616,7 +1617,7 @@ package object onnx {
 
    trait RoundV11 extends Operator {
       def RoundV11[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1637,7 +1638,7 @@ package object onnx {
    // New Op: STFT - since opset 17
    trait SeluV6 extends Operator {
       def SeluV6[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1660,7 +1661,7 @@ package object onnx {
       def ShapeV15[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
              Float | Double | Boolean | String | Complex[Float] | Complex[Double],
-          @sp T1 <: Long,
+          @sp T1 <: Long: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -1683,7 +1684,7 @@ package object onnx {
 
    trait SigmoidV13 extends Operator {
       def SigmoidV13[
-          @sp T <: BFloat16 | Float16 | Float | Double,
+          @sp T <: BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1703,7 +1704,7 @@ package object onnx {
    trait SignV13 extends Operator {
       def SignV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
-             Float | Double,
+             Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1720,7 +1721,7 @@ package object onnx {
 
    trait SinV7 extends Operator {
       def SinV7[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1739,7 +1740,7 @@ package object onnx {
 
    trait SinhV9 extends Operator {
       def SinhV9[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1764,8 +1765,8 @@ package object onnx {
              Float | Double | String | Boolean |
              Complex[
                Float
-             ] | Complex[Double],
-//        @sp Tind <: Int | Long,
+             ] | Complex[Double]: Typeable,
+//        @sp Tind <: Int | Long: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -1818,7 +1819,7 @@ package object onnx {
    // Here we require that it is 2D
    trait SoftmaxV13 extends Operator {
       def SoftmaxV13[
-          @sp T <: BFloat16 | Float16 | Float | Double,
+          @sp T <: BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Dimension #: Dimension #: SNil,
@@ -1839,7 +1840,7 @@ package object onnx {
 
    trait SqrtV13 extends Operator {
       def SqrtV13[
-          @sp T <: BFloat16 | Float16 | Float | Double,
+          @sp T <: BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1863,7 +1864,7 @@ package object onnx {
              Float | Double | String | Boolean |
              Complex[
                Float
-             ] | Complex[Double],
+             ] | Complex[Double]: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -1892,7 +1893,7 @@ package object onnx {
    trait SubV14 extends Operator {
       def SubV14[
           @sp T <: UByte | Byte | UShort | Short | UInt | ULong | Int | Long | BFloat16 | Float16 |
-             Float | Double,
+             Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1912,7 +1913,7 @@ package object onnx {
 
    trait SumV13 extends Operator {
       def SumV13[
-          @sp T <: BFloat16 | Float16 | Float | Double,
+          @sp T <: BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1931,7 +1932,7 @@ package object onnx {
 
    trait TanV7 extends Operator {
       def TanV7[
-          @sp T <: Float16 | Float | Double,
+          @sp T <: Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1950,7 +1951,7 @@ package object onnx {
 
    trait TanhV13 extends Operator {
       def TanhV13[
-          @sp T <: BFloat16 | Float16 | Float | Double,
+          @sp T <: BFloat16 | Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -1970,7 +1971,7 @@ package object onnx {
    trait TileV13 extends Operator {
       def TileV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | BFloat16 | Float16 |
-             Float | Double | String | Boolean | Complex[Float] | Complex[Double],
+             Float | Double | String | Boolean | Complex[Float] | Complex[Double]: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -1997,7 +1998,7 @@ package object onnx {
              Float | Double | String | Boolean |
              Complex[
                Float
-             ] | Complex[Double],
+             ] | Complex[Double]: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -2018,7 +2019,7 @@ package object onnx {
              Float | Double | String | Boolean |
              Complex[
                Float
-             ] | Complex[Double],
+             ] | Complex[Double]: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -2043,7 +2044,7 @@ package object onnx {
    trait XorV7 extends Operator {
       def XorV7[
           @sp T <: Boolean,
-          @sp T1 <: Boolean,
+          @sp T1 <: Boolean: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -2144,7 +2145,7 @@ package object onnxruntime {
 
    trait BitShiftV11 extends onnx.Operator {
       def BitShiftV11[
-          @sp T <: UByte | UShort | UInt | ULong,
+          @sp T <: UByte | UShort | UInt | ULong: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -2167,7 +2168,7 @@ package object onnxruntime {
    trait ClipV13 extends onnx.Operator {
       def ClipV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.BFloat16 |
-             onnx.Float16 | Float | Double,
+             onnx.Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -2256,7 +2257,7 @@ package object onnxruntime {
              onnx.Float16 | Float | Double | String | Boolean |
              Complex[
                Float
-             ] | Complex[Double],
+             ] | Complex[Double]: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -2575,7 +2576,7 @@ package object onnxruntime {
       def GreaterOrEqualV16[
           @sp T <: onnx.BFloat16 | UByte | UShort | UInt | ULong | Byte | Short | Int | Long |
              onnx.Float16 | Float | Double,
-          @sp T1 <: Boolean,
+          @sp T1 <: Boolean: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -2596,7 +2597,7 @@ package object onnxruntime {
       def GreaterV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.BFloat16 |
              onnx.Float16 | Float | Double,
-          @sp T1 <: Boolean,
+          @sp T1 <: Boolean: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -2741,7 +2742,7 @@ package object onnxruntime {
       def LessOrEqualV16[
           @sp T <: onnx.BFloat16 | UByte | UShort | UInt | ULong | Byte | Short | Int | Long |
              onnx.Float16 | Float | Double,
-          @sp T1 <: Boolean,
+          @sp T1 <: Boolean: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -2895,7 +2896,7 @@ package object onnxruntime {
    trait MaxV13 extends onnx.Operator {
       def MaxV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.BFloat16 |
-             onnx.Float16 | Float | Double,
+             onnx.Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -2912,7 +2913,7 @@ package object onnxruntime {
 
    trait MeanV13 extends onnx.Operator {
       def MeanV13[
-          @sp T <: onnx.BFloat16 | onnx.Float16 | Float | Double,
+          @sp T <: onnx.BFloat16 | onnx.Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -2950,7 +2951,7 @@ package object onnxruntime {
    trait MinV13 extends onnx.Operator {
       def MinV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.BFloat16 |
-             onnx.Float16 | Float | Double,
+             onnx.Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -2970,7 +2971,7 @@ package object onnxruntime {
    trait ModV13 extends onnx.Operator {
       def ModV13[
           @sp T <: UByte | UShort | UInt | ULong | Byte | Short | Int | Long | onnx.BFloat16 |
-             onnx.Float16 | Float | Double,
+             onnx.Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -3277,7 +3278,7 @@ package object onnxruntime {
 
    trait RangeV11 extends onnx.Operator {
       def RangeV11[
-          @sp T <: Float | Double | Short | Int | Long,
+          @sp T <: Float | Double | Short | Int | Long: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -3868,7 +3869,7 @@ package object onnxruntime {
 package object onnxruntimecontrib {
    trait InverseV1 extends onnx.Operator {
       def InverseV1[
-          @sp T <: onnx.Float16 | Float | Double,
+          @sp T <: onnx.Float16 | Float | Double: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
@@ -3892,7 +3893,7 @@ package object onnxml {
    // TODO: P3 shape constraints
    trait ArrayFeatureExtractorV1 extends onnx.Operator {
       def ArrayFeatureExtractorV1[
-          @sp T <: Float | Double | Long | Int | String,
+          @sp T <: Float | Double | Long | Int | String: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -3918,7 +3919,7 @@ package object onnxml {
 
    trait BinarizerV1 extends onnx.Operator {
       def BinarizerV1[
-          @sp T <: Float | Double | Long | Int,
+          @sp T <: Float | Double | Long | Int: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -3963,7 +3964,7 @@ package object onnxml {
    trait CategoryMapperV1 extends onnx.Operator {
       def CategoryMapperV1[
           @sp T1 <: String | Long,
-          @sp T2 <: String | Long,
+          @sp T2 <: String | Long: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -4042,7 +4043,7 @@ package object onnxml {
    // split out to floats / ints
    trait ImputerV1 extends onnx.Operator {
       def ImputerV1[
-          @sp T <: Float | Double | Long | Int,
+          @sp T <: Float | Double | Long | Int: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Dimension #: Dimension #: SNil,
@@ -4076,7 +4077,7 @@ package object onnxml {
    trait LabelEncoderV2 extends onnx.Operator {
       def LabelEncoderV2[
           @sp T1 <: String | Long | Float,
-          @sp T2 <: String | Long | Float,
+          @sp T2 <: String | Long | Float: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,
@@ -4118,7 +4119,7 @@ package object onnxml {
    trait LinearClassifierV1 extends onnx.Operator {
       def LinearClassifierV1[
           @sp T1 <: Float | Double | Long | Int,
-          @sp T2 <: String | Long,
+          @sp T2 <: String | Long: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Dimension #: Dimension #: SNil,
@@ -4235,7 +4236,7 @@ package object onnxml {
    trait SVMClassifierV1 extends onnx.Operator {
       def SVMClassifierV1[
           @sp T1 <: Float | Double | Long | Int,
-          @sp T2 <: String | Long,
+          @sp T2 <: String | Long: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Dimension #: Dimension #: SNil,
@@ -4345,7 +4346,7 @@ package object onnxml {
    trait TreeEnsembleClassifierV1 extends onnx.Operator {
       def TreeEnsembleClassifierV1[
           @sp T1 <: Float | Double | Long | Int,
-          @sp T2 <: String | Long,
+          @sp T2 <: String | Long: Typeable,
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape,

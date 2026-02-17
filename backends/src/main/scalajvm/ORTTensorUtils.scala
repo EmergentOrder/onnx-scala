@@ -5,9 +5,11 @@ import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtUtil
 import ai.onnxruntime.TensorInfo.OnnxTensorType.*
 
+import scala.jdk.OptionConverters.RichOptional
 import java.nio.*
 
 import compiletime.asMatchable
+//import scala.jdk.OptionConverters._
 
 object ORTTensorUtils {
 
@@ -29,8 +31,10 @@ object ORTTensorUtils {
        shape: Array[Int],
        env: OrtEnvironment
    ): OnnxTensor = {
-      val buff = ByteBuffer.wrap(arr)
-      OnnxTensor.createTensor(env, buff, shape.map(_.toLong))
+      val buffDirect: ByteBuffer = ByteBuffer.allocateDirect(arr.size).order(ByteOrder.nativeOrder())
+      buffDirect.put(arr)
+      buffDirect.rewind()
+      OnnxTensor.createTensor(env, buffDirect, shape.map(_.toLong))
    }
 
    private def getTensorShort(
@@ -38,8 +42,11 @@ object ORTTensorUtils {
        shape: Array[Int],
        env: OrtEnvironment
    ): OnnxTensor = {
-      val buff = ShortBuffer.wrap(arr)
-      OnnxTensor.createTensor(env, buff, shape.map(_.toLong))
+      val buffDirect: ByteBuffer = ByteBuffer.allocateDirect(arr.size * 2).order(ByteOrder.nativeOrder())
+      val buffSDirect: ShortBuffer = buffDirect.asShortBuffer
+      buffSDirect.put(arr)
+      buffSDirect.rewind()
+      OnnxTensor.createTensor(env, buffSDirect, shape.map(_.toLong))
    }
 
    private def getTensorDouble(
@@ -47,13 +54,19 @@ object ORTTensorUtils {
        shape: Array[Int],
        env: OrtEnvironment
    ): OnnxTensor = {
-      val buff = DoubleBuffer.wrap(arr)
-      OnnxTensor.createTensor(env, buff, shape.map(_.toLong))
+      val buffDirect: ByteBuffer = ByteBuffer.allocateDirect(arr.size * 8).order(ByteOrder.nativeOrder())
+      val buffDDirect: DoubleBuffer = buffDirect.asDoubleBuffer
+      buffDDirect.put(arr)
+      buffDDirect.rewind()
+      OnnxTensor.createTensor(env, buffDDirect, shape.map(_.toLong))
    }
 
    private def getTensorInt(arr: Array[Int], shape: Array[Int], env: OrtEnvironment): OnnxTensor = {
-      val buff = IntBuffer.wrap(arr)
-      OnnxTensor.createTensor(env, buff, shape.map(_.toLong))
+      val buffDirect: ByteBuffer = ByteBuffer.allocateDirect(arr.size * 4).order(ByteOrder.nativeOrder())
+      val buffIDirect: IntBuffer = buffDirect.asIntBuffer
+      buffIDirect.put(arr)
+      buffIDirect.rewind()
+      OnnxTensor.createTensor(env, buffIDirect, shape.map(_.toLong))
    }
 
    private def getTensorLong(
@@ -61,8 +74,11 @@ object ORTTensorUtils {
        shape: Array[Int],
        env: OrtEnvironment
    ): OnnxTensor = {
-      val buff = LongBuffer.wrap(arr)
-      OnnxTensor.createTensor(env, buff, shape.map(_.toLong))
+      val buffDirect: ByteBuffer = ByteBuffer.allocateDirect(arr.size * 8).order(ByteOrder.nativeOrder())
+      val buffLDirect: LongBuffer = buffDirect.asLongBuffer
+      buffLDirect.put(arr)
+      buffLDirect.rewind()
+      OnnxTensor.createTensor(env, buffLDirect, shape.map(_.toLong))
    }
 
    private def getTensorFloat(
@@ -70,8 +86,17 @@ object ORTTensorUtils {
        shape: Array[Int],
        env: OrtEnvironment
    ): OnnxTensor = {
-      val buff = FloatBuffer.wrap(arr)
-      OnnxTensor.createTensor(env, buff, shape.map(_.toLong))
+      val buffFDirect: java.nio.FloatBuffer = ByteBuffer.allocateDirect(arr.size * 4).order(ByteOrder.nativeOrder()).asFloatBuffer
+      buffFDirect.put(arr)
+      buffFDirect.rewind()
+      if (buffFDirect.isDirect) 
+        val tens = OnnxTensor.createTensor(env, buffFDirect, shape.map(_.toLong))
+        if (!tens.ownsBuffer())//.getFloatBuffer.isDirect)
+          tens
+        else
+          throw new Exception("GGG")
+      else
+        throw new Exception("FFFF")
    }
 
    private def getTensorString(
@@ -107,8 +132,26 @@ object ORTTensorUtils {
    def getArrayFromOnnxTensor[T](value: OnnxTensor): Array[T] = {
       val dtype = value.getInfo.onnxType
       val arr   = dtype match {
-         case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT => {
-            value.getFloatBuffer.array()
+         case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT => { 
+           val outBuf: java.nio.FloatBuffer = value.getBufferRef().toScala match {
+                   case Some(x) => x match {
+                     case fb: java.nio.FloatBuffer => fb
+                     case _ => throw new Exception("missing")
+                   }
+                   case None => throw new Exception("missing")
+             }
+            //value.getBufferRef().toScala
+            //val fb = value.getFloatBuffer
+            //val outArr = Array.ofDim[Float](outBuf.remaining)
+              //new Array[Float](outBuf.remaining)
+            if (outBuf.isDirect)
+              value.getFloatBuffer.array()
+              //outBuf.get(outArr)
+              //outBuf.asReadOnlyBuffer.array()
+              //outArr
+            else
+              throw new Exception("Buff is not direct!!!!!!!")
+            //value.getBufferRef()
          }
          case ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE => {
             value.getDoubleBuffer.array()
@@ -146,6 +189,7 @@ object ORTTensorUtils {
              ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT8E5M2FNUZ =>
             ??? // Unsupported
       }
+      value.close
       arr.asInstanceOf[Array[T]]
    }
 }

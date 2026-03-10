@@ -6,7 +6,7 @@ import scala.sys.process.Process
 
 //val dottyVersion = dottyLatestNightlyBuild.get
 val scala3Version    = "3.8.2-RC3" //"3.8.2-RC3"
-val spireVersion     = "0.18.0" //-156-0fe5a6a-20251027T014354Z-SNAPSHOT"
+val spireVersion     = "0.18.0"    //-156-0fe5a6a-20251027T014354Z-SNAPSHOT"
 val scalaTestVersion = "3.3.0-alpha.2"
 
 scalaVersion := scala3Version
@@ -20,7 +20,6 @@ inThisBuild(
 )
 
 ThisBuild / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.ScalaLibrary
-
 
 classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.ScalaLibrary
 
@@ -43,7 +42,7 @@ lazy val commonSettings = Seq(
     "-feature",
     "-unchecked",
     "-deprecation",
-    "-preview", 
+    "-preview",
     "-experimental",
 //    "-release:25",
     "-rewrite",
@@ -120,7 +119,7 @@ lazy val core = (projectMatrix in file("core"))
         case _ =>
            Seq(
              ("org.typelevel" %% "spire"       % spireVersion),
-             ("org.typelevel" %% "cats-effect" % "3.7.0-RC1"), // -5d10115"),
+             ("org.typelevel" %% "cats-effect" % "3.7.0"), // -5d10115"),
              ("org.typelevel" %% "cats-mtl"    % "1.6.0"),
              ("org.typelevel" %% "algebra"     % "2.13.0")
            )

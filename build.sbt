@@ -6,7 +6,7 @@ import scala.sys.process.Process
 
 //val dottyVersion = dottyLatestNightlyBuild.get
 val scala3Version    = "3.8.2-RC3" //"3.8.2-RC3"
-val spireVersion     = "0.18.0" //-156-0fe5a6a-20251027T014354Z-SNAPSHOT"
+val spireVersion     = "0.18.0"    //-156-0fe5a6a-20251027T014354Z-SNAPSHOT"
 val scalaTestVersion = "3.3.0-alpha.2"
 
 scalaVersion := scala3Version
@@ -21,7 +21,6 @@ inThisBuild(
 
 ThisBuild / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.ScalaLibrary
 
-
 classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.ScalaLibrary
 
 lazy val commonSettings = Seq(
@@ -31,7 +30,7 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "4.34.0-RC2",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "4.34.1",
   PB.protocVersion                            := "4.34.0-RC2",
 //  (Test / parallelExecution) := false,
   scalacOptions ++= Seq(
@@ -43,7 +42,7 @@ lazy val commonSettings = Seq(
     "-feature",
     "-unchecked",
     "-deprecation",
-    "-preview", 
+    "-preview",
     "-experimental",
 //    "-release:25",
     "-rewrite",

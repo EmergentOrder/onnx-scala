@@ -5,8 +5,8 @@ import scala.sys.process.Process
 //TODO: figure out why tests got a lot slower after moving to sbt-projectmatrix
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val scala3Version    = "3.8.2-RC3" //"3.8.2-RC3"
-val spireVersion     = "0.18.0" //-156-0fe5a6a-20251027T014354Z-SNAPSHOT"
+val scala3Version    = "3.8.4-RC1" //"3.8.2-RC3"
+val spireVersion     = "0.18.0"    //-156-0fe5a6a-20251027T014354Z-SNAPSHOT"
 val scalaTestVersion = "3.3.0-alpha.2"
 
 scalaVersion := scala3Version
@@ -20,7 +20,6 @@ inThisBuild(
 )
 
 ThisBuild / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.ScalaLibrary
-
 
 classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.ScalaLibrary
 
@@ -43,7 +42,7 @@ lazy val commonSettings = Seq(
     "-feature",
     "-unchecked",
     "-deprecation",
-    "-preview", 
+    "-preview",
     "-experimental",
 //    "-release:25",
     "-rewrite",

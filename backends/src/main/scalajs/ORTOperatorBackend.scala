@@ -234,9 +234,9 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
         org.emergentorder.onnx.onnxruntimeCommon.inferenceSessionMod.InferenceSession.FeedsType
       ]
 
-      //To get past warning
+      // To get past warning
       System.out.println(outputNames)
-      //TODO: pin output tensors
+      // TODO: pin output tensors
       val output_tensors: IO[org.emergentorder.onnx.onnxruntimeCommon.tensorMod.Tensor] =
          IO.fromFuture {
             sess
@@ -413,8 +413,8 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter {
         List("squeezenet0_flatten0_reshape0")
       )
 
-      //import org.emergentorder.onnx.Tensors.Tensor.data
-      //res.data.flatMap(x => { cats.effect.std.Console[IO].println(x) })
+      // import org.emergentorder.onnx.Tensors.Tensor.data
+      // res.data.flatMap(x => { cats.effect.std.Console[IO].println(x) })
       res
 //      res.andThen(x => println(x))
 //      res.foreach(tens => println(tens.shape))

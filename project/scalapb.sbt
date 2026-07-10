@@ -8,4 +8,4 @@ excludeDependencies ++= Seq(
 )
 libraryDependencies += "com.thesamet.scalapb" %% "protoc-bridge" % "0.9.9"
 libraryDependencies += ("com.thesamet.scalapb" %% "compilerplugin" % "1.0.0-alpha.3")
- //+0-670082a5+20260212-1249-SNAPSHOT")
+//+0-670082a5+20260212-1249-SNAPSHOT")

@@ -5,7 +5,7 @@ import scala.sys.process.Process
 //TODO: figure out why tests got a lot slower after moving to sbt-projectmatrix
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val scala3Version    = "3.8.2-RC3" //"3.8.2-RC3"
+val scala3Version    = "3.9.0-RC6" //"3.8.2-RC3"
 val spireVersion     = "0.18.0" //-156-0fe5a6a-20251027T014354Z-SNAPSHOT"
 val scalaTestVersion = "3.3.0-alpha.2"
 
@@ -31,11 +31,12 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "4.34.0-RC2",
-  PB.protocVersion                            := "4.34.0-RC2",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "4.36.0",
+  PB.protocVersion                            := "4.36.0",
 //  (Test / parallelExecution) := false,
   scalacOptions ++= Seq(
     // "-new-syntax",
+    //"-language:strictEquality", breaks ScalaPB
     "-explain",
     "-Yexplicit-nulls",
     "-language:unsafeNulls",
@@ -47,13 +48,14 @@ lazy val commonSettings = Seq(
     "-experimental",
 //    "-release:25",
     "-rewrite",
-//    "-source:future-migration",
-    "-source:3.8-migration",
+    "-source:future-migration",
+//    "-source:3.8-migration",
     "-Yimplicit-to-given",
     "-Wunused:all",
     "-Wnonunit-statement",
     "-WunstableInlineAccessors",
-    "-Wsafe-init"
+    "-Wsafe-init",
+    "-language:experimental.modularity"
   ),
 //  versionPolicyIntention := Compatibility.BinaryCompatible, // As long as we are pre 1.0.0, BinaryCompatible for a patch version bump and None for a minor version bump
   versionScheme         := Some("early-semver"),
@@ -120,8 +122,8 @@ lazy val core = (projectMatrix in file("core"))
         case _ =>
            Seq(
              ("org.typelevel" %% "spire"       % spireVersion),
-             ("org.typelevel" %% "cats-effect" % "3.7.0-RC1"), // -5d10115"),
-             ("org.typelevel" %% "cats-mtl"    % "1.6.0"),
+             ("org.typelevel" %% "cats-effect" % "3.7.0"), // -5d10115"),
+             ("org.typelevel" %% "cats-mtl"    % "1.7.0"),
              ("org.typelevel" %% "algebra"     % "2.13.0")
            )
      })
@@ -136,10 +138,12 @@ lazy val backends = (projectMatrix in file("backends"))
      scalacOptions ++= Seq("-Werror"), // , "-language:future"),
      name := "onnx-scala-backends",
      libraryDependencies ++= Seq(
-       "org.typelevel"            %% "cats-effect-testing-scalatest" % "1.7.0" % Test,
-       "com.microsoft.onnxruntime" % "onnxruntime"                   % "1.24.1", // "1.23.0-RC2",
+       "org.typelevel"            %% "cats-effect-testing-scalatest" % "1.8.0" % Test,
+       "com.microsoft.onnxruntime" % "onnxruntime"                   % "1.29.0", // "1.23.0-RC2",
        "com.microsoft.onnxruntime" % "onnxruntime-extensions"        % "0.13.0"
      ),
+//TODO: strip
+     libraryDependencies += "com.evolution" %% "resource-pool" % "1.1.0",
      libraryDependencies += ("org.scalatest" %% "scalatest" % scalaTestVersion) % Test
 //     libraryDependencies += ("org.scalactic" %% "scalactic" % scalaTestVersion),
    )

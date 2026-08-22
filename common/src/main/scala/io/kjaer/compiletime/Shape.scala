@@ -1,6 +1,7 @@
 //Author: Maxime Kjaer, taken from tf-dotty
 package org.emergentorder.io.kjaer.compiletime
 
+import scala.language.strictEquality
 import scala.compiletime.ops.boolean.&&
 import scala.compiletime.ops.int.+
 import scala.compiletime.ops.int.<
@@ -43,6 +44,9 @@ final case class #:[+H <: Dimension, +T <: Shape](head: H, tail: T) extends Shap
 
 sealed trait SNil extends Shape
 case object SNil  extends SNil
+
+given CanEqual[Shape, SNil.type] = CanEqual.derived
+given CanEqual[SNil.type, Shape] = CanEqual.derived
 
 object Shape {
    def scalar: SNil                                   = SNil

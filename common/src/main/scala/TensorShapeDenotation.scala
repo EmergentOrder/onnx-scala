@@ -6,6 +6,7 @@ import org.emergentorder.io.kjaer.compiletime.INil
 import org.emergentorder.io.kjaer.compiletime.Index
 import org.emergentorder.io.kjaer.compiletime.Indices
 
+import scala.language.strictEquality
 import scala.compiletime.ops.int.S
 
 type DimensionDenotation = String & Singleton
@@ -41,6 +42,10 @@ final case class ##:[+H <: DimensionDenotation, +T <: TensorShapeDenotation](hea
 
 sealed trait TSNil extends TensorShapeDenotation
 case object TSNil  extends TSNil
+
+// Add this near your definitions to permit the comparison
+given CanEqual[TensorShapeDenotation, TSNil.type] = CanEqual.derived
+given CanEqual[TSNil.type, TensorShapeDenotation] = CanEqual.derived
 
 object TensorShapeDenotation {
    def scalar: TSNil                                              = TSNil

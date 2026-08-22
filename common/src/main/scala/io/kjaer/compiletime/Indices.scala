@@ -1,6 +1,7 @@
 //Author: Maxime Kjaer, taken from tf-dotty
 package org.emergentorder.io.kjaer.compiletime
 
+import scala.language.strictEquality
 import scala.compiletime.ops.string.+
 
 type Index = Int & Singleton
@@ -22,6 +23,10 @@ final case class :::[+H <: Index, +T <: Indices](head: H, tail: T) extends Indic
 
 sealed trait INil extends Indices
 case object INil  extends INil
+
+given CanEqual[Indices, INil.type] = CanEqual.derived
+given CanEqual[INil.type, Indices] = CanEqual.derived
+
 
 object Indices {
    type ToString[X <: Indices] <: String = X match {

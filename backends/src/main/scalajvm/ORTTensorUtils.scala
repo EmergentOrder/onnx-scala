@@ -135,7 +135,9 @@ object ORTTensorUtils {
 
    def getArrayFromOnnxTensor[T](value: OnnxTensor): Array[T] = {
       val dtype = value.getInfo.onnxType
-      val arr   = dtype match {
+      given CanEqual[Any, Any] = CanEqual.derived
+      val arr   = dtype.nn match {
+         //can't avoid null here, it comes from ORT
          case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT => {
             val outBuf: java.nio.FloatBuffer = value.getBufferRef().toScala match {
                case Some(x) =>

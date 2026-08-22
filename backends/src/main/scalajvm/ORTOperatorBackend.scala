@@ -71,6 +71,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
        td: TensorShapeDenotationOf[Td],
        s: ShapeOf[S]
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
+      given CanEqual[Any, Any] = CanEqual.derived
       val inputs = (inputNames zip input_tensor_values).toMap.asJava
       // TODO: More outputs / handle via ONNXSequence / ONNXMap
 

@@ -284,12 +284,12 @@ package object onnx {
       ): Tensor[T, Tuple3[Tt1, Td1, PaddedShape[PoolShape[S, S1], PadsBefore, PadsAfter]]] = {
          val padsB: Array[Int] = padsBefore match {
             case x: Shape => x.toSeq.toArray
-            case None     => Array.fill(shapeOf[S1].toSeq.size)(0)
+            case _: None.type     => Array.fill(shapeOf[S1].toSeq.size)(0)
          }
 
          val padsA: Array[Int] = padsAfter match {
             case x: Shape => x.toSeq.toArray
-            case None     => Array.fill(shapeOf[S1].toSeq.size)(0)
+            case _: None.type     => Array.fill(shapeOf[S1].toSeq.size)(0)
          }
 
          val map: Map[String, Any] = Map(
@@ -480,12 +480,12 @@ package object onnx {
       ): Tensor[T, Tuple3[Tt3, Td3, PaddedShape[PoolShape[S, S3], PadsBefore, PadsAfter]]] = {
          val padsB: Array[Int] = padsBefore match {
             case x: Shape => x.toSeq.toArray
-            case None     => Array.fill(shapeOf[S3].toSeq.size)(0)
+            case _: None.type     => Array.fill(shapeOf[S3].toSeq.size)(0)
          }
 
          val padsA: Array[Int] = padsAfter match {
             case x: Shape => x.toSeq.toArray
-            case None     => Array.fill(shapeOf[S3].toSeq.size)(0)
+            case _: None.type     => Array.fill(shapeOf[S3].toSeq.size)(0)
          }
 
          val map: Map[String, Any] = Map(
@@ -1056,12 +1056,12 @@ package object onnx {
       ): Tensor[T, Tuple3[Tt1, Td1, PaddedShape[PoolShape[S, S1], PadsBefore, PadsAfter]]] = {
          val padsB: Array[Int] = padsBefore match {
             case x: Shape => x.toSeq.toArray
-            case None     => Array.fill(shapeOf[S1].toSeq.size)(0)
+            case _: None.type     => Array.fill(shapeOf[S1].toSeq.size)(0)
          }
 
          val padsA: Array[Int] = padsAfter match {
             case x: Shape => x.toSeq.toArray
-            case None     => Array.fill(shapeOf[S1].toSeq.size)(0)
+            case _: None.type     => Array.fill(shapeOf[S1].toSeq.size)(0)
          }
 
          val map: Map[String, Any] = Map(

@@ -35,9 +35,8 @@ lazy val commonSettings = Seq(
 //  (Test / parallelExecution) := false,
   scalacOptions ++= Seq(
     // "-new-syntax",
-    // "-language:strictEquality", breaks ScalaPB
-    "-explain",
     "-Yexplicit-nulls",
+    "-explain", 
     "-language:unsafeNulls",
     "-explain-types",
     "-feature",
@@ -71,7 +70,7 @@ lazy val common = (projectMatrix in file("common"))
 //(crossProject(JSPlatform, JVMPlatform, NativePlatform)
    .settings(
      commonSettings,
-     scalacOptions ++= Seq("-Werror"), // , "-language:future"),
+     scalacOptions ++= Seq("-Werror", "-language:strictEquality"), // , "-language:future"),
      name := "onnx-scala-common"
    )
 
@@ -114,7 +113,7 @@ lazy val core = (projectMatrix in file("core"))
    .dependsOn(proto)
    .settings(
      commonSettings,
-     scalacOptions ++= Seq("-Werror"), // , "-language:future"),
+     scalacOptions ++= Seq("-Werror", "-language:strictEquality"), // , "-language:future"),
      name := "onnx-scala",
      libraryDependencies ++= (CrossVersion
         .partialVersion(scalaVersion.value) match {
@@ -134,7 +133,7 @@ lazy val backends = (projectMatrix in file("backends"))
    .dependsOn(core)
    .settings(
      commonSettings,
-     scalacOptions ++= Seq("-Werror"), // , "-language:future"),
+     scalacOptions ++= Seq("-Werror", "-language:strictEquality"), // , "-language:future"),
      name := "onnx-scala-backends",
      libraryDependencies ++= Seq(
        "org.typelevel"            %% "cats-effect-testing-scalatest" % "1.8.0" % Test,

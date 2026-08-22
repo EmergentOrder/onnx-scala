@@ -1,9 +1,9 @@
--Xms16g
--Xmx16g
+-Xm8g
+-Xmx8g
 -XX:+UseCompressedOops
 -Xss8M
 -XX:MaxMetaspaceSize=1024M
 -XX:ReservedCodeCacheSize=2048m
--XX:MaxDirectMemorySize=16g
+-XX:MaxDirectMemorySize=8g
 -XX:+PrintFlagsFinal
 --enable-preview

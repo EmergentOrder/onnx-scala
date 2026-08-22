@@ -122,7 +122,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
                case None => throw new Exception("missing")
             }
 
-            if (!outBuf.isDirect)
+            if !outBuf.isDirect then
                throw new Exception("Output A buff is not direct!!!")
 
             pinnedOutputs
@@ -148,7 +148,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
                case None => throw new Exception("missing")
             }
 
-            if (!outBuf.isDirect)
+            if !outBuf.isDirect then
                throw new Exception("Output A buff is not direct!!!")
 
             pinnedOutputs
@@ -176,7 +176,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
                case None => throw new Exception("missing")
             }
 
-            if (!outBuf.isDirect)
+            if !outBuf.isDirect then
                throw new Exception("Output A buff is not direct!!!")
 
             pinnedOutputs
@@ -204,7 +204,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
                case None => throw new Exception("missing")
             }
 
-            if (!outBuf.isDirect)
+            if !outBuf.isDirect then
                throw new Exception("Output A buff is not direct!!!")
 
             pinnedOutputs
@@ -232,7 +232,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
                case None => throw new Exception("missing")
             }
 
-            if (!outBuf.isDirect)
+            if !outBuf.isDirect then
                throw new Exception("Output A buff is not direct!!!")
 
             pinnedOutputs
@@ -260,7 +260,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
                case None => throw new Exception("missing")
             }
 
-            if (!outBuf.isDirect)
+            if !outBuf.isDirect then
                throw new Exception("Output A buff is not direct!!!")
 
             pinnedOutputs
@@ -312,7 +312,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
                case None => throw new Exception("missing")
             }
 
-            if (!outBuf.isDirect)
+            if !outBuf.isDirect then
                throw new Exception("Output A buff is not direct!!!")
 
             pinnedOutputs

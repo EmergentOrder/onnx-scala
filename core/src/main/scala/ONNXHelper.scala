@@ -25,7 +25,7 @@ import onnx.onnx.*
 import scala.language.implicitConversions
 
 class ONNXHelper(val byteArray: Array[Byte]) {
-   lazy val model: ModelProto = ModelProto.parseFrom(byteArray)
+   val model: ModelProto = ModelProto.parseFrom(byteArray)
    //  check_model(model.toProtoString)
    private val graph = model.graph
 
@@ -171,7 +171,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
    private val initializer      =
       (0 until initializerCount).map(y => graph.map(z => z.initializer(y))).flatten
 
-   lazy val params: Seq[
+   val params: Seq[
      (
          String,
          String,
@@ -188,7 +188,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
          (name, tensorElemType, arrX, dimsList.map(y => y.toInt).toArray)
       }
 
-   lazy val nodes: Seq[Iterable[String]] = {
+   val nodes: Seq[Iterable[String]] = {
       val someNodes = input.map { inputOpt =>
          inputOpt.map { x =>
             val name = x.name
@@ -199,7 +199,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
       someNodes
    }
 
-   lazy val outputs: Array[Option[String]] = {
+   val outputs: Array[Option[String]] = {
       val outputArray = globalOutput.toArray
       outputArray.map { valueinfoOpt =>
          valueinfoOpt
@@ -208,7 +208,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
       }
    }
 
-   lazy val graphInputs: Array[(String, String)] = {
+   val graphInputs: Array[(String, String)] = {
       val inputCount = graph.map(x => x.input.size.toInt).getOrElse(0)
       val input      = (0 until inputCount).map(y => graph.map(z => z.input(y)))
       input.toArray
@@ -226,7 +226,7 @@ class ONNXHelper(val byteArray: Array[Byte]) {
          .flatten
    }
 
-   lazy val graphOutputs: Array[(String, String)] = {
+   val graphOutputs: Array[(String, String)] = {
       val outputCount = graph.map(x => x.output.size.toInt).getOrElse(0)
       val output      = (0 until outputCount).map(y => graph.map(z => z.output(y)))
       output.toArray

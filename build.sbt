@@ -142,8 +142,6 @@ lazy val backends = (projectMatrix in file("backends"))
        "com.microsoft.onnxruntime" % "onnxruntime"                   % "1.29.0", // "1.23.0-RC2",
        "com.microsoft.onnxruntime" % "onnxruntime-extensions"        % "0.13.0"
      ),
-//TODO: strip
-     libraryDependencies += "com.evolution" %% "resource-pool" % "1.1.0",
      libraryDependencies += ("org.scalatest" %% "scalatest" % scalaTestVersion) % Test
 //     libraryDependencies += ("org.scalactic" %% "scalactic" % scalaTestVersion),
    )

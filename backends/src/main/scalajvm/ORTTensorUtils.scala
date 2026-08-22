@@ -95,9 +95,9 @@ object ORTTensorUtils {
          ByteBuffer.allocateDirect(arr.size * 4).order(ByteOrder.nativeOrder()).asFloatBuffer
       buffFDirect.put(arr)
       buffFDirect.rewind()
-      if (buffFDirect.isDirect)
+      if buffFDirect.isDirect then
          val tens = OnnxTensor.createTensor(env, buffFDirect, shape.map(_.toLong))
-         if (!tens.ownsBuffer()) // .getFloatBuffer.isDirect)
+         if !tens.ownsBuffer() then // .getFloatBuffer.isDirect)
             tens
          else
             throw new Exception("GGG")
@@ -150,7 +150,7 @@ object ORTTensorUtils {
             // val fb = value.getFloatBuffer
             // val outArr = Array.ofDim[Float](outBuf.remaining)
             // new Array[Float](outBuf.remaining)
-            if (outBuf.isDirect)
+            if outBuf.isDirect then
                value.getFloatBuffer.array()
                // outBuf.get(outArr)
                // outBuf.asReadOnlyBuffer.array()

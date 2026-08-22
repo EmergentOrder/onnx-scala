@@ -14,22 +14,22 @@ object ORTTensorUtils {
    //
    def getOnnxTensor[T](arr: scala.Array[T], shape: scala.Array[Int]): OnnxTensor[T] = {
       arr match {
-         case _: Array[Byte] =>
-            getTensorByte(arr.asInstanceOf[Array[Byte]], shape).asInstanceOf[OnnxTensor[T]]
-         case _: Array[Short] =>
-            getTensorShort(arr.asInstanceOf[Array[Short]], shape).asInstanceOf[OnnxTensor[T]]
-         case _: Array[Double] =>
-            getTensorDouble(arr.asInstanceOf[Array[Double]], shape).asInstanceOf[OnnxTensor[T]]
-         case _: Array[Float] =>
-            getTensorFloat(arr.asInstanceOf[Array[Float]], shape).asInstanceOf[OnnxTensor[T]]
-         case _: Array[Int] =>
-            getTensorInt(arr.asInstanceOf[Array[Int]], shape).asInstanceOf[OnnxTensor[T]]
-         case _: Array[Long] =>
-            getTensorLong(arr.asInstanceOf[Array[Long]], shape).asInstanceOf[OnnxTensor[T]]
-         case _: Array[Boolean] =>
-            getTensorBoolean(arr.asInstanceOf[Array[Boolean]], shape).asInstanceOf[OnnxTensor[T]]
-         case _: Array[String] =>
-            getTensorString(arr.asInstanceOf[Array[String]], shape).asInstanceOf[OnnxTensor[T]]
+         case _thisArr: Array[Byte] =>
+            getTensorByte(thisArr, shape).asInstanceOf[OnnxTensor[T]]
+         case thisArr: Array[Short] =>
+            getTensorShort(thisArr, shape).asInstanceOf[OnnxTensor[T]]
+         case thisArr: Array[Double] =>
+            getTensorDouble(thisArr, shape).asInstanceOf[OnnxTensor[T]]
+         case thisArr: Array[Float] =>
+            getTensorFloat(thisArr, shape).asInstanceOf[OnnxTensor[T]]
+         case thisArr: Array[Int] =>
+            getTensorInt(thisAr, shape).asInstanceOf[OnnxTensor[T]]
+         case thisArr: Array[Long] =>
+            getTensorLong(thisArr, shape).asInstanceOf[OnnxTensor[T]]
+         case thisArr: Array[Boolean] =>
+            getTensorBoolean(thisArr, shape).asInstanceOf[OnnxTensor[T]]
+         case thisArr: Array[String] =>
+            getTensorString(thisArr, shape).asInstanceOf[OnnxTensor[T]]
          case _ =>
             getTensorLong(arr.map(x => x.toString.toLong).toArray, shape)
                .asInstanceOf[OnnxTensor[T]]

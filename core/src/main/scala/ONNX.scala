@@ -496,7 +496,7 @@ package object onnx {
            "pads"         -> (padsB ++ padsA),
            "strides"      -> strides
          )
-         val allInputs = Tuple3(X, W, B)
+         val allInputs = if B.nonEmpty then Tuple3(X, W, B) else Tuple2(X,W)
          (callOp("Conv", allInputs, map))
       }
    }
@@ -1773,14 +1773,14 @@ package object onnx {
           Tt1 <: TensorTypeDenotation,
           AxesStart <: Indices,
           AxesEnd <: Indices,
-          AxisIndices <: None.type | Indices,
-          StepIndices <: None.type | Indices
+          AxisIndices <: Indices,
+          StepIndices <: Indices
       ](
           data: Tensor[T, Tuple3[Tt, Td, S]],
           starts: AxesStart,
           ends: AxesEnd,
-          axes: AxisIndices = None,
-          steps: StepIndices = None
+          axes: Option[AxisIndices] = None,
+          steps: Option[StepIndices] = None
       )(using
           tt: ValueOf[Tt1],
           td: TensorShapeDenotationOf[Td],
@@ -1794,23 +1794,23 @@ package object onnx {
          val newEnds =
             Tensor(endsArr, endsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
 
-         val newAxes = axes match {
-            case None       => None
-            case x: Indices => {
+         val newAxes = axes.map{   
+               (x: Indices) => {
                val axesArr = x.indices.toArray
                Tensor(axesArr, axesArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
             }
          }
 
-         val newSteps = steps match {
-            case None       => None
-            case x: Indices => {
+         val newSteps = steps.map{
+               (x: Indices) => {
                val stepsArr = x.indices.toArray
                Tensor(stepsArr, stepsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
             }
          }
 
-         val allInputs = Tuple5(data, newStarts, newEnds, newAxes, newSteps)
+         val allInputs = if newSteps.nonEmpty && axes.nonEmpty then Tuple5(data, newStarts, newEnds, newAxes, newSteps)
+                         //TODO: handle Tuple4 cases, likely needs named inputs
+                         else Tuple3(data, newStarts, newEnds)
          (callOp("Slice", allInputs, map))
       }
    }

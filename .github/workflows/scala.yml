@@ -25,4 +25,4 @@ jobs:
         java-version: ${{ matrix.java }}
     - uses: sbt/setup-sbt@v1
     - name: Run JVM tests
-      run: sbt "project backends" test -J-Xmx5G
+      run: sbt "backends / testFull"

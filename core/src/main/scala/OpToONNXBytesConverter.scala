@@ -122,24 +122,24 @@ trait OpToONNXBytesConverter {
                   }
                   case Some(x) => {
                      x.asMatchable match {
-                       case y: Int => {
-                         Some(createIntAttr(y, key))
-                       }
-                       case y: Array[Int] => {
-                         Some(createIntArrayAttr(y, key))
-                       }
-                       case y: Float => {
-                         Some(createFloatAttr(y, key))
-                       }
-                       case y: Array[Float] => {
-                         Some(createFloatArrayAttr(y, key))
-                       }
-                       case y: String => {
-                         Some(createStrAttr(y, key))
-                       }
-                       case y: Array[String] => {
-                          Some(createStrArrayAttr(y, key))
-                       }
+                        case y: Int => {
+                           Some(createIntAttr(y, key))
+                        }
+                        case y: Array[Int] => {
+                           Some(createIntArrayAttr(y, key))
+                        }
+                        case y: Float => {
+                           Some(createFloatAttr(y, key))
+                        }
+                        case y: Array[Float] => {
+                           Some(createFloatArrayAttr(y, key))
+                        }
+                        case y: String => {
+                           Some(createStrAttr(y, key))
+                        }
+                        case y: Array[String] => {
+                           Some(createStrArrayAttr(y, key))
+                        }
                      }
                   }
                   case x: Array[Int] => {
@@ -147,16 +147,16 @@ trait OpToONNXBytesConverter {
                   }
                   case x: Float => {
                      Some(createFloatAttr(x, key))
-                  } 
+                  }
                   case x: Array[Float] => {
                      Some(createFloatArrayAttr(x, key))
-                  } 
+                  }
                   case x: String => {
                      Some(createStrAttr(x, key))
-                  } 
+                  }
                   case x: Array[String] => {
                      Some(createStrArrayAttr(x, key))
-                  } 
+                  }
                   case _ => None // None => None
                }
             }

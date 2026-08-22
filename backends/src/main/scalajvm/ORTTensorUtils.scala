@@ -99,8 +99,7 @@ object ORTTensorUtils {
          val tens = OnnxTensor.createTensor(env, buffFDirect, shape.map(_.toLong))
          if !tens.ownsBuffer() then // .getFloatBuffer.isDirect)
             tens
-         else
-            throw new Exception("GGG")
+         else throw new Exception("GGG")
       else throw new Exception("FFFF")
    }
 
@@ -155,8 +154,7 @@ object ORTTensorUtils {
                // outBuf.get(outArr)
                // outBuf.asReadOnlyBuffer.array()
                // outArr
-            else
-               throw new Exception("Buff is not direct!!!!!!!")
+            else throw new Exception("Buff is not direct!!!!!!!")
             // value.getBufferRef()
          }
          case ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE => {

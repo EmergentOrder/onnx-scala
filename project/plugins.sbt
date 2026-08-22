@@ -1,6 +1,6 @@
 //Not working with sbt 2
 //addDependencyTreePlugin
-addSbtPlugin("com.eed3si9n" % "sbt-projectmatrix" % "0.11.0") //No longer needed in sbt 2.x
+//addSbtPlugin("com.eed3si9n" % "sbt-projectmatrix" % "0.11.0") //No longer needed in sbt 2.x
 //addSbtPlugin("ch.epfl.scala" % "sbt-version-policy" % "3.2.1") //Not working with sbt 2.x
 //addSbtPlugin("org.scala-js"  % "sbt-scalajs"        % "1.20.2") //Not working with sbt 2.x. PR is open
 //addSbtPlugin("org.scala-native"   % "sbt-scala-native"              % "0.5.10") //Not working with sbt 2.x. PR has landed.

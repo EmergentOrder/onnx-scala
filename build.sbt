@@ -120,7 +120,7 @@ lazy val core = (projectMatrix in file("core"))
         case _ =>
            Seq(
              ("org.typelevel" %% "spire"       % spireVersion),
-             ("org.typelevel" %% "cats-effect" % "3.7.0"), // -5d10115"),
+             ("org.typelevel" %% "cats-effect" % "3.7.1"), // -5d10115"),
              ("org.typelevel" %% "cats-mtl"    % "1.7.0"),
              ("org.typelevel" %% "algebra"     % "2.13.0")
            )
@@ -174,7 +174,7 @@ lazy val docs = (crossProject(JVMPlatform)
   )
  */
 
-publish / skip := true
+//publish / skip := true
 
 /*
 lazy val sonatypeSettings = Seq(

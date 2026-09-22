@@ -36,7 +36,7 @@ lazy val commonSettings = Seq(
   scalacOptions ++= Seq(
     // "-new-syntax",
     "-Yexplicit-nulls",
-    "-explain", 
+    "-explain",
     "-language:unsafeNulls",
     "-explain-types",
     "-feature",
@@ -137,7 +137,7 @@ lazy val backends = (projectMatrix in file("backends"))
      name := "onnx-scala-backends",
      libraryDependencies ++= Seq(
        "org.typelevel"            %% "cats-effect-testing-scalatest" % "1.8.0" % Test,
-       "com.microsoft.onnxruntime" % "onnxruntime"                   % "1.29.0", // "1.23.0-RC2",
+       "com.microsoft.onnxruntime" % "onnxruntime"                   % "1.30.0", // "1.23.0-RC2",
        "com.microsoft.onnxruntime" % "onnxruntime-extensions"        % "0.13.0"
      ),
      libraryDependencies += ("org.scalatest" %% "scalatest" % scalaTestVersion) % Test

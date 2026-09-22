@@ -15,5 +15,5 @@
 
 //working with sbt 2
 addSbtPlugin("com.typesafe"  % "sbt-mima-plugin" % "1.1.6")
-addSbtPlugin("ch.epfl.scala" % "sbt-scalafix"    % "0.14.7")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalafix"    % "0.14.9")
 addSbtPlugin("org.scalameta" % "sbt-scalafmt"    % "2.6.2")

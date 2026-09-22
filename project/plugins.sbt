@@ -14,6 +14,6 @@
 //addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.8")
 
 //working with sbt 2
-addSbtPlugin("com.typesafe"  % "sbt-mima-plugin" % "1.1.6")
+addSbtPlugin("com.typesafe"  % "sbt-mima-plugin" % "1.2.1")
 addSbtPlugin("ch.epfl.scala" % "sbt-scalafix"    % "0.14.7")
 addSbtPlugin("org.scalameta" % "sbt-scalafmt"    % "2.6.2")

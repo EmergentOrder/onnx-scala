@@ -30,13 +30,13 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   resolvers += "Sonatype OSS Snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
   updateOptions                               := updateOptions.value.withLatestSnapshots(false),
-  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "4.36.0",
-  PB.protocVersion                            := "4.36.0",
+  libraryDependencies += "com.google.protobuf" % "protobuf-java" % "4.36.2",
+  PB.protocVersion                            := "4.36.2",
 //  (Test / parallelExecution) := false,
   scalacOptions ++= Seq(
     // "-new-syntax",
     "-Yexplicit-nulls",
-    "-explain", 
+    "-explain",
     "-language:unsafeNulls",
     "-explain-types",
     "-feature",
@@ -137,7 +137,7 @@ lazy val backends = (projectMatrix in file("backends"))
      name := "onnx-scala-backends",
      libraryDependencies ++= Seq(
        "org.typelevel"            %% "cats-effect-testing-scalatest" % "1.8.0" % Test,
-       "com.microsoft.onnxruntime" % "onnxruntime"                   % "1.29.0", // "1.23.0-RC2",
+       "com.microsoft.onnxruntime" % "onnxruntime"                   % "1.30.0", // "1.23.0-RC2",
        "com.microsoft.onnxruntime" % "onnxruntime-extensions"        % "0.13.0"
      ),
      libraryDependencies += ("org.scalatest" %% "scalatest" % scalaTestVersion) % Test

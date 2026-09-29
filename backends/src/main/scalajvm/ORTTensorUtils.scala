@@ -4,8 +4,6 @@ import ai.onnxruntime.OnnxTensor
 import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtUtil
 import ai.onnxruntime.TensorInfo.OnnxTensorType.*
-
-import scala.jdk.OptionConverters.RichOptional
 import java.nio.*
 
 import compiletime.asMatchable
@@ -139,25 +137,7 @@ object ORTTensorUtils {
       val arr   = dtype.nn match {
          //can't avoid null here, it comes from ORT
          case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT => {
-            val outBuf: java.nio.FloatBuffer = value.getBufferRef().toScala match {
-               case Some(x) =>
-                  x match {
-                     case fb: java.nio.FloatBuffer => fb
-                     case _                        => throw new Exception("missing")
-                  }
-               case None => throw new Exception("missing")
-            }
-            // value.getBufferRef().toScala
-            // val fb = value.getFloatBuffer
-            // val outArr = Array.ofDim[Float](outBuf.remaining)
-            // new Array[Float](outBuf.remaining)
-            if outBuf.isDirect then
-               value.getFloatBuffer.array()
-               // outBuf.get(outArr)
-               // outBuf.asReadOnlyBuffer.array()
-               // outArr
-            else throw new Exception("Buff is not direct!!!!!!!")
-            // value.getBufferRef()
+            value.getFloatBuffer.array()
          }
          case ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE => {
             value.getDoubleBuffer.array()

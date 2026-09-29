@@ -154,8 +154,6 @@ sbt publishLocal
 
 * [ONNX](https://github.com/onnx/onnx) via [ScalaPB](https://github.com/scalapb/ScalaPB) - Open Neural Network Exchange / The missing bridge between Java and native C++ libraries (For access to Protobuf definitions, used in the fine-grained API to create ONNX models in memory to send to the backend)
 
-* [Spire](https://github.com/typelevel/spire) - Powerful new number types and numeric abstractions for Scala.  (For support for unsigned ints, complex numbers and the Numeric type class in the core API)
-
 * [Dotty](https://github.com/lampepfl/dotty) - The Scala 3 compiler, also known as Dotty. (For union types (used here to express ONNX type constraints), match types, compiletime singleton ops, ...)
 
 #### Backends

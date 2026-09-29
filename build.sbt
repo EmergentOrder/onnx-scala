@@ -5,7 +5,7 @@ import scala.sys.process.Process
 //TODO: figure out why tests got a lot slower after moving to sbt-projectmatrix
 
 //val dottyVersion = dottyLatestNightlyBuild.get
-val scala3Version    = "3.9.0-RC6" //"3.8.2-RC3"
+val scala3Version    = "3.9.0" //"3.8.2-RC3"
 val spireVersion     = "0.18.0"    //-156-0fe5a6a-20251027T014354Z-SNAPSHOT"
 val scalaTestVersion = "3.3.0-alpha.2"
 
@@ -119,7 +119,7 @@ lazy val core = (projectMatrix in file("core"))
         .partialVersion(scalaVersion.value) match {
         case _ =>
            Seq(
-             ("org.typelevel" %% "spire"       % spireVersion),
+//             ("org.typelevel" %% "spire"       % spireVersion),
              ("org.typelevel" %% "cats-effect" % "3.7.1"), // -5d10115"),
              ("org.typelevel" %% "cats-mtl"    % "1.7.0"),
              ("org.typelevel" %% "algebra"     % "2.13.0")

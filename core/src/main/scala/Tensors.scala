@@ -6,18 +6,12 @@ import org.emergentorder.compiletime.TSNil
 import org.emergentorder.compiletime.TensorShapeDenotation
 import org.emergentorder.io.kjaer.compiletime.Shape.*
 import org.emergentorder.io.kjaer.compiletime.*
-import spire.math.Complex
-import spire.math.UByte
-import spire.math.UInt
-import spire.math.ULong
-import spire.math.UShort
 
 import scala.compiletime.ops.int.*
 
 object Tensors {
 
-   type Supported = Int | Long | Float | Double | Byte | Short | UByte | UShort | UInt | ULong |
-      Boolean | String | BFloat16 | Float16 | Complex[Float] | Complex[Double]
+   type Supported = Int | Long | Float | Double | Byte | Short | Boolean | String | BFloat16 | Float16 
 
    type TensorTypeDenotation = String & Singleton
 

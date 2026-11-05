@@ -39,7 +39,7 @@ lazy val commonSettings = Seq(
     "-deprecation",
     "-preview",
     "-experimental",
-    "-release:27",
+//    "-release:27",
     "-rewrite", //Needed for protobuf generation
     "-language:unsafeNulls", //Needed for protobuf generation
     "-source:future-migration",

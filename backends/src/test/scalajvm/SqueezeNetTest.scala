@@ -20,9 +20,11 @@ import sys.process.*
 class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
 
    if !Files.exists(Paths.get("squeezenet1_1_Opset18.onnx")) then {
-      new URI(
+     val uri = new URI(
         "https://media.githubusercontent.com/media/onnx/models/main/Computer_Vision/squeezenet1_1_Opset18_torch_hub/squeezenet1_1_Opset18.onnx"
-      ).toURL #> new File("squeezenet1_1_Opset18.onnx") !!
+      ) 
+     val str: String = (uri.toURL #> new File("squeezenet1_1_Opset18.onnx") !!)
+     str: Unit
    }
    "SqueezeNet ONNX-Scala model should predict dummy image class" in {
       val squeezenetBytes =

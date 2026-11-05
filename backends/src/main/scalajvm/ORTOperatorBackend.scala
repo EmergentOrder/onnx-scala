@@ -391,7 +391,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
           inputTensorss: IO[Array[OnnxTensor]]
       ): Tensor[T, Tuple3[Tt, Td, S]] = {
          cats.effect.Resource
-            .make(inputTensorss)(inTens => IO.blocking { inTens.map(_.close) })
+            .make(inputTensorss)(inTens => IO.blocking { inTens.map(_.close): Unit })
             .use(inTens =>
                cats.effect.Resource
                   .make(IO.blocking(getSession(opModelBytes)))(sess => IO.blocking { sess.close })

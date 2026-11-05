@@ -19,9 +19,12 @@ import sys.process.*
 
 class ONNXScalaBertTokenizerSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
    if !Files.exists(Paths.get("test_bert_tokenizer.onnx")) then {
-      new URI(
+      val file = new File("test_bert_tokenizer.onnx")
+      val uri = new URI(
         "https://github.com/microsoft/onnxruntime-extensions/raw/main/test/data/test_bert_tokenizer.onnx"
-      ).toURL #> new File("test_bert_tokenizer.onnx") !!
+      )
+      val str: String = (uri.toURL #> file !!)
+      str: Unit
    }
 
    "BERT Tokenizer ONNX-Scala model should tokenize text" in {

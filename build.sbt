@@ -1,13 +1,9 @@
 //import org.scalajs.linker.interface.ModuleSplitStyle
 import scala.sys.process.Process
-//import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
-//TODO: figure out why tests got a lot slower after moving to sbt-projectmatrix
-
-//val dottyVersion = dottyLatestNightlyBuild.get
-val scala3Version    = "3.9.0" //"3.8.2-RC3"
-val spireVersion     = "0.18.0"    //-156-0fe5a6a-20251027T014354Z-SNAPSHOT"
-val scalaTestVersion = "3.3.0-alpha.2"
+//TODO: drop back to LTS before publishing next release
+val scala3Version    = "3.10.0" //"3.8.2-RC3"
+val scalaTestVersion = "3.2.20"
 
 scalaVersion := scala3Version
 
@@ -37,22 +33,22 @@ lazy val commonSettings = Seq(
     // "-new-syntax",
     "-Yexplicit-nulls",
     "-explain",
-    "-language:unsafeNulls",
     "-explain-types",
     "-feature",
     "-unchecked",
     "-deprecation",
     "-preview",
     "-experimental",
-//    "-release:25",
-    "-rewrite",
+    "-release:27",
+    "-rewrite", //Needed for protobuf generation
+    "-language:unsafeNulls", //Needed for protobuf generation
     "-source:future-migration",
-//    "-source:3.8-migration",
     "-Yimplicit-to-given",
     "-Wunused:all",
     "-Wnonunit-statement",
     "-WunstableInlineAccessors",
     "-Wsafe-init",
+    "-Wvalue-discard",
     "-language:experimental.modularity"
   ),
 //  versionPolicyIntention := Compatibility.BinaryCompatible, // As long as we are pre 1.0.0, BinaryCompatible for a patch version bump and None for a minor version bump

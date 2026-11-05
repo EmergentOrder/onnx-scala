@@ -71,7 +71,7 @@ class ORTModelBackend(onnxBytes: Array[Byte])
          .map(_.toArray)
 
       val output = cats.effect.Resource
-         .make(inputTensors)(inTens => IO.blocking { inTens.map(_.close) })
+         .make(inputTensors)(inTens => IO.blocking { inTens.map(_.close): Unit })
          .use(inTens =>
             runModel[T, Tt, Td, S](
               session,

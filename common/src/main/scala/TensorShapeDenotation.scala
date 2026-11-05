@@ -6,8 +6,8 @@ import org.emergentorder.io.kjaer.compiletime.INil
 import org.emergentorder.io.kjaer.compiletime.Index
 import org.emergentorder.io.kjaer.compiletime.Indices
 
-import scala.language.strictEquality
 import scala.compiletime.ops.int.S
+import scala.language.strictEquality
 
 type DimensionDenotation = String & Singleton
 

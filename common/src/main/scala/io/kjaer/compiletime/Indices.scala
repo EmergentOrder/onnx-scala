@@ -1,8 +1,8 @@
 //Author: Maxime Kjaer, taken from tf-dotty
 package org.emergentorder.io.kjaer.compiletime
 
-import scala.language.strictEquality
 import scala.compiletime.ops.string.+
+import scala.language.strictEquality
 
 type Index = Int & Singleton
 

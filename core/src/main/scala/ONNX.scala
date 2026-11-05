@@ -6,8 +6,8 @@ import org.emergentorder.onnx.Tensors.*
 
 import scala.annotation.nowarn
 import scala.language.higherKinds
-import scala.{specialized as sp}
 import scala.reflect.Typeable
+import scala.{specialized as sp}
 
 import io.kjaer.compiletime.*
 import io.kjaer.compiletime.Shape.NumElements

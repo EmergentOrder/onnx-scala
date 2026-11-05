@@ -11,16 +11,18 @@ import org.emergentorder.io.kjaer.compiletime.*
 import org.emergentorder.onnx.Tensors.*
 import org.emergentorder.onnx.*
 
-import scala.jdk.OptionConverters.RichOptional
-import scala.jdk.CollectionConverters.*
-import scala.language.implicitConversions
 //import java.io.File
 //import java.nio.ByteBuffer
 import scala.annotation.nowarn
+import scala.jdk.CollectionConverters.*
+import scala.jdk.OptionConverters.RichOptional
+import scala.language.implicitConversions
+
+import ORTTensorUtils.*
 //import scala.Conversion.into
 //import compiletime.asMatchable
 
-import ORTTensorUtils.*
+
 
 trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 

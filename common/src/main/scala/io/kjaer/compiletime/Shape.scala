@@ -1,13 +1,13 @@
 //Author: Maxime Kjaer, taken from tf-dotty
 package org.emergentorder.io.kjaer.compiletime
 
-import scala.language.strictEquality
 import scala.compiletime.ops.boolean.&&
 import scala.compiletime.ops.int.+
 import scala.compiletime.ops.int.<
 import scala.compiletime.ops.int.<=
 import scala.compiletime.ops.int.S
 import scala.compiletime.ops.int.*
+import scala.language.strictEquality
 
 type Dimension = Int & Singleton
 

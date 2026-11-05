@@ -22,8 +22,6 @@ import ORTTensorUtils.*
 //import scala.Conversion.into
 //import compiletime.asMatchable
 
-
-
 trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 
    val env: OrtEnvironment = OrtEnvironment.getEnvironment()
@@ -74,7 +72,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
        s: ShapeOf[S]
    ): Tensor[T, Tuple3[Tt, Td, S]] = {
       given CanEqual[Any, Any] = CanEqual.derived
-      val inputs = (inputNames zip input_tensor_values).toMap.asJava
+      val inputs               = (inputNames zip input_tensor_values).toMap.asJava
       // TODO: More outputs / handle via ONNXSequence / ONNXMap
 
       val shapeFromType: S              = s.value

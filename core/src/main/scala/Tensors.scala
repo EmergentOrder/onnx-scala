@@ -11,7 +11,8 @@ import scala.compiletime.ops.int.*
 
 object Tensors {
 
-   type Supported = Int | Long | Float | Double | Byte | Short | Boolean | String | BFloat16 | Float16 
+   type Supported = Int | Long | Float | Double | Byte | Short | Boolean | String | BFloat16 |
+      Float16
 
    type TensorTypeDenotation = String & Singleton
 

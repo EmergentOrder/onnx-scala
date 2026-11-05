@@ -27,7 +27,6 @@ case object INil  extends INil
 given CanEqual[Indices, INil.type] = CanEqual.derived
 given CanEqual[INil.type, Indices] = CanEqual.derived
 
-
 object Indices {
    type ToString[X <: Indices] <: String = X match {
       case INil          => "INil"

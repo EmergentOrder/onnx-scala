@@ -133,10 +133,10 @@ object ORTTensorUtils {
    }
 
    def getArrayFromOnnxTensor[T](value: OnnxTensor): Array[T] = {
-      val dtype = value.getInfo.onnxType
+      val dtype                = value.getInfo.onnxType
       given CanEqual[Any, Any] = CanEqual.derived
-      val arr   = dtype.nn match {
-         //can't avoid null here, it comes from ORT
+      val arr                  = dtype.nn match {
+         // can't avoid null here, it comes from ORT
          case ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT => {
             value.getFloatBuffer.array()
          }

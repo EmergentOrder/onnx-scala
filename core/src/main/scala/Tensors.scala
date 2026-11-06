@@ -24,7 +24,7 @@ object Tensors {
    // TODO: consider using TF-Java ndarray as backing instead of Scala Array here
    // S is overloaded
    type Tensor[T <: Supported, +Ax <: Axes]      = IO[InnerTensor[T, Ax]]
-   type InnerTensor[T <: Supported, +Ax <: Axes] = Tuple2[Array[T], Ax]
+   type InnerTensor[T <: Supported, +Ax <: Axes] = Tuple2[IArray[T], Ax]
 
    type SparseTensor[T <: Supported, A <: Axes] = Tensor[T, A]
 
@@ -316,8 +316,7 @@ object Tensors {
           Tt <: TensorTypeDenotation,
           Td <: TensorShapeDenotation,
           S <: Shape
-      ](tens: Tensor[T, Tuple3[Tt, Td, S]])
-         def shape: IO[Array[Long]] = tens.map(_._2._3.toSeq.map(_.toLong).toArray)
+      ](tens: Tensor[T, Tuple3[Tt, Td, S]]) def shape: IO[Array[Long]] = tens.map(x => x._2._3.toSeq.toArray)
 
       def tensorRequires[
           T <: Supported,
@@ -338,7 +337,7 @@ object Tensors {
           Tt <: TensorTypeDenotation,
           TD <: TensorShapeDenotation
       ](element: T, tt: Tt, td: TD): Tensor[T, Tuple3[Tt, TD, 1L #: SNil]] = tensorRequires(
-        IO.pure { (Array[T](element), (tt, td, 1L #: SNil)) }
+        IO.pure { (IArray[T](element), (tt, td, 1L #: SNil)) }
       )
 
       def apply[
@@ -346,24 +345,24 @@ object Tensors {
           Tt <: TensorTypeDenotation,
           TD <: TensorShapeDenotation,
           S <: Shape
-      ](arr: Array[T], tt0: Tt, td0: TD, d0: S): Tensor[T, Tuple3[Tt, TD, S]] = tensorRequires(
+      ](arr: IArray[T], tt0: Tt, td0: TD, d0: S): Tensor[T, Tuple3[Tt, TD, S]] = tensorRequires(
         IO.pure { (arr, (tt0, td0, d0)) }
       )
 
       def apply[T <: Supported: scala.reflect.ClassTag](
           element: T
       ): Tensor[T, Tuple3["", org.emergentorder.compiletime.TSNil, 1L #: SNil]] = tensorRequires(
-        IO.pure { (Array(element), ("", TSNil, 1L #: SNil)) }
+        IO.pure { (IArray(element), ("", TSNil, 1L #: SNil)) }
       )
 
       def apply[T <: Supported, TD <: TensorShapeDenotation, S <: Shape](
-          arr: Array[T],
+          arr: IArray[T],
           td0: TD,
           d0: S
       ): Tensor[T, Tuple3["", TD, S]] = tensorRequires(IO.pure { (arr, ("", td0, d0)) })
 
       def apply[T <: Supported, S <: Shape](
-          arr: Array[T],
+          arr: IArray[T],
           d0: S
       ): Tensor[T, Tuple3["", "" ##: TSNil, S]] = tensorRequires(IO.pure {
          (arr, ("", "" ##: TSNil, d0))

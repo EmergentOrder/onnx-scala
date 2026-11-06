@@ -12,16 +12,16 @@ import compiletime.asMatchable
 
 object ORTTensorUtils {
 
-   def getOnnxTensor[T](arr: Array[T], shape: Array[Long], env: OrtEnvironment): OnnxTensor = {
+   def getOnnxTensor[T](arr: IArray[T], shape: Array[Long], env: OrtEnvironment): OnnxTensor = {
       arr(0).asMatchable match {
-         case _: Byte    => getTensorByte(arr.asInstanceOf[Array[Byte]], shape, env)
-         case _: Short   => getTensorShort(arr.asInstanceOf[Array[Short]], shape, env)
-         case _: Double  => getTensorDouble(arr.asInstanceOf[Array[Double]], shape, env)
-         case _: Float   => getTensorFloat(arr.asInstanceOf[Array[Float]], shape, env)
-         case _: Int     => getTensorInt(arr.asInstanceOf[Array[Int]], shape, env)
-         case _: Long    => getTensorLong(arr.asInstanceOf[Array[Long]], shape, env)
-         case _: Boolean => getTensorBoolean(arr.asInstanceOf[Array[Boolean]], shape, env)
-         case _: String  => getTensorString(arr.asInstanceOf[Array[String]], shape, env)
+         case _: Byte    => getTensorByte(arr.asInstanceOf[Array[Byte]], shape.asInstanceOf[Array[Long]], env)
+         case _: Short   => getTensorShort(arr.asInstanceOf[Array[Short]], shape.asInstanceOf[Array[Long]], env)
+         case _: Double  => getTensorDouble(arr.asInstanceOf[Array[Double]], shape.asInstanceOf[Array[Long]], env)
+         case _: Float   => getTensorFloat(arr.asInstanceOf[Array[Float]], shape.asInstanceOf[Array[Long]], env)
+         case _: Int     => getTensorInt(arr.asInstanceOf[Array[Int]], shape.asInstanceOf[Array[Long]], env)
+         case _: Long    => getTensorLong(arr.asInstanceOf[Array[Long]], shape.asInstanceOf[Array[Long]], env)
+         case _: Boolean => getTensorBoolean(arr.asInstanceOf[Array[Boolean]], shape.asInstanceOf[Array[Long]], env)
+         case _: String  => getTensorString(arr.asInstanceOf[Array[String]], shape.asInstanceOf[Array[Long]], env)
       }
    }
 

@@ -33,7 +33,7 @@ class ONNXBytesDataSource(onnxBytes: Array[Byte]) extends DataSource {
          case Some(x) => {
             require(x._4 sameElements shapeFromType.toSeq)
             Tensor(
-              x._3.asInstanceOf[Array[T]],
+              x._3.asInstanceOf[IArray[T]],
               tensorTypeDenotationFromType,
               tensorShapeDenotationFromType,
               shapeFromType

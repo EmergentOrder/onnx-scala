@@ -330,7 +330,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       val result: Tensor[T, Tuple3[Tt, Td, S]] = tensArr
          .flatMap(x =>
             Tensor(
-              x,
+              IArray.unsafeFromArray(x),
               tensorTypeDenotationFromType,
               tensorShapeDenotationFromType,
               shapeFromType

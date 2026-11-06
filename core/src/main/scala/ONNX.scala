@@ -744,7 +744,7 @@ package object onnx {
          val allInputs             = Tuple2(
            data,
            Tensor(
-             IArray.unsafeFromArray(indicesOf[AxisIndices].indices.toArray),
+             IArray.from(indicesOf[AxisIndices].indices),
              indicesOf[AxisIndices].indices.toArray.size
                 .asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil
            )
@@ -1190,8 +1190,8 @@ package object onnx {
           s: ShapeOf[PaddedShape[S, AxesBefore, AxesAfter]]
       ): Tensor[T, Tuple3[Tt3, Td, PaddedShape[S, AxesBefore, AxesAfter]]] = {
          val map: Map[String, Any] = Map("mode" -> mode)
-         val beforeArr             = IArray.unsafeFromArray(padsBefore.toSeq.toArray)
-         val afterArr              = IArray.unsafeFromArray(padsAfter.toSeq.toArray)
+         val beforeArr             = IArray.from(padsBefore.toSeq)
+         val afterArr              = IArray.from(padsAfter.toSeq)
          val padsArr               = (beforeArr ++ afterArr).map(_.toLong)
          val pads                  =
             Tensor(padsArr, padsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
@@ -1482,7 +1482,7 @@ package object onnx {
         KeepOrReduceDimDenotations[Td, Axes, KeepDims],
         KeepOrReduceDims[S, Axes, KeepDims]
       ]] = {
-         val axes                  = IArray.unsafeFromArray(indicesOf[Axes].indices.toArray)
+         val axes                  = IArray.from(indicesOf[Axes].indices)
          val map: Map[String, Any] = Map("keepdims" -> (if valueOf[KeepDims] then 1 else 0))
          val allInputs             = Tuple2(
            data,
@@ -1764,23 +1764,23 @@ package object onnx {
           s5: ShapeOf[SlicedShape[AxesStart, AxesEnd]]
       ): Tensor[T, Tuple3[Tt1, Td, SlicedShape[AxesStart, AxesEnd]]] = {
          val map: Map[String, Any] = Map()
-         val startsArr             = IArray.unsafeFromArray(starts.indices.toArray)
+         val startsArr             = IArray.from(starts.indices)
          val newStarts             =
             Tensor(startsArr, startsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
-         val endsArr = IArray.unsafeFromArray(ends.indices.toArray)
+         val endsArr = IArray.from(ends.indices)
          val newEnds =
             Tensor(endsArr, endsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
 
          val newAxes = axes.map { (x: Indices) =>
             {
-               val axesArr = IArray.unsafeFromArray(x.indices.toArray)
+               val axesArr = IArray.from(x.indices)
                Tensor(axesArr, axesArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
             }
          }
 
          val newSteps = steps.map { (x: Indices) =>
             {
-               val stepsArr = IArray.unsafeFromArray(x.indices.toArray)
+               val stepsArr = IArray.from(x.indices)
                Tensor(stepsArr, stepsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
             }
          }
@@ -1855,7 +1855,7 @@ package object onnx {
         KeepOrReduceDimDenotations[Td, Axes, false],
         KeepOrReduceDims[S, Axes, false]
       ]] = {
-         val axes                  = IArray.unsafeFromArray(indicesOf[Axes].indices.toArray)
+         val axes                  = IArray.from(indicesOf[Axes].indices)
          val map: Map[String, Any] = Map()
          val allInputs             = Tuple2(
            data,
@@ -1958,7 +1958,7 @@ package object onnx {
           s: ShapeOf[TiledShape[S, AxisRepeats]]
       ): Tensor[T, Tuple3[Tt2, Td, TiledShape[S, AxisRepeats]]] = {
          val map: Map[String, Any] = Map()
-         val repeatsArr            = IArray.unsafeFromArray(repeats.indices.toArray.map(_.toLong))
+         val repeatsArr            = IArray.from(repeats.indices.map(_.toLong))
          val repeatsTens           =
             Tensor(repeatsArr, repeatsArr.size.asInstanceOf[io.kjaer.compiletime.Dimension] #: SNil)
 
@@ -2000,7 +2000,7 @@ package object onnx {
           s: ShapeOf[UnsqueezeShape[S, Axes]],
           i: IndicesOf[Axes]
       ): Tensor[T, Tuple3[Tt1, Td, UnsqueezeShape[S, Axes]]] = {
-         val axes                  = IArray.unsafeFromArray(indicesOf[Axes].indices.toArray)
+         val axes                  = IArray.from(indicesOf[Axes].indices)
          val map: Map[String, Any] = Map()
          val allInputs             = Tuple2(
            data,
@@ -2253,7 +2253,7 @@ package object onnxruntime {
            "value_string"  -> value_string,
            "value_strings" -> value_strings
          )
-         val shapeArr             = IArray.unsafeFromArray(s.value.toSeq.map(_.toLong).toArray)
+         val shapeArr             = IArray.from(s.value.toSeq.map(_.toLong))
          val shapeSize: Dimension = shapeArr.size.asInstanceOf[Dimension]
          val allInputs            = Tuple(Tensor(shapeArr.map(_.toLong), shapeSize #: SNil))
          (callOp("Constant", allInputs, map))

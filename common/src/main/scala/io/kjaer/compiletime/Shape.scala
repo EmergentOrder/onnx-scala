@@ -55,7 +55,7 @@ object Shape {
 
    def fromSeq(seq: Seq[Long]): Shape = seq match {
       case Nil          => SNil
-      case head +: tail => head.asInstanceOf[Dimension] #: Shape.fromSeq(tail)
+      case head +: tail => head #: Shape.fromSeq(tail)
    }
 
    type Concat[X <: Shape, Y <: Shape] <: Shape = X match {

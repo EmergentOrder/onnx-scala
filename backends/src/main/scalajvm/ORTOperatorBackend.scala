@@ -102,7 +102,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
       val outputs: java.util.Map[String, OnnxTensor] = realSomet match {
          case Some(f: Float) =>
             val outputABuff: java.nio.FloatBuffer = java.nio.ByteBuffer
-               .allocateDirect(outSize * 4)
+               .allocateDirect(outSize.toInt * 4)
                .order(java.nio.ByteOrder.nativeOrder())
                .asFloatBuffer();
             val outputA =
@@ -129,7 +129,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 
          case Some(b: Byte) =>
             val outputABuff: java.nio.ByteBuffer =
-               java.nio.ByteBuffer.allocateDirect(outSize).order(java.nio.ByteOrder.nativeOrder())
+               java.nio.ByteBuffer.allocateDirect(outSize.toInt).order(java.nio.ByteOrder.nativeOrder())
             val outputA =
                OnnxTensor.createTensor(env, outputABuff, shapeFromType.toSeq.toArray.map(_.toLong))
             val pinnedOutputs: java.util.Map[String, OnnxTensor] =
@@ -154,7 +154,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 
          case Some(b: Short) =>
             val outputABuff: java.nio.ShortBuffer = java.nio.ByteBuffer
-               .allocateDirect(outSize * 2)
+               .allocateDirect(outSize.toInt * 2)
                .order(java.nio.ByteOrder.nativeOrder())
                .asShortBuffer
             val outputA =
@@ -181,7 +181,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 
          case Some(f: Long) =>
             val outputABuff: java.nio.LongBuffer = java.nio.ByteBuffer
-               .allocateDirect(outSize * 8)
+               .allocateDirect(outSize.toInt * 8)
                .order(java.nio.ByteOrder.nativeOrder())
                .asLongBuffer();
             val outputA =
@@ -208,7 +208,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 
          case Some(f: Int) =>
             val outputABuff: java.nio.IntBuffer = java.nio.ByteBuffer
-               .allocateDirect(outSize * 4)
+               .allocateDirect(outSize.toInt * 4)
                .order(java.nio.ByteOrder.nativeOrder())
                .asIntBuffer();
             val outputA =
@@ -235,7 +235,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
 
          case Some(f: Double) =>
             val outputABuff: java.nio.DoubleBuffer = java.nio.ByteBuffer
-               .allocateDirect(outSize * 8)
+               .allocateDirect(outSize.toInt * 8)
                .order(java.nio.ByteOrder.nativeOrder())
                .asDoubleBuffer();
             val outputA =
@@ -263,7 +263,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
          // TODO:
          /*
         case Some(f: String) =>
-          val outputABuff: java.nio.CharBuffer = java.nio.ByteBuffer.allocateDirect(outSize * f.length).order(java.nio.ByteOrder.nativeOrder()).asCharBuffer();
+          val outputABuff: java.nio.CharBuffer = java.nio.ByteBuffer.allocateDirect(outSize.toInt * f.length).order(java.nio.ByteOrder.nativeOrder()).asCharBuffer();
           val outputA = OnnxTensor.createTensor(env, outputABuff, shapeFromType.toSeq.toArray.map(_.toLong))
           val pinnedOutputs: java.util.Map[String, OnnxTensor] = (new scala.collection.immutable.HashMap[String, OnnxTensor]() + (outputNames(0) -> outputA)).toMap.asJava
           //pinnedOutputs.put("output-0", outputA);
@@ -284,7 +284,7 @@ trait ORTOperatorBackend extends OpToONNXBytesConverter with AutoCloseable {
           */
          case Some(b: Boolean) =>
             val outputABuff: java.nio.ByteBuffer =
-               java.nio.ByteBuffer.allocateDirect(outSize).order(java.nio.ByteOrder.nativeOrder())
+               java.nio.ByteBuffer.allocateDirect(outSize.toInt).order(java.nio.ByteOrder.nativeOrder())
             val outputA = OnnxTensor.createTensor(
               env,
               outputABuff,

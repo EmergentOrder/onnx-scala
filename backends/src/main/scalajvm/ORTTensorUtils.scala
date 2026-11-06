@@ -12,7 +12,7 @@ import compiletime.asMatchable
 
 object ORTTensorUtils {
 
-   def getOnnxTensor[T](arr: Array[T], shape: Array[Int], env: OrtEnvironment): OnnxTensor = {
+   def getOnnxTensor[T](arr: Array[T], shape: Array[Long], env: OrtEnvironment): OnnxTensor = {
       arr(0).asMatchable match {
          case _: Byte    => getTensorByte(arr.asInstanceOf[Array[Byte]], shape, env)
          case _: Short   => getTensorShort(arr.asInstanceOf[Array[Short]], shape, env)
@@ -27,7 +27,7 @@ object ORTTensorUtils {
 
    private def getTensorByte(
        arr: Array[Byte],
-       shape: Array[Int],
+       shape: Array[Long],
        env: OrtEnvironment
    ): OnnxTensor = {
       val buffDirect: ByteBuffer =
@@ -39,7 +39,7 @@ object ORTTensorUtils {
 
    private def getTensorShort(
        arr: Array[Short],
-       shape: Array[Int],
+       shape: Array[Long],
        env: OrtEnvironment
    ): OnnxTensor = {
       val buffDirect: ByteBuffer =
@@ -52,7 +52,7 @@ object ORTTensorUtils {
 
    private def getTensorDouble(
        arr: Array[Double],
-       shape: Array[Int],
+       shape: Array[Long],
        env: OrtEnvironment
    ): OnnxTensor = {
       val buffDirect: ByteBuffer =
@@ -63,7 +63,7 @@ object ORTTensorUtils {
       OnnxTensor.createTensor(env, buffDDirect, shape.map(_.toLong))
    }
 
-   private def getTensorInt(arr: Array[Int], shape: Array[Int], env: OrtEnvironment): OnnxTensor = {
+   private def getTensorInt(arr: Array[Int], shape: Array[Long], env: OrtEnvironment): OnnxTensor = {
       val buffDirect: ByteBuffer =
          ByteBuffer.allocateDirect(arr.size * 4).order(ByteOrder.nativeOrder())
       val buffIDirect: IntBuffer = buffDirect.asIntBuffer
@@ -74,7 +74,7 @@ object ORTTensorUtils {
 
    private def getTensorLong(
        arr: Array[Long],
-       shape: Array[Int],
+       shape: Array[Long],
        env: OrtEnvironment
    ): OnnxTensor = {
       val buffDirect: ByteBuffer =
@@ -87,7 +87,7 @@ object ORTTensorUtils {
 
    private def getTensorFloat(
        arr: Array[Float],
-       shape: Array[Int],
+       shape: Array[Long],
        env: OrtEnvironment
    ): OnnxTensor = {
       val buffFDirect: java.nio.FloatBuffer =
@@ -104,7 +104,7 @@ object ORTTensorUtils {
 
    private def getTensorString(
        arr: Array[String],
-       shape: Array[Int],
+       shape: Array[Long],
        env: OrtEnvironment
    ): OnnxTensor = {
       // working around: https://github.com/microsoft/onnxruntime/issues/7358
@@ -118,7 +118,7 @@ object ORTTensorUtils {
 
    private def getTensorBoolean(
        arr: Array[Boolean],
-       shape: Array[Int],
+       shape: Array[Long],
        env: OrtEnvironment
    ): OnnxTensor = {
       // working around: https://github.com/microsoft/onnxruntime/issues/7358

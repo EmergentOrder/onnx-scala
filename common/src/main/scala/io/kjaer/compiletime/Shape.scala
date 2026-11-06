@@ -2,14 +2,13 @@
 package org.emergentorder.io.kjaer.compiletime
 
 import scala.compiletime.ops.boolean.&&
-import scala.compiletime.ops.int.+
-import scala.compiletime.ops.int.<
-import scala.compiletime.ops.int.<=
-import scala.compiletime.ops.int.S
-import scala.compiletime.ops.int.*
+import scala.compiletime.ops.long.+
+import scala.compiletime.ops.long.<
+import scala.compiletime.ops.long.<=
+import scala.compiletime.ops.long.*
 import scala.language.strictEquality
 
-type Dimension = Int & Singleton
+type Dimension = Long & Singleton
 
 sealed trait Shape extends Product with Serializable {
    import Shape.*
@@ -30,7 +29,7 @@ sealed trait Shape extends Product with Serializable {
    /** Number of dimensions represented by this shape */
    def rank: Rank[this.type] = Shape.rank(this)
 
-   def toSeq: Seq[Int] = this match {
+   def toSeq: Seq[Long] = this match {
       case SNil         => Nil
       case head #: tail => head +: tail.toSeq
    }
@@ -54,9 +53,9 @@ object Shape {
    def matrix(rows: Dimension, columns: Dimension): rows.type #: columns.type #: SNil =
       rows #: columns #: SNil
 
-   def fromSeq(seq: Seq[Int]): Shape = seq match {
+   def fromSeq(seq: Seq[Long]): Shape = seq match {
       case Nil          => SNil
-      case head +: tail => head #: Shape.fromSeq(tail)
+      case head +: tail => head.asInstanceOf[Dimension] #: Shape.fromSeq(tail)
    }
 
    type Concat[X <: Shape, Y <: Shape] <: Shape = X match {
@@ -79,24 +78,24 @@ object Shape {
       case cons: #:[?, ?] => concat(reverse(cons.tail), cons.head #: SNil)
    }
 
-   type NumElements[X <: Shape] <: Int = X match {
-      case SNil         => 1
+   type NumElements[X <: Shape] <: Long = X match {
+      case SNil         => 1L
       case head #: tail => head * NumElements[tail]
    }
 
    def numElements[X <: Shape](x: X): NumElements[X] = x match {
-      case _: SNil        => 1
+      case _: SNil        => 1L
       case cons: #:[?, ?] => cons.head mul numElements(cons.tail)
    }
 
-   type Rank[X <: Shape] <: Int = X match {
-      case SNil         => 0
-      case head #: tail => Rank[tail] + 1
+   type Rank[X <: Shape] <: Long = X match {
+      case SNil         => 0L
+      case head #: tail => Rank[tail] + 1L
    }
 
    def rank[X <: Shape](x: X): Rank[X] = x match {
-      case _: SNil        => 0
-      case cons: #:[?, ?] => rank(cons.tail) add 1
+      case _: SNil        => 0L
+      case cons: #:[?, ?] => rank(cons.tail) add 1L
    }
 
    type IsEmpty[X <: Shape] <: Boolean = X match {
@@ -126,7 +125,7 @@ object Shape {
      */
    type Reduce[S <: Shape, Axes <: None.type | Indices] <: Shape = Axes match {
       case None.type => SNil
-      case Indices   => ReduceLoop[S, Axes, 0]
+      case Indices   => ReduceLoop[S, Axes, 0L]
    }
 
    /** Remove indices from a shape
@@ -142,8 +141,8 @@ object Shape {
       RemoveFrom match {
          case head #: tail =>
             Indices.Contains[ToRemove, I] match {
-               case true  => ReduceLoop[tail, Indices.RemoveValue[ToRemove, I], S[I]]
-               case false => head #: ReduceLoop[tail, ToRemove, S[I]]
+               case true  => ReduceLoop[tail, Indices.RemoveValue[ToRemove, I], I + 1L]
+               case false => head #: ReduceLoop[tail, ToRemove, I + 1L]
             }
          case SNil =>
             ToRemove match {
@@ -155,7 +154,7 @@ object Shape {
       }
 
    /** Returns whether index `I` is within bounds of `S` */
-   type WithinBounds[I <: Index, S <: Shape] = (0 <= I && I < Rank[S])
+   type WithinBounds[I <: Index, S <: Shape] = (0L <= I && I < Rank[S])
 
    /** Remove the element at index `I` in `RemoveFrom`.
      *
@@ -165,7 +164,7 @@ object Shape {
      *   Index to remove
      */
    type RemoveIndex[RemoveFrom <: Shape, I <: Index] <: Shape = WithinBounds[I, RemoveFrom] match {
-      case true => RemoveIndexLoop[RemoveFrom, I, 0]
+      case true => RemoveIndexLoop[RemoveFrom, I, 0L]
       // case false => Error[
       //     "Index " + int.ToString[I] +
       //     " is out of bounds for shape of rank " + int.ToString[Rank[RemoveFrom]]
@@ -186,7 +185,7 @@ object Shape {
          case head #: tail =>
             Current match {
                case I => tail
-               case _ => head #: RemoveIndexLoop[tail, I, S[Current]]
+               case _ => head #: RemoveIndexLoop[tail, I, Current + 1L]
             }
       }
 
@@ -215,7 +214,7 @@ object Shape {
      * @tparam F
      *   Function taking an accumulator of type B, and an element of type Int, returning B
      */
-   type FoldLeft[B, X <: Shape, Z <: B, F[_ <: B, _ <: Int] <: B] <: B = X match {
+   type FoldLeft[B, X <: Shape, Z <: B, F[_ <: B, _ <: Long] <: B] <: B = X match {
       case SNil         => Z
       case head #: tail => FoldLeft[B, tail, F[Z, head], F]
    }

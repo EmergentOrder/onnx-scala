@@ -6,7 +6,7 @@ import org.emergentorder.io.kjaer.compiletime.INil
 import org.emergentorder.io.kjaer.compiletime.Index
 import org.emergentorder.io.kjaer.compiletime.Indices
 
-import scala.compiletime.ops.int.S
+import scala.compiletime.ops.long.+
 import scala.language.strictEquality
 
 type DimensionDenotation = String & Singleton
@@ -110,7 +110,7 @@ object TensorShapeDenotation {
    type Reduce[S <: TensorShapeDenotation, Axes <: None.type | Indices] <: TensorShapeDenotation =
       Axes match {
          case None.type => TSNil
-         case Indices   => ReduceLoop[S, Axes, 0]
+         case Indices   => ReduceLoop[S, Axes, 0L]
       }
 
    /** Remove indices from a shape
@@ -129,8 +129,8 @@ object TensorShapeDenotation {
    ] <: TensorShapeDenotation = RemoveFrom match {
       case head ##: tail =>
          Indices.Contains[ToRemove, I] match {
-            case true  => ReduceLoop[tail, Indices.RemoveValue[ToRemove, I], S[I]]
-            case false => head ##: ReduceLoop[tail, ToRemove, S[I]]
+            case true  => ReduceLoop[tail, Indices.RemoveValue[ToRemove, I], I + 1L]
+            case false => head ##: ReduceLoop[tail, ToRemove, I + 1L]
          }
       case TSNil =>
          ToRemove match {

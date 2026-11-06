@@ -7,7 +7,7 @@ import org.emergentorder.compiletime.TensorShapeDenotation
 import org.emergentorder.io.kjaer.compiletime.Shape.*
 import org.emergentorder.io.kjaer.compiletime.*
 
-import scala.compiletime.ops.int.*
+import scala.compiletime.ops.long.*
 
 object Tensors {
 
@@ -49,7 +49,7 @@ object Tensors {
    type ReduceKeepDims[S <: Shape, AxisIndices <: None.type | Indices] <: Shape =
       AxisIndices match {
          case None.type => SNil
-         case Indices   => ReduceKeepDimsLoop[S, AxisIndices, 0]
+         case Indices   => ReduceKeepDimsLoop[S, AxisIndices, 0L]
       }
 
    protected type ReduceKeepDimsLoop[
@@ -59,8 +59,8 @@ object Tensors {
    ] <: Shape = ReplaceFrom match {
       case head #: tail =>
          Indices.Contains[ToReplace, I] match {
-            case true  => 1 #: ReduceKeepDimsLoop[tail, Indices.RemoveValue[ToReplace, I], S[I]]
-            case false => head #: ReduceKeepDimsLoop[tail, ToReplace, S[I]]
+            case true  => 1L #: ReduceKeepDimsLoop[tail, Indices.RemoveValue[ToReplace, I], I + 1L]
+            case false => head #: ReduceKeepDimsLoop[tail, ToReplace, I + 1L]
          }
       case SNil =>
          ToReplace match {
@@ -71,7 +71,7 @@ object Tensors {
    type AddGivenAxisSize[S <: Shape, S1 <: Shape, AxisIndices <: None.type | Indices] <: Shape =
       AxisIndices match {
          case None.type => SNil
-         case Indices   => AddGivenAxisSizeLoop[S, S1, AxisIndices, 0]
+         case Indices   => AddGivenAxisSizeLoop[S, S1, AxisIndices, 0L]
       }
 
    protected type AddGivenAxisSizeLoop[
@@ -90,7 +90,7 @@ object Tensors {
                           tail,
                           secondTail,
                           Indices.RemoveValue[AxisIndex, I],
-                          S[I]
+                          I + 1L
                         ]
                   case SNil =>
                      AxisIndex match {
@@ -101,7 +101,7 @@ object Tensors {
             case false =>
                Second match {
                   case secondHead #: secondTail =>
-                     (head) #: AddGivenAxisSizeLoop[tail, secondTail, AxisIndex, S[I]]
+                     (head) #: AddGivenAxisSizeLoop[tail, secondTail, AxisIndex, I + 1L]
                }
          }
       case SNil =>
@@ -113,7 +113,7 @@ object Tensors {
 
    type UnsqueezeShape[S <: Shape, AxisIndex <: None.type | Indices] <: Shape = AxisIndex match {
       case None.type => SNil
-      case Indices   => UnsqueezeShapeLoop[S, AxisIndex, 0]
+      case Indices   => UnsqueezeShapeLoop[S, AxisIndex, 0L]
    }
 
    protected type UnsqueezeShapeLoop[
@@ -124,8 +124,8 @@ object Tensors {
       case head #: tail =>
          Indices.Contains[AxisIndex, I] match {
             case true =>
-               1 #: head #: UnsqueezeShapeLoop[tail, Indices.RemoveValue[AxisIndex, I], S[I]]
-            case false => head #: UnsqueezeShapeLoop[tail, AxisIndex, S[I]]
+               1L #: head #: UnsqueezeShapeLoop[tail, Indices.RemoveValue[AxisIndex, I], I + 1L]
+            case false => head #: UnsqueezeShapeLoop[tail, AxisIndex, I + 1L]
          }
       case SNil =>
          AxisIndex match {
@@ -140,7 +140,7 @@ object Tensors {
        IndicesSize <: Index
    ] <: Shape = AxisIndex match {
       case None.type => SNil
-      case Indices   => GatheredShapeLoop[S, AxisIndex, 0, AxisIndices, IndicesSize]
+      case Indices   => GatheredShapeLoop[S, AxisIndex, 0L, AxisIndices, IndicesSize]
    }
 
    protected type GatheredShapeLoop[
@@ -157,11 +157,11 @@ object Tensors {
                   GatheredShapeLoop[
                     tail,
                     Indices.RemoveValue[AxisIndex, I],
-                    S[I],
+                    I + 1L,
                     AxisIndices,
                     IndicesSize
                   ]
-            case false => head #: GatheredShapeLoop[tail, AxisIndex, S[I], AxisIndices, IndicesSize]
+            case false => head #: GatheredShapeLoop[tail, AxisIndex, I + 1L, AxisIndices, IndicesSize]
          }
       case SNil =>
          AxisIndex match {
@@ -171,17 +171,17 @@ object Tensors {
          }
    }
 
-   type IndicesSizeOf[AxisIndices <: Indices] = IndicesSizeLoop[AxisIndices, 0]
+   type IndicesSizeOf[AxisIndices <: Indices] = IndicesSizeLoop[AxisIndices, 0L]
 
    protected type IndicesSizeLoop[AxisIndices <: Indices, Acc <: Dimension] <: Index =
       AxisIndices match {
-         case head ::: tail => IndicesSizeLoop[tail, S[Acc]]
+         case head ::: tail => IndicesSizeLoop[tail, Acc + 1L]
          case INil          => Acc
       }
 
    type FlattenedShape[S <: Shape, AxisIndex <: None.type | Indices] <: Shape = AxisIndex match {
       case None.type => SNil
-      case Indices   => FlattenedShapeLoop[S, AxisIndex, 0, 1]
+      case Indices   => FlattenedShapeLoop[S, AxisIndex, 0L, 1L]
    }
 
    protected type FlattenedShapeLoop[
@@ -193,8 +193,8 @@ object Tensors {
       case head #: tail =>
          Indices.Contains[AxisIndex, I] match {
             case true =>
-               Acc #: FlattenedShapeLoop[tail, Indices.RemoveValue[AxisIndex, I], S[I], head]
-            case false => FlattenedShapeLoop[tail, AxisIndex, S[I], head * Acc]
+               Acc #: FlattenedShapeLoop[tail, Indices.RemoveValue[AxisIndex, I], I + 1L, head]
+            case false => FlattenedShapeLoop[tail, AxisIndex, I + 1L, head * Acc]
          }
       case SNil =>
          AxisIndex match {
@@ -293,13 +293,13 @@ object Tensors {
    protected type PoolShapeLoop[From <: Shape, KernelShape <: Shape] <: Shape = KernelShape match {
       case head #: tail =>
          From match {
-            case fromHead #: fromTail => ((fromHead - head + 1)) #: PoolShapeLoop[fromTail, tail]
+            case fromHead #: fromTail => ((fromHead - head + 1L)) #: PoolShapeLoop[fromTail, tail]
             case SNil                 => SNil
          }
       case SNil => From
    }
 
-   // TODO: shape dimension values should be longs, not ints, but dotty compiletime ops only support ints
+
    // TODO: random nd access
    // TODO: Benchmark Array[T] vs ArraySeq[T] vs IArray[T]
 
@@ -317,7 +317,7 @@ object Tensors {
           Td <: TensorShapeDenotation,
           S <: Shape
       ](tens: Tensor[T, Tuple3[Tt, Td, S]])
-         def shape: IO[Array[Int]] = tens.map(_._2._3.toSeq.toArray)
+         def shape: IO[Array[Long]] = tens.map(_._2._3.toSeq.map(_.toLong).toArray)
 
       def tensorRequires[
           T <: Supported,
@@ -328,7 +328,7 @@ object Tensors {
          // require(tens._2._2.toSeq.size == tens.shape.size) //We allow empty denotations
          tens.map(x =>
             require(
-              x._1.size == x._2._3.toSeq.toArray.foldLeft(1)(_ * _)
+              x._1.size == x._2._3.toSeq.toArray.foldLeft(1L)(_ * _)
             ) // This shouldn't fail at runtime, if so shape constraints need fixing
             x
          )
@@ -337,8 +337,8 @@ object Tensors {
           T <: Supported: scala.reflect.ClassTag,
           Tt <: TensorTypeDenotation,
           TD <: TensorShapeDenotation
-      ](element: T, tt: Tt, td: TD): Tensor[T, Tuple3[Tt, TD, 1 #: SNil]] = tensorRequires(
-        IO.pure { (Array[T](element), (tt, td, 1 #: SNil)) }
+      ](element: T, tt: Tt, td: TD): Tensor[T, Tuple3[Tt, TD, 1L #: SNil]] = tensorRequires(
+        IO.pure { (Array[T](element), (tt, td, 1L #: SNil)) }
       )
 
       def apply[
@@ -352,8 +352,8 @@ object Tensors {
 
       def apply[T <: Supported: scala.reflect.ClassTag](
           element: T
-      ): Tensor[T, Tuple3["", org.emergentorder.compiletime.TSNil, 1 #: SNil]] = tensorRequires(
-        IO.pure { (Array(element), ("", TSNil, 1 #: SNil)) }
+      ): Tensor[T, Tuple3["", org.emergentorder.compiletime.TSNil, 1L #: SNil]] = tensorRequires(
+        IO.pure { (Array(element), ("", TSNil, 1L #: SNil)) }
       )
 
       def apply[T <: Supported, TD <: TensorShapeDenotation, S <: Shape](

@@ -32,7 +32,7 @@ class ONNXScalaBertTokenizerSpec extends AsyncFreeSpec with AsyncIOSpec with Mat
       val bertTokenizer = new ORTModelBackend(bytes)
       val data          = Array.fill(1) { "This is a test" }
       // In NCHW tensor image format
-      val shape                 = 1 #: SNil
+      val shape                 = 1L #: SNil
       val tensorShapeDenotation = "Batch" ##: TSNil
 
       val tensorDenotation: String & Singleton = "Text"
@@ -45,17 +45,17 @@ class ONNXScalaBertTokenizerSpec extends AsyncFreeSpec with AsyncIOSpec with Mat
         Long,
         "ImageNetClassification",
         "Batch" ##: "Class" ##: TSNil,
-        6 #: SNil
+        6L #: SNil
       ](Tuple(textTens))
 
       // The output shape
       // and token values
       val singleIO = cats.effect.IO.both(out.shape, out.data)
-      singleIO.asserting(x =>
+       singleIO.asserting { (x: (Array[Long], Array[Long])) =>
          ((x._1(0), x._2(0), x._2(1), x._2(2), x._2(3), x._2(4), x._2(5))
             shouldBe
                (6, 101L, 1188L, 1110L, 170L, 2774L, 102L))
-      )
+       }
 
       // Expected bert tokenizer output ("input_ids") : 101, 1188, 1110, 170, 2774, 102 , longs
    }

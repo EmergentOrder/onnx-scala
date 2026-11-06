@@ -32,7 +32,7 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
       val squeezenet = new ORTModelBackend(squeezenetBytes)
       val data       = Array.fill(1 * 3 * 224 * 224) { 42f }
       // In NCHW tensor image format
-      val shape                 = 1 #: 3 #: 224 #: 224 #: SNil
+      val shape                 = 1L #: 3L #: 224L #: 224L #: SNil
       val tensorShapeDenotation = "Batch" ##: "Channel" ##: "Height" ##: "Width" ##: TSNil
 
       val tensorDenotation: String & Singleton = "Image"
@@ -45,17 +45,17 @@ class ONNXScalaSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
         Float,
         "ImageNetClassification",
         "Batch" ##: "Class" ##: TSNil,
-        1 #: 1000 #: SNil
+        1L #: 1000L #: SNil
       ](Tuple(imageTens))
 
       // The output shape
       // and the highest probability (predicted) class
       val singleIO = cats.effect.IO.both(out.shape, out.data)
-      singleIO.asserting(x =>
+      singleIO.asserting { (x: (Array[Long], Array[Float])) =>
          ((x._1(0), x._1(1), x._2.indices.maxBy(x._2))
             shouldBe
                (1, 1000, 753))
-      )
+       }
 
    }
 }

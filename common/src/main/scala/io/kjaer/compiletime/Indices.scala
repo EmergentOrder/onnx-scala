@@ -4,13 +4,13 @@ package org.emergentorder.io.kjaer.compiletime
 import scala.compiletime.ops.string.+
 import scala.language.strictEquality
 
-type Index = Int & Singleton
+type Index = Long & Singleton
 
 sealed trait Indices {
    def :::[H <: Index, This >: this.type <: Indices](head: H): H ::: This =
       org.emergentorder.io.kjaer.compiletime.:::(head, this)
 
-   def indices: Seq[Int] = this match {
+   def indices: Seq[Long] = this match {
       case INil          => Nil
       case head ::: tail => head +: tail.indices
    }

@@ -19,6 +19,13 @@ ThisBuild / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.ScalaLibr
 
 classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.ScalaLibrary
 
+
+ThisBuild / javacOptions ++= Seq(
+  "-Xlint:deprecation",
+  "-Werror"
+)
+
+
 lazy val commonSettings = Seq(
   organization := "org.emergentorder.onnx",
   version      := "0.18.0",

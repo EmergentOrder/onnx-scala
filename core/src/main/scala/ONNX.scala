@@ -277,13 +277,13 @@ package object onnx {
           s: ShapeOf[PaddedShape[PoolShape[S, S1], PadsBefore, PadsAfter]],
           s1: ShapeOf[S1]
       ): Tensor[T, Tuple3[Tt1, Td1, PaddedShape[PoolShape[S, S1], PadsBefore, PadsAfter]]] = {
-         val padsB: Array[Int] = padsBefore match {
-            case x: Shape     => x.toSeq.toArray
+         val padsB: Array[Long] = padsBefore match {
+            case x: Shape     => x.toSeq.map(_.toLong).toArray
             case _: None.type => Array.fill(shapeOf[S1].toSeq.size)(0)
          }
 
-         val padsA: Array[Int] = padsAfter match {
-            case x: Shape     => x.toSeq.toArray
+         val padsA: Array[Long] = padsAfter match {
+            case x: Shape     => x.toSeq.map(_.toLong).toArray
             case _: None.type => Array.fill(shapeOf[S1].toSeq.size)(0)
          }
 
@@ -291,7 +291,7 @@ package object onnx {
            "auto_pad"          -> auto_pad,
            "ceil_mode"         -> ceil_mode,
            "count_include_pad" -> count_include_pad,
-           "kernel_shape"      -> kernel_shape.toSeq.toArray,
+           "kernel_shape"      -> kernel_shape.toSeq.map(_.toLong).toArray,
            "pads"              -> (padsB ++ padsA),
            "strides"           -> strides
          )
@@ -444,10 +444,10 @@ package object onnx {
           S <: N #: C #: H #: W #: SNil,
           Tt1 <: TensorTypeDenotation,
           Td1 <: TensorShapeDenotation,
-          S1 <: 1 #: C #: KH #: KW #: SNil,
+          S1 <: 1L #: C #: KH #: KW #: SNil,
           Tt2 <: TensorTypeDenotation,
           Td2 <: TensorShapeDenotation,
-          S2 <: 1 #: SNil,
+          S2 <: 1L #: SNil,
           Tt3 <: TensorTypeDenotation,
           Td3 <: TensorShapeDenotation,
           S3 <: KH #: KW #: SNil,
@@ -470,13 +470,13 @@ package object onnx {
           s: ShapeOf[PaddedShape[PoolShape[S, S3], PadsBefore, PadsAfter]],
           s3: ShapeOf[S3]
       ): Tensor[T, Tuple3[Tt3, Td3, PaddedShape[PoolShape[S, S3], PadsBefore, PadsAfter]]] = {
-         val padsB: Array[Int] = padsBefore match {
-            case x: Shape     => x.toSeq.toArray
+         val padsB: Array[Long] = padsBefore match {
+            case x: Shape     => x.toSeq.map(_.toLong).toArray
             case _: None.type => Array.fill(shapeOf[S3].toSeq.size)(0)
          }
 
-         val padsA: Array[Int] = padsAfter match {
-            case x: Shape     => x.toSeq.toArray
+         val padsA: Array[Long] = padsAfter match {
+            case x: Shape     => x.toSeq.map(_.toLong).toArray
             case _: None.type => Array.fill(shapeOf[S3].toSeq.size)(0)
          }
 
@@ -484,7 +484,7 @@ package object onnx {
            "auto_pad"     -> auto_pad,
            "dilations"    -> dilations,
            "group"        -> group,
-           "kernel_shape" -> kernel_shape.toSeq.toArray,
+           "kernel_shape" -> kernel_shape.toSeq.map(_.toLong).toArray,
            "pads"         -> (padsB ++ padsA),
            "strides"      -> strides
          )
@@ -728,7 +728,7 @@ package object onnx {
           IndicesSize <: Index
       ](
           @nowarn
-          axis: AxisIndex = 0 ::: INil,
+          axis: AxisIndex = 0L ::: INil,
           data: Tensor[T, Tuple3[Tt, Td, S]],
           @nowarn
           indices: AxisIndices
@@ -799,7 +799,7 @@ package object onnx {
           S <: N #: C #: H #: W #: SNil,
           Tt1 <: TensorTypeDenotation,
           Td1 <: TensorShapeDenotation,
-          S1 <: N #: C #: 1 #: 1 #: SNil
+          S1 <: N #: C #: 1L #: 1L #: SNil
       ](
           X: Tensor[T, Tuple3[Tt, Td, S]]
       )(using
@@ -825,7 +825,7 @@ package object onnx {
           S <: N #: C #: H #: W #: SNil,
           Tt1 <: TensorTypeDenotation,
           Td1 <: TensorShapeDenotation,
-          S1 <: N #: C #: 1 #: 1 #: SNil
+          S1 <: N #: C #: 1L #: 1L #: SNil
       ](
           X: Tensor[T, Tuple3[Tt, Td, S]]
       )(using
@@ -1037,13 +1037,13 @@ package object onnx {
           s: ShapeOf[PaddedShape[PoolShape[S, S1], PadsBefore, PadsAfter]],
           s1: ShapeOf[S1]
       ): Tensor[T, Tuple3[Tt1, Td1, PaddedShape[PoolShape[S, S1], PadsBefore, PadsAfter]]] = {
-         val padsB: Array[Int] = padsBefore match {
-            case x: Shape     => x.toSeq.toArray
+         val padsB: Array[Long] = padsBefore match {
+            case x: Shape     => x.toSeq.map(_.toLong).toArray
             case _: None.type => Array.fill(shapeOf[S1].toSeq.size)(0)
          }
 
-         val padsA: Array[Int] = padsAfter match {
-            case x: Shape     => x.toSeq.toArray
+         val padsA: Array[Long] = padsAfter match {
+            case x: Shape     => x.toSeq.map(_.toLong).toArray
             case _: None.type => Array.fill(shapeOf[S1].toSeq.size)(0)
          }
 
@@ -1051,7 +1051,7 @@ package object onnx {
            "auto_pad"      -> auto_pad,
            "ceil_mode"     -> ceil_mode,
            "dilations"     -> dilations,
-           "kernel_shape"  -> kernel_shape.toSeq.toArray,
+           "kernel_shape"  -> kernel_shape.toSeq.map(_.toLong).toArray,
            "pads"          -> (padsB ++ padsA),
            "storage_order" -> storage_order,
            "strides"       -> strides
@@ -2048,7 +2048,7 @@ package object onnxruntime {
           KeepDims <: (Boolean & Singleton)
       ](
           @nowarn
-          axis: Axis = 0 ::: INil,
+          axis: Axis = 0L ::: INil,
           @nowarn
           keepdims: KeepDims = true,
           selectLastIndex: Int = 0,
@@ -2086,7 +2086,7 @@ package object onnxruntime {
           KeepDims <: (Boolean & Singleton)
       ](
           @nowarn
-          axis: Axis = 0 ::: INil,
+          axis: Axis = 0L ::: INil,
           @nowarn
           keepdims: KeepDims = true,
           selectLastIndex: Int = 0,
@@ -2253,7 +2253,7 @@ package object onnxruntime {
            "value_string"  -> value_string,
            "value_strings" -> value_strings
          )
-         val shapeArr             = s.value.toSeq.toArray
+         val shapeArr             = s.value.toSeq.map(_.toLong).toArray
          val shapeSize: Dimension = shapeArr.size.asInstanceOf[Dimension]
          val allInputs            = Tuple(Tensor(shapeArr.map(_.toLong), shapeSize #: SNil))
          (callOp("Constant", allInputs, map))

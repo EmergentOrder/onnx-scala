@@ -2,7 +2,7 @@
 import scala.sys.process.Process
 
 //TODO: drop back to LTS before publishing next release
-val scala3Version    = "3.10.0" //"3.8.2-RC3"
+val scala3Version    = "3.10.1" //"3.8.2-RC3"
 val scalaTestVersion = "3.2.20"
 
 scalaVersion := scala3Version
@@ -19,12 +19,10 @@ ThisBuild / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.ScalaLibr
 
 classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.ScalaLibrary
 
-
 ThisBuild / javacOptions ++= Seq(
   "-Xlint:deprecation",
   "-Werror"
 )
-
 
 lazy val commonSettings = Seq(
   organization := "org.emergentorder.onnx",
@@ -47,8 +45,8 @@ lazy val commonSettings = Seq(
     "-preview",
     "-experimental",
 //    "-release:27",
-    "-rewrite", //Needed for protobuf generation
-    "-language:unsafeNulls", //Needed for protobuf generation
+    "-rewrite",              // Needed for protobuf generation
+    "-language:unsafeNulls", // Needed for protobuf generation
     "-source:future-migration",
     "-Yimplicit-to-given",
     "-Wunused:all",

@@ -291,7 +291,7 @@ package object onnx {
            "auto_pad"          -> auto_pad,
            "ceil_mode"         -> ceil_mode,
            "count_include_pad" -> count_include_pad,
-           "kernel_shape"      -> kernel_shape.toSeq.map(_.toLong).toArray,
+           "kernel_shape"      -> kernel_shape.toSeq.map(_.toInt).toArray,
            "pads"              -> (padsB ++ padsA),
            "strides"           -> strides
          )
@@ -317,8 +317,8 @@ package object onnx {
           Tt2 <: TensorTypeDenotation,
           Td2 <: TensorShapeDenotation
       ](
-          epsilon: Float = 1e-05,
-          momentum: Float = 0.9,
+          epsilon: Float = 1e-05f,
+          momentum: Float = 0.9f,
           // training_mode: Int = 0,
           X: Tensor[T, Tuple3[Tt, Td, S]],
           scale: Tensor[T, Tuple3[Tt1, Td1, S1]],
@@ -383,7 +383,7 @@ package object onnx {
           Td <: TensorShapeDenotation,
           S <: Shape
       ](
-          alpha: Float = 1.0,
+          alpha: Float = 1.0f,
           X: Tensor[T, Tuple3[Tt, Td, S]]
       )(using
           tt: ValueOf[Tt],
@@ -422,7 +422,7 @@ package object onnx {
           s: ShapeOf[AddGivenAxisSize[S, S1, Axis]],
           i: IndicesOf[Axis]
       ): Tensor[T, Tuple3[Tt, Td, AddGivenAxisSize[S, S1, Axis]]] = {
-         val map: Map[String, Any] = Map("axis" -> indicesOf[Axis].indices.toArray.head)
+         val map: Map[String, Any] = Map("axis" -> indicesOf[Axis].indices.toArray.map(_.toInt).head)
          val allInputs             = Tuple.fromArray(inputs.toArray)
          (callOp("Concat", allInputs, map))
       }
@@ -592,7 +592,7 @@ package object onnx {
           Td <: TensorShapeDenotation,
           S <: Shape
       ](
-          alpha: Float = 1.0,
+          alpha: Float = 1.0f,
           X: Tensor[T, Tuple3[Tt, Td, S]]
       )(using
           tt: ValueOf[Tt],
@@ -768,8 +768,8 @@ package object onnx {
           N <: Dimension,
           S1 <: K #: N #: SNil
       ](
-          alpha: Float = 1.0,
-          beta: Float = 1.0,
+          alpha: Float = 1.0f,
+          beta: Float = 1.0f,
           transA: Int = 0,
           transB: Int = 0,
           A: Tensor[T, Tuple3[Tt, Td, S]],
@@ -852,7 +852,7 @@ package object onnx {
           S1 <: Dimension #: SNil,
           Tt2 <: TensorTypeDenotation
       ](
-          epsilon: Float = 1e-5,
+          epsilon: Float = 1e-5f,
           input: Tensor[T, Tuple3[Tt, Td, S]],
           scale: Tensor[T, Tuple3[Tt1, Td1, S1]],
           B: Tensor[T, Tuple3[Tt1, Td1, S1]]
@@ -895,9 +895,9 @@ package object onnx {
           S <: Dimension #: Dimension #: Dimension #: Dimension #: SNil,
           Tt1 <: TensorTypeDenotation
       ](
-          alpha: Float = 0.0001,
-          beta: Float = 0.75,
-          bias: Float = 1.0,
+          alpha: Float = 0.0001f,
+          beta: Float = 0.75f,
+          bias: Float = 1.0f,
           size: Int,
           X: Tensor[T, Tuple3[Tt, Td, S]]
       )(using
@@ -919,7 +919,7 @@ package object onnx {
           Td <: TensorShapeDenotation,
           S <: Shape
       ](
-          alpha: Float = 0.01,
+          alpha: Float = 0.01f,
           X: Tensor[T, Tuple3[Tt, Td, S]]
       )(using
           tt: ValueOf[Tt],
@@ -1623,8 +1623,8 @@ package object onnx {
           Td <: TensorShapeDenotation,
           S <: Shape
       ](
-          alpha: Float = 1.67326,
-          gamma: Float = 1.0507,
+          alpha: Float = 1.67326f,
+          gamma: Float = 1.0507f,
           X: Tensor[T, Tuple3[Tt, Td, S]]
       )(using
           tt: ValueOf[Tt],
@@ -2065,7 +2065,7 @@ package object onnxruntime {
         KeepOrReduceDims[S, Axis, KeepDims]
       ]] = {
          val map: Map[String, Any] = Map(
-           "axis"              -> indicesOf[Axis].indices.toArray.head,
+           "axis"              -> indicesOf[Axis].indices.toArray.map(_.toInt).head,
            "select_last_index" -> selectLastIndex,
            "keepdims"          -> (if valueOf[KeepDims] then 1 else 0)
          )
@@ -2103,7 +2103,7 @@ package object onnxruntime {
         KeepOrReduceDims[S, Axis, KeepDims]
       ]] = {
          val map: Map[String, Any] = Map(
-           "axis"              -> indicesOf[Axis].indices.toArray.head,
+           "axis"              -> indicesOf[Axis].indices.toArray.map(_.toInt).head,
            "select_last_index" -> selectLastIndex,
            "keepdims"          -> (if valueOf[KeepDims] then 1 else 0)
          )

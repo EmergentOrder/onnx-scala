@@ -2,7 +2,7 @@
 import scala.sys.process.Process
 
 //TODO: drop back to LTS before publishing next release
-val scala3Version    = "3.10.0" //"3.8.2-RC3"
+val scala3Version    = "3.10.1" //"3.8.2-RC3"
 val scalaTestVersion = "3.2.20"
 
 scalaVersion := scala3Version
@@ -140,7 +140,7 @@ lazy val backends = (projectMatrix in file("backends"))
      name := "onnx-scala-backends",
      libraryDependencies ++= Seq(
        "org.typelevel"            %% "cats-effect-testing-scalatest" % "1.8.0" % Test,
-       "com.microsoft.onnxruntime" % "onnxruntime"                   % "1.31.1", // "1.23.0-RC2",
+       "com.microsoft.onnxruntime" % "onnxruntime"                   % "1.32.0", // "1.23.0-RC2",
        "com.microsoft.onnxruntime" % "onnxruntime-extensions"        % "0.13.0"
      ),
      libraryDependencies += ("org.scalatest" %% "scalatest" % scalaTestVersion) % Test
